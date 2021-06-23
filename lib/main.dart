@@ -15,25 +15,25 @@ class Landing extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextButton(
-              onPressed: () {
-                Get.to(LogInPage(
-                  title: 'Log-In',
-                ));
-              },
-              child: Text('Login')),
-          TextButton(
-              onPressed: () {
-                Get.to(HomePage(
-                  title: 'Home',
-                ));
-              },
-              child: Text('Home')),
-        ],
-      ),
-    ));
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                  onPressed: () {
+                    Get.to(LogInPage(
+                      title: 'Log-In',
+                    ));
+                  },
+                  child: Text('Login')),
+              TextButton(
+                  onPressed: () {
+                    Get.to(HomePage(
+                      title: 'Home',
+                    ));
+                  },
+                  child: Text('Home')),
+            ],
+          ),
+        ));
   }
 }
