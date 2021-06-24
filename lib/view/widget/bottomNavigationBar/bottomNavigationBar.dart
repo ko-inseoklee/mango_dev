@@ -44,7 +44,6 @@ class MangoBNBController extends GetxController {
 
   void changeTabIndex(int index) {
     tabIndex = index.obs;
-    print(this.tabIndex.value);
     update();
   }
 }
