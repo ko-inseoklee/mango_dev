@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'app.dart';
 import 'view/home.dart';
 import 'view/login/login.dart';
 
@@ -12,6 +13,9 @@ class Landing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
+
     return FutureBuilder(
         future: _initialization,
         builder: (context, snapshot) {
