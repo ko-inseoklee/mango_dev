@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import './view/home.dart';
 import './view/login/login.dart';
+import 'color.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Add this
@@ -63,4 +64,3 @@ class Landing extends StatelessWidget {
         });
   }
 }
-//
