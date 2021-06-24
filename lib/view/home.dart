@@ -1,30 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/model/refrigerator.dart';
-import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
+import 'package:mangodevelopment/view/analyze/nutrition.dart';
+import 'package:mangodevelopment/view/market/market.dart';
+import 'package:mangodevelopment/view/myAccount/myPage.dart';
+import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
+import 'package:mangodevelopment/view/trade/trade.dart';
 
-class HomePage extends StatelessWidget {
+import '../viewModel/refrigeratorViewModel.dart';
+import './widget/bottomNavigationBar/bottomNavigationBar.dart';
+
+class HomePage extends StatefulWidget {
   final title;
   const HomePage({Key? key, required this.title}) : super(key: key);
 
   @override
+  HomePageState createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  MangoBNBController _controller = MangoBNBController();
+
+  @override
   Widget build(BuildContext context) {
-    return GetX<RefrigeratorViewModel>(
-      init: RefrigeratorViewModel(),
+    return GetBuilder<MangoBNBController>(
+      init: _controller,
       builder: (_) {
         return Scaffold(
-            body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(_.refrigerator.value.refID),
-              TextButton(
-                  onPressed: () async =>
-                      await _.FindRefrigeratorSnapshot('1234'),
-                  child: Text('fetch ref'))
-            ],
+          body: SafeArea(
+            child: IndexedStack(
+              index: _controller.tabIndex.value,
+              children: [
+                RefrigeratorPage(title: '나의 냉장고'),
+                MarketPage(title: '마켓 페이지'),
+                TradePage(title: '거래 광장 페이지'),
+                NutritionPage(title: '영양 정보 페이지'),
+                MyPage(title: '마이 페이지'),
+              ],
+            ),
           ),
-        ));
+          bottomNavigationBar: MangoBottomNavigationBar(
+            controller: _controller,
+          ),
+        );
       },
     );
   }
