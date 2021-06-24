@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mangodevelopment/model/refrigerator.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 
 class HomePage extends StatelessWidget {
   final title;
@@ -6,8 +9,23 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(title)),
+    return GetX<RefrigeratorViewModel>(
+      init: RefrigeratorViewModel(),
+      builder: (_) {
+        return Scaffold(
+            body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(_.refrigerator.value.refID),
+              TextButton(
+                  onPressed: () async =>
+                      await _.FindRefrigeratorSnapshot('1234'),
+                  child: Text('fetch ref'))
+            ],
+          ),
+        ));
+      },
     );
   }
 }

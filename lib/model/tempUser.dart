@@ -6,7 +6,7 @@ class TempUser {
 
   TempUser.init({required String uid, required String refID})
       : this.uid = uid,
-        this.refID = uid;
+        this.refID = refID;
 
   TempUser.fromSnapshot(DocumentSnapshot snapshot)
       : uid = snapshot.get('uid'),
