@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_workers/utils/debouncer.dart';
 
+import '../main.dart';
 import '../model/tempUser.dart';
 
 class TempUserViewModel extends GetxController {
-  TempUser user = TempUser.init(uid: '', refID: '');
+  var user = TempUser.init(uid: '', refID: '').obs;
 
-  Future<void> FindUserSnapshot(String uid) async {
+  Future<void> FindTempUserSnapshot(String uid) async {
     await FirebaseFirestore.instance
         .collection('temp_user')
         .doc(uid)
         .get()
-        .then((value) => TempUser.fromSnapshot(value));
+        .then((value) => this.user = TempUser.fromSnapshot(value).obs);
   }
 
   @override
