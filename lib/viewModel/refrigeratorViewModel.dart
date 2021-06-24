@@ -17,7 +17,7 @@ class RefrigeratorViewModel extends GetxController {
       Map<String, dynamic> data = value.data() as Map<String, dynamic>;
       this.refrigerator = Refrigerator.fromSnapshot(data).obs;
       update();
-      // print("refID == ${data['refID']}");
+      print("refID == ${data['refID']}");
     });
     update();
   }
