@@ -8,17 +8,13 @@ var deviceHeight = 812.0;
 var prototypeWidth = 375.0;
 var prototypeHeight = 812.0;
 
-class splashPage extends StatelessWidget {
+class SplashPage extends StatelessWidget {
 
   var _loginWidth = 275.0;
   var _loginHeight = 275.0;
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-  }
-
-  Widget loadingAppRun() {
     return Scaffold(
       backgroundColor: Orange500,
       body: Center(
@@ -31,11 +27,11 @@ class splashPage extends StatelessWidget {
               Container(
                 child: Text(
                   '당신의 냉장고를 관리해주는 집요정,',
-                //   style: Theme.of(context)
-                //       .textTheme
-                //       .subtitle1
-                //       .copyWith(color: MangoWhite),
-                 ),
+                  //   style: Theme.of(context)
+                  //       .textTheme
+                  //       .subtitle1
+                  //       .copyWith(color: MangoWhite),
+                ),
               ),
               Spacer(
                 flex: 5,
@@ -81,5 +77,7 @@ class splashPage extends StatelessWidget {
           )),
     );
   }
+
+
 }
 
