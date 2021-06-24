@@ -13,6 +13,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
 
   List<String> _pageTitle = ['개인정보 설정', '알림 주기 설정'];
 
+  final _nameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +39,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
             Container(
               padding: EdgeInsets.only(top:20 * (deviceWidth / prototypeWidth)),
               width: _contentWidth * (deviceWidth * deviceHeight),
+              child: Text('망고에서 사용하실 이름을 입력해주세요.'),
             ),
             Container(
               padding: EdgeInsets.fromLTRB(0, 14 * (deviceWidth / prototypeWidth), 0, 33 * (deviceWidth/prototypeWidth)),
@@ -46,7 +49,20 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp('[A-z]'))
                 ],
-
+                controller: _nameController,
+                decoration: InputDecoration(
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 1.0
+                    )
+                  ),
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      width: 1.0
+                    )
+                  ),
+                ),
               ),
             )
           ],
