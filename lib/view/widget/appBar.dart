@@ -5,8 +5,9 @@ import 'package:mangodevelopment/color.dart';
 class MangoAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   List<Widget>? actions;
+  PreferredSizeWidget? bottom;
 
-  MangoAppBar({Key? key, required this.title, this.actions})
+  MangoAppBar({Key? key, required this.title, this.actions, this.bottom})
       : preferredSize = Size.fromHeight(kToolbarHeight),
         super(key: key);
   @override
@@ -31,6 +32,7 @@ class _MangoAppBarState extends State<MangoAppBar> {
       centerTitle: true,
       actions: widget.actions,
       actionsIconTheme: Theme.of(context).iconTheme,
+      bottom: widget.bottom,
     );
   }
 }

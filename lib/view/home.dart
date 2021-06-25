@@ -6,6 +6,7 @@ import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 
+import '../color.dart';
 import '../viewModel/refrigeratorViewModel.dart';
 import './widget/bottomNavigationBar/bottomNavigationBar.dart';
 
@@ -37,6 +38,13 @@ class HomePageState extends State<HomePage> {
                 MyPage(title: '마이 페이지'),
               ],
             ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Orange400,
+            onPressed: () {
+              print('work well.');
+            },
+            child: Icon(Icons.add),
           ),
           bottomNavigationBar: MangoBottomNavigationBar(
             controller: _controller,
