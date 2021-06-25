@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/addUserInfo.dart';
 
 import 'view/home.dart';
 import 'view/login/login.dart';
@@ -42,6 +43,11 @@ class Landing extends StatelessWidget {
                             ));
                       },
                       child: Text('Home')),
+                  TextButton( // for mj TEST
+                      onPressed: () {
+                        Get.to(() => AddUserInfoPage());
+                      },
+                      child: Text('AddUserInfo')),
                 ],
               ),
             ));
