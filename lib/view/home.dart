@@ -43,11 +43,12 @@ class HomePageState extends State<HomePage> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Orange400,
             onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (_) {
-                    return AddFoodSheet();
-                  });
+              // showDialog(
+              //     context: context,
+              //     builder: (_) {
+              //       return AddFoodSheet();
+              //     });
+              Get.dialog(AddFoodSheet());
             },
             child: Icon(Icons.add),
           ),

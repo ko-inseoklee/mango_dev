@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 
 import '../../color.dart';
 import '../splash.dart';
@@ -44,7 +46,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                         .caption!
                         .copyWith(fontWeight: FontWeight.w500)),
                 onPressed: () {
-                  Navigator.pop(context);
+                  Get.off(() => AddFoodDirectPage(title: '냉장고 품목 등록'));
                 },
               ),
             ),
