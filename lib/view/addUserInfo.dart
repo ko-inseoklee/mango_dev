@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/splash.dart';
+import 'package:mangodevelopment/viewModel/authentication.dart';
 
 enum refrigerationAlarmType { shelfLife, registerDate }
 enum frozenAlarmType { shelfLife, registerDate }
@@ -14,6 +15,7 @@ class AddUserInfoPage extends StatefulWidget {
 }
 
 class _AddUserInfoPageState extends State<AddUserInfoPage> {
+  late Authentication _auth;
   List<String> _pageTitle = ['개인정보 설정', '알림 주기 설정'];
 
   bool _isFirstPage = true;
@@ -112,6 +114,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
   }
 
   Widget setAlarmPage(BuildContext context) {
+
     var _buttonWidth = 156.0;
     var _buttonHeight = 46.0;
 
