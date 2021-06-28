@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'friend/friendList.dart';
 
 class MarketPage extends StatefulWidget {
   final String title;
@@ -24,7 +26,11 @@ class _MarketPageState extends State<MarketPage> {
         centerTitle: true,
       ),
       body: Center(
-        child: Text('마켓 페이지'),
+        child: InkWell(
+          onTap: (){
+            Get.to(FriendListPage());
+          },
+            child: Text('마켓 페이지')),
       ),
     );
   }
