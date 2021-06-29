@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/addUserInfo.dart';
+import 'package:mangodevelopment/view/login/addUserInfo.dart';
 
 import 'app.dart';
 import 'view/home.dart';

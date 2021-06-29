@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
-import 'package:mangodevelopment/view/splash.dart';
+import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 
 enum refrigerationAlarmType { shelfLife, registerDate }
