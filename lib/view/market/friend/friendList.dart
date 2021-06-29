@@ -20,6 +20,12 @@ class _FriendListPageState extends State<FriendListPage> {
           title: Text('친구 목록'),
           actions: [
             IconButton(
+              onPressed: () {
+                print('HI');
+              },
+              icon: Icon(Icons.people),
+            ),
+            IconButton(
                 onPressed: () {
                   Get.bottomSheet(
                       Container(
@@ -64,27 +70,39 @@ class _FriendListPageState extends State<FriendListPage> {
           ],
           centerTitle: true,
         ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: mango_dev.collection('temp_user').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const Text('loading');
-            return ListView.builder(
-              itemCount: snapshot.data!.size,
-              itemExtent: 80.0,
-              itemBuilder: (context, index) {
-                List<DocumentSnapshot> documents = snapshot.data!.docs;
-                documents.map((docs) => _buildListTile(context, docs)).toList();
-                return _buildListTile(context, documents.elementAt(index));
-              },
-            );
+        body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: mango_dev.collection('temp_user').doc('123').snapshots(),
+          builder: (_, snapshot) {
+            if (snapshot.hasError) return Text('Error = ${snapshot.error}');
+
+            if (snapshot.hasData) {
+              var output = snapshot.data!.data();
+              var value = output!['FriendList']; // <-- Your value
+              return Text('Value = $value');
+            }
+
+            return Center(child: CircularProgressIndicator());
           },
-        ));
+        )
+    );
   }
 
   Widget _buildListTile(BuildContext context, DocumentSnapshot docs) {
-    // return SizedBox(height: 0);
     return ListTile(
       title: Text(docs.get('name')),
+    );
+  }
+
+  Widget _buildFriendList(DocumentSnapshot docs) {
+    // String _refID;
+    //   mango_dev.collection('temp_user').doc('123').get().then((doc) {
+    //     print(doc['refID']);
+    //     _name = doc['refID'];
+    //
+    //   });
+
+    return ListTile(
+      title: Text(docs.get('refID')),
     );
   }
 }
