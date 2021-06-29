@@ -19,12 +19,12 @@ class _FriendListPageState extends State<FriendListPage> {
         appBar: AppBar(
           title: Text('친구 목록'),
           actions: [
-            IconButton(
-              onPressed: () {
-                print('HI');
-              },
-              icon: Icon(Icons.people),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     print('HI');
+            //   },
+            //   icon: Icon(Icons.people),
+            // ),
             IconButton(
                 onPressed: () {
                   Get.bottomSheet(
