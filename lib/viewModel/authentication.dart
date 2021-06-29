@@ -9,12 +9,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class Authentication extends GetxController{
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late User user;
+  User? user;
 
   Authentication(){
     _auth.authStateChanges().listen((newUser) {
       print('Authentication - FirebaseAuth - AuthStateChanged - $newUser');
-      user = newUser!;
+      user = newUser;
       update();
     }, onError: (e){
       print('Authentication - FirebaseAuth - AuthStateChanged - $e');
@@ -73,13 +73,25 @@ class Authentication extends GetxController{
   // }
 
 
-  Future<void> singOut() async {
+  Future<void> signOut() async {
     try{
       _auth.signOut();
       update();
     }catch (e){
       print('exception error: $e');
     }
+  }
+
+  Future<bool> hasData(String uid) async {
+    bool result = false;
+
+    await FirebaseFirestore.instance
+        .collection('User')
+        .doc(uid)
+        .get()
+        .then((value) => result = value.exists);
+
+    return result;
   }
 
 

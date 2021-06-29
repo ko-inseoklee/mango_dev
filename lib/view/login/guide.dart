@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mangodevelopment/view/home.dart';
 
 import '../../app.dart';
 
-class guidePage extends StatefulWidget {
+class GuidePage extends StatefulWidget {
   @override
-  _guidePageState createState() => _guidePageState();
+  _GuidePageState createState() => _GuidePageState();
 }
 
-class _guidePageState extends State<guidePage> {
+class _GuidePageState extends State<GuidePage> {
   final imgWidth = 311.0;
   final imgHeight = 485.0;
 
@@ -24,6 +26,7 @@ class _guidePageState extends State<guidePage> {
 
   @override
   Widget build(BuildContext context) {
+    //TODO. auth 필요한 사항??
     //var _auth = Provider.of<Authentication>(context);
     //context.read<UserViewModel>().findUserSnapshot(_auth.user.uid);
 
@@ -45,33 +48,30 @@ class _guidePageState extends State<guidePage> {
                 ),
                 scrollProgress(index),
                 index == imgList.length - 1
-                    ? ButtonTheme(
-                  child: RaisedButton(
-                    onPressed: () {
-                      // Navigator.pop(context);
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (_) {
-                      //       return ChangeNotifierProvider<UserViewModel>(
-                      //         create: (context) => UserViewModel(),
-                      //         child: homePage(),
-                      //       );
-                      //     }));
-                    },
-                    child: Text('MANGO 시작하기'),
-                  ),
-                )
-                    : FlatButton(
-                    onPressed: () {
-                      // Navigator.pop(context);
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (_) {
-                      //       return ChangeNotifierProvider<UserViewModel>(
-                      //         create: (context) => UserViewModel(),
-                      //         child: homePage(),
-                      //       );
-                      //     }));
-                    },
-                    child: Text('Skip'))
+                    ? ElevatedButton(
+                        onPressed: () {
+                          // Navigator.pop(context);
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (_) {
+                          //       return ChangeNotifierProvider<UserViewModel>(
+                          //         create: (context) => UserViewModel(),
+                          //         child: homePage(),
+                          //       );
+                          //     }));
+                        },
+                        child: Text('MANGO 시작하기'))
+                    : TextButton(
+                        onPressed: () {
+                          // Navigator.pop(context);
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (_) {
+                          //       return ChangeNotifierProvider<UserViewModel>(
+                          //         create: (context) => UserViewModel(),
+                          //         child: homePage(),
+                          //       );
+                          //     }));
+                        },
+                        child: Text('skip')),
               ],
             ),
           ),
@@ -96,7 +96,7 @@ class _guidePageState extends State<guidePage> {
   Widget activeIcon() {
     return Padding(
         padding:
-        EdgeInsets.fromLTRB(prototypeDotPadding, 0, prototypeDotPadding, 0),
+            EdgeInsets.fromLTRB(prototypeDotPadding, 0, prototypeDotPadding, 0),
         child: Icon(
           Icons.fiber_manual_record,
           size: prototypeDotSize * (deviceWidth / prototypeWidth),
@@ -107,7 +107,7 @@ class _guidePageState extends State<guidePage> {
   Widget inactiveIcon() {
     return Padding(
       padding:
-      EdgeInsets.fromLTRB(prototypeDotPadding, 0, prototypeDotPadding, 0),
+          EdgeInsets.fromLTRB(prototypeDotPadding, 0, prototypeDotPadding, 0),
       child: Icon(
         Icons.fiber_manual_record,
         size: prototypeDotSize * (deviceWidth / prototypeWidth),

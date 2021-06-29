@@ -30,6 +30,8 @@ dependencies:
   cloud_firestore: ^2.2.2
   cupertino_icons: ^1.0.2
   google_sign_in: ^5.0.3
+  uuid: ^3.0.4
+  select_form_field: ^2.0.0
 
 dev_dependencies:
   flutter_test:
