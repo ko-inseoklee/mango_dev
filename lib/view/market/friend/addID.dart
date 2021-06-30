@@ -73,6 +73,12 @@ class _AddIDPageState extends State<AddIDPage> {
                                           // TODO: 1. check if uid is already in the friend list
                                           // TODO: 2. if not UPDATE friend list
                                           print('add to friend list');
+                                          addFriend(
+                                              // TODO: use current user info
+                                              '123',
+                                              data['uid'],
+                                              '정현',
+                                              data['name']);
                                         },
                                         icon: Icon(Icons.add_circle_outline)),
                                   ),
@@ -80,28 +86,33 @@ class _AddIDPageState extends State<AddIDPage> {
                               });
                     }),
               ),
-              IconButton(
-                  onPressed: () {
-                    print('HI');
-                  },
-                  icon: Icon(Icons.add))
             ],
           ),
         ));
   }
 
-  void getaResult() {}
+  void addFriend(String curr_uid, String curr_name, String uid, String name) {
+    if (curr_uid == uid) {
+      print('자기를 추가할 수 없습니다');
+      // TODO: alert 창 띄우기
+      return;
+    }
+    mango_dev
+        .collection('temp_user')
+        .doc(curr_uid)
+        .collection('FriendList')
+        .add({
+      'name': name,
+      'uid': uid,
+    }).then((_) {
+      print('success');
+    }).catchError((_) {
+      print('error');
+    });
 
-  Widget _buildListTile(BuildContext context, DocumentSnapshot docs) {
-    // print('Tile: $_search');
-    // if (_search == docs.id) {
-    return ListTile(
-      title: Text(docs.get('name')),
-      leading: Icon(Icons.ac_unit),
-      // onTap: () {},
-    );
-    // } else {
-    //   return SizedBox(height: 0);
-    // }
+    mango_dev.collection('temp_user').doc(uid).collection('FriendList').add({
+      'name': curr_name,
+      'uid': curr_uid,
+    });
   }
 }
