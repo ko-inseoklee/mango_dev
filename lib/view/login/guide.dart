@@ -16,6 +16,8 @@ class _GuidePageState extends State<GuidePage> {
   final prototypeDotSize = 12.0;
   final prototypeDotPadding = 7.5 * (deviceWidth / prototypeWidth);
 
+  int index = 0;
+
   List<String> imgList = [
     'images/guide/guide1.png',
     'images/guide/guide2.png',
@@ -27,56 +29,55 @@ class _GuidePageState extends State<GuidePage> {
   @override
   Widget build(BuildContext context) {
     //TODO. auth 필요한 사항??
-    //var _auth = Provider.of<Authentication>(context);
-    //context.read<UserViewModel>().findUserSnapshot(_auth.user.uid);
+    // var _auth = Provider.of<Authentication>(context);
+    // context.read<UserViewModel>().findUserSnapshot(_auth.user.uid);
 
-    return PageView.builder(
-      scrollDirection: Axis.horizontal,
-      controller: PageController(initialPage: 0),
-      itemCount: imgList.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).primaryColor,
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  imgList[index],
-                  width: imgWidth * (deviceWidth / prototypeWidth),
-                  height: imgHeight * (deviceWidth / prototypeWidth),
-                ),
-                scrollProgress(index),
-                index == imgList.length - 1
-                    ? ElevatedButton(
-                        onPressed: () {
-                          // Navigator.pop(context);
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (_) {
-                          //       return ChangeNotifierProvider<UserViewModel>(
-                          //         create: (context) => UserViewModel(),
-                          //         child: homePage(),
-                          //       );
-                          //     }));
-                        },
-                        child: Text('MANGO 시작하기'))
-                    : TextButton(
-                        onPressed: () {
-                          // Navigator.pop(context);
-                          // Navigator.push(context,
-                          //     MaterialPageRoute(builder: (_) {
-                          //       return ChangeNotifierProvider<UserViewModel>(
-                          //         create: (context) => UserViewModel(),
-                          //         child: homePage(),
-                          //       );
-                          //     }));
-                        },
-                        child: Text('skip')),
-              ],
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: Column(
+        children: [
+          SizedBox(height: deviceHeight * 0.1,),
+          Expanded(
+            child: PageView.builder(
+              scrollDirection: Axis.horizontal,
+              controller: PageController(initialPage: 0),
+                onPageChanged: (int index){
+                setState(() {
+                  this.index = index;
+                });
+                },
+              itemCount: imgList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          imgList[index],
+                          width: imgWidth * (deviceWidth / prototypeWidth),
+                          height: imgHeight * (deviceWidth / prototypeWidth),
+                        ),
+                      ],
+                    ),
+                );
+            }
             ),
           ),
-        );
-      },
+          SizedBox(child: scrollProgress(index)),
+          index == imgList.length - 1
+              ? ElevatedButton(
+              onPressed: () {
+                Get.offAll(HomePage(title: 'hi'));
+              },
+              child: Text('MANGO 시작하기'))
+              : TextButton(
+              onPressed: () {
+                Get.offAll(HomePage(title: 'hi'));
+              },
+              child: Text('skip')),
+          SizedBox(height: deviceHeight * 0.1),
+        ],
+      ),
     );
   }
 

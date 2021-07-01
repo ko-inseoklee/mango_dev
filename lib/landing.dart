@@ -87,6 +87,11 @@ class _LandingState extends State<Landing> {
                               Get.to(() => AddUserInfoPage());
                             },
                             child: Text('AddUserInfo')),
+                        TextButton( // for mj TEST
+                            onPressed: () {
+                              Get.to(() => GuidePage());
+                            },
+                            child: Text('Guide')),
                       ],
                     ),
                   ));

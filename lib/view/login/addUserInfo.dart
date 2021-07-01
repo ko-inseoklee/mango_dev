@@ -1,13 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/landing.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
+import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
-import 'package:select_form_field/select_form_field.dart';
 import 'package:uuid/uuid.dart';
 
 enum refrigerationAlarmType { shelfLife, registerDate }
@@ -24,13 +26,6 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
   final userViewModelController = Get.put(UserViewModel());
 
   List<String> _pageTitle = ['개인정보 설정', '알림 주기 설정'];
-
-  final List<Map<String, dynamic>> _items = [
-    {'value': '3', 'label': '3일 전'},
-    {'value': '7', 'label': '7일 전'},
-    {'value': '10', 'label': '10일 전'},
-    {'value': '15', 'label': '15일 전'}
-  ];
 
   bool _isFirstPage = true;
   final _nameController = TextEditingController();
@@ -137,106 +132,114 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
 
     var idx = 0;
 
-    return Container(
-        child: Column(
-      children: [
-        Container(
-          color: MangoWhite,
-          width: deviceWidth,
-          height: 60 * (deviceHeight / prototypeHeight),
-          alignment: Alignment.center,
-          child: Text(
-            '제품 별 본인이 원하는 유통기한 알림기준과 일자를 설정해주세요. 알림 기준은 유통기한별 / 구매일자로부터 경과한 일수 두 가지가 있습니다.',
-            style: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: MangoDisabledColor),
-            textAlign: TextAlign.center,
+    return SafeArea(
+      child: Container(
+          child: Column(
+        children: [
+          Container(
+            color: MangoWhite,
+            width: deviceWidth,
+            height: 60 * (deviceHeight / prototypeHeight),
+            alignment: Alignment.center,
+            child: Text(
+              '제품 별 본인이 원하는 유통기한 알림기준과 일자를 설정해주세요. 알림 기준은 유통기한별 / 구매일자로부터 경과한 일수 두 가지가 있습니다.',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle2!
+                  .copyWith(color: MangoDisabledColor),
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
-        SizedBox(
-          height: 7.0 * (deviceWidth / prototypeWidth),
-        ),
-        alarmCard(_storeType[0], 0),
-        SizedBox(
-          height: 7.0 * (deviceWidth / prototypeWidth),
-        ),
-        alarmCard(_storeType[1], 1),
-        SizedBox(
-          height: 7.0 * (deviceWidth / prototypeWidth),
-        ),
-        alarmCard(_storeType[2], 2),
-        SizedBox(
-          height: 7.0 * (deviceWidth / prototypeWidth),
-        ),
-        ColoredBox(
-          color: MangoBehindColor,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ConstrainedBox(
+          SizedBox(
+            height: 7.0 * (deviceWidth / prototypeWidth),
+          ),
+          alarmCard(_storeType[0], 0),
+          SizedBox(
+            height: 7.0 * (deviceWidth / prototypeWidth),
+          ),
+          alarmCard(_storeType[1], 1),
+          SizedBox(
+            height: 7.0 * (deviceWidth / prototypeWidth),
+          ),
+          alarmCard(_storeType[2], 2),
+          SizedBox(
+            height: 7.0 * (deviceWidth / prototypeWidth),
+          ),
+          ColoredBox(
+            color: MangoBehindColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ConstrainedBox(
+                    constraints: BoxConstraints.tightFor(
+                        width: _buttonWidth * (deviceWidth / prototypeWidth),
+                        height: _buttonHeight * (deviceWidth / prototypeWidth)),
+                    child: ElevatedButton(
+                        child: Text(
+                          '이전',
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(MangoDisabledContainerColor),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            //TODO. 뭔가 이상?
+                            alarmIdx == 0
+                                ? _auth
+                                    .signOut()
+                                    .then((value) => Get.off(Landing()))
+                                : alarmIdx--;
+                          });
+                        })),
+                SizedBox(
+                  width: deviceWidth * 0.03,
+                ),
+                ConstrainedBox(
                   constraints: BoxConstraints.tightFor(
                       width: _buttonWidth * (deviceWidth / prototypeWidth),
                       height: _buttonHeight * (deviceWidth / prototypeWidth)),
                   child: ElevatedButton(
-                      child: Text(
-                        '이전',
-                        style: Theme.of(context).textTheme.subtitle2,
-                      ),
-                      onPressed: () {
+                    child: Text(
+                      '다음',
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                    onPressed: () async {
+                      if (alarmIdx == 2) {
+                        uuid = Uuid().v4().toString();
+                        String defaultImage = '-1';
+                        await userViewModelController.makeUserInformation(
+                          _auth.user!.uid,
+                          _auth.user!.metadata.creationTime!,
+                          uuid,
+                          _refrigerationAlarm,
+                          _isRefShelf,
+                          _frozenAlarm,
+                          _isFroShelf,
+                          _roomTempAlarm,
+                          _isRTShelf,
+                          _auth.user!.metadata.lastSignInTime!,
+                          defaultImage,
+                          _userName,
+                        );
+                        //TODO. refirgeratorController()
+                        // await refrigeratorController()
+                        //     .makeRefInfoDocument(refID: uuid);
+                        Get.off(GuidePage());
+                      } else {
                         setState(() {
-                          //TODO. 뭔가 이상?
-                          alarmIdx == 0
-                              ? _auth
-                                  .signOut()
-                                  .then((value) => Get.off(Landing()))
-                              : alarmIdx--;
+                          alarmIdx++;
                         });
-                      })),
-              ConstrainedBox(
-                constraints: BoxConstraints.tightFor(
-                    width: _buttonWidth * (deviceWidth / prototypeWidth),
-                    height: _buttonHeight * (deviceWidth / prototypeWidth)),
-                child: ElevatedButton(
-                  child: Text(
-                    '다음',
-                    style: Theme.of(context).textTheme.subtitle2,
+                      }
+                    },
                   ),
-                  onPressed: () async {
-                    if (alarmIdx == 2) {
-                      uuid = Uuid().v4().toString();
-                      String defaultImage = '-1';
-                      await userViewModelController.makeUserInformation(
-                        _auth.user!.uid,
-                        _auth.user!.metadata.creationTime!,
-                        uuid,
-                        _refrigerationAlarm,
-                        _isRefShelf,
-                        _frozenAlarm,
-                        _isFroShelf,
-                        _roomTempAlarm,
-                        _isRTShelf,
-                        _auth.user!.metadata.lastSignInTime!,
-                        defaultImage,
-                        _userName,
-                      );
-                      //TODO. refirgeratorController()
-                      // await refrigeratorController()
-                      //     .makeRefInfoDocument(refID: uuid);
-                      Get.off(GuidePage());
-                    } else {
-                      setState(() {
-                        alarmIdx++;
-                      });
-                    }
-                  },
                 ),
-              ),
-            ],
-          ),
-        )
-      ],
-    ));
+              ],
+            ),
+          )
+        ],
+      )),
+    );
   }
 
   //parameter: Title name, type -> Refrigeration, Frozen, Room temperature.
@@ -388,36 +391,84 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                     )),
               ),
               SizedBox(
-                width: 45 * (deviceWidth / prototypeWidth),
+                width: 30 * (deviceWidth / prototypeWidth),
               ),
-              Container(
-                  width: 100,
-                  child: SelectFormField(
-                    decoration: InputDecoration(
-                        fillColor:
-                            alarmIdx == type ? MangoBlack : MangoDisabledColor),
-                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                        color:
-                            alarmIdx == type ? MangoBlack : MangoDisabledColor),
-                    type: SelectFormFieldType.dropdown,
-                    initialValue: '0일 전',
-                    hintText: '0일 전',
-                    //items: _items, //TODO.
-                      // onChanged: (val) {
-                      //   if (type == 0) {
-                      //     _refrigerationAlarm = int.parse(val);
-                      //   } else if (type == 1) {
-                      //     _frozenAlarm = int.parse(val);
-                      //   } else {
-                      //     _roomTempAlarm = int.parse(val);
-                      //   }
-                      // },
-                  )
-              )
+              ConstrainedBox(
+                constraints: BoxConstraints.tightFor(
+                  width: 120 * (deviceWidth / prototypeWidth),
+                ),
+                child: OutlinedButton(
+                  onPressed: () {
+                    showCupertinoPicker(50, type);
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: type == 0
+                              ? Text('$_refrigerationAlarm일 전')
+                              : type == 1
+                              ? Text('$_frozenAlarm일 전')
+                              : Text('$_roomTempAlarm일 전')),
+                      Icon(Icons.arrow_drop_down)
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  Future<dynamic> showCupertinoPicker(int index, int type) {
+    return showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: const Radius.circular(10.0),
+          topRight: const Radius.circular(10.0),
+        )),
+        context: context,
+        builder: (BuildContext builder) {
+          return Container(
+            height: 284 * (deviceHeight / prototypeHeight),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    '알림일 설정',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6, //TODO. CHANGE NEXT TIME
+                  ),
+                ),
+                Expanded(
+                  child: CupertinoPicker(
+                    itemExtent: 32,
+                    onSelectedItemChanged: (int newValue) {
+                      setState(() {
+                        type == 0
+                            ? _refrigerationAlarm = newValue + 1
+                            : type == 1
+                                ? _frozenAlarm = newValue + 1
+                                : _roomTempAlarm = newValue + 1;
+                      });
+                    },
+                    children: List<Widget>.generate(60, (int index) {
+                      return Text(
+                        (++index).toString(),
+                        style: Theme.of(context).textTheme.headline5,
+                      );
+                    }),
+                    scrollController: FixedExtentScrollController(
+                        //initialItem: foods[index - 1].num - 1
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
