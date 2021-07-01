@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
-
 import '../widget/appBar.dart';
 
 class RefrigeratorPage extends StatefulWidget {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mangodevelopment/view/market/friend/friendList.dart';
+import 'package:get/get.dart';
 
 class TradePage extends StatefulWidget {
   final String title;
@@ -18,7 +20,11 @@ class _TradePageState extends State<TradePage> {
         centerTitle: true,
       ),
       body: Center(
-        child: Text('거래 페이지'),
+        child: InkWell(
+            onTap: () {
+              Get.to(FriendListPage());
+            },
+            child: Text('거래 페이지')),
       ),
     );
   }

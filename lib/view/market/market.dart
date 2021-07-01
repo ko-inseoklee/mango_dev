@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'friend/friendList.dart';
 
 class MarketPage extends StatefulWidget {
   final String title;
