@@ -5,9 +5,6 @@ import 'package:get/get.dart';
 import 'color.dart';
 import 'landing.dart';
 
-var deviceWidth = 375.0;
-var deviceHeight = 812.0;
-
 class MangoApp extends StatelessWidget {
   const MangoApp({Key? key}) : super(key: key);
 

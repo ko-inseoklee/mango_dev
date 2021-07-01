@@ -6,6 +6,7 @@ import 'package:mangodevelopment/view/addUserInfo.dart';
 import 'app.dart';
 import 'view/home.dart';
 import 'view/login/login.dart';
+import 'view/splash.dart';
 
 class Landing extends StatelessWidget {
   Landing({Key? key}) : super(key: key);
@@ -47,7 +48,8 @@ class Landing extends StatelessWidget {
                             ));
                       },
                       child: Text('Home')),
-                  TextButton( // for mj TEST
+                  TextButton(
+                      // for mj TEST
                       onPressed: () {
                         Get.to(() => AddUserInfoPage());
                       },
