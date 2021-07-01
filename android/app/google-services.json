@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "14678370956-tb2magca3tcgbp4tjte70b6f10qf70sr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dobby.mangodevelopment.mangodevelopment",
+            "certificate_hash": "f9b6d480307ba9693858cc3741c8e42207eb58e6"
+          }
+        },
+        {
+          "client_id": "14678370956-utp7ul3juu44711jjq2dq5i7o2nriolf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dobby.mangodevelopment.mangodevelopment",
+            "certificate_hash": "24f0c3fc8c98a648b0bbb1b884e8a7dffcdcf166"
+          }
+        },
+        {
           "client_id": "14678370956-ntt5ikth16gsu96r68r2mp0r2njth2tr.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +45,13 @@
             {
               "client_id": "14678370956-ntt5ikth16gsu96r68r2mp0r2njth2tr.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "14678370956-sb1t1ef1io420osnqn10a3kekiff1g5b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dobby.mangodevelopment.mangodevelopment"
+              }
             }
           ]
         }
