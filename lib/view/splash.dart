@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../app.dart';
 import '../color.dart';
-
-var deviceWidth = 375.0;
-var deviceHeight = 812.0;
-var prototypeWidth = 375.0;
-var prototypeHeight = 812.0;
 
 class SplashPage extends StatelessWidget {
 

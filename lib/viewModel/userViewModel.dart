@@ -48,6 +48,7 @@ class UserViewModel extends GetxController{
     update();
   }
 
+
   Future<void> findUserSnapshot(String uid) async{
     await FirebaseFirestore.instance
         .collection('user')

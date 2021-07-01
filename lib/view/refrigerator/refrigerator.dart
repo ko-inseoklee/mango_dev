@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
-// import 'package:mangodevelopment/view/refrigerator/test.dart';
-
 import '../widget/appBar.dart';
 
 class RefrigeratorPage extends StatefulWidget {
@@ -34,6 +32,7 @@ class _RefrigeratorPageState extends State<RefrigeratorPage>
       length: 3,
       child: Scaffold(
         appBar: MangoAppBar(
+          isLeading: false,
           title: '나의 냉장고',
         ),
         backgroundColor: MangoWhite,

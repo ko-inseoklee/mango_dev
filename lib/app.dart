@@ -5,15 +5,24 @@ import 'package:get/get.dart';
 import 'color.dart';
 import 'landing.dart';
 
-var deviceWidth = 375.0;
-var deviceHeight = 812.0;
+
+var deviceWidth = 411.0;
+var deviceHeight = 820.0;
+var prototypeWidth = 375.0;
+var prototypeHeight = 812.0;
+
+var platform = true;
+
 
 class MangoApp extends StatelessWidget {
   const MangoApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(home: Landing());
+    return GetMaterialApp(
+        home: Landing(),
+      theme: _mangoTheme,
+    );
   }
 }
 
