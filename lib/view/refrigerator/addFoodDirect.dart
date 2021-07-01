@@ -4,6 +4,8 @@ import 'package:mangodevelopment/view/splash.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/chip.dart';
 
+import '../../app.dart';
+
 enum method { shelf, regist }
 
 class AddFoodDirectPage extends StatefulWidget {
