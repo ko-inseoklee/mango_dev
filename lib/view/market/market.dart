@@ -26,11 +26,7 @@ class _MarketPageState extends State<MarketPage> {
         centerTitle: true,
       ),
       body: Center(
-        child: InkWell(
-          onTap: (){
-            Get.to(FriendListPage());
-          },
-            child: Text('마켓 페이지')),
+        child: Text('마켓 페이지'),
       ),
     );
   }

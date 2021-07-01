@@ -27,66 +27,83 @@ class _AddIDPageState extends State<AddIDPage> {
           title: Text('ID로 추가하기'),
         ),
         body: Center(
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CupertinoSearchTextField(
-                  controller: _textController,
-                  onChanged: (String value) {
-                    setState(() {
-                      _search = value;
-                    });
-                  },
-                  onSubmitted: (String value) {
-                    setState(() {
-                      _search = value;
-                    });
-                  },
-                  placeholder: '친구 검색',
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CupertinoSearchTextField(
+                    controller: _textController,
+                    onChanged: (String value) {
+                      setState(() {
+                        _search = value;
+                      });
+                    },
+                    onSubmitted: (String value) {
+                      setState(() {
+                        _search = value;
+                      });
+                    },
+                    placeholder: '친구 검색',
+                  ),
                 ),
-              ),
-              Flexible(
-                child: StreamBuilder<QuerySnapshot>(
-                    stream: (_search != '')
-                        ? FirebaseFirestore.instance
-                            .collection('temp_user')
-                            .where('uid', isEqualTo: _search)
-                            .snapshots()
-                        : FirebaseFirestore.instance
-                            .collection('dummy')
-                            .snapshots(),
-                    builder: (context, snapshot) {
-                      return (snapshot.connectionState ==
-                              ConnectionState.waiting)
-                          ? Center(child: CircularProgressIndicator())
-                          : ListView.builder(
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (context, index) {
-                                DocumentSnapshot data =
-                                    snapshot.data!.docs[index];
-                                return Card(
-                                  child: ListTile(
-                                    title: Text(data['name']),
-                                    trailing: IconButton(
-                                        onPressed: () {
-                                          // TODO: 1. check if uid is already in the friend list
-                                          // TODO: 2. if not UPDATE friend list
-                                          print('add to friend list');
-                                          addFriend(
-                                              // TODO: use current user info
-                                              '123',
-                                              data['uid'],
-                                              '정현',
-                                              data['name']);
-                                        },
-                                        icon: Icon(Icons.add_circle_outline)),
-                                  ),
-                                );
-                              });
-                    }),
-              ),
-            ],
+                Container(
+                    margin: EdgeInsets.symmetric(horizontal: 10.0),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        color: Colors.grey[200]),
+                    child: ListTile(
+                      title: Text(
+                        '내 아이디',
+                      ),
+                      trailing: Text(
+                        // TODO: get current user info
+                        '123',
+                      ),
+                    )),
+                Flexible(
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: (_search != '')
+                          ? FirebaseFirestore.instance
+                              .collection('temp_user')
+                              .where('uid', isEqualTo: _search)
+                              .snapshots()
+                          : FirebaseFirestore.instance
+                              .collection('dummy')
+                              .snapshots(),
+                      builder: (context, snapshot) {
+                        return (snapshot.connectionState ==
+                                ConnectionState.waiting)
+                            ? Center(child: CircularProgressIndicator())
+                            : ListView.builder(
+                                itemCount: snapshot.data!.docs.length,
+                                itemBuilder: (context, index) {
+                                  DocumentSnapshot data =
+                                      snapshot.data!.docs[index];
+                                  return Card(
+                                    child: ListTile(
+                                      title: Text(data['name']),
+                                      trailing: IconButton(
+                                          onPressed: () {
+                                            // TODO: 1. check if uid is already in the friend list
+                                            // TODO: 2. if not UPDATE friend list
+                                            print('add to friend list');
+                                            addFriend(
+                                                // TODO: use current user info
+                                                '123',
+                                                '정현',
+                                                data['uid'],
+                                                data['name']);
+                                          },
+                                          icon: Icon(Icons.add_circle_outline)),
+                                    ),
+                                  );
+                                });
+                      }),
+                ),
+              ],
+            ),
           ),
         ));
   }
@@ -110,9 +127,17 @@ class _AddIDPageState extends State<AddIDPage> {
       print('error');
     });
 
-    mango_dev.collection('temp_user').doc(uid).collection('FriendList').add({
-      'name': curr_name,
-      'uid': curr_uid,
-    });
+    mango_dev
+        .collection('temp_user')
+        .doc(uid)
+        .collection('FriendList')
+        .add({
+          'name': curr_name,
+          'uid': curr_uid,
+        })
+        .then((value) => print('success2'))
+        .catchError((_) {
+          print('error2');
+        });
   }
 }
