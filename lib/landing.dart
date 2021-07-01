@@ -8,6 +8,7 @@ import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'app.dart';
 import 'view/home.dart';
 import 'view/login/login.dart';
+import 'view/splash.dart';
 
 class Landing extends StatefulWidget {
   @override

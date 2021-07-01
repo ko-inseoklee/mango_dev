@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/view/analyze/nutrition.dart';
 import 'package:mangodevelopment/view/market/market.dart';
 import 'package:mangodevelopment/view/myAccount/myPage.dart';
+import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 
@@ -42,7 +43,12 @@ class HomePageState extends State<HomePage> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Orange400,
             onPressed: () {
-              print('work well.');
+              // showDialog(
+              //     context: context,
+              //     builder: (_) {
+              //       return AddFoodSheet();
+              //     });
+              Get.dialog(AddFoodSheet());
             },
             child: Icon(Icons.add),
           ),

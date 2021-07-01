@@ -33,6 +33,7 @@ class _RefrigeratorPageState extends State<RefrigeratorPage>
       length: 3,
       child: Scaffold(
         appBar: MangoAppBar(
+          isLeading: false,
           title: '나의 냉장고',
         ),
         backgroundColor: MangoWhite,
