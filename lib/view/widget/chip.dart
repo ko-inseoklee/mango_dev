@@ -13,6 +13,8 @@ class MangoChip extends StatelessWidget {
             name,
             overflow: TextOverflow.ellipsis,
           ),
+          deleteButtonTooltipMessage: '삭제하시겠습니까?',
+          deleteIcon: Icon(Icons.delete),
         ));
   }
 }

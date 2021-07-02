@@ -18,3 +18,5 @@ A new Flutter project.
     - Chip
         하나의 칩에 하나의 Food 모델 사용.
         Default chip 만들어 놓기.
+    - 식자재 등록
+        인식에 따른 유사 음식 추천 - AI 활용 등록방법 적용 후 추가.

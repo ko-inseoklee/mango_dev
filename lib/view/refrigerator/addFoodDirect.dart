@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:mangodevelopment/color.dart';
-import 'package:mangodevelopment/view/splash.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/chip.dart';
 
@@ -19,8 +19,9 @@ class AddFoodDirectPage extends StatefulWidget {
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   TextEditingController _nameController = new TextEditingController();
 
-  bool _isShelf = true;
   method _method = method.shelf;
+
+  List<Widget> _chips = [];
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +41,25 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                 Container(
                   padding:
                       EdgeInsets.all(10 * (deviceHeight / prototypeHeight)),
-                  child: Chip(
+                  child: ActionChip(
                     backgroundColor: Orange50,
                     label: Icon(
                       Icons.add,
                       color: Orange400,
                       size: 16.0,
                     ),
+                    onPressed: () {
+                      setState(() {
+                        addChips();
+                      });
+                    },
                   ),
                 ),
-                Row(
-                  children: [MangoChip(name: '바나나'), MangoChip(name: '바나나 우유')],
-                )
+                Expanded(
+                    child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: _chips,
+                ))
               ],
             ),
           ),
@@ -219,12 +227,19 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
               Container(
                 margin: EdgeInsets.only(top: 20),
                 decoration: BoxDecoration(
-                    border: Border.all(color: MangoDisabledColorLight),
+                    color: Orange400,
+                    border: Border.all(color: MangoWhite),
                     borderRadius: BorderRadius.circular(10.0)),
                 width: 330 * deviceWidth / prototypeWidth,
                 height: 55 * (deviceHeight / prototypeHeight),
                 child: TextButton(
-                  child: Text('등록'),
+                  child: Text(
+                    '등록',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1!
+                        .copyWith(color: MangoBlack),
+                  ),
                   onPressed: () => print('good'),
                 ),
               ),
@@ -233,6 +248,28 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
         ],
       ),
     );
+  }
+
+  void addChips() {
+    _chips.insert(
+        0,
+        MangoChip(
+            name: '',
+            onClick: () {
+              print('idx');
+            }));
+  }
+
+  Widget MangoChip({required String name, required VoidCallback onClick}) {
+    return Container(
+        padding: EdgeInsets.fromLTRB(6.0, 0, 6.0, 0),
+        child: ActionChip(
+          label: Text(
+            name,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onPressed: onClick,
+        ));
   }
 }
 
