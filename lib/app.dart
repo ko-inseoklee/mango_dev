@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import 'color.dart';
 import 'landing.dart';
-
+import 'view/market/friend/friendList.dart';
 
 var deviceWidth = 411.0;
 var deviceHeight = 820.0;
@@ -13,15 +13,15 @@ var prototypeHeight = 812.0;
 
 var platform = true;
 
-
 class MangoApp extends StatelessWidget {
   const MangoApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        home: Landing(),
+      home: Landing(),
       theme: _mangoTheme,
+      getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
     );
   }
 }

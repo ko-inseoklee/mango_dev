@@ -46,7 +46,6 @@ class _FriendListPageState extends State<FriendListPage> {
                       },
                       child: Text(
                         '완료',
-                        style: TextStyle(color: Colors.white),
                       )),
                 ),
           actions: [
@@ -169,7 +168,7 @@ class _FriendListPageState extends State<FriendListPage> {
     return ListTile(
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: AssetImage(''),
+        // backgroundImage: AssetImage(''),
       ),
       title: Text(docs.get('name')),
       trailing: !_edit
@@ -178,6 +177,7 @@ class _FriendListPageState extends State<FriendListPage> {
               onPressed: () {
                 // TODO: get current user info
                 deleteFriend('123', docs.get('uid'));
+                Get.defaultDialog(middleText: '삭제 완료');
               },
               child: Text('삭제'),
             ),

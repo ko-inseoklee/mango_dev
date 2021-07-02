@@ -27,10 +27,10 @@ class _LandingState extends State<Landing> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    if (_auth.user == null) {
-      print("auth.user = null");
-      return LogInPage(title: 'hi',);
-    } else{
+    // if (_auth.user == null) {
+    //   print("auth.user = null");
+    //   return LogInPage(title: 'hi',);
+    // } else{
       // return FutureBuilder(
       //     future: _auth.hasData(_auth.user!.uid),
       //     builder: (context, snapshot) {
@@ -106,6 +106,6 @@ class _LandingState extends State<Landing> {
             );
           });
 
-    }
+    // }
   }
 }
