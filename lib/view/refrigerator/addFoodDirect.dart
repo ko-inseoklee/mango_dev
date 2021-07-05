@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
-import 'package:mangodevelopment/view/widget/chip.dart';
 
 import '../../app.dart';
 
@@ -19,12 +17,18 @@ class AddFoodDirectPage extends StatefulWidget {
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   TextEditingController _nameController = new TextEditingController();
 
+  int currentIdx = 0;
+
   method _method = method.shelf;
 
-  List<Widget> _chips = [];
+  List<TemporaryFood> _foodList = [];
+
+  List<mangoChip> _chips = [];
 
   @override
   Widget build(BuildContext context) {
+    // _chips.clear();
+
     return Scaffold(
       backgroundColor: MangoWhite,
       appBar: MangoAppBar(
@@ -63,6 +67,45 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
               ],
             ),
           ),
+          InfoBody(idx: currentIdx),
+        ],
+      ),
+    );
+  }
+
+  void addChips() {
+    TemporaryFood temporaryFood = new TemporaryFood(
+      index: _chips.length,
+      name: '-',
+      method: 0,
+      num: 0,
+      shelfLife: DateTime.now(),
+      category: '-',
+      registrationDay: DateTime.now(),
+    );
+
+    _chips.add(mangoChip(food: temporaryFood));
+    print(_chips.length);
+  }
+
+  Widget MangoChip({required TemporaryFood food}) {
+    return Container(
+        padding: EdgeInsets.fromLTRB(6.0, 0, 6.0, 0),
+        child: ActionChip(
+          label: Text(
+            food.getName,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onPressed: () => print('good'),
+        ));
+  }
+
+  Widget InfoBody({required int idx}) {
+    return Container(
+      width: deviceWidth,
+      height: 550,
+      child: Column(
+        children: [
           Container(
             height: 7 * (deviceHeight / prototypeHeight),
             color: MangoBehindColor,
@@ -249,28 +292,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
       ),
     );
   }
-
-  void addChips() {
-    _chips.insert(
-        0,
-        MangoChip(
-            name: '',
-            onClick: () {
-              print('idx');
-            }));
-  }
-
-  Widget MangoChip({required String name, required VoidCallback onClick}) {
-    return Container(
-        padding: EdgeInsets.fromLTRB(6.0, 0, 6.0, 0),
-        child: ActionChip(
-          label: Text(
-            name,
-            overflow: TextOverflow.ellipsis,
-          ),
-          onPressed: onClick,
-        ));
-  }
 }
 
 class AddFoodTextForm extends StatefulWidget {
@@ -325,4 +346,58 @@ class _AddFoodTextFormState extends State<AddFoodTextForm> {
       ),
     );
   }
+}
+
+class mangoChip extends StatefulWidget {
+  TemporaryFood food;
+  mangoChip({Key? key, required this.food}) : super(key: key);
+
+  @override
+  _mangoChipState createState() => _mangoChipState();
+}
+
+class _mangoChipState extends State<mangoChip> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.fromLTRB(6.0, 0, 6.0, 0),
+        child: ActionChip(
+          label: Text(
+            widget.food.name,
+            overflow: TextOverflow.ellipsis,
+          ),
+          onPressed: () => print('good'),
+        ));
+  }
+}
+
+class TemporaryFood {
+  int idx;
+  String name;
+  int number;
+  String category;
+  int method;
+  DateTime shelfLife;
+  DateTime registrationDay;
+
+  void setName(String n) {
+    this.name = n;
+  }
+
+  TemporaryFood(
+      {required int index,
+      required String name,
+      required int num,
+      required String category,
+      required int method,
+      required DateTime shelfLife,
+      required DateTime registrationDay})
+      : idx = index,
+        name = name,
+        number = num,
+        category = category,
+        method = method,
+        shelfLife = shelfLife,
+        registrationDay = registrationDay;
+  String get getName => name;
 }
