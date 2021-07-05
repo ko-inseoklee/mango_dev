@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import 'color.dart';
 import 'landing.dart';
-import 'view/market/friend/friendList.dart';
+import 'view/trade/friend/friendList.dart';
 
 var deviceWidth = 411.0;
 var deviceHeight = 820.0;

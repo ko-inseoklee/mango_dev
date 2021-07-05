@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/color.dart';
-import 'package:mangodevelopment/view/market/friend/addEmail.dart';
-import 'package:mangodevelopment/view/market/friend/addID.dart';
-import 'package:mangodevelopment/view/market/friend/addPhone.dart';
+import 'package:mangodevelopment/view/trade/friend/addEmail.dart';
+import 'package:mangodevelopment/view/trade/friend/addID.dart';
+import 'package:mangodevelopment/view/trade/friend/addPhone.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mangodevelopment/viewModel/friendListViewModel.dart';
 
 class FriendListPage extends StatefulWidget {
   @override
@@ -13,6 +13,8 @@ class FriendListPage extends StatefulWidget {
 }
 
 class _FriendListPageState extends State<FriendListPage> {
+  String _search = '';
+
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   bool _edit = false;
@@ -113,12 +115,12 @@ class _FriendListPageState extends State<FriendListPage> {
                     controller: _textController,
                     onChanged: (String value) {
                       setState(() {
-                        // _search = value;
+                        _search = value;
                       });
                     },
                     onSubmitted: (String value) {
                       setState(() {
-                        // _search = value;
+                        _search = value;
                       });
                     },
                     placeholder: '친구 검색',
@@ -130,11 +132,19 @@ class _FriendListPageState extends State<FriendListPage> {
                 Flexible(
                   child: StreamBuilder<QuerySnapshot>(
                     // TODO: doc id => current uid 로!!
-                    stream: mango_dev
-                        .collection('temp_user')
-                        .doc('123')
-                        .collection('FriendList')
-                        .snapshots(),
+                    stream: (_search != '')
+                        ? mango_dev
+                            .collection('temp_user')
+                            .doc('123')
+                            .collection('FriendList')
+                            .where('case', arrayContains: _search)
+                            .snapshots()
+                        : FirebaseFirestore.instance
+                            .collection('temp_user')
+                            .doc('123')
+                            .collection('FriendList')
+                            .snapshots(),
+
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (!snapshot.hasData) {
                         return Center(
@@ -176,41 +186,11 @@ class _FriendListPageState extends State<FriendListPage> {
           : ElevatedButton(
               onPressed: () {
                 // TODO: get current user info
-                deleteFriend('123', docs.get('uid'));
+                FriendListViewModel().deleteFriend('123', docs.get('uid'));
                 Get.defaultDialog(middleText: '삭제 완료');
               },
               child: Text('삭제'),
             ),
     );
-  }
-
-  void deleteFriend(String curr_uid, String uid) {
-    var myfriendList = mango_dev
-        .collection('temp_user')
-        .doc(curr_uid)
-        .collection('FriendList');
-
-    var otherfriendList =
-        mango_dev.collection('temp_user').doc(uid).collection('FriendList');
-
-    //delete from my friend list
-    myfriendList.where('uid', isEqualTo: uid).get().then((value) {
-      value.docs.forEach((element) {
-        myfriendList
-            .doc(element.id)
-            .delete()
-            .then((value) => print('deleted1'));
-      });
-    });
-
-    //delete from others friend list
-    otherfriendList.where('uid', isEqualTo: curr_uid).get().then((value) {
-      value.docs.forEach((element) {
-        otherfriendList
-            .doc(element.id)
-            .delete()
-            .then((value) => print('deleted2'));
-      });
-    });
   }
 }

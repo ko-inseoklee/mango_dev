@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/market/friend/friendList.dart';
+import 'package:mangodevelopment/view/trade/friend/friendList.dart';
+import 'package:mangodevelopment/viewModel/friendListViewModel.dart';
 
 class AddIDPage extends StatefulWidget {
   @override
@@ -106,7 +107,7 @@ class _AddIDPageState extends State<AddIDPage> {
                                                       // TODO: 2. if not UPDATE friend list
                                                       print(
                                                           'add to friend list');
-                                                      addFriend(
+                                                      FriendListViewModel().addFriend(
                                                           // TODO: use current user info
                                                           '123',
                                                           '정현',
@@ -139,55 +140,4 @@ class _AddIDPageState extends State<AddIDPage> {
         ));
   }
 
-  Future<void> addFriend(
-      String curr_uid, String curr_name, String uid, String name) async {
-    if (curr_uid == uid) {
-      print('자기를 추가할 수 없습니다');
-      // TODO: alert 창 띄우기
-      return;
-    }
-
-    var check = await mango_dev
-        .collection('temp_user')
-        .doc(curr_uid)
-        .collection('FriendList')
-        .where('uid', isEqualTo: uid)
-        .limit(1)
-        .get();
-
-    List<DocumentSnapshot> documents = check.docs;
-
-    //이미 등록된 친구 일 경우 `snackbar` return
-    if (documents.length > 0) {
-      return Get.snackbar('친구 추가 실패', '이미 등록된 친구입니다.');
-    }
-
-    await mango_dev
-        .collection('temp_user')
-        .doc(curr_uid)
-        .collection('FriendList')
-        .add({
-      'name': name,
-      'uid': uid,
-    }).then((_) {
-      print('success');
-    }).catchError((_) {
-      print('error');
-    });
-
-    await mango_dev
-        .collection('temp_user')
-        .doc(uid)
-        .collection('FriendList')
-        .add({
-          'name': curr_name,
-          'uid': curr_uid,
-        })
-        .then((value) => print('success2'))
-        .catchError((_) {
-          print('error2');
-        });
-
-    return Get.snackbar('친구 추가 완료', name + '님이 친구로 추가되었습니다');
-  }
 }
