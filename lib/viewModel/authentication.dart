@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
@@ -10,11 +12,13 @@ import 'package:google_sign_in/google_sign_in.dart';
 class Authentication extends GetxController{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
+  var exitUser = false.obs;
 
   Authentication(){
     _auth.authStateChanges().listen((newUser) {
       print('Authentication - FirebaseAuth - AuthStateChanged - $newUser');
       user = newUser;
+      exitUser.value = true;
       update();
     }, onError: (e){
       print('Authentication - FirebaseAuth - AuthStateChanged - $e');
@@ -47,29 +51,18 @@ class Authentication extends GetxController{
     }
     update();
   }
-  // Future<User?> googleLogin() async{
-  //   try{
-  //     UserCredential userCredential;
-  //     if(kIsWeb){
-  //       GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
-  //       userCredential = await _auth.signInWithPopup(googleAuthProvider);
-  //     }else{
-  //       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  // Future<User> facebookLogin() async {
+  //   // Trigger the sign-in flow
+  //   final AccessToken result = await FacebookAuth.instance.login();
   //
-  //       final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+  //   // Create a credential from the access token
+  //   final FacebookAuthCredential facebookAuthCredential =
+  //   FacebookAuthProvider.credential(result.token);
   //
-  //       final credential = GoogleAuthProvider.credential(
-  //         accessToken: googleAuth.accessToken,
-  //         idToken: googleAuth.idToken
-  //       );
+  //   // Once signed in, return the UserCredential
+  //   final authResult = await _auth.signInWithCredential(facebookAuthCredential);
   //
-  //       final authResult = await _auth.signInWithCredential(credential);
-  //
-  //       return authResult.user;
-  //     }
-  //   } catch (e){
-  //     print('Error reported: $e');
-  //   }
+  //   return authResult.user;
   // }
 
 
@@ -86,7 +79,7 @@ class Authentication extends GetxController{
     bool result = false;
 
     await FirebaseFirestore.instance
-        .collection('User')
+        .collection('user')
         .doc(uid)
         .get()
         .then((value) => result = value.exists);
