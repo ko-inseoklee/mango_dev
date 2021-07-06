@@ -18,7 +18,7 @@ class Authentication extends GetxController{
     _auth.authStateChanges().listen((newUser) {
       print('Authentication - FirebaseAuth - AuthStateChanged - $newUser');
       user = newUser;
-      exitUser.value = true;
+      exitUser = true.obs;
       update();
     }, onError: (e){
       print('Authentication - FirebaseAuth - AuthStateChanged - $e');
@@ -44,6 +44,7 @@ class Authentication extends GetxController{
         final authResult = await _auth.signInWithCredential(credential);
 
         user = authResult.user!;
+        exitUser = true.obs;
         update();
       }
     } catch (e){
@@ -51,24 +52,12 @@ class Authentication extends GetxController{
     }
     update();
   }
-  // Future<User> facebookLogin() async {
-  //   // Trigger the sign-in flow
-  //   final AccessToken result = await FacebookAuth.instance.login();
-  //
-  //   // Create a credential from the access token
-  //   final FacebookAuthCredential facebookAuthCredential =
-  //   FacebookAuthProvider.credential(result.token);
-  //
-  //   // Once signed in, return the UserCredential
-  //   final authResult = await _auth.signInWithCredential(facebookAuthCredential);
-  //
-  //   return authResult.user;
-  // }
 
 
   Future<void> signOut() async {
     try{
       _auth.signOut();
+      exitUser = false.obs;
       update();
     }catch (e){
       print('exception error: $e');
