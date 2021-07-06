@@ -18,7 +18,8 @@ class _AddFoodDState extends State<AddFoodD> {
   int currentIdx = 0;
   int maxIdx = 0;
 
-  String token = '';
+  TextEditingController _textEditingController =
+      new TextEditingController(text: '-');
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class _AddFoodDState extends State<AddFoodD> {
     // maxIdx = 0;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: MangoWhite,
       appBar: MangoAppBar(
         title: widget.title,
@@ -121,7 +123,7 @@ class _AddFoodDState extends State<AddFoodD> {
     var temp = new TemporaryFood(
         index: maxIdx,
         status: true,
-        name: 'name$maxIdx',
+        name: '-',
         num: 0,
         category: '',
         method: 0,
@@ -130,8 +132,7 @@ class _AddFoodDState extends State<AddFoodD> {
     foods.add(temp);
 
     currentIdx = maxIdx;
-
-    token = temp.name;
+    setFieldValue(currentIdx);
   }
 
   void clearChip() {
@@ -141,7 +142,10 @@ class _AddFoodDState extends State<AddFoodD> {
   }
 
   void deleteChip(int idx) {
-    if (currentIdx != 0 && foods.length != 0) currentIdx--;
+    if (currentIdx != 0 && foods.length != 0) {
+      currentIdx--;
+      setFieldValue(currentIdx);
+    }
     maxIdx--;
 
     foods.removeAt(idx);
@@ -149,6 +153,10 @@ class _AddFoodDState extends State<AddFoodD> {
     for (int i = 0; i < foods.length; i++) {
       foods[i].idx = i;
     }
+  }
+
+  void setFieldValue(int idx) {
+    _textEditingController.text = foods[idx].name;
   }
 
   Widget _buildChip({required TemporaryFood food}) {
@@ -181,6 +189,7 @@ class _AddFoodDState extends State<AddFoodD> {
                 onPressed: () {
                   setState(() {
                     currentIdx = food.idx;
+                    setFieldValue(currentIdx);
                   });
                 },
                 onLongPress: () {
@@ -229,8 +238,6 @@ class _AddFoodDState extends State<AddFoodD> {
 
   //TODO: parameter has to be changed token of food name.
   Widget InfoBody(int idx) {
-    //   return Text('${foods[idx].name}+${foods[idx].idx}');
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -241,16 +248,111 @@ class _AddFoodDState extends State<AddFoodD> {
               border: Border(top: BorderSide(color: MangoDisabledColorLight))),
         ),
         Container(
-          width: deviceWidth,
-          padding: EdgeInsets.fromLTRB(
-              12 * deviceWidth / prototypeWidth,
-              12 * deviceWidth / prototypeWidth,
-              0,
-              12 * deviceWidth / prototypeWidth),
-          decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: MangoDisabledColorLight))),
-          child: Text('기본정보'),
-        ),
+            width: deviceWidth,
+            padding: EdgeInsets.fromLTRB(
+                12 * deviceWidth / prototypeWidth,
+                12 * deviceWidth / prototypeWidth,
+                0,
+                12 * deviceWidth / prototypeWidth),
+            decoration: BoxDecoration(
+                border:
+                    Border(top: BorderSide(color: MangoDisabledColorLight))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '기본정보',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1!
+                      .copyWith(color: MangoDisabledColor),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      width: 140 * (deviceWidth / prototypeWidth),
+                      height: 140 * (deviceWidth / prototypeWidth),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: MangoDisabledColor,
+                            borderRadius: BorderRadius.circular(100)),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                              width: 200 * (deviceWidth / prototypeWidth),
+                              height: 55,
+                              padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: MangoDisabledColorLight),
+                                  borderRadius: BorderRadius.circular(10)),
+                              alignment: Alignment.center,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding:
+                                        EdgeInsets.fromLTRB(5.0, 0, 5.0, 0),
+                                    alignment: Alignment.center,
+                                    width: 40 * (deviceWidth / prototypeWidth),
+                                    child: Text(
+                                      '품명',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(color: MangoDisabledColor),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 120 * deviceWidth / prototypeWidth,
+                                    decoration: BoxDecoration(),
+                                    child: TextFormField(
+                                      controller: _textEditingController,
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          Theme.of(context).textTheme.subtitle1,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          foods[idx].name = value;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 25,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          foods[idx].name = '-';
+                                          _textEditingController.text =
+                                              foods[idx].name;
+                                        });
+                                      },
+                                      child: Icon(
+                                        Icons.clear,
+                                        size: 16,
+                                        color: MangoDisabledColorDark,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ))
+                        ],
+                      ),
+                    )
+                  ],
+                )
+              ],
+            )),
         Container(
           padding: EdgeInsets.fromLTRB(
               12 * deviceWidth / prototypeWidth,
