@@ -18,6 +18,8 @@ class _AddFoodDState extends State<AddFoodD> {
   int currentIdx = 0;
   int maxIdx = 0;
 
+  String token = '';
+
   @override
   Widget build(BuildContext context) {
     maxIdx = foods.length;
@@ -26,15 +28,18 @@ class _AddFoodDState extends State<AddFoodD> {
     // maxIdx = 0;
 
     return Scaffold(
+      backgroundColor: MangoWhite,
       appBar: MangoAppBar(
         title: widget.title,
         isLeading: true,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 80 * (deviceHeight / prototypeHeight),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
                   padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
@@ -61,21 +66,51 @@ class _AddFoodDState extends State<AddFoodD> {
           ),
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InfoBody(currentIdx),
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        clearChip();
-                      });
-                    },
-                    child: Text('clear chips'))
+                foods.length > 1
+                    ? Container(
+                        alignment: Alignment.centerLeft,
+                        width: deviceWidth,
+                        padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                        decoration: BoxDecoration(
+                            border: Border.symmetric(
+                                horizontal: BorderSide(
+                                    color: MangoDisabledColorLight))),
+                        child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                deleteChip(currentIdx);
+                              });
+                            },
+                            child: Text(
+                              '품목 삭제',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(color: Red500),
+                            )),
+                      )
+                    : Text(' '),
               ],
             ),
           ),
           Container(
-            height: 80 * (deviceHeight / prototypeHeight),
-            child: Text('registration'),
+            margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
+            height: 70 * (deviceHeight / prototypeHeight),
+            width: deviceWidth,
+            decoration: BoxDecoration(
+                color: Orange400, borderRadius: BorderRadius.circular(10)),
+            child: TextButton(
+              onPressed: () {
+                print('등록완료');
+              },
+              child: Text(
+                '등록',
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ),
           )
         ],
       ),
@@ -83,57 +118,20 @@ class _AddFoodDState extends State<AddFoodD> {
   }
 
   void addChip() {
-    foods.add(new TemporaryFood(
+    var temp = new TemporaryFood(
         index: maxIdx,
+        status: true,
         name: 'name$maxIdx',
         num: 0,
         category: '',
         method: 0,
         shelfLife: DateTime.now(),
-        registrationDay: DateTime.now()));
+        registrationDay: DateTime.now());
+    foods.add(temp);
 
-    print(maxIdx);
-    print(currentIdx);
-  }
+    currentIdx = maxIdx;
 
-  List<Widget> _buildChips({required List<TemporaryFood> foods}) {
-    return foods.map((e) => _buildChip(food: e)).toList();
-  }
-
-  Widget _buildChip({required TemporaryFood food}) {
-    return Wrap(
-      direction: Axis.vertical,
-      children: [
-        Container(
-          margin: EdgeInsets.fromLTRB(
-              4.0 * deviceWidth / prototypeWidth,
-              16.0 * deviceWidth / prototypeWidth,
-              4.0 * deviceWidth / prototypeWidth,
-              16.0 * deviceWidth / prototypeWidth),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0), border: Border.all()),
-          child: TextButton(
-              child: Text(
-                food.name,
-                overflow: TextOverflow.clip,
-              ),
-              onPressed: () {
-                setState(() {
-                  currentIdx = food.idx;
-                });
-              }),
-        )
-      ],
-    );
-  }
-
-  //TODO: parameter has to be changed token of food name.
-  Widget InfoBody(int idx) {
-    if (foods.length == 0) {
-      return Text('blank');
-    } else {
-      return Text('${foods[idx].name}');
-    }
+    token = temp.name;
   }
 
   void clearChip() {
@@ -141,10 +139,150 @@ class _AddFoodDState extends State<AddFoodD> {
     maxIdx = foods.length;
     currentIdx = 0;
   }
+
+  void deleteChip(int idx) {
+    if (currentIdx != 0 && foods.length != 0) currentIdx--;
+    maxIdx--;
+
+    foods.removeAt(idx);
+
+    for (int i = 0; i < foods.length; i++) {
+      foods[i].idx = i;
+    }
+  }
+
+  Widget _buildChip({required TemporaryFood food}) {
+    return Stack(
+      children: [
+        Wrap(
+          direction: Axis.vertical,
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(
+                  4.0 * deviceWidth / prototypeWidth,
+                  12.0 * deviceWidth / prototypeWidth,
+                  4.0 * deviceWidth / prototypeWidth,
+                  12.0 * deviceWidth / prototypeWidth),
+              decoration: BoxDecoration(
+                  color: currentIdx == food.idx ? MangoWhite : MangoBehindColor,
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(
+                      color: currentIdx == food.idx
+                          ? Orange700
+                          : MangoDisabledColor)),
+              child: TextButton(
+                child: Text(
+                  food.name,
+                  overflow: TextOverflow.clip,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.w400,
+                      color: currentIdx == food.idx ? Orange700 : MangoBlack),
+                ),
+                onPressed: () {
+                  setState(() {
+                    currentIdx = food.idx;
+                  });
+                },
+                onLongPress: () {
+                  setState(() {
+                    food.status = !food.status;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+        !food.status
+            ? Positioned(
+                right: 0,
+                top: 5,
+                child: Wrap(
+                  children: [
+                    Container(
+                        constraints:
+                            BoxConstraints(maxWidth: 30, maxHeight: 30),
+                        decoration: BoxDecoration(
+                            color: MangoWhite,
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(color: Orange200)),
+                        child: TextButton(
+                          child: Icon(
+                            Icons.clear,
+                            size: 12.0,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              deleteChip(food.idx);
+                            });
+                          },
+                        ))
+                  ],
+                ))
+            : Text(' ')
+      ],
+    );
+  }
+
+  List<Widget> _buildChips({required List<TemporaryFood> foods}) {
+    return foods.map((e) => _buildChip(food: e)).toList();
+  }
+
+  //TODO: parameter has to be changed token of food name.
+  Widget InfoBody(int idx) {
+    //   return Text('${foods[idx].name}+${foods[idx].idx}');
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 8.0 * deviceHeight / prototypeHeight,
+          decoration: BoxDecoration(
+              color: MangoBehindColor,
+              border: Border(top: BorderSide(color: MangoDisabledColorLight))),
+        ),
+        Container(
+          width: deviceWidth,
+          padding: EdgeInsets.fromLTRB(
+              12 * deviceWidth / prototypeWidth,
+              12 * deviceWidth / prototypeWidth,
+              0,
+              12 * deviceWidth / prototypeWidth),
+          decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: MangoDisabledColorLight))),
+          child: Text('기본정보'),
+        ),
+        Container(
+          padding: EdgeInsets.fromLTRB(
+              12 * deviceWidth / prototypeWidth,
+              12 * deviceWidth / prototypeWidth,
+              0,
+              12 * deviceWidth / prototypeWidth),
+          child: Text('보관방법'),
+        ),
+        Container(
+          width: deviceWidth,
+          padding: EdgeInsets.fromLTRB(
+              12 * deviceWidth / prototypeWidth,
+              12 * deviceWidth / prototypeWidth,
+              0,
+              12 * deviceWidth / prototypeWidth),
+          decoration: BoxDecoration(
+              border:
+                  Border(bottom: BorderSide(color: MangoDisabledColorLight))),
+          child: Text('표시기준'),
+        ),
+        Container(
+          height: 8.0 * deviceHeight / prototypeHeight,
+          decoration: BoxDecoration(color: MangoBehindColor),
+        ),
+      ],
+    );
+  }
 }
 
 class TemporaryFood {
   int idx;
+  bool status;
   String name;
   int number;
   String category;
@@ -154,6 +292,7 @@ class TemporaryFood {
 
   TemporaryFood(
       {required int index,
+      required bool status,
       required String name,
       required int num,
       required String category,
@@ -161,6 +300,7 @@ class TemporaryFood {
       required DateTime shelfLife,
       required DateTime registrationDay})
       : idx = index,
+        status = status,
         name = name,
         number = num,
         category = category,
