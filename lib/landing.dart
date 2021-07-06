@@ -20,6 +20,10 @@ class _LandingState extends State<Landing> {
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
+    // if (Platform.isIOS) iOS_Permission();
+
+
+
   @override
   Widget build(BuildContext context) {
     _auth = Get.put(Authentication());
@@ -109,3 +113,4 @@ class _LandingState extends State<Landing> {
     // }
   }
 }
+

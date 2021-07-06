@@ -9,6 +9,9 @@ import 'package:mangodevelopment/view/splash.dart';
 import './view/home.dart';
 import './view/login/login.dart';
 import 'color.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Add this
