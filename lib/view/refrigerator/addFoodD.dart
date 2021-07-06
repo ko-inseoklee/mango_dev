@@ -291,6 +291,7 @@ class _AddFoodDState extends State<AddFoodD> {
                               width: 200 * (deviceWidth / prototypeWidth),
                               height: 55,
                               padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                              margin: EdgeInsets.only(bottom: 5.0),
                               decoration: BoxDecoration(
                                   border: Border.all(
                                       color: MangoDisabledColorLight),
@@ -303,7 +304,7 @@ class _AddFoodDState extends State<AddFoodD> {
                                     padding:
                                         EdgeInsets.fromLTRB(5.0, 0, 5.0, 0),
                                     alignment: Alignment.center,
-                                    width: 40 * (deviceWidth / prototypeWidth),
+                                    width: 60 * (deviceWidth / prototypeWidth),
                                     child: Text(
                                       '품명',
                                       style: Theme.of(context)
@@ -313,7 +314,7 @@ class _AddFoodDState extends State<AddFoodD> {
                                     ),
                                   ),
                                   Container(
-                                    width: 120 * deviceWidth / prototypeWidth,
+                                    width: 100 * deviceWidth / prototypeWidth,
                                     decoration: BoxDecoration(),
                                     child: TextFormField(
                                       controller: _textEditingController,
@@ -343,14 +344,105 @@ class _AddFoodDState extends State<AddFoodD> {
                                         color: MangoDisabledColorDark,
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
-                              ))
+                              )),
+                          Container(
+                              width: 200 * (deviceWidth / prototypeWidth),
+                              height: 55,
+                              padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                              margin: EdgeInsets.only(bottom: 5.0),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: MangoDisabledColorLight),
+                                  borderRadius: BorderRadius.circular(10)),
+                              alignment: Alignment.center,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding:
+                                        EdgeInsets.fromLTRB(5.0, 0, 5.0, 0),
+                                    alignment: Alignment.center,
+                                    width: 60 * (deviceWidth / prototypeWidth),
+                                    child: Text(
+                                      '수량',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(color: MangoDisabledColor),
+                                    ),
+                                  ),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      width: 100 * deviceWidth / prototypeWidth,
+                                      decoration: BoxDecoration(),
+                                      child: Text('-')),
+                                  Container(
+                                    width: 25,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_drop_down,
+                                        size: 16,
+                                        color: MangoDisabledColorDark,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          Container(
+                              width: 200 * (deviceWidth / prototypeWidth),
+                              height: 55,
+                              padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: MangoDisabledColorLight),
+                                  borderRadius: BorderRadius.circular(10)),
+                              alignment: Alignment.center,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding:
+                                        EdgeInsets.fromLTRB(5.0, 0, 5.0, 0),
+                                    alignment: Alignment.center,
+                                    width: 60 * (deviceWidth / prototypeWidth),
+                                    child: Text(
+                                      '카테고리',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(color: MangoDisabledColor),
+                                    ),
+                                  ),
+                                  Container(
+                                      alignment: Alignment.center,
+                                      width: 100 * deviceWidth / prototypeWidth,
+                                      decoration: BoxDecoration(),
+                                      child: Text('-')),
+                                  Container(
+                                    width: 25,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        setState(() {});
+                                      },
+                                      child: Icon(
+                                        Icons.arrow_drop_down,
+                                        size: 16,
+                                        color: MangoDisabledColorDark,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )),
                         ],
                       ),
                     )
                   ],
-                )
+                ),
               ],
             )),
         Container(
