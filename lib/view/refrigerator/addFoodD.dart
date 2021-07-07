@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 
@@ -13,6 +15,9 @@ class AddFoodD extends StatefulWidget {
 }
 
 class _AddFoodDState extends State<AddFoodD> {
+  late final GlobalKey<ScaffoldState> _key;
+  late PersistentBottomSheetController _controller;
+
   List<TemporaryFood> foods = [];
 
   int currentIdx = 0;
@@ -20,6 +25,15 @@ class _AddFoodDState extends State<AddFoodD> {
 
   TextEditingController _textEditingController =
       new TextEditingController(text: '-');
+
+  int tempNum = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _key = GlobalKey<ScaffoldState>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -377,12 +391,92 @@ class _AddFoodDState extends State<AddFoodD> {
                                       alignment: Alignment.center,
                                       width: 100 * deviceWidth / prototypeWidth,
                                       decoration: BoxDecoration(),
-                                      child: Text('-')),
+                                      child:
+                                          Text(foods[idx].number.toString())),
                                   Container(
                                     width: 25,
                                     child: TextButton(
                                       onPressed: () {
-                                        setState(() {});
+                                        showModalBottomSheet(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(40),
+                                                    topRight:
+                                                        Radius.circular(40))),
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                  height: 300 *
+                                                      (deviceHeight /
+                                                          prototypeHeight),
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 10, 0, 20),
+                                                        width: 40,
+                                                        height: 5,
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                                MangoDisabledColor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5)),
+                                                      ),
+                                                      Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 40),
+                                                        child: Text(
+                                                          '수량',
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1!
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        height: 150 *
+                                                            (deviceHeight /
+                                                                prototypeHeight),
+                                                        child: ListView.builder(
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            return Container(
+                                                              height: 25,
+                                                              child: ListTile(
+                                                                contentPadding:
+                                                                    EdgeInsets
+                                                                        .all(
+                                                                            4.0),
+                                                                title: Center(
+                                                                  child: Text(index
+                                                                      .toString()),
+                                                                ),
+                                                                onTap: () {
+                                                                  setState(() {
+                                                                    foods[idx]
+                                                                            .number =
+                                                                        index;
+                                                                    Get.back();
+                                                                  });
+                                                                },
+                                                              ),
+                                                            );
+                                                          },
+                                                          itemCount: 50,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ));
+                                            });
                                       },
                                       child: Icon(
                                         Icons.arrow_drop_down,
