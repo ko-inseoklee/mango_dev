@@ -33,8 +33,7 @@ dependencies:
   uuid: ^3.0.4
   select_form_field: ^2.0.0
   flutter_material_pickers: ^3.0.0
-  firebase_messaging: ^10.0.3
-
+  firebase_messaging: "^10.0.3"
 
 dev_dependencies:
   flutter_test:
