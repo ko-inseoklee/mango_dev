@@ -19,6 +19,7 @@ class MangoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return GetMaterialApp(
         home: Landing(),
       theme: _mangoTheme,
