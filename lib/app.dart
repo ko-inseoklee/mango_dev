@@ -57,6 +57,7 @@ class _MangoAppState extends State<MangoApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return GetMaterialApp(
       home: Landing(),
       theme: _mangoTheme,

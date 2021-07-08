@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/view/login/addUserInfo.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 
 class LogInPage extends StatelessWidget {
@@ -112,7 +113,7 @@ class LogInPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: () {
-                Get.find<Authentication>().googleLogin();
+                Get.find<Authentication>().googleLogin().then((value) => Get.to(AddUserInfoPage()));
               },
             ),
           ),
