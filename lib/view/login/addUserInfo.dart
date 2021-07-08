@@ -132,9 +132,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
 
     var idx = 0;
 
-    return SafeArea(
-      child: Container(
-          child: Column(
+    return Container(
+      child: Column(
         children: [
           Container(
             color: MangoWhite,
@@ -150,21 +149,15 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
               textAlign: TextAlign.center,
             ),
           ),
-          SizedBox(
-            height: 7.0 * (deviceWidth / prototypeWidth),
-          ),
-          alarmCard(_storeType[0], 0),
-          SizedBox(
-            height: 7.0 * (deviceWidth / prototypeWidth),
-          ),
-          alarmCard(_storeType[1], 1),
-          SizedBox(
-            height: 7.0 * (deviceWidth / prototypeWidth),
-          ),
-          alarmCard(_storeType[2], 2),
-          SizedBox(
-            height: 7.0 * (deviceWidth / prototypeWidth),
-          ),
+          SizedBox(height: 7.0 * (deviceWidth / prototypeWidth)),
+          Expanded(
+              child: ListView.separated(
+                  itemBuilder: (BuildContext context, int index) {
+                    return alarmCard(_storeType[index], index);
+                  },
+                  separatorBuilder: (BuildContext context, int index) =>
+                      SizedBox(height: 7.0 * (deviceWidth / prototypeWidth)),
+                  itemCount: _storeType.length)),
           ColoredBox(
             color: MangoBehindColor,
             child: Row(
@@ -180,7 +173,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           style: Theme.of(context).textTheme.subtitle2,
                         ),
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(MangoDisabledContainerColor),
+                          backgroundColor: MaterialStateProperty.all(
+                              MangoDisabledContainerColor),
                         ),
                         onPressed: () {
                           setState(() {
@@ -236,10 +230,14 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                 ),
               ],
             ),
+          ),
+          SizedBox(
+            height: 120 * (deviceHeight / prototypeHeight),
           )
         ],
-      )),
+      ),
     );
+
   }
 
   //parameter: Title name, type -> Refrigeration, Frozen, Room temperature.
@@ -312,6 +310,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                                 ? _frozenAlarmType
                                 : _roomTempAlarmType,
                         onChanged: (value) {
+                          alarmIdx == type ?
                           setState(() {
                             if (type == 0) {
                               _isRefShelf = true;
@@ -323,7 +322,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                               _isRTShelf = true;
                               _roomTempAlarmType = value;
                             }
-                          });
+                          // ignore: unnecessary_statements
+                          }) : null;
                         },
                       ),
                       Text(
@@ -362,6 +362,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                                   ? _frozenAlarmType
                                   : _roomTempAlarmType,
                           onChanged: (value) {
+                            alarmIdx == type?
                             setState(() {
                               if (type == 0) {
                                 _isRefShelf = false;
@@ -373,7 +374,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                                 _isRTShelf = false;
                                 _roomTempAlarmType = value;
                               }
-                            });
+                            // ignore: unnecessary_statements
+                            }): null;
                           },
                         ),
                         Text(
@@ -399,16 +401,22 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                 ),
                 child: OutlinedButton(
                   onPressed: () {
-                    showCupertinoPicker(50, type);
+                    // ignore: unnecessary_statements
+                    alarmIdx == type ? showCupertinoPicker(50, type) : null;
                   },
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(
+                        alarmIdx != type ? MangoDisabledColorLight : null
+                    ),
+                  ),
                   child: Row(
                     children: [
                       Expanded(
                           child: type == 0
                               ? Text('$_refrigerationAlarm일 전')
                               : type == 1
-                              ? Text('$_frozenAlarm일 전')
-                              : Text('$_roomTempAlarm일 전')),
+                                  ? Text('$_frozenAlarm일 전')
+                                  : Text('$_roomTempAlarm일 전')),
                       Icon(Icons.arrow_drop_down)
                     ],
                   ),
