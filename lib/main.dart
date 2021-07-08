@@ -16,7 +16,7 @@ import 'color.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Add this
-  // await Firebase.initializeApp();
+  await Firebase.initializeApp();
   runApp(MangoApp());
 
   //
@@ -29,5 +29,4 @@ void main() async {
   //     print('Message also contained a notification: ${message.notification}');
   //   }
   // });
-
 }
