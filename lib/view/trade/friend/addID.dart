@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:mangodevelopment/view/trade/friend/friendList.dart';
+import 'package:mangodevelopment/viewModel/friendListViewModel.dart';
 
 class AddIDPage extends StatefulWidget {
   @override
@@ -86,15 +89,44 @@ class _AddIDPageState extends State<AddIDPage> {
                                       title: Text(data['name']),
                                       trailing: IconButton(
                                           onPressed: () {
-                                            // TODO: 1. check if uid is already in the friend list
-                                            // TODO: 2. if not UPDATE friend list
-                                            print('add to friend list');
-                                            addFriend(
-                                                // TODO: use current user info
-                                                '123',
-                                                '정현',
-                                                data['uid'],
-                                                data['name']);
+                                            Get.dialog(
+                                              AlertDialog(
+                                                title: const Text('친구 등록'),
+                                                content: Text(data['name'] +
+                                                    '님을 친구로 추가하시겠습니까?'),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Get.back();
+                                                    },
+                                                    child: const Text('취소'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      // TODO: 1. check if uid is already in the friend list
+                                                      // TODO: 2. if not UPDATE friend list
+                                                      print(
+                                                          'add to friend list');
+                                                      FriendListViewModel().addFriend(
+                                                          // TODO: use current user info
+                                                          '123',
+                                                          '정현',
+                                                          data['uid'],
+                                                          data['name']);
+                                                      // TODO: get named until 사용 알아보기
+                                                      Get.back();
+                                                      Get.back();
+                                                      Get.back();
+                                                      // Get.offAndToNamed(
+                                                      //     'FriendList');
+                                                      // Get.offNamed(
+                                                      //     'FriendList');
+                                                    },
+                                                    child: const Text('확인'),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
                                           },
                                           icon: Icon(Icons.add_circle_outline)),
                                     ),
@@ -108,36 +140,4 @@ class _AddIDPageState extends State<AddIDPage> {
         ));
   }
 
-  void addFriend(String curr_uid, String curr_name, String uid, String name) {
-    if (curr_uid == uid) {
-      print('자기를 추가할 수 없습니다');
-      // TODO: alert 창 띄우기
-      return;
-    }
-    mango_dev
-        .collection('temp_user')
-        .doc(curr_uid)
-        .collection('FriendList')
-        .add({
-      'name': name,
-      'uid': uid,
-    }).then((_) {
-      print('success');
-    }).catchError((_) {
-      print('error');
-    });
-
-    mango_dev
-        .collection('temp_user')
-        .doc(uid)
-        .collection('FriendList')
-        .add({
-          'name': curr_name,
-          'uid': curr_uid,
-        })
-        .then((value) => print('success2'))
-        .catchError((_) {
-          print('error2');
-        });
-  }
 }

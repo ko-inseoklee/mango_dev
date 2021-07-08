@@ -18,7 +18,11 @@ class _LandingState extends State<Landing> {
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
+
+    // if (Platform.isIOS) iOS_Permission();
+
   bool isSecondPage = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -27,28 +31,27 @@ class _LandingState extends State<Landing> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    return AddUserInfoPage();
 
-    // return authController.user == null ? LogInPage(
-    //   title: 'hi',
-    // ): authController.exitUser.value ? FutureBuilder(
-    //     future: authController.hasData(authController.user!.uid),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasData == false) {
-    //         return Center(
-    //           child: CircularProgressIndicator(),
-    //         );
-    //       } else if (snapshot.data == false) {
-    //         // return Center(
-    //         //   child: TextButton(child: Text('sign out'),onPressed: () => authController.signOut().then((value) => Get.to(Landing()),))
-    //         // );
-    //         return AddUserInfoPage();
-    //       } else {
-    //         return HomePage(title: 'hi');
-    //       }
-    //     }) : LogInPage(
-    // title: 'hi',
-    // );
+    return authController.user == null ? LogInPage(
+      title: 'hi',
+    ): authController.exitUser.value ? FutureBuilder(
+        future: authController.hasData(authController.user!.uid),
+        builder: (context, snapshot) {
+          if (snapshot.hasData == false) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.data == false) {
+            // return Center(
+            //   child: TextButton(child: Text('sign out'),onPressed: () => authController.signOut().then((value) => Get.to(Landing()),))
+            // );
+            return AddUserInfoPage();
+          } else {
+            return HomePage(title: 'hi');
+          }
+        }) : LogInPage(
+    title: 'hi',
+    );
 
       /*This is for test else*/
       // return FutureBuilder(
@@ -103,6 +106,7 @@ class _LandingState extends State<Landing> {
       //         ),
       //       );
       //     });
+
 
     // }
   }

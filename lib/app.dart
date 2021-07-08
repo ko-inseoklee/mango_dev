@@ -1,10 +1,11 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'color.dart';
 import 'landing.dart';
-
+import 'view/trade/friend/friendList.dart';
 
 var deviceWidth = 411.0;
 var deviceHeight = 820.0;
@@ -13,16 +14,54 @@ var prototypeHeight = 812.0;
 
 var platform = true;
 
-
-class MangoApp extends StatelessWidget {
+class MangoApp extends StatefulWidget {
   const MangoApp({Key? key}) : super(key: key);
+
+  @override
+  _MangoAppState createState() => _MangoAppState();
+}
+
+class _MangoAppState extends State<MangoApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    //give message of notification on which user taps
+    //open app from terminated state
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        final route2 = message.data['route'];
+        Get.to(route2);
+      }
+    });
+
+    //opened in foreground
+    FirebaseMessaging.onMessage.listen((message) {
+      if (message.notification != null) {
+        print(message.notification!.body);
+        print(message.notification!.title);
+      }
+    });
+
+    //opened in background
+    //when user taps on the notification
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      if (message.notification != null) {
+        //print route from message
+        final route = message.data['route'];
+        Get.to(route);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
 
     return GetMaterialApp(
-        home: Landing(),
+      home: Landing(),
       theme: _mangoTheme,
+      getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
     );
   }
 }

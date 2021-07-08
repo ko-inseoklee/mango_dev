@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mangodevelopment/view/market/friend/friendList.dart';
+import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
 
 class TradePage extends StatefulWidget {
@@ -16,15 +16,25 @@ class _TradePageState extends State<TradePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.person),
+          onPressed: () {
+            Get.to(FriendListPage(), transition: Transition.topLevel);
+          },
+        ),
         title: Text(widget.title),
         centerTitle: true,
       ),
       body: Center(
-        child: InkWell(
-            onTap: () {
-              Get.to(FriendListPage());
-            },
-            child: Text('거래 페이지')),
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Image(
+            image: AssetImage('images/login/logo.png'),
+          ),
+          Text(
+            '친구를 추가해서 \n거래를 시작해보세요',
+            textAlign: TextAlign.center,
+          ),
+        ]),
       ),
     );
   }
