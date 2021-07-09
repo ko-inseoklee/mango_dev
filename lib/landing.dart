@@ -2,7 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/login/addUserInfo.dart';
+import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import 'app.dart';
 import 'view/home.dart';
@@ -14,7 +16,8 @@ class Landing extends StatefulWidget {
 }
 
 class _LandingState extends State<Landing> {
-  late Authentication authController;
+  Authentication authController = Get.put(Authentication());
+  UserViewModel userViewModelController = Get.put(UserViewModel());
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
@@ -26,7 +29,6 @@ class _LandingState extends State<Landing> {
 
   @override
   Widget build(BuildContext context) {
-    authController = Get.put(Authentication());
 
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
@@ -42,11 +44,9 @@ class _LandingState extends State<Landing> {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.data == false) {
-            // return Center(
-            //   child: TextButton(child: Text('sign out'),onPressed: () => authController.signOut().then((value) => Get.to(Landing()),))
-            // );
             return AddUserInfoPage();
           } else {
+            userViewModelController.updateUserInfo(authController.user!.uid);
             return HomePage(title: 'hi');
           }
         }) : LogInPage(
