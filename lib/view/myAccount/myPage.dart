@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/view/myAccount/myPageEdit.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -44,8 +45,8 @@ class _MyPageState extends State<MyPage> {
                           0,
                           5 * deviceWidth / prototypeWidth),
                       child: Container(
-                        width: 60 * deviceWidth / prototypeWidth,
-                        height: 60 * deviceWidth / prototypeWidth,
+                        width: 90 * deviceWidth / prototypeWidth,
+                        height: 90 * deviceWidth / prototypeWidth,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
@@ -75,7 +76,9 @@ class _MyPageState extends State<MyPage> {
                       ),
                     ),
                     //TODO. 수정페이지로 이동
-                    IconButton(onPressed: (){}, icon: Icon(Icons.arrow_forward_ios_sharp))
+                    IconButton(onPressed: (){
+                      Get.to(MyPageEdit());
+                    }, icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),
               ),
