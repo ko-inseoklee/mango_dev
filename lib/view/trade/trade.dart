@@ -19,7 +19,7 @@ class _TradePageState extends State<TradePage> {
         leading: IconButton(
           icon: Icon(Icons.person),
           onPressed: () {
-            Get.to(FriendListPage(), transition: Transition.topLevel);
+            Get.to(FriendListPage());
           },
         ),
         title: Text(widget.title),

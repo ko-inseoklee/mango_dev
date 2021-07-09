@@ -7,6 +7,7 @@ class UserViewModel extends GetxController{
   var user = User.init(userID: '', creationTime: DateTime.now(), refrigeratorID: '', refrigerationAlarm: 0, isRefShelf: false, frozenAlarm: 0, isFroShelf: false, roomTempAlarm: 0, isRTShelf: false, lastSignIn: DateTime.now(), profileImageReference: '', userName: '').obs;
 
   String get userID => this.user.value.userID;
+  String get userName => this.user.value.userName;
 
   set refAlarm(int value){
     this.user.value.refrigerationAlarm = value;
