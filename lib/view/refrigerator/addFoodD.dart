@@ -28,6 +28,36 @@ class _AddFoodDState extends State<AddFoodD> {
 
   int tempNum = 0;
 
+  List<String> categories = [
+    '과일',
+    '채소',
+    '우유/유제품',
+    '수산물',
+    '곡물',
+    '조미료/양념',
+    '육류',
+    '냉장/냉동식품',
+    '베이커리',
+    '김치/반찬',
+    '즉석식품',
+    '물/음료'
+  ];
+
+  List<String> categoryImg = [
+    'Fruits.png',
+    'Vegetables.png',
+    'MilkNDairyProducts.png',
+    'AquaticProducts.png',
+    'Grains.png',
+    'Seasonings.png',
+    'MeatEggs.png',
+    'RefrigeratedFrozenFoods.png',
+    'Bakery.png',
+    'KimchiSideDishes.png',
+    'RamenInstantFoods.png',
+    'WaterCoffeDrinks.png'
+  ];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -50,6 +80,7 @@ class _AddFoodDState extends State<AddFoodD> {
         isLeading: true,
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
@@ -80,41 +111,19 @@ class _AddFoodDState extends State<AddFoodD> {
               ],
             ),
           ),
+          Container(
+            height: 8.0 * deviceHeight / prototypeHeight,
+            decoration: BoxDecoration(
+                color: MangoBehindColor,
+                border:
+                    Border(top: BorderSide(color: MangoDisabledColorLight))),
+          ),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InfoBody(currentIdx),
-                foods.length > 1
-                    ? Container(
-                        alignment: Alignment.centerLeft,
-                        width: deviceWidth,
-                        padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                        decoration: BoxDecoration(
-                            border: Border.symmetric(
-                                horizontal: BorderSide(
-                                    color: MangoDisabledColorLight))),
-                        child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                deleteChip(currentIdx);
-                              });
-                            },
-                            child: Text(
-                              '품목 삭제',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2!
-                                  .copyWith(color: Red500),
-                            )),
-                      )
-                    : Text(' '),
-              ],
-            ),
+            child: foods.length != 0 ? InfoBody(currentIdx) : Text(''),
           ),
           Container(
             margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-            height: 70 * (deviceHeight / prototypeHeight),
+            height: 60 * (deviceHeight / prototypeHeight),
             width: deviceWidth,
             decoration: BoxDecoration(
                 color: Orange400, borderRadius: BorderRadius.circular(10)),
@@ -139,8 +148,9 @@ class _AddFoodDState extends State<AddFoodD> {
         status: true,
         name: '-',
         num: 0,
-        category: '',
+        category: '-',
         method: 0,
+        displayType: true,
         shelfLife: DateTime.now(),
         registrationDay: DateTime.now());
     foods.add(temp);
@@ -158,7 +168,6 @@ class _AddFoodDState extends State<AddFoodD> {
   void deleteChip(int idx) {
     if (currentIdx != 0 && foods.length != 0) {
       currentIdx--;
-      setFieldValue(currentIdx);
     }
     maxIdx--;
 
@@ -167,6 +176,7 @@ class _AddFoodDState extends State<AddFoodD> {
     for (int i = 0; i < foods.length; i++) {
       foods[i].idx = i;
     }
+    setFieldValue(currentIdx);
   }
 
   void setFieldValue(int idx) {
@@ -252,15 +262,8 @@ class _AddFoodDState extends State<AddFoodD> {
 
   //TODO: parameter has to be changed token of food name.
   Widget InfoBody(int idx) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return ListView(
       children: [
-        Container(
-          height: 8.0 * deviceHeight / prototypeHeight,
-          decoration: BoxDecoration(
-              color: MangoBehindColor,
-              border: Border(top: BorderSide(color: MangoDisabledColorLight))),
-        ),
         Container(
             width: deviceWidth,
             padding: EdgeInsets.fromLTRB(
@@ -291,8 +294,20 @@ class _AddFoodDState extends State<AddFoodD> {
                       height: 140 * (deviceWidth / prototypeWidth),
                       child: Container(
                         decoration: BoxDecoration(
-                            color: MangoDisabledColor,
-                            borderRadius: BorderRadius.circular(100)),
+                            color: foods[currentIdx].category == '-'
+                                ? MangoDisabledColorLight
+                                : MangoWhite,
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(
+                                color: foods[currentIdx].category == '-'
+                                    ? MangoDisabledColorLight
+                                    : Orange400)),
+                        child: foods[currentIdx].category == '-'
+                            ? Text('')
+                            : Image.asset(
+                                'images/category/${categoryImg[translateName(foods[currentIdx].category)]}',
+                                scale: 0.8,
+                              ),
                       ),
                     ),
                     Container(
@@ -457,8 +472,10 @@ class _AddFoodDState extends State<AddFoodD> {
                                                                         .all(
                                                                             4.0),
                                                                 title: Center(
-                                                                  child: Text(index
-                                                                      .toString()),
+                                                                  child: Text(
+                                                                      (index +
+                                                                              1)
+                                                                          .toString()),
                                                                 ),
                                                                 onTap: () {
                                                                   setState(() {
@@ -516,12 +533,68 @@ class _AddFoodDState extends State<AddFoodD> {
                                       alignment: Alignment.center,
                                       width: 100 * deviceWidth / prototypeWidth,
                                       decoration: BoxDecoration(),
-                                      child: Text('-')),
+                                      child: Text(foods[idx].category)),
                                   Container(
                                     width: 25,
                                     child: TextButton(
                                       onPressed: () {
-                                        setState(() {});
+                                        showModalBottomSheet(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(40),
+                                                    topRight:
+                                                        Radius.circular(40))),
+                                            context: context,
+                                            builder: (context) {
+                                              return Container(
+                                                  height: 400 *
+                                                      (deviceHeight /
+                                                          prototypeHeight),
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                0, 10, 0, 20),
+                                                        width: 40,
+                                                        height: 5,
+                                                        decoration: BoxDecoration(
+                                                            color:
+                                                                MangoDisabledColor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5)),
+                                                      ),
+                                                      Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                bottom: 15),
+                                                        child: Text(
+                                                          '카테고리',
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .bodyText1!
+                                                              .copyWith(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w700),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        height: 230,
+                                                        child: GridView.count(
+                                                            childAspectRatio:
+                                                                107 / 49,
+                                                            crossAxisCount: 3,
+                                                            children:
+                                                                _buildGridCard()),
+                                                      )
+                                                    ],
+                                                  ));
+                                            });
                                       },
                                       child: Icon(
                                         Icons.arrow_drop_down,
@@ -545,26 +618,274 @@ class _AddFoodDState extends State<AddFoodD> {
               12 * deviceWidth / prototypeWidth,
               0,
               12 * deviceWidth / prototypeWidth),
-          child: Text('보관방법'),
+          child: Text('보관방법',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(color: MangoDisabledColor)),
         ),
         Container(
-          width: deviceWidth,
-          padding: EdgeInsets.fromLTRB(
-              12 * deviceWidth / prototypeWidth,
-              12 * deviceWidth / prototypeWidth,
-              0,
-              12 * deviceWidth / prototypeWidth),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                margin: EdgeInsets.fromLTRB(
+                    16.0 * deviceWidth / prototypeWidth,
+                    8.0 * deviceWidth / prototypeWidth,
+                    0,
+                    8.0 * deviceWidth / prototypeWidth),
+                height: 60,
+                width: deviceWidth / 3 - 20,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: foods[currentIdx].method == 0
+                            ? Orange400
+                            : MangoDisabledColorLight),
+                    borderRadius:
+                        BorderRadius.horizontal(left: Radius.circular(10))),
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      foods[currentIdx].method = 0;
+                    });
+                  },
+                  child: Text(
+                    '냉장',
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        color: foods[currentIdx].method == 0
+                            ? Orange400
+                            : MangoBlack),
+                  ),
+                ),
+              ),
+              Container(
+                height: 60,
+                width: deviceWidth / 3 - 20,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: foods[currentIdx].method == 1
+                            ? Orange400
+                            : MangoDisabledColorLight)),
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      foods[currentIdx].method = 1;
+                    });
+                  },
+                  child: Text(
+                    '냉동',
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        color: foods[currentIdx].method == 1
+                            ? Orange400
+                            : MangoBlack),
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(
+                    0,
+                    8.0 * deviceWidth / prototypeWidth,
+                    16.0 * deviceWidth / prototypeWidth,
+                    8.0 * deviceWidth / prototypeWidth),
+                height: 60,
+                width: deviceWidth / 3 - 20,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: foods[currentIdx].method == 2
+                            ? Orange400
+                            : MangoDisabledColorLight),
+                    borderRadius:
+                        BorderRadius.horizontal(right: Radius.circular(10))),
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      foods[currentIdx].method = 2;
+                    });
+                  },
+                  child: Text(
+                    '실온',
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        color: foods[currentIdx].method == 2
+                            ? Orange400
+                            : MangoBlack),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Row(
+          children: [
+            Container(
+              padding: EdgeInsets.fromLTRB(
+                  12 * deviceWidth / prototypeWidth,
+                  12 * deviceWidth / prototypeWidth,
+                  0,
+                  12 * deviceWidth / prototypeWidth),
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: MangoDisabledColorLight))),
+              child: Text('표시기준',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1!
+                      .copyWith(color: MangoDisabledColor)),
+            ),
+            Spacer(),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  foods[currentIdx].displayType = true;
+                });
+              },
+              child: Row(children: [
+                Icon(
+                    foods[currentIdx].displayType
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_off,
+                    color: foods[currentIdx].displayType
+                        ? Orange400
+                        : MangoDisabledColor),
+                SizedBox(
+                  width: 2.0,
+                ),
+                Text(
+                  '유통기한',
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      color: foods[currentIdx].displayType
+                          ? Orange400
+                          : MangoDisabledColor),
+                )
+              ]),
+            ),
+            TextButton(
+              onPressed: () {
+                setState(() {
+                  foods[currentIdx].displayType = false;
+                });
+              },
+              child: Row(children: [
+                Icon(
+                    !foods[currentIdx].displayType
+                        ? Icons.radio_button_checked
+                        : Icons.radio_button_off,
+                    color: !foods[currentIdx].displayType
+                        ? Orange400
+                        : MangoDisabledColor),
+                SizedBox(
+                  width: 2.0,
+                ),
+                Text('구매일',
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        color: !foods[currentIdx].displayType
+                            ? Orange400
+                            : MangoDisabledColor))
+              ]),
+            ),
+            Container(
+              width: 8.0 * deviceWidth / prototypeWidth,
+            )
+          ],
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(20, 0, 20, 20),
+          height: 55 * (deviceHeight / prototypeHeight),
           decoration: BoxDecoration(
-              border:
-                  Border(bottom: BorderSide(color: MangoDisabledColorLight))),
-          child: Text('표시기준'),
+              border: Border.all(color: MangoDisabledColorLight),
+              borderRadius: BorderRadius.circular(5)),
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 8.0),
+                child: Text(foods[currentIdx].displayType ? '유통기한' : "구매일"),
+              ),
+              Spacer(),
+              Text(foods[currentIdx].displayType
+                  ? '${foods[currentIdx].shelfLife.year.toString()}.${foods[currentIdx].shelfLife.month.toString()}.${foods[currentIdx].shelfLife.day.toString()}'
+                  : '${foods[currentIdx].registrationDay.year.toString()}.${foods[currentIdx].registrationDay.month.toString()}.${foods[currentIdx].registrationDay.day.toString()}'),
+              TextButton(
+                onPressed: () {
+                  showMaterialDatePicker(
+                      context: context,
+                      title:
+                          foods[currentIdx].displayType ? '유통기한 설정' : "구매일 설정",
+                      firstDate: DateTime.now().subtract(Duration(days: 180)),
+                      lastDate: DateTime.now().add(Duration(days: 1830)),
+                      selectedDate: DateTime.now(),
+                      onChanged: (value) {
+                        setState(() {
+                          foods[currentIdx].shelfLife = value;
+                        });
+                      });
+                },
+                child: Icon(
+                  Icons.arrow_drop_down,
+                  color: MangoDisabledColor,
+                ),
+              )
+            ],
+          ),
         ),
         Container(
           height: 8.0 * deviceHeight / prototypeHeight,
           decoration: BoxDecoration(color: MangoBehindColor),
         ),
+        foods.length > 1
+            ? Container(
+                alignment: Alignment.centerLeft,
+                width: deviceWidth,
+                padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                decoration: BoxDecoration(
+                    border: Border.symmetric(
+                        horizontal:
+                            BorderSide(color: MangoDisabledColorLight))),
+                child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        deleteChip(currentIdx);
+                      });
+                    },
+                    child: Text(
+                      '품목 삭제',
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(color: Red500),
+                    )),
+              )
+            : Text(' '),
       ],
     );
+  }
+
+  List<Widget> _buildGridCard() {
+    return categories.map((e) => _buildCard(category: e)).toList();
+  }
+
+  Widget _buildCard({required String category}) {
+    return Container(
+      margin: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: MangoDisabledColorLight)),
+      alignment: Alignment.center,
+      child: TextButton(
+        child: Text(
+          category,
+          style: Theme.of(context).textTheme.subtitle2,
+        ),
+        onPressed: () {
+          setState(() {
+            foods[currentIdx].category = category;
+            Get.back();
+          });
+        },
+      ),
+    );
+  }
+
+  int translateName(String category) {
+    return categories.indexOf(category);
   }
 }
 
@@ -575,6 +896,7 @@ class TemporaryFood {
   int number;
   String category;
   int method;
+  bool displayType;
   DateTime shelfLife;
   DateTime registrationDay;
 
@@ -585,6 +907,7 @@ class TemporaryFood {
       required int num,
       required String category,
       required int method,
+      required bool displayType,
       required DateTime shelfLife,
       required DateTime registrationDay})
       : idx = index,
@@ -593,6 +916,7 @@ class TemporaryFood {
         number = num,
         category = category,
         method = method,
+        displayType = displayType,
         shelfLife = shelfLife,
         registrationDay = registrationDay;
   String get getName => name;
