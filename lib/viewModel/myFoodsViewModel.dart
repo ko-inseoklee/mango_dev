@@ -49,4 +49,17 @@ class MyFoodsViewModel extends GetxController {
       });
     }
   }
+
+  List<TemporaryFood> sortByStoreType(
+      List<TemporaryFood> foods, int storeType) {
+    List<TemporaryFood> _tempFood = [];
+
+    foods.forEach((element) {
+      if (element.method == storeType) {
+        _tempFood.add(element);
+      }
+    });
+
+    return _tempFood;
+  }
 }
