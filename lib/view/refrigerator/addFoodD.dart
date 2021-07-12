@@ -60,6 +60,9 @@ class _AddFoodDState extends State<AddFoodD> {
     'WaterCoffeDrinks.png'
   ];
 
+  DateTime sDay = DateTime.now();
+  DateTime rDay = DateTime.now();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -71,11 +74,7 @@ class _AddFoodDState extends State<AddFoodD> {
   Widget build(BuildContext context) {
     _tempUserViewModel = Get.find();
 
-    print(_tempUserViewModel.user.value.refID);
     maxIdx = foods.length;
-    // foods.clear();
-    // currentIdx = 0;
-    // maxIdx = 0;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -159,8 +158,8 @@ class _AddFoodDState extends State<AddFoodD> {
         category: '-',
         method: 0,
         displayType: true,
-        shelfLife: DateTime.now(),
-        registrationDay: DateTime.now());
+        shelfLife: convertDate(DateTime.now()),
+        registrationDay: convertDate(DateTime.now()));
     foods.add(temp);
 
     currentIdx = maxIdx;
@@ -808,9 +807,11 @@ class _AddFoodDState extends State<AddFoodD> {
                 child: Text(foods[currentIdx].displayType ? '유통기한' : "구매일"),
               ),
               Spacer(),
-              Text(foods[currentIdx].displayType
-                  ? '${foods[currentIdx].shelfLife.year.toString()}.${foods[currentIdx].shelfLife.month.toString()}.${foods[currentIdx].shelfLife.day.toString()}'
-                  : '${foods[currentIdx].registrationDay.year.toString()}.${foods[currentIdx].registrationDay.month.toString()}.${foods[currentIdx].registrationDay.day.toString()}'),
+              Text(
+                foods[currentIdx].displayType
+                    ? foods[currentIdx].shelfLife
+                    : foods[currentIdx].registrationDay,
+              ),
               TextButton(
                 onPressed: () {
                   showMaterialDatePicker(
@@ -819,10 +820,17 @@ class _AddFoodDState extends State<AddFoodD> {
                           foods[currentIdx].displayType ? '유통기한 설정' : "구매일 설정",
                       firstDate: DateTime.now().subtract(Duration(days: 180)),
                       lastDate: DateTime.now().add(Duration(days: 1830)),
-                      selectedDate: DateTime.now(),
+                      selectedDate: foods[currentIdx].displayType ? sDay : rDay,
                       onChanged: (value) {
                         setState(() {
-                          foods[currentIdx].shelfLife = value;
+                          if (foods[currentIdx].displayType) {
+                            sDay = value;
+                            foods[currentIdx].shelfLife = convertDate(sDay);
+                          } else {
+                            rDay = value;
+                            foods[currentIdx].registrationDay =
+                                convertDate(rDay);
+                          }
                         });
                       });
                 },
@@ -895,6 +903,10 @@ class _AddFoodDState extends State<AddFoodD> {
   int translateName(String category) {
     return categories.indexOf(category);
   }
+
+  String convertDate(DateTime time) {
+    return '${time.year}.${time.month}.${time.day}';
+  }
 }
 
 class TemporaryFood {
@@ -905,8 +917,8 @@ class TemporaryFood {
   String category;
   int method;
   bool displayType;
-  DateTime shelfLife;
-  DateTime registrationDay;
+  String shelfLife;
+  String registrationDay;
 
   TemporaryFood(
       {required int index,
@@ -916,8 +928,8 @@ class TemporaryFood {
       required String category,
       required int method,
       required bool displayType,
-      required DateTime shelfLife,
-      required DateTime registrationDay})
+      required String shelfLife,
+      required String registrationDay})
       : idx = index,
         status = status,
         name = name,
