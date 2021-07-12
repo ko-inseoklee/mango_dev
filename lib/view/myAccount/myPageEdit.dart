@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -8,6 +9,7 @@ import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../../app.dart';
 import '../../color.dart';
+import 'myPage.dart';
 
 class MyPageEdit extends StatefulWidget {
   @override
@@ -22,12 +24,29 @@ class _MyPageEditState extends State<MyPageEdit> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
 
+  late final _image;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('내 정보 수정'),
         centerTitle: true,
+        leading: IconButton(
+          icon: Text('취소'), onPressed: () {
+            Get.off(MyPage(title: '',));
+        },
+        ),
+        actions: [
+          IconButton(
+            icon: Text('저장'), onPressed: () async{
+              // ignore: unnecessary_statements
+              _nameController.text != "" ? userViewModelController.userName = "${_nameController.text}" : null;
+              userViewModelController.updateUserInfo(Get.find<Authentication>().user!.uid);
+              await Get.off(MyPage(title: ''));
+          },
+          ),
+        ],
       ),
       backgroundColor: MangoWhite,
       body: Center(
@@ -52,7 +71,8 @@ class _MyPageEditState extends State<MyPageEdit> {
                                 .user.value.profileImageReference ==
                                 '-1'
                                 ? AssetImage('images/default_profile.png')
-                                : AssetImage('images/default_profile.png'),
+                                : //AssetImage('images/default_profile.png'),
+                            AssetImage('${Image.file(_image)}'),
                           ),
                         ),
                       ),
@@ -61,7 +81,10 @@ class _MyPageEditState extends State<MyPageEdit> {
                         top: 50 * deviceWidth / prototypeWidth,
                         child: ElevatedButton(
                           //TODO. onPressed => 수정
-                          onPressed: () {},
+                          onPressed: () {
+                            getGalleryImage();
+                            userViewModelController.user.value.profileImageReference = '0'; //TODO. change needed!
+                          },
                           child: Icon(Icons.camera_alt, color: Colors.white),
                           style: ElevatedButton.styleFrom(
                             shape: CircleBorder(),
@@ -73,7 +96,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                   Spacer(flex: 1,),
                   Row(
                     children: [
-                      Text('이메일'),
+                      Text('이메일    '),
                       Text('${_auth.user!.email}'),
                     ],
                   ),
@@ -134,6 +157,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                   settingMenu(
                     menuName: "로그아웃",
                     onTap: () {
+                    //  _auth.signOut();
                       comingSoon(context);
                     },
                     trailingWidth: 10,
@@ -154,5 +178,13 @@ class _MyPageEditState extends State<MyPageEdit> {
         ),
       ),
     );
+  }
+
+  getGalleryImage() async{
+    ImagePicker imagePicker = ImagePicker();
+    var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+    setState(() {
+      _image = pickedFile;
+    });
   }
 }

@@ -114,6 +114,7 @@ class LogInPage extends StatelessWidget {
               ),
               onPressed: () {
                 Get.find<Authentication>().googleLogin().then((value) => Get.to(AddUserInfoPage()));
+                //Get.find<Authentication>().googleLogin();
               },
             ),
           ),

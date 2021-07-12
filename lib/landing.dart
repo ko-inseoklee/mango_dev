@@ -46,7 +46,7 @@ class _LandingState extends State<Landing> {
           } else if (snapshot.data == false) {
             return AddUserInfoPage();
           } else {
-            userViewModelController.updateUserInfo(authController.user!.uid);
+            userViewModelController.setUserInfo(authController.user!.uid);
             return HomePage(title: 'hi');
           }
         }) : LogInPage(

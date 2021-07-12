@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
+
+  var isImageLoading = false.obs;
+  var imageURL = '';
+
   var user = User.init(
           userID: '',
           creationTime: DateTime.now(),
@@ -77,7 +82,19 @@ class UserViewModel extends GetxController {
         .then((value) => print("delete success"));
   }
 
+  //update Firebase User info from 'User' class (local) Data
   Future<void> updateUserInfo(String uid) async {
+    await FirebaseFirestore.instance.collection('user').doc(uid).update({
+      'userName': this.user.value.userName,
+      'profileImageReference': this.user.value.profileImageReference,
+      'refrigerationAlarm': this.user.value.refrigerationAlarm,
+      'frozenAlarm': this.user.value.frozenAlarm,
+      'roomTempAlarm': this.user.value.roomTempAlarm
+    });
+  }
+
+  //Making 'User' class (local) from Firebase Data
+  Future<void> setUserInfo(String uid) async {
     await FirebaseFirestore.instance
         .collection('user')
         .doc(uid)
@@ -125,4 +142,16 @@ class UserViewModel extends GetxController {
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
   }
+
+  // void uploadImage(ImageSource imageSource) async{
+  //   try{
+  //     final pickedFile = await ImagePicker().getImage(source: imageSource);
+  //     isImageLoading(true);
+  //     if(pickedFile != null) {
+  //       var response = await
+  //     }
+  //   } finally{
+  //     isImageLoading(false);
+  //   }
+  // }
 }
