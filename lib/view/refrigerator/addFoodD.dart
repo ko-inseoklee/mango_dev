@@ -3,6 +3,8 @@ import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/viewModel/myFoods.dart';
+import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
 
 import '../../color.dart';
 
@@ -15,8 +17,8 @@ class AddFoodD extends StatefulWidget {
 }
 
 class _AddFoodDState extends State<AddFoodD> {
+  late TempUserViewModel _tempUserViewModel;
   late final GlobalKey<ScaffoldState> _key;
-  late PersistentBottomSheetController _controller;
 
   List<TemporaryFood> foods = [];
 
@@ -67,6 +69,9 @@ class _AddFoodDState extends State<AddFoodD> {
 
   @override
   Widget build(BuildContext context) {
+    _tempUserViewModel = Get.find();
+
+    print(_tempUserViewModel.user.value.refID);
     maxIdx = foods.length;
     // foods.clear();
     // currentIdx = 0;
@@ -128,8 +133,11 @@ class _AddFoodDState extends State<AddFoodD> {
             decoration: BoxDecoration(
                 color: Orange400, borderRadius: BorderRadius.circular(10)),
             child: TextButton(
-              onPressed: () {
-                print('등록완료');
+              onPressed: () async {
+                await myFoods()
+                    .addFoods('123456', foods)
+                    .then((value) => print('ok'));
+                await myFoods().loadFoods('123456');
               },
               child: Text(
                 '등록',

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import '../widget/appBar.dart';
 
 class RefrigeratorPage extends StatefulWidget {
@@ -14,6 +16,8 @@ class RefrigeratorPage extends StatefulWidget {
 
 class _RefrigeratorPageState extends State<RefrigeratorPage>
     with SingleTickerProviderStateMixin {
+  late TempUserViewModel currentUser;
+
   TabController? _tabController;
 
   int tabIdx = 0;
@@ -28,6 +32,12 @@ class _RefrigeratorPageState extends State<RefrigeratorPage>
 
   @override
   Widget build(BuildContext context) {
+    currentUser = Get.put(TempUserViewModel());
+
+    currentUser.FindTempUserSnapshot('123');
+
+    print('current user ID = ${currentUser.user.value.refID}');
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -56,7 +66,15 @@ class _RefrigeratorPageState extends State<RefrigeratorPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    child: Text('냉장고가 비었습니다.'),
+                    child: TextButton(
+                      onPressed: () async {
+                        print(currentUser.user.value.refID);
+                        //TODO: shouldn't be constant - 123
+                        await currentUser.FindTempUserSnapshot('123').then(
+                            (value) => print(currentUser.user.value.refID));
+                      },
+                      child: Text('냉장고가 비었습니다.'),
+                    ),
                   )
                 ],
               ))
