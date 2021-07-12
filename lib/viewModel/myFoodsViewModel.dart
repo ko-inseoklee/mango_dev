@@ -18,24 +18,12 @@ class MyFoodsViewModel extends GetxController {
   }
 
   Future<List<TemporaryFood>> loadFoods(String refID) async {
-    // var data = FirebaseFirestore.instance
-    //     .collection('refrigerator')
-    //     .doc(refID)
-    //     .collection('foods');
-    //
-    // await data.get().then((value) {
-    //   print(value);
-    //   value.docs.map((e) {
-    //     print(e.id);
-    //     foods.add(e.data());
-    //   });
-    // });
-
     var data = await FirebaseFirestore.instance
         .collection('refrigerator')
         .doc(refID)
         .collection('foods')
         .get();
+
     data.docs.forEach((element) {
       this.foods!.add(TemporaryFood.fromSnapshot(element.data()));
     });

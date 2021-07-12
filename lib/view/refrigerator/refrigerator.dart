@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
@@ -55,31 +56,21 @@ class _RefrigeratorPageState extends State<RefrigeratorPage>
                   child: TabBar(
                       controller: _tabController,
                       indicatorColor: Orange400,
-                      onTap: (value) {
+                      onTap: (value) async {
+                        await _refrigerator.loadFoods();
+                        print(
+                            _refrigerator.myFoodsViewModel.value.foods!.length);
                         setState(() {
                           tabIdx = value;
                         });
                       },
                       tabs: showTab())),
               Expanded(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    child: TextButton(
-                      onPressed: () async {
-                        // MyFoodsViewModel().loadFoods('123456');
-                        await _refrigerator.loadFoods();
-                        for (TemporaryFood food
-                            in _refrigerator.myFoodsViewModel.value.foods!) {
-                          print(food.name);
-                        }
-                      },
-                      child: Text('냉장고가 비었습니다.'),
-                    ),
-                  )
-                ],
-              ))
+                  child: tabIdx == 0
+                      ? ShowInOnce()
+                      : tabIdx == 1
+                          ? ShowInCategories()
+                          : ShowInShelfLife())
             ],
           ),
         ),
@@ -109,5 +100,67 @@ class _RefrigeratorPageState extends State<RefrigeratorPage>
               .subtitle2!
               .copyWith(color: tabIdx == 2 ? Orange400 : MangoDisabledColor)),
     ];
+  }
+}
+
+class ShowInOnce extends StatelessWidget {
+  late RefrigeratorViewModel _refrigerator;
+
+  ShowInOnce({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    _refrigerator = Get.find();
+
+    print(_refrigerator.myFoodsViewModel.value.foods!.length);
+
+    return Container(
+        padding: EdgeInsets.all(8.0),
+        child: GridView.count(
+          childAspectRatio: 50 / 60,
+          crossAxisCount: 3,
+          children:
+              _buildFoodCards(_refrigerator.myFoodsViewModel.value.foods!),
+        ));
+  }
+
+  Widget _buildFoodCard(TemporaryFood food) {
+    return Card(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+              'images/category/${categoryImg[translateToKo(food.category)]}'),
+          Text(food.name),
+          Text(food.displayType
+              ? '${food.shelfLife}까지'
+              : '${food.registrationDay}부터'),
+          Text(food.number.toString())
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildFoodCards(List<TemporaryFood> foods) {
+    return foods.map((e) => _buildFoodCard(e)).toList();
+  }
+}
+
+class ShowInCategories extends StatelessWidget {
+  const ShowInCategories({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text('카테고리별 보기'));
+  }
+}
+
+class ShowInShelfLife extends StatelessWidget {
+  const ShowInShelfLife({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text('유통기한별 보기'));
   }
 }

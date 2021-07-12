@@ -5,6 +5,7 @@ import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
@@ -33,36 +34,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
       new TextEditingController(text: '-');
 
   int tempNum = 0;
-
-  List<String> categories = [
-    '과일',
-    '채소',
-    '우유/유제품',
-    '수산물',
-    '곡물',
-    '조미료/양념',
-    '육류',
-    '냉장/냉동식품',
-    '베이커리',
-    '김치/반찬',
-    '즉석식품',
-    '물/음료'
-  ];
-
-  List<String> categoryImg = [
-    'Fruits.png',
-    'Vegetables.png',
-    'MilkNDairyProducts.png',
-    'AquaticProducts.png',
-    'Grains.png',
-    'Seasonings.png',
-    'MeatEggs.png',
-    'RefrigeratedFrozenFoods.png',
-    'Bakery.png',
-    'KimchiSideDishes.png',
-    'RamenInstantFoods.png',
-    'WaterCoffeDrinks.png'
-  ];
 
   DateTime sDay = DateTime.now();
   DateTime rDay = DateTime.now();
@@ -322,7 +293,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                         child: foods[currentIdx].category == '-'
                             ? Text('')
                             : Image.asset(
-                                'images/category/${categoryImg[translateName(foods[currentIdx].category)]}',
+                                'images/category/${categoryImg[translateToKo(foods[currentIdx].category)]}',
                                 scale: 0.8,
                               ),
                       ),
@@ -910,10 +881,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
     );
   }
 
-  int translateName(String category) {
-    return categories.indexOf(category);
-  }
-
   String convertDate(DateTime time) {
     return '${time.year}.${time.month}.${time.day}';
   }
@@ -982,7 +949,7 @@ class TemporaryFood {
         method = food['storeType'],
         shelfLife = food['shelfLife'],
         registrationDay = food['registrationDay'],
-        displayType = true;
+        displayType = food['displayType'];
 }
 
 // Refrigerator.fromSnapshot(Map<String, dynamic> data) : refID = data['refID'];
