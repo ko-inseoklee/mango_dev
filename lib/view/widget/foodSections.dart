@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
+import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 
 import '../../color.dart';
@@ -60,7 +61,7 @@ class _FoodSectionsState extends State<FoodSections> {
                         child: Text('냉장고가 비었습니다.'),
                       )
                     : Container(
-                        height: 200,
+                        height: 150 * ((widget.foods.length / 3) + 1),
                         child: GridView.count(
                           crossAxisCount: 3,
                           childAspectRatio: 50 / 60,
@@ -68,6 +69,7 @@ class _FoodSectionsState extends State<FoodSections> {
                         ),
                       ),
           ),
+          MangoDivider(),
         ],
       ),
     );

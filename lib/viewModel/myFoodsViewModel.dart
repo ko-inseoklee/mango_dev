@@ -62,4 +62,17 @@ class MyFoodsViewModel extends GetxController {
 
     return _tempFood;
   }
+
+  List<TemporaryFood> sortByCategory(
+      List<TemporaryFood> foods, String category) {
+    List<TemporaryFood> _tempFood = [];
+
+    foods.forEach((element) {
+      if (element.category == category) {
+        _tempFood.add(element);
+      }
+    });
+
+    return _tempFood;
+  }
 }

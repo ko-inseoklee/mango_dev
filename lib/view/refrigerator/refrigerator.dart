@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/widget/foodSections.dart';
+import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
@@ -112,9 +113,7 @@ class _ShowInOnceState extends State<ShowInOnce> {
   late RefrigeratorViewModel _refrigerator;
 
   late List<TemporaryFood> _refrigerationFoods;
-
   late List<TemporaryFood> _frozenFoods;
-
   late List<TemporaryFood> _roomTempFoods;
 
   bool _foldAll = true;
@@ -125,9 +124,6 @@ class _ShowInOnceState extends State<ShowInOnce> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
-
-    print(_refrigerator.myFoodsViewModel.value.foods!.length);
-
     _refrigerationFoods = _refrigerator.myFoodsViewModel.value
         .sortByStoreType(_refrigerator.myFoodsViewModel.value.foods!, 0);
     _frozenFoods = _refrigerator.myFoodsViewModel.value
@@ -135,7 +131,7 @@ class _ShowInOnceState extends State<ShowInOnce> {
     _roomTempFoods = _refrigerator.myFoodsViewModel.value
         .sortByStoreType(_refrigerator.myFoodsViewModel.value.foods!, 2);
 
-    return ListView(
+    return Column(
       children: [
         Container(
           height: 50,
@@ -190,204 +186,39 @@ class _ShowInOnceState extends State<ShowInOnce> {
           ),
         ),
         Container(
-          height: 8.0 * deviceHeight / prototypeHeight,
-          decoration: BoxDecoration(
-              color: MangoBehindColor,
-              border: Border(top: BorderSide(color: MangoDisabledColorLight))),
-        ),
-        FoodSections(
-            title: '냉장',
-            isFold: _foldRefrigerator,
-            onPressed: () {
-              setState(() {
-                _foldRefrigerator = !_foldRefrigerator;
-                _foldAll = checkAllFold();
-              });
-            },
-            foods: _refrigerationFoods),
-        FoodSections(
-            title: '냉동',
-            isFold: _foldRefrigerator,
-            onPressed: () {
-              setState(() {
-                _foldRefrigerator = !_foldRefrigerator;
-                _foldAll = checkAllFold();
-              });
-            },
-            foods: _refrigerationFoods),
-        FoodSections(
-            title: '실온',
-            isFold: _foldRefrigerator,
-            onPressed: () {
-              setState(() {
-                _foldRefrigerator = !_foldRefrigerator;
-                _foldAll = checkAllFold();
-              });
-            },
-            foods: _refrigerationFoods),
-        // Container(
-        //   child: Column(
-        //     children: [
-        //       TextButton(
-        //         onPressed: () {
-        //           setState(() {
-        //             _foldRefrigerator = !_foldRefrigerator;
-        //             _foldAll = checkAllFold();
-        //           });
-        //         },
-        //         child: Row(
-        //           children: [
-        //             Container(
-        //                 padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
-        //                 child: Text(
-        //                   '냉장',
-        //                   style: Theme.of(context).textTheme.headline6,
-        //                 )),
-        //             Spacer(),
-        //             Icon(
-        //               _foldRefrigerator
-        //                   ? Icons.keyboard_arrow_down
-        //                   : Icons.keyboard_arrow_up,
-        //               color: MangoBlack,
-        //               size: 26,
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //       Container(
-        //         child: _foldRefrigerator
-        //             ? SizedBox(
-        //                 height: 0.1,
-        //               )
-        //             : _refrigerationFoods.length == 0
-        //                 ? Container(
-        //                     alignment: Alignment.center,
-        //                     height: 100,
-        //                     child: Text('냉장고가 비었습니다.'),
-        //                   )
-        //                 : Container(
-        //                     height: 200,
-        //                     child: GridView.count(
-        //                       crossAxisCount: 3,
-        //                       childAspectRatio: 50 / 60,
-        //                       children: _buildFoodCards(_refrigerationFoods),
-        //                     ),
-        //                   ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        Container(
-          height: 8.0 * deviceHeight / prototypeHeight,
-          decoration: BoxDecoration(
-              color: MangoBehindColor,
-              border: Border(top: BorderSide(color: MangoDisabledColorLight))),
-        ),
-        Container(
-          child: Column(
+          height: deviceHeight - 250,
+          child: ListView(
             children: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _foldFrozen = !_foldFrozen;
-                    _foldAll = checkAllFold();
-                  });
-                },
-                child: Row(
-                  children: [
-                    Container(
-                        padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
-                        child: Text(
-                          '냉동',
-                          style: Theme.of(context).textTheme.headline6,
-                        )),
-                    Spacer(),
-                    Icon(
-                      _foldFrozen
-                          ? Icons.keyboard_arrow_down
-                          : Icons.keyboard_arrow_up,
-                      color: MangoBlack,
-                      size: 26,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                child: _foldFrozen
-                    ? SizedBox(
-                        height: 0.1,
-                      )
-                    : _frozenFoods.length == 0
-                        ? Container(
-                            alignment: Alignment.center,
-                            height: 100,
-                            child: Text('냉장고가 비었습니다.'),
-                          )
-                        : Container(
-                            height: 200,
-                            child: GridView.count(
-                              crossAxisCount: 3,
-                              childAspectRatio: 50 / 60,
-                              children: _buildFoodCards(_frozenFoods),
-                            ),
-                          ),
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: 8.0 * deviceHeight / prototypeHeight,
-          decoration: BoxDecoration(
-              color: MangoBehindColor,
-              border: Border(top: BorderSide(color: MangoDisabledColorLight))),
-        ),
-        Container(
-          child: Column(
-            children: [
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    _foldRoomTemp = !_foldRoomTemp;
-                    _foldAll = checkAllFold();
-                  });
-                },
-                child: Row(
-                  children: [
-                    Container(
-                        padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
-                        child: Text(
-                          '실온',
-                          style: Theme.of(context).textTheme.headline6,
-                        )),
-                    Spacer(),
-                    Icon(
-                      _foldRoomTemp
-                          ? Icons.keyboard_arrow_down
-                          : Icons.keyboard_arrow_up,
-                      color: MangoBlack,
-                      size: 26,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                child: _foldRoomTemp
-                    ? Text('')
-                    : _roomTempFoods.length == 0
-                        ? Container(
-                            alignment: Alignment.center,
-                            height: 100,
-                            child: Text('냉장고가 비었습니다.'),
-                          )
-                        : Container(
-                            height: 200,
-                            child: GridView.count(
-                              crossAxisCount: 3,
-                              childAspectRatio: 50 / 60,
-                              children: _buildFoodCards(_roomTempFoods),
-                            ),
-                          ),
-              ),
+              FoodSections(
+                  title: '냉장',
+                  isFold: _foldRefrigerator,
+                  onPressed: () {
+                    setState(() {
+                      _foldRefrigerator = !_foldRefrigerator;
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: _refrigerationFoods),
+              FoodSections(
+                  title: '냉동',
+                  isFold: _foldFrozen,
+                  onPressed: () {
+                    setState(() {
+                      _foldFrozen = !_foldFrozen;
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: _frozenFoods),
+              FoodSections(
+                  title: '실온',
+                  isFold: _foldRoomTemp,
+                  onPressed: () {
+                    setState(() {
+                      _foldRoomTemp = !_foldRoomTemp;
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: _roomTempFoods),
             ],
           ),
         ),
@@ -395,62 +226,230 @@ class _ShowInOnceState extends State<ShowInOnce> {
     );
   }
 
-  Widget _buildFoodCard(TemporaryFood food) {
-    return Card(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-              'images/category/${categoryImg[translateToKo(food.category)]}'),
-          Container(
-              padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
-              alignment: Alignment.centerLeft,
-              child: Row(
-                children: [
-                  Text(
-                    food.name,
-                    style: Theme.of(context).textTheme.subtitle2,
-                  ),
-                  Spacer(),
-                  Text(food.number.toString() + '개')
-                ],
-              )),
-          Container(
-            padding: EdgeInsets.only(left: 12.0),
-            alignment: Alignment.centerLeft,
-            child: food.displayType
-                ? Text('${food.shelfLife}일 까지',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(color: Red500))
-                : Text('${food.registrationDay}일 등록',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(color: Purple500)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  List<Widget> _buildFoodCards(List<TemporaryFood> foods) {
-    return foods.map((e) => _buildFoodCard(e)).toList();
-  }
-
   bool checkAllFold() {
     return _foldRefrigerator && _foldRoomTemp && _foldFrozen;
   }
 }
 
-class ShowInCategories extends StatelessWidget {
+class ShowInCategories extends StatefulWidget {
   const ShowInCategories({Key? key}) : super(key: key);
 
   @override
+  _ShowInCategoriesState createState() => _ShowInCategoriesState();
+}
+
+class _ShowInCategoriesState extends State<ShowInCategories> {
+  late RefrigeratorViewModel _refrigerator;
+
+  bool _foldAll = true;
+
+  List<List<TemporaryFood>> categoryFoods = [];
+  List<bool> _foldCategory = [];
+
+  @override
   Widget build(BuildContext context) {
-    return Center(child: Text('카테고리별 보기'));
+    _refrigerator = Get.find();
+
+    for (int i = 0; i < categories.length; i++) {
+      categoryFoods.add(_refrigerator.myFoodsViewModel.value.sortByCategory(
+          _refrigerator.myFoodsViewModel.value.foods!, categories[i]));
+
+      _foldCategory.add(true);
+    }
+
+    return Column(
+      children: [
+        Container(
+          height: 50,
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  '전체 ${_refrigerator.myFoodsViewModel.value.foods!.length}개',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2!
+                      .copyWith(color: MangoDisabledColorDark),
+                ),
+              ),
+              Spacer(),
+              TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _foldAll = !_foldAll;
+                      for (int i = 0; i < categories.length; i++) {
+                        _foldCategory[i] = _foldAll;
+                      }
+                    });
+                  },
+                  child: Text(
+                    _foldAll ? '모두 펼치기' : '모두 접기',
+                    style: Theme.of(context).textTheme.subtitle2,
+                  )),
+              TextButton(
+                  onPressed: () {},
+                  child: Row(
+                    children: [
+                      Text(
+                        '선택',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: MangoDisabledColorDark),
+                      ),
+                      SizedBox(
+                        width: 2.0,
+                      ),
+                      Icon(
+                        Icons.check_circle_outline,
+                        color: MangoDisabledColorDark,
+                        size: 18.0,
+                      )
+                    ],
+                  )),
+            ],
+          ),
+        ),
+        Container(
+          height: deviceHeight - 250,
+          child: ListView(
+            children: [
+              FoodSections(
+                  title: categories[0],
+                  isFold: _foldCategory[0],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[0] = !_foldCategory[0];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[0]),
+              FoodSections(
+                  title: categories[1],
+                  isFold: _foldCategory[1],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[1] = !_foldCategory[1];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[1]),
+              FoodSections(
+                  title: categories[2],
+                  isFold: _foldCategory[2],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[2] = !_foldCategory[2];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[2]),
+              FoodSections(
+                  title: categories[3],
+                  isFold: _foldCategory[3],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[3] = !_foldCategory[3];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[3]),
+              FoodSections(
+                  title: categories[4],
+                  isFold: _foldCategory[4],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[4] = !_foldCategory[4];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[4]),
+              FoodSections(
+                  title: categories[5],
+                  isFold: _foldCategory[5],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[5] = !_foldCategory[5];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[5]),
+              FoodSections(
+                  title: categories[6],
+                  isFold: _foldCategory[6],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[6] = !_foldCategory[6];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[6]),
+              FoodSections(
+                  title: categories[7],
+                  isFold: _foldCategory[7],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[7] = !_foldCategory[7];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[7]),
+              FoodSections(
+                  title: categories[8],
+                  isFold: _foldCategory[8],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[8] = !_foldCategory[8];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[8]),
+              FoodSections(
+                  title: categories[9],
+                  isFold: _foldCategory[9],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[9] = !_foldCategory[9];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[9]),
+              FoodSections(
+                  title: categories[10],
+                  isFold: _foldCategory[10],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[10] = !_foldCategory[10];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[10]),
+              FoodSections(
+                  title: categories[11],
+                  isFold: _foldCategory[11],
+                  onPressed: () {
+                    setState(() {
+                      _foldCategory[11] = !_foldCategory[11];
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  foods: categoryFoods[11]),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  bool checkAllFold() {
+    bool result = true;
+
+    for (int i = 0; i < categories.length; i++) {
+      result = result && _foldCategory[i];
+    }
+
+    return result;
   }
 }
 
