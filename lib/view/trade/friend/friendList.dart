@@ -1,11 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/model/user.dart';
+import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/view/trade/friend/addEmail.dart';
 import 'package:mangodevelopment/view/trade/friend/addID.dart';
 import 'package:mangodevelopment/view/trade/friend/addPhone.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mangodevelopment/viewModel/friendListViewModel.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class FriendListPage extends StatefulWidget {
   @override
@@ -134,13 +138,13 @@ class _FriendListPageState extends State<FriendListPage> {
                     // TODO: doc id => current uid 로!!
                     stream: (_search != '')
                         ? mango_dev
-                            .collection('temp_user')
+                            .collection('user')
                             .doc('123')
                             .collection('FriendList')
                             .where('case', arrayContains: _search)
                             .snapshots()
                         : FirebaseFirestore.instance
-                            .collection('temp_user')
+                            .collection('user')
                             .doc('123')
                             .collection('FriendList')
                             .snapshots(),
@@ -180,13 +184,14 @@ class _FriendListPageState extends State<FriendListPage> {
         radius: 25,
         // backgroundImage: AssetImage(''),
       ),
-      title: Text(docs.get('name')),
+      title: Text(docs.get('userName')),
       trailing: !_edit
           ? Text('')
           : ElevatedButton(
               onPressed: () {
                 // TODO: get current user info
-                FriendListViewModel().deleteFriend('123', docs.get('uid'));
+                FriendListViewModel()
+                    .deleteFriend('123', docs.get('userID'));
                 Get.defaultDialog(middleText: '삭제 완료');
               },
               child: Text('삭제'),

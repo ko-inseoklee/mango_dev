@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
+
   var isImageLoading = false.obs;
   var imageURL = '';
 
@@ -139,6 +140,12 @@ class UserViewModel extends GetxController {
       'userName': userName,
       'tokens' : tokens,
     });
+    
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(userID)
+        .collection('FriendList');
+    
     this.user.value.refrigerationAlarm = refrigerationAlarm;
     this.user.value.frozenAlarm = frozenAlarm;
     this.user.value.roomTempAlarm = roomTempAlarm;
