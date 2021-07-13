@@ -35,6 +35,10 @@ dependencies:
   select_form_field: ^2.0.0
   flutter_material_pickers: ^3.0.0
   firebase_messaging: "^10.0.3"
+  http: ^0.13.3
+
+#  node_interop: ^2.0.2
+#  js: ^0.6.3
 
 dev_dependencies:
   flutter_test:

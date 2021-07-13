@@ -42,9 +42,9 @@ class _LandingState extends State<Landing> {
               child: CircularProgressIndicator(),
             );
           } else if (snapshot.data == false) {
-            // return Center(
-            //   child: TextButton(child: Text('sign out'),onPressed: () => authController.signOut().then((value) => Get.to(Landing()),))
-            // );
+            return Center(
+              child: TextButton(child: Text('sign out'),onPressed: () => authController.signOut().then((value) => Get.to(Landing()),))
+            );
             return AddUserInfoPage();
           } else {
             return HomePage(title: 'hi');

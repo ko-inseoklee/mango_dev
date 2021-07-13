@@ -120,7 +120,6 @@ class _FriendListPageState extends State<FriendListPage> {
                     onChanged: (String value) {
                       setState(() {
                         _search = value;
-                        // print(UserViewModel().userID.toString());
                       });
                     },
                     onSubmitted: (String value) {
@@ -147,7 +146,6 @@ class _FriendListPageState extends State<FriendListPage> {
                         : FirebaseFirestore.instance
                             .collection('user')
                             .doc('123')
-                            // .doc(UserViewModel().userID)
                             .collection('FriendList')
                             .snapshots(),
 
@@ -194,7 +192,6 @@ class _FriendListPageState extends State<FriendListPage> {
                 // TODO: get current user info
                 FriendListViewModel()
                     .deleteFriend('123', docs.get('userID'));
-                // .deleteFriend(UserViewModel().userID, docs.get('userID'));
                 Get.defaultDialog(middleText: '삭제 완료');
               },
               child: Text('삭제'),
