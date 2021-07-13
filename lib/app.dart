@@ -88,9 +88,7 @@ class _MangoAppState extends State<MangoApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: HomePage(
-        title: 'null',
-      ),
+      home: Landing(),
       theme: _mangoTheme,
       getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
     );
