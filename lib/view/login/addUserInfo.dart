@@ -44,6 +44,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
   int _roomTempAlarm = 0;
   bool _isRTShelf = true;
   String uuid = '';
+  String _tokens ='';
 
   @override
   Widget build(BuildContext context) {
@@ -213,6 +214,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           _auth.user!.metadata.lastSignInTime!,
                           defaultImage,
                           _userName,
+                          _tokens,
                         );
                         //TODO. refirgeratorController()
                         // await refrigeratorController()

@@ -4,24 +4,24 @@ import 'package:image_picker/image_picker.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
-
   var isImageLoading = false.obs;
   var imageURL = '';
 
   var user = User.init(
-          userID: '',
-          creationTime: DateTime.now(),
-          refrigeratorID: '',
-          refrigerationAlarm: 0,
-          isRefShelf: false,
-          frozenAlarm: 0,
-          isFroShelf: false,
-          roomTempAlarm: 0,
-          isRTShelf: false,
-          lastSignIn: DateTime.now(),
-          profileImageReference: '',
-          userName: '')
-      .obs;
+    userID: '',
+    creationTime: DateTime.now(),
+    refrigeratorID: '',
+    refrigerationAlarm: 0,
+    isRefShelf: false,
+    frozenAlarm: 0,
+    isFroShelf: false,
+    roomTempAlarm: 0,
+    isRTShelf: false,
+    lastSignIn: DateTime.now(),
+    profileImageReference: '',
+    userName: '',
+    tokens: '',
+  ).obs;
 
   String get userID => this.user.value.userID;
 
@@ -121,7 +121,9 @@ class UserViewModel extends GetxController {
       bool isRTShelf,
       DateTime lastSignIn,
       String profileImageReference,
-      String userName) async {
+      String userName,
+      String tokens,
+      ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,
@@ -134,7 +136,8 @@ class UserViewModel extends GetxController {
       'isRTShelf': isRTShelf,
       'lastSignIn': lastSignIn,
       'profileImageReference': profileImageReference,
-      'userName': userName
+      'userName': userName,
+      'tokens' : tokens,
     });
     this.user.value.refrigerationAlarm = refrigerationAlarm;
     this.user.value.frozenAlarm = frozenAlarm;
@@ -143,15 +146,15 @@ class UserViewModel extends GetxController {
     this.user.value.userName = userName;
   }
 
-  // void uploadImage(ImageSource imageSource) async{
-  //   try{
-  //     final pickedFile = await ImagePicker().getImage(source: imageSource);
-  //     isImageLoading(true);
-  //     if(pickedFile != null) {
-  //       var response = await
-  //     }
-  //   } finally{
-  //     isImageLoading(false);
-  //   }
-  // }
+// void uploadImage(ImageSource imageSource) async{
+//   try{
+//     final pickedFile = await ImagePicker().getImage(source: imageSource);
+//     isImageLoading(true);
+//     if(pickedFile != null) {
+//       var response = await
+//     }
+//   } finally{
+//     isImageLoading(false);
+//   }
+// }
 }

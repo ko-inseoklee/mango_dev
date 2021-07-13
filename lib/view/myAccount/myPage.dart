@@ -6,6 +6,7 @@ import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'dart:io';
 
 import '../../app.dart';
 
@@ -44,19 +45,25 @@ class _MyPageState extends State<MyPage> {
                           5 * deviceWidth / prototypeWidth,
                           0,
                           5 * deviceWidth / prototypeWidth),
-                      child: Container(
+                      child: userViewModelController.user.value.profileImageReference == '-1' ?
+                      Container(
                         width: 90 * deviceWidth / prototypeWidth,
                         height: 90 * deviceWidth / prototypeWidth,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: userViewModelController
-                                        .user.value.profileImageReference ==
-                                    '-1'
-                                ? AssetImage('images/default_profile.png')
-                                : AssetImage('images/default_profile.png'),
+                            image: AssetImage('images/default_profile.png'),
                           ),
+                        ),
+                      ) :
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.file(
+                          File(userViewModelController.user.value.profileImageReference),
+                          width: 90 * deviceWidth / prototypeWidth,
+                          height: 90 * deviceWidth / prototypeWidth,
+                          fit: BoxFit.fitHeight,
                         ),
                       ),
                     ),
@@ -77,7 +84,7 @@ class _MyPageState extends State<MyPage> {
                     ),
                     //TODO. 수정페이지로 이동
                     IconButton(onPressed: (){
-                      Get.off(MyPageEdit());
+                      Get.to(MyPageEdit(),transition: Transition.topLevel);
                     }, icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),

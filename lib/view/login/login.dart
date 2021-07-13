@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/view/home.dart';
 import 'package:mangodevelopment/view/login/addUserInfo.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 
+import '../../landing.dart';
+
 class LogInPage extends StatelessWidget {
   final title;
+  var authController = Get.find<Authentication>();
 
   LogInPage({Key? key, required this.title}) : super(key: key);
 
@@ -113,8 +117,13 @@ class LogInPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: () {
-                Get.find<Authentication>().googleLogin().then((value) => Get.to(AddUserInfoPage()));
+                Get.find<Authentication>().googleLogin().then((value){ Get.to(Landing()); });
                 //Get.find<Authentication>().googleLogin();
+                // authController.googleLogin().then((value){
+                //   authController.hasData(authController.user!.uid).then((value){})
+                //   Get.to(AddUserInfoPage())
+                //       : Get.to(HomePage(title: 'hi'));
+                // });
               },
             ),
           ),
