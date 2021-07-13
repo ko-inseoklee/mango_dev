@@ -21,24 +21,26 @@ class User {
   DateTime lastSignIn;
   String profileImageReference;
   String userName;
+  String tokens;
+
   //final DocumentReference reference;
 
-  User.init(
-      {required String userID,
-      required DateTime creationTime,
-      required String refrigeratorID,
-      required int refrigerationAlarm,
-      required bool isRefShelf,
-      required int frozenAlarm,
-      required bool isFroShelf,
-      required int roomTempAlarm,
-      required bool isRTShelf,
-      required DateTime lastSignIn,
-      required String profileImageReference,
-      required String userName,
-      //required DocumentReference reference
-      })
-      : this.userID = userID,
+  User.init({
+    required String userID,
+    required DateTime creationTime,
+    required String refrigeratorID,
+    required int refrigerationAlarm,
+    required bool isRefShelf,
+    required int frozenAlarm,
+    required bool isFroShelf,
+    required int roomTempAlarm,
+    required bool isRTShelf,
+    required DateTime lastSignIn,
+    required String profileImageReference,
+    required String userName,
+    required String tokens,
+    //required DocumentReference reference
+  })  : this.userID = userID,
         this.creationTime = creationTime,
         this.refrigeratorID = refrigeratorID,
         this.refrigerationAlarm = refrigerationAlarm,
@@ -49,22 +51,25 @@ class User {
         this.isRTShelf = isRTShelf,
         this.lastSignIn = lastSignIn,
         this.profileImageReference = profileImageReference,
-        this.userName = userName;
-        //this.reference = reference;
+        this.userName = userName,
+        this.tokens = tokens;
+
+  //this.reference = reference;
 
   User.fromSnapshot(DocumentSnapshot snapshot)
-  : userID = snapshot.get('userID'),
-  creationTime = snapshot.get('creationTime'),
-  refrigeratorID = snapshot.get('refrigeratorID'),
-  refrigerationAlarm = snapshot.get('refrigerationAlarm'),
-  isRefShelf = snapshot.get('isRefShelf'),
-  frozenAlarm = snapshot.get('frozenAlarm'),
-  isFroShelf = snapshot.get('isFroShelf'),
-  roomTempAlarm = snapshot.get('roomTempAlarm'),
-  isRTShelf = snapshot.get('isRTShelf'),
-  lastSignIn = snapshot.get('lastSignIn'),
-  profileImageReference = snapshot.get('profileImageReference'),
-  userName = snapshot.get('userName');
-  //reference = snapshot.get('reference');
+      : userID = snapshot.get('userID'),
+        creationTime = snapshot.get('creationTime'),
+        refrigeratorID = snapshot.get('refrigeratorID'),
+        refrigerationAlarm = snapshot.get('refrigerationAlarm'),
+        isRefShelf = snapshot.get('isRefShelf'),
+        frozenAlarm = snapshot.get('frozenAlarm'),
+        isFroShelf = snapshot.get('isFroShelf'),
+        roomTempAlarm = snapshot.get('roomTempAlarm'),
+        isRTShelf = snapshot.get('isRTShelf'),
+        lastSignIn = snapshot.get('lastSignIn'),
+        profileImageReference = snapshot.get('profileImageReference'),
+        userName = snapshot.get('userName'),
+        tokens = snapshot.get('tokens');
+//reference = snapshot.get('reference');
 
 }
