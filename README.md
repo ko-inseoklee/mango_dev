@@ -15,8 +15,7 @@ A new Flutter project.
            required bool isLeading // whether having pop-button or not.
 
 - TODO
-    - Chip
-        하나의 칩에 하나의 Food 모델 사용.
-        Default chip 만들어 놓기.
+    - modal bottom sheet
+        리스트에 elevation 주기 - 색상, 높이 변경
     - 식자재 등록
         인식에 따른 유사 음식 추천 - AI 활용 등록방법 적용 후 추가.

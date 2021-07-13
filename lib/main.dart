@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,14 @@ import './view/login/login.dart';
 import 'color.dart';
 
 // import 'package:firebase_messaging/firebase_messaging.dart';
-//
 // FirebaseMessaging messaging = FirebaseMessaging.instance;
+late var cameras;
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Add this
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); //// Add this
   await Firebase.initializeApp();
+  cameras = await availableCameras();
+
   runApp(MangoApp());
 
   //
