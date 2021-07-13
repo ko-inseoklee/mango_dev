@@ -6,7 +6,6 @@ import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
-import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
 
 import '../color.dart';
 import '../viewModel/refrigeratorViewModel.dart';
@@ -22,14 +21,9 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   MangoBNBController _controller = MangoBNBController();
-  late TempUserViewModel currentUser;
 
   @override
   Widget build(BuildContext context) {
-    currentUser = Get.put(TempUserViewModel());
-
-    currentUser.FindTempUserSnapshot('123');
-
     return GetBuilder<MangoBNBController>(
       init: _controller,
       builder: (_) {

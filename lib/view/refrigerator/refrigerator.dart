@@ -186,7 +186,7 @@ class _ShowInOnceState extends State<ShowInOnce> {
           ),
         ),
         Container(
-          height: deviceHeight - 250,
+          height: deviceHeight - 400,
           child: ListView(
             children: [
               FoodSections(
@@ -312,7 +312,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
           ),
         ),
         Container(
-          height: deviceHeight - 250,
+          height: deviceHeight - 400,
           child: ListView(
             children: [
               FoodSections(
