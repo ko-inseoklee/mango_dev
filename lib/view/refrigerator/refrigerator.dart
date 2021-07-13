@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/view/widget/foodSections.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
@@ -194,58 +195,88 @@ class _ShowInOnceState extends State<ShowInOnce> {
               color: MangoBehindColor,
               border: Border(top: BorderSide(color: MangoDisabledColorLight))),
         ),
-        Container(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
-                      child: Text(
-                        '냉장',
-                        style: Theme.of(context).textTheme.headline6,
-                      )),
-                  Spacer(),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(0, 8.0, 4.0, 8.0),
-                      child: TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _foldRefrigerator = !_foldRefrigerator;
-                            _foldAll = checkAllFold();
-                          });
-                        },
-                        child: Icon(
-                          _foldRefrigerator
-                              ? Icons.keyboard_arrow_down
-                              : Icons.keyboard_arrow_up,
-                          color: MangoBlack,
-                          size: 26,
-                        ),
-                      ))
-                ],
-              ),
-              Container(
-                child: _foldRefrigerator
-                    ? Text('')
-                    : _refrigerationFoods.length == 0
-                        ? Container(
-                            alignment: Alignment.center,
-                            height: 100,
-                            child: Text('냉장고가 비었습니다.'),
-                          )
-                        : Container(
-                            height: 200,
-                            child: GridView.count(
-                              crossAxisCount: 3,
-                              childAspectRatio: 50 / 60,
-                              children: _buildFoodCards(_refrigerationFoods),
-                            ),
-                          ),
-              ),
-            ],
-          ),
-        ),
+        FoodSections(
+            title: '냉장',
+            isFold: _foldRefrigerator,
+            onPressed: () {
+              setState(() {
+                _foldRefrigerator = !_foldRefrigerator;
+                _foldAll = checkAllFold();
+              });
+            },
+            foods: _refrigerationFoods),
+        FoodSections(
+            title: '냉동',
+            isFold: _foldRefrigerator,
+            onPressed: () {
+              setState(() {
+                _foldRefrigerator = !_foldRefrigerator;
+                _foldAll = checkAllFold();
+              });
+            },
+            foods: _refrigerationFoods),
+        FoodSections(
+            title: '실온',
+            isFold: _foldRefrigerator,
+            onPressed: () {
+              setState(() {
+                _foldRefrigerator = !_foldRefrigerator;
+                _foldAll = checkAllFold();
+              });
+            },
+            foods: _refrigerationFoods),
+        // Container(
+        //   child: Column(
+        //     children: [
+        //       TextButton(
+        //         onPressed: () {
+        //           setState(() {
+        //             _foldRefrigerator = !_foldRefrigerator;
+        //             _foldAll = checkAllFold();
+        //           });
+        //         },
+        //         child: Row(
+        //           children: [
+        //             Container(
+        //                 padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
+        //                 child: Text(
+        //                   '냉장',
+        //                   style: Theme.of(context).textTheme.headline6,
+        //                 )),
+        //             Spacer(),
+        //             Icon(
+        //               _foldRefrigerator
+        //                   ? Icons.keyboard_arrow_down
+        //                   : Icons.keyboard_arrow_up,
+        //               color: MangoBlack,
+        //               size: 26,
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //       Container(
+        //         child: _foldRefrigerator
+        //             ? SizedBox(
+        //                 height: 0.1,
+        //               )
+        //             : _refrigerationFoods.length == 0
+        //                 ? Container(
+        //                     alignment: Alignment.center,
+        //                     height: 100,
+        //                     child: Text('냉장고가 비었습니다.'),
+        //                   )
+        //                 : Container(
+        //                     height: 200,
+        //                     child: GridView.count(
+        //                       crossAxisCount: 3,
+        //                       childAspectRatio: 50 / 60,
+        //                       children: _buildFoodCards(_refrigerationFoods),
+        //                     ),
+        //                   ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         Container(
           height: 8.0 * deviceHeight / prototypeHeight,
           decoration: BoxDecoration(
@@ -255,37 +286,37 @@ class _ShowInOnceState extends State<ShowInOnce> {
         Container(
           child: Column(
             children: [
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
-                      child: Text(
-                        '냉동',
-                        style: Theme.of(context).textTheme.headline6,
-                      )),
-                  Spacer(),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(0, 8.0, 4.0, 8.0),
-                      child: TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _foldFrozen = !_foldFrozen;
-                            _foldAll = checkAllFold();
-                          });
-                        },
-                        child: Icon(
-                          _foldFrozen
-                              ? Icons.keyboard_arrow_down
-                              : Icons.keyboard_arrow_up,
-                          color: MangoBlack,
-                          size: 26,
-                        ),
-                      ))
-                ],
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _foldFrozen = !_foldFrozen;
+                    _foldAll = checkAllFold();
+                  });
+                },
+                child: Row(
+                  children: [
+                    Container(
+                        padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
+                        child: Text(
+                          '냉동',
+                          style: Theme.of(context).textTheme.headline6,
+                        )),
+                    Spacer(),
+                    Icon(
+                      _foldFrozen
+                          ? Icons.keyboard_arrow_down
+                          : Icons.keyboard_arrow_up,
+                      color: MangoBlack,
+                      size: 26,
+                    ),
+                  ],
+                ),
               ),
               Container(
                 child: _foldFrozen
-                    ? Text('')
+                    ? SizedBox(
+                        height: 0.1,
+                      )
                     : _frozenFoods.length == 0
                         ? Container(
                             alignment: Alignment.center,
@@ -313,33 +344,31 @@ class _ShowInOnceState extends State<ShowInOnce> {
         Container(
           child: Column(
             children: [
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
-                      child: Text(
-                        '실온',
-                        style: Theme.of(context).textTheme.headline6,
-                      )),
-                  Spacer(),
-                  Container(
-                      padding: EdgeInsets.fromLTRB(0, 8.0, 4.0, 8.0),
-                      child: TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _foldRoomTemp = !_foldRoomTemp;
-                            _foldAll = checkAllFold();
-                          });
-                        },
-                        child: Icon(
-                          _foldRoomTemp
-                              ? Icons.keyboard_arrow_down
-                              : Icons.keyboard_arrow_up,
-                          color: MangoBlack,
-                          size: 26,
-                        ),
-                      ))
-                ],
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _foldRoomTemp = !_foldRoomTemp;
+                    _foldAll = checkAllFold();
+                  });
+                },
+                child: Row(
+                  children: [
+                    Container(
+                        padding: EdgeInsets.fromLTRB(12.0, 8.0, 0, 8.0),
+                        child: Text(
+                          '실온',
+                          style: Theme.of(context).textTheme.headline6,
+                        )),
+                    Spacer(),
+                    Icon(
+                      _foldRoomTemp
+                          ? Icons.keyboard_arrow_down
+                          : Icons.keyboard_arrow_up,
+                      color: MangoBlack,
+                      size: 26,
+                    ),
+                  ],
+                ),
               ),
               Container(
                 child: _foldRoomTemp
@@ -374,11 +403,34 @@ class _ShowInOnceState extends State<ShowInOnce> {
         children: [
           Image.asset(
               'images/category/${categoryImg[translateToKo(food.category)]}'),
-          Text(food.name),
-          Text(food.displayType
-              ? '${food.shelfLife}까지'
-              : '${food.registrationDay}부터'),
-          Text(food.number.toString())
+          Container(
+              padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  Text(
+                    food.name,
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                  Spacer(),
+                  Text(food.number.toString() + '개')
+                ],
+              )),
+          Container(
+            padding: EdgeInsets.only(left: 12.0),
+            alignment: Alignment.centerLeft,
+            child: food.displayType
+                ? Text('${food.shelfLife}일 까지',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2!
+                        .copyWith(color: Red500))
+                : Text('${food.registrationDay}일 등록',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2!
+                        .copyWith(color: Purple500)),
+          ),
         ],
       ),
     );
