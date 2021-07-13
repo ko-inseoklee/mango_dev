@@ -1,11 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/home.dart';
 
 import 'color.dart';
 import 'landing.dart';
 import 'view/trade/friend/friendList.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 var deviceWidth = 411.0;
 var deviceHeight = 820.0;
@@ -13,6 +19,22 @@ var prototypeWidth = 375.0;
 var prototypeHeight = 812.0;
 
 var platform = true;
+
+Future<void> saveTokenToDatabase(String token) async {
+  String userId = 'uYGuIzoPWKNvWxovizq1m3yYQOB3';
+  print('userID = ' + userId);
+
+  await FirebaseFirestore.instance.collection('user').doc(userId).update({
+    'tokens': FieldValue.arrayUnion([token]),
+  });
+}
+
+Future<void> getDeviceToken() async {
+  //save device token
+  String? token = await FirebaseMessaging.instance.getToken();
+  await saveTokenToDatabase(token!);
+  FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+}
 
 class MangoApp extends StatefulWidget {
   const MangoApp({Key? key}) : super(key: key);
@@ -26,13 +48,19 @@ class _MangoAppState extends State<MangoApp> {
   void initState() {
     super.initState();
 
+    FirebaseMessaging.instance.getInitialMessage();
+
+    getDeviceToken();
+
+
     //give message of notification on which user taps
     //open app from terminated state
-
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
-        final route2 = message.data['route'];
-        Get.to(route2);
+        print(message.notification!.body);
+        print(message.notification!.title);
+        // final route2 = message.data['route'];
+        // Get.to(route2);
       }
     });
 
@@ -48,18 +76,21 @@ class _MangoAppState extends State<MangoApp> {
     //when user taps on the notification
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if (message.notification != null) {
+        print(message.notification!.body);
+        print(message.notification!.title);
         //print route from message
-        final route = message.data['route'];
-        Get.to(route);
+        // final route = message.data['route'];
+        // Get.to(route);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return GetMaterialApp(
-      home: Landing(),
+      home: HomePage(
+        title: 'null',
+      ),
       theme: _mangoTheme,
       getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
     );

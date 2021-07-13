@@ -13,10 +13,10 @@ class FriendListViewModel extends GetxController {
     }
 
     var check = await mango_dev
-        .collection('temp_user')
+        .collection('user')
         .doc(curr_uid)
         .collection('FriendList')
-        .where('uid', isEqualTo: uid)
+        .where('userID', isEqualTo: uid)
         .limit(1)
         .get();
 
@@ -39,13 +39,13 @@ class FriendListViewModel extends GetxController {
     // print(otherNameList);
 
     await mango_dev
-        .collection('temp_user')
+        .collection('user')
         .doc(curr_uid)
         .collection('FriendList')
         .add({
-      'name': name,
-      'uid': uid,
-      'caseNumver': otherNameList.length,
+      'userName': name,
+      'userID': uid,
+      'caseNumber': otherNameList.length,
       'case': FieldValue.arrayUnion(otherNameList)
     }).then((_) {
       print('success');
@@ -54,13 +54,13 @@ class FriendListViewModel extends GetxController {
     });
 
     await mango_dev
-        .collection('temp_user')
+        .collection('user')
         .doc(uid)
         .collection('FriendList')
         .add({
-          'name': curr_name,
-          'uid': curr_uid,
-          'caseNumver': myNameList.length,
+          'userName': curr_name,
+          'userID': curr_uid,
+          'caseNumber': myNameList.length,
           'case': FieldValue.arrayUnion(myNameList)
         })
         .then((value) => print('success2'))
@@ -73,15 +73,15 @@ class FriendListViewModel extends GetxController {
 
   void deleteFriend(String curr_uid, String uid) {
     var myfriendList = mango_dev
-        .collection('temp_user')
+        .collection('user')
         .doc(curr_uid)
         .collection('FriendList');
 
     var otherfriendList =
-        mango_dev.collection('temp_user').doc(uid).collection('FriendList');
+        mango_dev.collection('user').doc(uid).collection('FriendList');
 
     //delete from my friend list
-    myfriendList.where('uid', isEqualTo: uid).get().then((value) {
+    myfriendList.where('userID', isEqualTo: uid).get().then((value) {
       value.docs.forEach((element) {
         myfriendList
             .doc(element.id)
@@ -91,7 +91,7 @@ class FriendListViewModel extends GetxController {
     });
 
     //delete from others friend list
-    otherfriendList.where('uid', isEqualTo: curr_uid).get().then((value) {
+    otherfriendList.where('userID', isEqualTo: curr_uid).get().then((value) {
       value.docs.forEach((element) {
         otherfriendList
             .doc(element.id)

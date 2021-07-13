@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/viewModel/push_test.dart';
 
 class TradePage extends StatefulWidget {
   final String title;
@@ -19,7 +20,7 @@ class _TradePageState extends State<TradePage> {
         leading: IconButton(
           icon: Icon(Icons.person),
           onPressed: () {
-            Get.to(FriendListPage(), transition: Transition.topLevel);
+            Get.to(FriendListPage());
           },
         ),
         title: Text(widget.title),
@@ -27,8 +28,13 @@ class _TradePageState extends State<TradePage> {
       ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image(
-            image: AssetImage('images/login/logo.png'),
+          InkWell(
+            onTap: (){
+              Get.to(Test());
+            },
+            child: Image(
+              image: AssetImage('images/login/logo.png'),
+            ),
           ),
           Text(
             '친구를 추가해서 \n거래를 시작해보세요',

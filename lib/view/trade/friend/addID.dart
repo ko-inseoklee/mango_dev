@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/model/user.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:mangodevelopment/viewModel/friendListViewModel.dart';
+import 'package:mangodevelopment/landing.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class AddIDPage extends StatefulWidget {
   @override
@@ -63,14 +67,15 @@ class _AddIDPageState extends State<AddIDPage> {
                       trailing: Text(
                         // TODO: get current user info
                         '123',
+                        // UserViewModel().userID
                       ),
                     )),
                 Flexible(
                   child: StreamBuilder<QuerySnapshot>(
                       stream: (_search != '')
                           ? FirebaseFirestore.instance
-                              .collection('temp_user')
-                              .where('uid', isEqualTo: _search)
+                              .collection('user')
+                              .where('userID', isEqualTo: _search)
                               .snapshots()
                           : FirebaseFirestore.instance
                               .collection('dummy')
@@ -86,13 +91,13 @@ class _AddIDPageState extends State<AddIDPage> {
                                       snapshot.data!.docs[index];
                                   return Card(
                                     child: ListTile(
-                                      title: Text(data['name']),
+                                      title: Text(data['userName']),
                                       trailing: IconButton(
                                           onPressed: () {
                                             Get.dialog(
                                               AlertDialog(
                                                 title: const Text('친구 등록'),
-                                                content: Text(data['name'] +
+                                                content: Text(data['userName'] +
                                                     '님을 친구로 추가하시겠습니까?'),
                                                 actions: <Widget>[
                                                   TextButton(
@@ -107,12 +112,17 @@ class _AddIDPageState extends State<AddIDPage> {
                                                       // TODO: 2. if not UPDATE friend list
                                                       print(
                                                           'add to friend list');
-                                                      FriendListViewModel().addFriend(
-                                                          // TODO: use current user info
-                                                          '123',
-                                                          '정현',
-                                                          data['uid'],
-                                                          data['name']);
+                                                      FriendListViewModel()
+                                                          .addFriend(
+                                                              // TODO: use current user info
+                                                              '123',
+                                                              '이정현',
+                                                              // UserViewModel()
+                                                              //     .userID,
+                                                              // UserViewModel()
+                                                              //     .userName,
+                                                              data['userID'],
+                                                              data['userName']);
                                                       // TODO: get named until 사용 알아보기
                                                       Get.back();
                                                       Get.back();
@@ -139,5 +149,4 @@ class _AddIDPageState extends State<AddIDPage> {
           ),
         ));
   }
-
 }
