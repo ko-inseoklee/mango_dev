@@ -9,7 +9,7 @@ final isRTAlarm = 'room_temp_is_shelf';
 final rTAlarmTime = 'room_temp_shelf_life_alarm';
 
 class User {
-  final String userID;
+  String userID;
   final DateTime creationTime;
   final String refrigeratorID;
   int refrigerationAlarm;
