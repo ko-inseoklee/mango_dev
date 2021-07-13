@@ -21,7 +21,7 @@ class _LandingState extends State<Landing> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
 
-    // if (Platform.isIOS) iOS_Permission();
+  // if (Platform.isIOS) iOS_Permission();
 
   bool isSecondPage = false;
 
@@ -49,7 +49,7 @@ class _LandingState extends State<Landing> {
             return HomePage(title: 'hi');
           }
         }) : LogInPage(
-    title: 'hi',
+      title: 'hi',
     );
 
   }

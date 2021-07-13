@@ -96,7 +96,7 @@ class LogInPage extends StatelessWidget {
             constraints: BoxConstraints.tightFor(
               width: loginWidth * (deviceWidth / prototypeWidth),
               height:
-                  logoSize * (deviceWidth / prototypeWidth) * buttonHeightRatio,
+              logoSize * (deviceWidth / prototypeWidth) * buttonHeightRatio,
             ),
             child: TextButton(
               child: Row(
