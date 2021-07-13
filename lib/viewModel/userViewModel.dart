@@ -1,26 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
+
+  var isImageLoading = false.obs;
+  var imageURL = '';
+
   var user = User.init(
-          userID: '',
-          creationTime: DateTime.now(),
-          refrigeratorID: '',
-          refrigerationAlarm: 0,
-          isRefShelf: false,
-          frozenAlarm: 0,
-          isFroShelf: false,
-          roomTempAlarm: 0,
-          isRTShelf: false,
-          lastSignIn: DateTime.now(),
-          profileImageReference: '',
-          userName: '')
-      .obs;
+    userID: '',
+    creationTime: DateTime.now(),
+    refrigeratorID: '',
+    refrigerationAlarm: 0,
+    isRefShelf: false,
+    frozenAlarm: 0,
+    isFroShelf: false,
+    roomTempAlarm: 0,
+    isRTShelf: false,
+    lastSignIn: DateTime.now(),
+    profileImageReference: '',
+    userName: '',
+    tokens: '',
+  ).obs;
 
   String get userID => this.user.value.userID;
-
-  String get userName => this.user.value.userName;
 
   set refAlarm(int value) {
     this.user.value.refrigerationAlarm = value;
@@ -79,6 +83,33 @@ class UserViewModel extends GetxController {
         .then((value) => print("delete success"));
   }
 
+  //update Firebase User info from 'User' class (local) Data
+  Future<void> updateUserInfo(String uid) async {
+    await FirebaseFirestore.instance.collection('user').doc(uid).update({
+      'userName': this.user.value.userName,
+      'profileImageReference': this.user.value.profileImageReference,
+      'refrigerationAlarm': this.user.value.refrigerationAlarm,
+      'frozenAlarm': this.user.value.frozenAlarm,
+      'roomTempAlarm': this.user.value.roomTempAlarm
+    });
+  }
+
+  //Making 'User' class (local) from Firebase Data
+  Future<void> setUserInfo(String uid) async {
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .get()
+        .then((value) {
+      Map<String, dynamic> data = value.data() as Map<String, dynamic>;
+      this.user.value.refrigerationAlarm = data['refrigerationAlarm'];
+      this.user.value.frozenAlarm = data['frozenAlarm'];
+      this.user.value.roomTempAlarm = data['roomTempAlarm'];
+      this.user.value.profileImageReference = data['profileImageReference'];
+      this.user.value.userName = data['userName'];
+    });
+  }
+
   Future<void> makeUserInformation(
       String userID,
       DateTime creationTime,
@@ -91,7 +122,9 @@ class UserViewModel extends GetxController {
       bool isRTShelf,
       DateTime lastSignIn,
       String profileImageReference,
-      String userName) async {
+      String userName,
+      String tokens,
+      ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,
@@ -104,12 +137,31 @@ class UserViewModel extends GetxController {
       'isRTShelf': isRTShelf,
       'lastSignIn': lastSignIn,
       'profileImageReference': profileImageReference,
-      'userName': userName
+      'userName': userName,
+      'tokens' : tokens,
     });
-
+    
     FirebaseFirestore.instance
         .collection('user')
         .doc(userID)
         .collection('FriendList');
+    
+    this.user.value.refrigerationAlarm = refrigerationAlarm;
+    this.user.value.frozenAlarm = frozenAlarm;
+    this.user.value.roomTempAlarm = roomTempAlarm;
+    this.user.value.profileImageReference = profileImageReference;
+    this.user.value.userName = userName;
   }
+
+// void uploadImage(ImageSource imageSource) async{
+//   try{
+//     final pickedFile = await ImagePicker().getImage(source: imageSource);
+//     isImageLoading(true);
+//     if(pickedFile != null) {
+//       var response = await
+//     }
+//   } finally{
+//     isImageLoading(false);
+//   }
+// }
 }

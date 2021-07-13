@@ -1,13 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_material_pickers/helpers/show_number_picker.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/landing.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
-import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
@@ -23,7 +21,7 @@ class AddUserInfoPage extends StatefulWidget {
 
 class _AddUserInfoPageState extends State<AddUserInfoPage> {
   Authentication _auth = Get.find<Authentication>();
-  final userViewModelController = Get.put(UserViewModel());
+  var userViewModelController = Get.find<UserViewModel>();
 
   List<String> _pageTitle = ['개인정보 설정', '알림 주기 설정'];
 
@@ -46,6 +44,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
   int _roomTempAlarm = 0;
   bool _isRTShelf = true;
   String uuid = '';
+  String _tokens ='';
 
   @override
   Widget build(BuildContext context) {
@@ -215,6 +214,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           _auth.user!.metadata.lastSignInTime!,
                           defaultImage,
                           _userName,
+                          _tokens,
                         );
                         //TODO. refirgeratorController()
                         // await refrigeratorController()
