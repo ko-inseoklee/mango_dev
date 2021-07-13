@@ -77,7 +77,7 @@ class _MyPageState extends State<MyPage> {
                     ),
                     //TODO. 수정페이지로 이동
                     IconButton(onPressed: (){
-                      Get.to(MyPageEdit());
+                      Get.off(MyPageEdit());
                     }, icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),

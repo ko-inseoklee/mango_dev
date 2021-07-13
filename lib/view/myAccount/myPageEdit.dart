@@ -6,6 +6,7 @@ import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'dart:io';
 
 import '../../app.dart';
 import '../../color.dart';
@@ -24,7 +25,7 @@ class _MyPageEditState extends State<MyPageEdit> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
 
-  late final _image;
+  late var _image;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class _MyPageEditState extends State<MyPageEdit> {
         centerTitle: true,
         leading: IconButton(
           icon: Text('취소'), onPressed: () {
-            Get.off(MyPage(title: '',));
+            Get.off(MyPage(title: '마이 페이지',));
         },
         ),
         actions: [
@@ -60,6 +61,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                   //TODO: should change the case of false condition with get image from firebase storage. Should change Using Stack for modify image button.
                   Stack(
                     children: [
+                      userViewModelController.user.value.profileImageReference == '-1' ?
                       Container(
                         width: 90 * deviceWidth / prototypeWidth,
                         height: 90 * deviceWidth / prototypeWidth,
@@ -67,15 +69,20 @@ class _MyPageEditState extends State<MyPageEdit> {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: userViewModelController
-                                .user.value.profileImageReference ==
-                                '-1'
-                                ? AssetImage('images/default_profile.png')
-                                : //AssetImage('images/default_profile.png'),
-                            AssetImage('${Image.file(_image)}'),
+                            image: AssetImage('images/default_profile.png'),
                           ),
                         ),
-                      ),
+                      ) :
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.file(
+                          File(_image.path),
+                          width: 90 * deviceWidth / prototypeWidth,
+                          height: 90 * deviceWidth / prototypeWidth,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      )
+                      ,
                       Positioned(
                         left: 44 * deviceWidth / prototypeWidth,
                         top: 50 * deviceWidth / prototypeWidth,
@@ -185,6 +192,7 @@ class _MyPageEditState extends State<MyPageEdit> {
     var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
     setState(() {
       _image = pickedFile;
+      print(_image.path);
     });
   }
 }
