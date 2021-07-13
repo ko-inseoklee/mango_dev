@@ -21,8 +21,11 @@ var prototypeHeight = 812.0;
 var platform = true;
 
 Future<void> saveTokenToDatabase(String token) async {
-  String userId = 'uYGuIzoPWKNvWxovizq1m3yYQOB3';
-  print('userID = ' + userId);
+  // TODO: change to current userID
+
+
+  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
+  // print('userID = ' + userId);
 
   await FirebaseFirestore.instance.collection('user').doc(userId).update({
     'tokens': FieldValue.arrayUnion([token]),
@@ -51,7 +54,6 @@ class _MangoAppState extends State<MangoApp> {
     FirebaseMessaging.instance.getInitialMessage();
 
     getDeviceToken();
-
 
     //give message of notification on which user taps
     //open app from terminated state
