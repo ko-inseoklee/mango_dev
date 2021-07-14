@@ -22,7 +22,7 @@ Future<void> main() async {
 
   runApp(MangoApp());
 
-  //
+
   // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
   //   print('Got a message whilst in the foreground!');
   //   print('Message data: ${message.data}');

@@ -12,6 +12,7 @@ import 'view/trade/friend/friendList.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 var deviceWidth = 411.0;
 var deviceHeight = 820.0;
@@ -66,9 +67,13 @@ class _MangoAppState extends State<MangoApp> {
       }
     });
 
+
     //opened in foreground
     FirebaseMessaging.onMessage.listen((message) {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
       if (message.notification != null) {
+        // flutterLocalNoification
         print(message.notification!.body);
         print(message.notification!.title);
       }

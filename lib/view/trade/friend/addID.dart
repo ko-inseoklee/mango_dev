@@ -67,7 +67,7 @@ class _AddIDPageState extends State<AddIDPage> {
                         ),
                         trailing: Text(
                           // TODO: get current user info
-                          userViewModelController.user.value.userID,
+                          userViewModelController.user.value.userName,
                           // UserViewModel().userID
                         ),
                       )),
@@ -76,7 +76,7 @@ class _AddIDPageState extends State<AddIDPage> {
                         stream: (_search != '')
                             ? FirebaseFirestore.instance
                                 .collection('user')
-                                .where('userID', isEqualTo: _search)
+                                .where('userName', isEqualTo: _search)
                                 .snapshots()
                             : FirebaseFirestore.instance
                                 .collection('dummy')
@@ -121,11 +121,10 @@ class _AddIDPageState extends State<AddIDPage> {
                                                                     .user
                                                                     .value
                                                                     .userID,
-                                                                '이정현',
-                                                                // UserViewModel()
-                                                                //     .userID,
-                                                                // UserViewModel()
-                                                                //     .userName,
+                                                                userViewModelController
+                                                                    .user
+                                                                    .value
+                                                                    .userName,
                                                                 data['userID'],
                                                                 data[
                                                                     'userName']);

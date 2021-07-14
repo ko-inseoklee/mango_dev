@@ -23,12 +23,32 @@ void push() async {
         'id': '1',
         'status': 'done'
       },
-      'to': await FirebaseMessaging.instance.getToken(),
-      //db에서 친구 token 넣어주기!!
+      'to':
+          'fS3TCNHuS4WrsKCRvoxa6j:APA91bH_8_Wpaj7pq_7HSOKuueyWyP5WBhflynBXsfbu-r-Y0fzaXvO-qJgUvFV2CRcVJecB1en0Zw_pX2KLaZTqq_9HUf77OOQ1NPxKy9cWJs8v7Fag6EaSilIgGNilXCcpAneqsaks',
+      //db에서 친구 token 넣어주기!! //Friend Token
     }),
   );
 }
-
+void sendFriendRequest() async {
+  await http.post(
+    Uri.parse('https://fcm.googleapis.com/fcm/send'),
+    headers: <String, String>{
+      'Content-Type': 'application/json',
+      'Authorization': 'key=$serverToken',
+    },
+    body: jsonEncode(<String, dynamic>{
+      'notification': <String, dynamic>{'body': '님이 친구를 요청했습니다', 'title': '친구 요청'},
+      'priority': 'high',
+      'data': <String, dynamic>{
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+        'id': '1',
+        'status': 'done'
+      },
+      'to': '',
+      //db에서 친구 token 넣어주기!! //Friend Token
+    }),
+  );
+}
 class Test extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -38,7 +58,7 @@ class Test extends StatelessWidget {
       ),
       body: Center(
         child: InkWell(
-          child: Text('dfa'),
+          child: Text('click here!'),
           onTap: () {
             push();
           },
