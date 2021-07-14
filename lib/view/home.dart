@@ -6,6 +6,8 @@ import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
+import 'package:mangodevelopment/viewModel/authentication.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../color.dart';
 import '../viewModel/refrigeratorViewModel.dart';
@@ -21,9 +23,14 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   MangoBNBController _controller = MangoBNBController();
+  UserViewModel userViewModelController = Get.put(UserViewModel());
+  Authentication authController = Get.find<Authentication>();
 
   @override
   Widget build(BuildContext context) {
+    userViewModelController.setUserInfo(authController.user!.uid);
+    userViewModelController.makeFriendList(authController.user!.uid);
+
     return GetBuilder<MangoBNBController>(
       init: _controller,
       builder: (_) {

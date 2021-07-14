@@ -60,7 +60,7 @@ class _MyPageState extends State<MyPage> {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: Image.file(
-                          File(userViewModelController.user.value.profileImageReference),
+                          File(userViewModelController.user.value.profileImageReference), //TODO. SOLVE this problem
                           width: 90 * deviceWidth / prototypeWidth,
                           height: 90 * deviceWidth / prototypeWidth,
                           fit: BoxFit.fitHeight,

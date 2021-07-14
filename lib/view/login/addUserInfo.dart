@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,6 @@ class AddUserInfoPage extends StatefulWidget {
 
 class _AddUserInfoPageState extends State<AddUserInfoPage> {
   Authentication _auth = Get.find<Authentication>();
-  var userViewModelController = Get.find<UserViewModel>();
 
   List<String> _pageTitle = ['개인정보 설정', '알림 주기 설정'];
 
@@ -201,21 +201,23 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                       if (alarmIdx == 2) {
                         uuid = Uuid().v4().toString();
                         String defaultImage = '-1';
-                        await userViewModelController.makeUserInformation(
-                          _auth.user!.uid,
-                          _auth.user!.metadata.creationTime!,
-                          uuid,
-                          _refrigerationAlarm,
-                          _isRefShelf,
-                          _frozenAlarm,
-                          _isFroShelf,
-                          _roomTempAlarm,
-                          _isRTShelf,
-                          _auth.user!.metadata.lastSignInTime!,
-                          defaultImage,
-                          _userName,
-                          _tokens,
-                        );
+
+                        await FirebaseFirestore.instance.collection('user').doc(_auth.user!.uid).set({
+                          'userID': _auth.user!.uid,
+                          'creationTime': _auth.user!.metadata.creationTime!,
+                          'refrigeratorID': uuid,
+                          'refrigerationAlarm': _refrigerationAlarm,
+                          'isRefShelf': _isRefShelf,
+                          'frozenAlarm': _frozenAlarm,
+                          'isFroShelf': _isFroShelf,
+                          'roomTempAlarm': _roomTempAlarm,
+                          'isRTShelf': _isRTShelf,
+                          'lastSignIn': _auth.user!.metadata.lastSignInTime!,
+                          'profileImageReference': defaultImage,
+                          'userName': _userName,
+                          'tokens': _tokens,
+                        });
+
                         //TODO. refirgeratorController()
                         // await refrigeratorController()
                         //     .makeRefInfoDocument(refID: uuid);
