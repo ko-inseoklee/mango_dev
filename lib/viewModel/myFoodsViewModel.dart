@@ -61,8 +61,6 @@ class MyFoodsViewModel extends GetxController {
       result.add(TemporaryFood.fromSnapshot(element.data()));
     });
 
-    print(result.length);
-
     return result;
   }
 
