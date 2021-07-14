@@ -117,7 +117,7 @@ class LogInPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: () {
-                Get.find<Authentication>().googleLogin().then((value){ Get.to(Landing()); });
+                Get.find<Authentication>().googleLogin().then((value){ Get.off(Landing()); });
                 //Get.find<Authentication>().googleLogin();
                 // authController.googleLogin().then((value){
                 //   authController.hasData(authController.user!.uid).then((value){})

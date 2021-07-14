@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
-
   var isImageLoading = false.obs;
   var imageURL = '';
 
@@ -107,24 +106,25 @@ class UserViewModel extends GetxController {
       this.user.value.roomTempAlarm = data['roomTempAlarm'];
       this.user.value.profileImageReference = data['profileImageReference'];
       this.user.value.userName = data['userName'];
+      this.user.value.userID = data['userID'];
     });
   }
 
   Future<void> makeUserInformation(
-      String userID,
-      DateTime creationTime,
-      String refrigeratorID,
-      int refrigerationAlarm,
-      bool isRefShelf,
-      int frozenAlarm,
-      bool isFroShelf,
-      int roomTempAlarm,
-      bool isRTShelf,
-      DateTime lastSignIn,
-      String profileImageReference,
-      String userName,
-      String tokens,
-      ) async {
+    String userID,
+    DateTime creationTime,
+    String refrigeratorID,
+    int refrigerationAlarm,
+    bool isRefShelf,
+    int frozenAlarm,
+    bool isFroShelf,
+    int roomTempAlarm,
+    bool isRTShelf,
+    DateTime lastSignIn,
+    String profileImageReference,
+    String userName,
+    String tokens,
+  ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,
@@ -138,14 +138,14 @@ class UserViewModel extends GetxController {
       'lastSignIn': lastSignIn,
       'profileImageReference': profileImageReference,
       'userName': userName,
-      'tokens' : tokens,
+      'tokens': tokens,
     });
-    
+
     FirebaseFirestore.instance
         .collection('user')
         .doc(userID)
         .collection('FriendList');
-    
+
     this.user.value.refrigerationAlarm = refrigerationAlarm;
     this.user.value.frozenAlarm = frozenAlarm;
     this.user.value.roomTempAlarm = roomTempAlarm;
