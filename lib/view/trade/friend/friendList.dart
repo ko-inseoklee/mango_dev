@@ -33,6 +33,8 @@ class _FriendListPageState extends State<FriendListPage> {
 
   Authentication _auth = Get.find<Authentication>();
 
+  var _friendNum = 0;
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
@@ -136,7 +138,22 @@ class _FriendListPageState extends State<FriendListPage> {
                   Divider(
                     thickness: 1,
                   ),
-
+                  ListTile(
+                    leading: CircleAvatar(
+                      radius: 25,
+                      // backgroundImage: AssetImage(''),
+                    ),
+                    title: Text(
+                      userViewModelController.user.value.userName,
+                    ),
+                  ),
+                  Divider(thickness: 1),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text('친구 ' + _friendNum.toString())),
+                  ),
                   Flexible(
                     child: StreamBuilder<QuerySnapshot>(
                       // TODO: doc id => current uid 로!!
@@ -162,6 +179,8 @@ class _FriendListPageState extends State<FriendListPage> {
                             child: CircularProgressIndicator(),
                           );
                         } else {
+                          _friendNum = snapshot.data!.size;
+
                           return ListView.separated(
                             itemCount: snapshot.data!.size,
                             itemBuilder: (context, index) {
