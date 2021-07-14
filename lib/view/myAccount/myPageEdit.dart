@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mangodevelopment/landing.dart';
 import 'package:mangodevelopment/view/login/login.dart';
-import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -12,7 +10,6 @@ import 'dart:io';
 
 import '../../app.dart';
 import '../../color.dart';
-import 'myPage.dart';
 
 class MyPageEdit extends StatefulWidget {
   @override
@@ -214,7 +211,6 @@ class _MyPageEditState extends State<MyPageEdit> {
                     menuName: "로그아웃",
                     onTap: () async {
                       await _auth.signOut();
-                      //await Get.offAll(Landing());
                       await Get.offAll(LogInPage(title: ''));
                     },
                     trailingWidth: 10,
@@ -222,8 +218,9 @@ class _MyPageEditState extends State<MyPageEdit> {
                   ),
                   settingMenu(
                     menuName: "회원탈퇴",
-                    onTap: () {
-                      comingSoon(context);
+                    onTap: () async {
+                      await userViewModelController.deleteUser(_auth.user!.uid);
+                      await Get.offAll(LogInPage(title: ''));
                     },
                     trailingWidth: 10,
                     trailing: SizedBox(),

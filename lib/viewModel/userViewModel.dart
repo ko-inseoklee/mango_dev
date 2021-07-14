@@ -110,6 +110,13 @@ class UserViewModel extends GetxController {
     });
   }
 
+  Future<void> makeFriendList(String uid) async {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .collection('FriendList');
+  }
+
   Future<void> makeUserInformation(
     String userID,
     DateTime creationTime,
@@ -140,11 +147,6 @@ class UserViewModel extends GetxController {
       'userName': userName,
       'tokens': tokens,
     });
-
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(userID)
-        .collection('FriendList');
 
     this.user.value.refrigerationAlarm = refrigerationAlarm;
     this.user.value.frozenAlarm = frozenAlarm;

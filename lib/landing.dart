@@ -16,7 +16,6 @@ class Landing extends StatefulWidget {
 
 class _LandingState extends State<Landing> {
   Authentication authController = Get.put(Authentication());
-  UserViewModel userViewModelController = Get.put(UserViewModel());
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
@@ -46,7 +45,7 @@ class _LandingState extends State<Landing> {
           } else if (snapshot.data == false) {
             return AddUserInfoPage();
           } else {
-            userViewModelController.setUserInfo(authController.user!.uid);
+            //userViewModelController.setUserInfo(authController.user!.uid);
             return HomePage(title: 'hi');
           }
         }) : LogInPage(
