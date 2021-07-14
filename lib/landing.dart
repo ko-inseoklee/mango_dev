@@ -32,6 +32,7 @@ class _LandingState extends State<Landing> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
+    print('exitUSer? ${authController.exitUser.value}');
 
     return authController.user == null ? LogInPage(
       title: 'hi',
