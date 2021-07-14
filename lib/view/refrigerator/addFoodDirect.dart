@@ -3,12 +3,14 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../color.dart';
 import '../home.dart';
@@ -22,7 +24,6 @@ class AddFoodDirectPage extends StatefulWidget {
 }
 
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
-  late TempUserViewModel _currentUser;
   late RefrigeratorViewModel _refrigerator;
 
   List<TemporaryFood> foods = [];
@@ -46,10 +47,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   @override
   Widget build(BuildContext context) {
-    _currentUser = Get.find();
     _refrigerator = Get.find();
 
-    print("_currentUser's refID == ${_currentUser.user.value.refID}");
     maxIdx = foods.length;
 
     return Scaffold(
@@ -110,7 +109,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
             child: TextButton(
               onPressed: () async {
                 await MyFoodsViewModel()
-                    .addFoods(_currentUser.user.value.refID, foods)
+                    .addFoods(_refrigerator.refID, foods)
                     .then((value) => print('ok'));
                 await _refrigerator
                     .loadFoods()
@@ -132,6 +131,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   void addChip() {
     var temp = new TemporaryFood(
+        rId: _refrigerator.refID,
+        fId: Uuid().v4(),
         index: maxIdx,
         status: true,
         name: '-',
@@ -139,8 +140,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
         category: '-',
         method: 0,
         displayType: true,
-        shelfLife: convertDate(DateTime.now()),
-        registrationDay: convertDate(DateTime.now()));
+        shelfLife: DateTime.now(),
+        registrationDay: DateTime.now());
     foods.add(temp);
 
     currentIdx = maxIdx;
@@ -790,8 +791,9 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
               Spacer(),
               Text(
                 foods[currentIdx].displayType
-                    ? foods[currentIdx].shelfLife
-                    : foods[currentIdx].registrationDay,
+                    ? DateFormat.yMd().format(foods[currentIdx].shelfLife)
+                    : DateFormat.yMd()
+                        .format(foods[currentIdx].registrationDay),
               ),
               TextButton(
                 onPressed: () {
@@ -806,11 +808,10 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                         setState(() {
                           if (foods[currentIdx].displayType) {
                             sDay = value;
-                            foods[currentIdx].shelfLife = convertDate(sDay);
+                            foods[currentIdx].shelfLife = sDay;
                           } else {
                             rDay = value;
-                            foods[currentIdx].registrationDay =
-                                convertDate(rDay);
+                            foods[currentIdx].registrationDay = rDay;
                           }
                         });
                       });
@@ -887,6 +888,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 }
 
 class TemporaryFood {
+  final String fId;
+  final String rId;
   int idx;
   bool status;
   String name;
@@ -894,19 +897,21 @@ class TemporaryFood {
   String category;
   int method;
   bool displayType;
-  String shelfLife;
-  String registrationDay;
+  DateTime shelfLife;
+  DateTime registrationDay;
 
   TemporaryFood(
-      {required int index,
+      {required this.fId,
+      required this.rId,
+      required int index,
       required bool status,
       required String name,
       required int num,
       required String category,
       required int method,
       required bool displayType,
-      required String shelfLife,
-      required String registrationDay})
+      required DateTime shelfLife,
+      required DateTime registrationDay})
       : idx = index,
         status = status,
         name = name,
@@ -918,8 +923,10 @@ class TemporaryFood {
         registrationDay = registrationDay;
   String get getName => name;
 
-  TemporaryFood.init(int index, String shelfLife, String registerationDay)
-      : idx = index,
+  TemporaryFood.init(int index, DateTime shelfLife, DateTime registrationDay)
+      : rId = Uuid().v4(),
+        fId = Uuid().v4(),
+        idx = index,
         status = true,
         name = '-',
         number = 0,
@@ -927,7 +934,7 @@ class TemporaryFood {
         method = 0,
         displayType = true,
         shelfLife = shelfLife,
-        registrationDay = registerationDay;
+        registrationDay = registrationDay;
 
   // TemporaryFood(
   // index: maxIdx,
@@ -941,14 +948,16 @@ class TemporaryFood {
   // registrationDay: convertDate(DateTime.now()));
 
   TemporaryFood.fromSnapshot(Map<String, dynamic> food)
-      : idx = 0,
+      : rId = food['rId'],
+        fId = food['fId'],
+        idx = 0,
         status = true,
         name = food['name'],
         number = food['number'],
         category = food['category'],
         method = food['storeType'],
-        shelfLife = food['shelfLife'],
-        registrationDay = food['registrationDay'],
+        shelfLife = food['shelfLife'].toDate(),
+        registrationDay = food['registrationDay'].toDate(),
         displayType = food['displayType'];
 }
 

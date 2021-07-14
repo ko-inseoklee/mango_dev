@@ -19,9 +19,8 @@ class MyFoodsViewModel extends GetxController {
 
   Future<List<TemporaryFood>> loadFoods(String refID) async {
     var data = await FirebaseFirestore.instance
-        .collection('refrigerator')
-        .doc(refID)
-        .collection('foods')
+        .collection('myFood')
+        .where('rId', isEqualTo: refID)
         .get();
 
     data.docs.forEach((element) {
@@ -31,14 +30,47 @@ class MyFoodsViewModel extends GetxController {
     return this.foods!;
   }
 
+  Future<List<TemporaryFood>> loadFoodsByStoreType(
+      String refID, int storeType) async {
+    List<TemporaryFood> result = [];
+
+    var data = await FirebaseFirestore.instance
+        .collection('myFood')
+        .where('rId', isEqualTo: refID)
+        .where('storeType', isEqualTo: storeType)
+        .get();
+
+    data.docs.forEach((element) {
+      result.add(TemporaryFood.fromSnapshot(element.data()));
+    });
+
+    return result;
+  }
+
+  Future<List<TemporaryFood>> loadFoodsByCategory(
+      String refID, String category) async {
+    List<TemporaryFood> result = [];
+
+    var data = await FirebaseFirestore.instance
+        .collection('myFood')
+        .where('rId', isEqualTo: refID)
+        .where('category', isEqualTo: category)
+        .get();
+
+    data.docs.forEach((element) {
+      result.add(TemporaryFood.fromSnapshot(element.data()));
+    });
+
+    print(result.length);
+
+    return result;
+  }
+
   Future<void> addFoods(String refID, List<TemporaryFood> foods) async {
     for (TemporaryFood food in foods) {
-      await FirebaseFirestore.instance
-          .collection('refrigerator')
-          .doc(refID)
-          .collection('foods')
-          .doc('${food.name}-${food.registrationDay}')
-          .set({
+      await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
+        'fId': food.fId,
+        'rId': food.rId,
         'name': food.name,
         'category': food.category,
         'number': food.number,
@@ -48,19 +80,6 @@ class MyFoodsViewModel extends GetxController {
         'registrationDay': food.registrationDay,
       });
     }
-  }
-
-  List<TemporaryFood> sortByStoreType(
-      List<TemporaryFood> foods, int storeType) {
-    List<TemporaryFood> _tempFood = [];
-
-    foods.forEach((element) {
-      if (element.method == storeType) {
-        _tempFood.add(element);
-      }
-    });
-
-    return _tempFood;
   }
 
   List<TemporaryFood> sortByCategory(

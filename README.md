@@ -19,3 +19,5 @@ A new Flutter project.
         리스트에 elevation 주기 - 색상, 높이 변경
     - 식자재 등록
         인식에 따른 유사 음식 추천 - AI 활용 등록방법 적용 후 추가.
+
+    - screen uil package 사용하기. (개발 이후)

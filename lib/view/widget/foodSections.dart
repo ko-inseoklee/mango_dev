@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
@@ -104,12 +105,12 @@ class _FoodSectionsState extends State<FoodSections> {
             padding: EdgeInsets.only(left: 12.0),
             alignment: Alignment.centerLeft,
             child: food.displayType
-                ? Text('${food.shelfLife}일 까지',
+                ? Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!
                         .copyWith(color: Red500))
-                : Text('${food.registrationDay}일 등록',
+                : Text('${DateFormat.yMd().format(food.registrationDay)}일 등록',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!

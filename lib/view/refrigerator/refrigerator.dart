@@ -112,9 +112,9 @@ class ShowInOnce extends StatefulWidget {
 class _ShowInOnceState extends State<ShowInOnce> {
   late RefrigeratorViewModel _refrigerator;
 
-  late List<TemporaryFood> _refrigerationFoods;
-  late List<TemporaryFood> _frozenFoods;
-  late List<TemporaryFood> _roomTempFoods;
+  List<TemporaryFood> _refrigerationFoods = [];
+  List<TemporaryFood> _frozenFoods = [];
+  List<TemporaryFood> _roomTempFoods = [];
 
   bool _foldAll = true;
   bool _foldRefrigerator = true;
@@ -122,14 +122,24 @@ class _ShowInOnceState extends State<ShowInOnce> {
   bool _foldRoomTemp = true;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
-    _refrigerationFoods = _refrigerator.myFoodsViewModel.value
-        .sortByStoreType(_refrigerator.myFoodsViewModel.value.foods!, 0);
-    _frozenFoods = _refrigerator.myFoodsViewModel.value
-        .sortByStoreType(_refrigerator.myFoodsViewModel.value.foods!, 1);
-    _roomTempFoods = _refrigerator.myFoodsViewModel.value
-        .sortByStoreType(_refrigerator.myFoodsViewModel.value.foods!, 2);
+
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByStoreType(_refrigerator.refID, 0)
+        .then((value) => _refrigerationFoods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByStoreType(_refrigerator.refID, 1)
+        .then((value) => _frozenFoods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByStoreType(_refrigerator.refID, 2)
+        .then((value) => _roomTempFoods = value);
 
     return Column(
       children: [
@@ -186,7 +196,7 @@ class _ShowInOnceState extends State<ShowInOnce> {
           ),
         ),
         Container(
-          height: deviceHeight - 400,
+          height: deviceHeight - 250,
           child: ListView(
             children: [
               FoodSections(
@@ -246,14 +256,61 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
   List<List<TemporaryFood>> categoryFoods = [];
   List<bool> _foldCategory = [];
 
+  List<TemporaryFood> c1Foods = [];
+  List<TemporaryFood> c2Foods = [];
+  List<TemporaryFood> c3Foods = [];
+  List<TemporaryFood> c4Foods = [];
+  List<TemporaryFood> c5Foods = [];
+  List<TemporaryFood> c6Foods = [];
+  List<TemporaryFood> c7Foods = [];
+  List<TemporaryFood> c8Foods = [];
+  List<TemporaryFood> c9Foods = [];
+  List<TemporaryFood> c10Foods = [];
+  List<TemporaryFood> c11Foods = [];
+  List<TemporaryFood> c0Foods = [];
+
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
 
-    for (int i = 0; i < categories.length; i++) {
-      categoryFoods.add(_refrigerator.myFoodsViewModel.value.sortByCategory(
-          _refrigerator.myFoodsViewModel.value.foods!, categories[i]));
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[0])
+        .then((value) => c0Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[1])
+        .then((value) => c1Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[2])
+        .then((value) => c2Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[3])
+        .then((value) => c3Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[4])
+        .then((value) => c4Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[5])
+        .then((value) => c5Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[6])
+        .then((value) => c6Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[7])
+        .then((value) => c7Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[8])
+        .then((value) => c8Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[9])
+        .then((value) => c9Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[10])
+        .then((value) => c10Foods = value);
+    _refrigerator.myFoodsViewModel.value
+        .loadFoodsByCategory(_refrigerator.refID, categories[11])
+        .then((value) => c11Foods = value);
 
+    for (int i = 0; i < categories.length; i++) {
       _foldCategory.add(true);
     }
 
@@ -312,7 +369,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
           ),
         ),
         Container(
-          height: deviceHeight - 400,
+          height: deviceHeight - 250,
           child: ListView(
             children: [
               FoodSections(
@@ -324,7 +381,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[0]),
+                  foods: c0Foods),
               FoodSections(
                   title: categories[1],
                   isFold: _foldCategory[1],
@@ -334,7 +391,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[1]),
+                  foods: c1Foods),
               FoodSections(
                   title: categories[2],
                   isFold: _foldCategory[2],
@@ -344,7 +401,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[2]),
+                  foods: c2Foods),
               FoodSections(
                   title: categories[3],
                   isFold: _foldCategory[3],
@@ -354,7 +411,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[3]),
+                  foods: c3Foods),
               FoodSections(
                   title: categories[4],
                   isFold: _foldCategory[4],
@@ -364,7 +421,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[4]),
+                  foods: c4Foods),
               FoodSections(
                   title: categories[5],
                   isFold: _foldCategory[5],
@@ -374,7 +431,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[5]),
+                  foods: c5Foods),
               FoodSections(
                   title: categories[6],
                   isFold: _foldCategory[6],
@@ -384,7 +441,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[6]),
+                  foods: c6Foods),
               FoodSections(
                   title: categories[7],
                   isFold: _foldCategory[7],
@@ -394,7 +451,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[7]),
+                  foods: c7Foods),
               FoodSections(
                   title: categories[8],
                   isFold: _foldCategory[8],
@@ -404,7 +461,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[8]),
+                  foods: c8Foods),
               FoodSections(
                   title: categories[9],
                   isFold: _foldCategory[9],
@@ -414,7 +471,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[9]),
+                  foods: c9Foods),
               FoodSections(
                   title: categories[10],
                   isFold: _foldCategory[10],
@@ -424,7 +481,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[10]),
+                  foods: c10Foods),
               FoodSections(
                   title: categories[11],
                   isFold: _foldCategory[11],
@@ -434,7 +491,7 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
                       _foldAll = checkAllFold();
                     });
                   },
-                  foods: categoryFoods[11]),
+                  foods: c11Foods),
             ],
           ),
         ),
