@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 class FriendListViewModel extends GetxController {
@@ -38,6 +39,20 @@ class FriendListViewModel extends GetxController {
     // print(myNameList);
     // print(otherNameList);
 
+    var myToken;
+    var friendToken;
+    await mango_dev
+        .collection('user')
+        .doc(curr_uid)
+        .get()
+        .then((value) => myToken = value.data()!['tokens']);
+    await mango_dev
+        .collection('user')
+        .doc(uid)
+        .get()
+        .then((value) => friendToken = value.data()!['tokens']);
+
+    // 내 친구 목록에 상대방 추가
     await mango_dev
         .collection('user')
         .doc(curr_uid)
@@ -45,6 +60,7 @@ class FriendListViewModel extends GetxController {
         .add({
       'userName': name,
       'userID': uid,
+      'tokens': friendToken,
       'caseNumber': otherNameList.length,
       'case': FieldValue.arrayUnion(otherNameList)
     }).then((_) {
@@ -53,6 +69,7 @@ class FriendListViewModel extends GetxController {
       print('error');
     });
 
+    // 상대방 친구 목록에 나 추가
     await mango_dev
         .collection('user')
         .doc(uid)
@@ -60,6 +77,7 @@ class FriendListViewModel extends GetxController {
         .add({
           'userName': curr_name,
           'userID': curr_uid,
+          'tokens': myToken,
           'caseNumber': myNameList.length,
           'case': FieldValue.arrayUnion(myNameList)
         })
@@ -72,10 +90,8 @@ class FriendListViewModel extends GetxController {
   }
 
   void deleteFriend(String curr_uid, String uid) {
-    var myfriendList = mango_dev
-        .collection('user')
-        .doc(curr_uid)
-        .collection('FriendList');
+    var myfriendList =
+        mango_dev.collection('user').doc(curr_uid).collection('FriendList');
 
     var otherfriendList =
         mango_dev.collection('user').doc(uid).collection('FriendList');
