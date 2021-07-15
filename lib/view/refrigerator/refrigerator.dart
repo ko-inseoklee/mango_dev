@@ -6,6 +6,7 @@ import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import '../../app.dart';
 import '../widget/appBar.dart';
 import 'addFoodDirect.dart';
@@ -21,7 +22,6 @@ class RefrigeratorPage extends StatefulWidget {
 
 class _RefrigeratorPageState extends State<RefrigeratorPage>
     with SingleTickerProviderStateMixin {
-  late TempUserViewModel currentUser;
   late RefrigeratorViewModel _refrigerator;
 
   TabController? _tabController;
@@ -38,7 +38,8 @@ class _RefrigeratorPageState extends State<RefrigeratorPage>
 
   @override
   Widget build(BuildContext context) {
-    _refrigerator = Get.put(RefrigeratorViewModel());
+    // _currentUser = Get.find();
+    _refrigerator = Get.find();
 
     return DefaultTabController(
       length: 3,
@@ -121,6 +122,9 @@ class _ShowInOnceState extends State<ShowInOnce> {
   bool _foldFrozen = true;
   bool _foldRoomTemp = true;
 
+  bool isSelected = true;
+  List<String> _tempFoodsID = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -141,60 +145,13 @@ class _ShowInOnceState extends State<ShowInOnce> {
         .loadFoodsByStoreType(_refrigerator.refID, 2)
         .then((value) => _roomTempFoods = value);
 
+    print('reload');
+
     return Column(
       children: [
         Container(
-          height: 50,
-          child: Row(
-            children: [
-              Container(
-                padding: EdgeInsets.all(8.0),
-                child: Text(
-                  '전체 ${_refrigerator.myFoodsViewModel.value.foods!.length}개',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(color: MangoDisabledColorDark),
-                ),
-              ),
-              Spacer(),
-              TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _foldAll = !_foldAll;
-                      _foldRefrigerator = _foldAll;
-                      _foldFrozen = _foldAll;
-                      _foldRoomTemp = _foldAll;
-                    });
-                  },
-                  child: Text(
-                    _foldAll ? '모두 펼치기' : '모두 접기',
-                    style: Theme.of(context).textTheme.subtitle2,
-                  )),
-              TextButton(
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      Text(
-                        '선택',
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle2!
-                            .copyWith(color: MangoDisabledColorDark),
-                      ),
-                      SizedBox(
-                        width: 2.0,
-                      ),
-                      Icon(
-                        Icons.check_circle_outline,
-                        color: MangoDisabledColorDark,
-                        size: 18.0,
-                      )
-                    ],
-                  )),
-            ],
-          ),
-        ),
+            height: 50,
+            child: isSelected ? unSelectedWidget() : selectedWidget()),
         Container(
           height: deviceHeight - 250,
           child: ListView(
@@ -202,31 +159,43 @@ class _ShowInOnceState extends State<ShowInOnce> {
               FoodSections(
                   title: '냉장',
                   isFold: _foldRefrigerator,
+                  isSelected: isSelected,
                   onPressed: () {
                     setState(() {
                       _foldRefrigerator = !_foldRefrigerator;
                       _foldAll = checkAllFold();
                     });
                   },
+                  onSelectParam: (String value) {
+                    selectFoods(value);
+                  },
                   foods: _refrigerationFoods),
               FoodSections(
                   title: '냉동',
                   isFold: _foldFrozen,
+                  isSelected: isSelected,
                   onPressed: () {
                     setState(() {
                       _foldFrozen = !_foldFrozen;
                       _foldAll = checkAllFold();
                     });
                   },
+                  onSelectParam: (String value) {
+                    selectFoods(value);
+                  },
                   foods: _frozenFoods),
               FoodSections(
                   title: '실온',
                   isFold: _foldRoomTemp,
+                  isSelected: isSelected,
                   onPressed: () {
                     setState(() {
                       _foldRoomTemp = !_foldRoomTemp;
                       _foldAll = checkAllFold();
                     });
+                  },
+                  onSelectParam: (String value) {
+                    selectFoods(value);
                   },
                   foods: _roomTempFoods),
             ],
@@ -236,8 +205,147 @@ class _ShowInOnceState extends State<ShowInOnce> {
     );
   }
 
+  Widget unSelectedWidget() {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            '전체 ${_refrigerator.myFoodsViewModel.value.foods!.length}개',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: MangoDisabledColorDark),
+          ),
+        ),
+        Spacer(),
+        TextButton(
+            onPressed: () {
+              setState(() {
+                _foldAll = !_foldAll;
+                _foldRefrigerator = _foldAll;
+                _foldFrozen = _foldAll;
+                _foldRoomTemp = _foldAll;
+              });
+            },
+            child: Text(
+              _foldAll ? '모두 펼치기' : '모두 접기',
+              style: Theme.of(context).textTheme.subtitle2,
+            )),
+        TextButton(
+            onPressed: () {
+              setState(() {
+                _foldAll = false;
+                _foldRefrigerator = false;
+                _foldFrozen = false;
+                _foldRoomTemp = false;
+                isSelected = !isSelected;
+              });
+            },
+            child: Row(
+              children: [
+                Text(
+                  '선택',
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2!
+                      .copyWith(color: MangoDisabledColorDark),
+                ),
+                SizedBox(
+                  width: 2.0,
+                ),
+                Icon(
+                  Icons.check_circle_outline,
+                  color: MangoDisabledColorDark,
+                  size: 18.0,
+                )
+              ],
+            )),
+      ],
+    );
+  }
+
+  Widget selectedWidget() {
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            '선택 ${_tempFoodsID.length}개',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: MangoDisabledColorDark),
+          ),
+        ),
+        Spacer(),
+        TextButton(
+          onPressed: () {
+            setState(() {});
+          },
+          child: Text(
+            '수정',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: MangoDisabledColorDark),
+          ),
+        ),
+        TextButton(
+          onPressed: () async {
+            await _refrigerator.deleteFoods(_tempFoodsID);
+            await _refrigerator.loadFoods();
+            setState(() {
+              _tempFoodsID.clear();
+              isSelected = !isSelected;
+              _foldAll = true;
+              _foldRefrigerator = true;
+              _foldFrozen = true;
+              _foldRoomTemp = true;
+              isSelected = !isSelected;
+            });
+          },
+          child: Text(
+            '삭제',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: MangoDisabledColorDark),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _tempFoodsID.clear();
+              isSelected = !isSelected;
+            });
+          },
+          child: Text(
+            '취소',
+            style: Theme.of(context)
+                .textTheme
+                .subtitle2!
+                .copyWith(color: MangoDisabledColorDark),
+          ),
+        ),
+      ],
+    );
+  }
+
   bool checkAllFold() {
     return _foldRefrigerator && _foldRoomTemp && _foldFrozen;
+  }
+
+  void selectFoods(String value) {
+    if (!_tempFoodsID.contains(value)) {
+      setState(() {
+        _tempFoodsID.add(value);
+      });
+    } else {
+      setState(() {
+        _tempFoodsID.remove(value);
+      });
+    }
   }
 }
 
@@ -370,130 +478,166 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
         ),
         Container(
           height: deviceHeight - 250,
-          child: ListView(
-            children: [
-              FoodSections(
-                  title: categories[0],
-                  isFold: _foldCategory[0],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[0] = !_foldCategory[0];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c0Foods),
-              FoodSections(
-                  title: categories[1],
-                  isFold: _foldCategory[1],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[1] = !_foldCategory[1];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c1Foods),
-              FoodSections(
-                  title: categories[2],
-                  isFold: _foldCategory[2],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[2] = !_foldCategory[2];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c2Foods),
-              FoodSections(
-                  title: categories[3],
-                  isFold: _foldCategory[3],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[3] = !_foldCategory[3];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c3Foods),
-              FoodSections(
-                  title: categories[4],
-                  isFold: _foldCategory[4],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[4] = !_foldCategory[4];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c4Foods),
-              FoodSections(
-                  title: categories[5],
-                  isFold: _foldCategory[5],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[5] = !_foldCategory[5];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c5Foods),
-              FoodSections(
-                  title: categories[6],
-                  isFold: _foldCategory[6],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[6] = !_foldCategory[6];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c6Foods),
-              FoodSections(
-                  title: categories[7],
-                  isFold: _foldCategory[7],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[7] = !_foldCategory[7];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c7Foods),
-              FoodSections(
-                  title: categories[8],
-                  isFold: _foldCategory[8],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[8] = !_foldCategory[8];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c8Foods),
-              FoodSections(
-                  title: categories[9],
-                  isFold: _foldCategory[9],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[9] = !_foldCategory[9];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c9Foods),
-              FoodSections(
-                  title: categories[10],
-                  isFold: _foldCategory[10],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[10] = !_foldCategory[10];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c10Foods),
-              FoodSections(
-                  title: categories[11],
-                  isFold: _foldCategory[11],
-                  onPressed: () {
-                    setState(() {
-                      _foldCategory[11] = !_foldCategory[11];
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  foods: c11Foods),
-            ],
-          ),
+          // child: ListView(
+          //   children: [
+          //     FoodSections(
+          //         title: categories[0],
+          //         isFold: _foldCategory[0],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[0] = !_foldCategory[0];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c0Foods),
+          //     FoodSections(
+          //         title: categories[1],
+          //         isFold: _foldCategory[1],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[1] = !_foldCategory[1];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c1Foods),
+          //     FoodSections(
+          //         title: categories[2],
+          //         isFold: _foldCategory[2],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[2] = !_foldCategory[2];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c2Foods),
+          //     FoodSections(
+          //         title: categories[3],
+          //         isFold: _foldCategory[3],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[3] = !_foldCategory[3];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c3Foods),
+          //     FoodSections(
+          //         title: categories[4],
+          //         isFold: _foldCategory[4],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[4] = !_foldCategory[4];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c4Foods),
+          //     FoodSections(
+          //         title: categories[5],
+          //         isFold: _foldCategory[5],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[5] = !_foldCategory[5];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c5Foods),
+          //     FoodSections(
+          //         title: categories[6],
+          //         isFold: _foldCategory[6],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[6] = !_foldCategory[6];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c6Foods),
+          //     FoodSections(
+          //         title: categories[7],
+          //         isFold: _foldCategory[7],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[7] = !_foldCategory[7];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c7Foods),
+          //     FoodSections(
+          //         title: categories[8],
+          //         isFold: _foldCategory[8],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[8] = !_foldCategory[8];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c8Foods),
+          //     FoodSections(
+          //         title: categories[9],
+          //         isFold: _foldCategory[9],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[9] = !_foldCategory[9];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c9Foods),
+          //     FoodSections(
+          //         title: categories[10],
+          //         isFold: _foldCategory[10],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[10] = !_foldCategory[10];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c10Foods),
+          //     FoodSections(
+          //         title: categories[11],
+          //         isFold: _foldCategory[11],
+          //         onPressed: () {
+          //           setState(() {
+          //             _foldCategory[11] = !_foldCategory[11];
+          //             _foldAll = checkAllFold();
+          //           });
+          //         },
+          //         onSelectParam: (String value) {
+          //           print(value);
+          //         },
+          //         foods: c11Foods),
+          //   ],
+          // ),
         ),
       ],
     );

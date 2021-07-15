@@ -8,6 +8,7 @@ import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/landing.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,7 +45,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
   int _roomTempAlarm = 0;
   bool _isRTShelf = true;
   String uuid = '';
-  String _tokens ='';
+  String _tokens = '';
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +203,10 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                         uuid = Uuid().v4().toString();
                         String defaultImage = '-1';
 
-                        await FirebaseFirestore.instance.collection('user').doc(_auth.user!.uid).set({
+                        await FirebaseFirestore.instance
+                            .collection('user')
+                            .doc(_auth.user!.uid)
+                            .set({
                           'userID': _auth.user!.uid,
                           'creationTime': _auth.user!.metadata.creationTime!,
                           'refrigeratorID': uuid,
@@ -218,6 +222,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           'tokens': _tokens,
                         });
 
+                        await RefrigeratorViewModel()
+                            .createRefrigeratorID(_auth.user!.uid, uuid);
                         //TODO. refirgeratorController()
                         // await refrigeratorController()
                         //     .makeRefInfoDocument(refID: uuid);
@@ -239,7 +245,6 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
         ],
       ),
     );
-
   }
 
   //parameter: Title name, type -> Refrigeration, Frozen, Room temperature.
@@ -312,20 +317,21 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                                 ? _frozenAlarmType
                                 : _roomTempAlarmType,
                         onChanged: (value) {
-                          alarmIdx == type ?
-                          setState(() {
-                            if (type == 0) {
-                              _isRefShelf = true;
-                              _refrigerationAlarmType = value;
-                            } else if (type == 1) {
-                              _isFroShelf = true;
-                              _frozenAlarmType = value;
-                            } else {
-                              _isRTShelf = true;
-                              _roomTempAlarmType = value;
-                            }
-                          // ignore: unnecessary_statements
-                          }) : null;
+                          alarmIdx == type
+                              ? setState(() {
+                                  if (type == 0) {
+                                    _isRefShelf = true;
+                                    _refrigerationAlarmType = value;
+                                  } else if (type == 1) {
+                                    _isFroShelf = true;
+                                    _frozenAlarmType = value;
+                                  } else {
+                                    _isRTShelf = true;
+                                    _roomTempAlarmType = value;
+                                  }
+                                  // ignore: unnecessary_statements
+                                })
+                              : null;
                         },
                       ),
                       Text(
@@ -364,20 +370,21 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                                   ? _frozenAlarmType
                                   : _roomTempAlarmType,
                           onChanged: (value) {
-                            alarmIdx == type?
-                            setState(() {
-                              if (type == 0) {
-                                _isRefShelf = false;
-                                _refrigerationAlarmType = value;
-                              } else if (type == 1) {
-                                _isFroShelf = false;
-                                _frozenAlarmType = value;
-                              } else {
-                                _isRTShelf = false;
-                                _roomTempAlarmType = value;
-                              }
-                            // ignore: unnecessary_statements
-                            }): null;
+                            alarmIdx == type
+                                ? setState(() {
+                                    if (type == 0) {
+                                      _isRefShelf = false;
+                                      _refrigerationAlarmType = value;
+                                    } else if (type == 1) {
+                                      _isFroShelf = false;
+                                      _frozenAlarmType = value;
+                                    } else {
+                                      _isRTShelf = false;
+                                      _roomTempAlarmType = value;
+                                    }
+                                    // ignore: unnecessary_statements
+                                  })
+                                : null;
                           },
                         ),
                         Text(
@@ -408,8 +415,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                   },
                   style: ButtonStyle(
                     overlayColor: MaterialStateProperty.all(
-                        alarmIdx != type ? MangoDisabledColorLight : null
-                    ),
+                        alarmIdx != type ? MangoDisabledColorLight : null),
                   ),
                   child: Row(
                     children: [

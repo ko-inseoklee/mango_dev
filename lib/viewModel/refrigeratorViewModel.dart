@@ -10,10 +10,49 @@ CollectionReference refCollection =
     FirebaseFirestore.instance.collection('refrigerator');
 
 class RefrigeratorViewModel extends GetxController {
-  var refrigerator = Refrigerator.init(refID: '123456').obs;
+  var refrigerator = Refrigerator.init(refID: '', uID: '').obs;
   var myFoodsViewModel = MyFoodsViewModel.init().obs;
 
+  Future<void> createRefrigeratorID(String uid, String rid) async {
+    await FirebaseFirestore.instance.collection('refrigerator').doc(rid).set({
+      'refID': rid,
+      'userID': uid,
+    });
+  }
+
+  // RefrigeratorViewModel.fromUser(String uid,String rid):this.refrigerator = this.loadRefrigerator(rID)
+
+  // RefrigeratorViewModel.loadFromUser(String rID):
+
+  Future<void> loadRefrigerator(String rID) async {
+    await FirebaseFirestore.instance
+        .collection('refrigerator')
+        .doc(rID)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        this.refrigerator.value.uID = value.data()!['userID'];
+        this.refrigerator.value.refID = value.data()!['refID'];
+      } else {
+        print('load failed');
+      }
+    });
+
+    // this.refrigerator = Refrigerator.fromSnapshot(data.data()!).obs;
+    update();
+  }
+
   get refID => this.refrigerator.value.refID;
+
+  Future<void> deleteFoods(List<String> foods) async {
+    for (var food in foods) {
+      await FirebaseFirestore.instance
+          .collection('myFood')
+          .doc(food)
+          .delete()
+          .then((value) => print('success to delete'));
+    }
+  }
 
   Future<void> loadFoods() async {
     this.myFoodsViewModel.value.foods!.clear();

@@ -23,13 +23,17 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   MangoBNBController _controller = MangoBNBController();
-  UserViewModel userViewModelController = Get.put(UserViewModel());
+  UserViewModel _userViewModelController = Get.put(UserViewModel());
+  late RefrigeratorViewModel _refrigeratorViewModel;
   Authentication authController = Get.find<Authentication>();
 
   @override
   Widget build(BuildContext context) {
-    userViewModelController.setUserInfo(authController.user!.uid);
-    userViewModelController.makeFriendList(authController.user!.uid);
+    _userViewModelController.setUserInfo(authController.user!.uid);
+    _userViewModelController.makeFriendList(authController.user!.uid);
+    _refrigeratorViewModel = Get.put(RefrigeratorViewModel());
+    _refrigeratorViewModel
+        .loadRefrigerator(_userViewModelController.user.value.refrigeratorID);
 
     return GetBuilder<MangoBNBController>(
       init: _controller,
@@ -50,11 +54,6 @@ class HomePageState extends State<HomePage> {
           floatingActionButton: FloatingActionButton(
             backgroundColor: Orange400,
             onPressed: () {
-              // showDialog(
-              //     context: context,
-              //     builder: (_) {
-              //       return AddFoodSheet();
-              //     });
               Get.dialog(AddFoodSheet());
             },
             child: Icon(Icons.add),
