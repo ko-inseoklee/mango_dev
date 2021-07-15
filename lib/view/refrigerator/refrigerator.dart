@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/widget/foodSections.dart';
-import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
-import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
-import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'package:mangodevelopment/widgetController/foodSectionController.dart';
 import '../../app.dart';
 import '../widget/appBar.dart';
 import 'addFoodDirect.dart';
@@ -125,6 +123,8 @@ class _ShowInOnceState extends State<ShowInOnce> {
   bool isSelected = true;
   List<String> _tempFoodsID = [];
 
+  var refrigeratorSectionController = Get.put(FoodSectionsController());
+
   @override
   void initState() {
     // TODO: implement initState
@@ -145,8 +145,6 @@ class _ShowInOnceState extends State<ShowInOnce> {
         .loadFoodsByStoreType(_refrigerator.refID, 2)
         .then((value) => _roomTempFoods = value);
 
-    print('reload');
-
     return Column(
       children: [
         Container(
@@ -156,48 +154,50 @@ class _ShowInOnceState extends State<ShowInOnce> {
           height: deviceHeight - 250,
           child: ListView(
             children: [
-              FoodSections(
-                  title: '냉장',
-                  isFold: _foldRefrigerator,
-                  isSelected: isSelected,
-                  onPressed: () {
-                    setState(() {
-                      _foldRefrigerator = !_foldRefrigerator;
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  onSelectParam: (String value) {
-                    selectFoods(value);
-                  },
-                  foods: _refrigerationFoods),
-              FoodSections(
-                  title: '냉동',
-                  isFold: _foldFrozen,
-                  isSelected: isSelected,
-                  onPressed: () {
-                    setState(() {
-                      _foldFrozen = !_foldFrozen;
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  onSelectParam: (String value) {
-                    selectFoods(value);
-                  },
-                  foods: _frozenFoods),
-              FoodSections(
-                  title: '실온',
-                  isFold: _foldRoomTemp,
-                  isSelected: isSelected,
-                  onPressed: () {
-                    setState(() {
-                      _foldRoomTemp = !_foldRoomTemp;
-                      _foldAll = checkAllFold();
-                    });
-                  },
-                  onSelectParam: (String value) {
-                    selectFoods(value);
-                  },
-                  foods: _roomTempFoods),
+              GetX<FoodSectionsController>(
+                  init: refrigeratorSectionController.change(
+                      title: '냉장',
+                      isFold: _foldRefrigerator,
+                      isSelected: isSelected,
+                      onPressed: () {
+                        _foldFrozen = !_foldFrozen;
+                        _foldAll = checkAllFold();
+                      },
+                      onSelectParam: (String value) {
+                        selectFoods(value);
+                      },
+                      foods: _frozenFoods),
+                  builder: (_) {
+                    return _.foodSections();
+                  }),
+              // FoodSections(
+              //     title: '냉동',
+              //     isFold: _foldFrozen,
+              //     isSelected: isSelected,
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldFrozen = !_foldFrozen;
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       selectFoods(value);
+              //     },
+              //     foods: _frozenFoods),
+              // FoodSections(
+              //     title: '실온',
+              //     isFold: _foldRoomTemp,
+              //     isSelected: isSelected,
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldRoomTemp = !_foldRoomTemp;
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       selectFoods(value);
+              //     },
+              //     foods: _roomTempFoods),
             ],
           ),
         ),

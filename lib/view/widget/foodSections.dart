@@ -7,10 +7,10 @@ import 'package:mangodevelopment/viewModel/categoryController.dart';
 import '../../color.dart';
 
 class FoodSections extends StatefulWidget {
-  final String title;
+  String title;
   bool isFold;
   bool isSelected;
-  final VoidCallback onPressed;
+  VoidCallback onPressed;
   Function(String) onSelectParam;
   List<TemporaryFood> foods;
   FoodSections(
