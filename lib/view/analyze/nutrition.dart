@@ -28,9 +28,7 @@ class _NutritionPageState extends State<NutritionPage> {
       body: Center(
         child: InkWell(
           child: Text('영양 페이지'),
-          onTap: () {
-            Get.to(TextAI());
-          },
+          onTap: () {},
         ),
       ),
     );

@@ -8,8 +8,6 @@ import 'package:camera/camera.dart';
 import '../../main.dart';
 import 'detail.dart';
 
-
-
 class TextAI extends StatefulWidget {
   @override
   _TextAIState createState() => _TextAIState();
@@ -77,7 +75,7 @@ class _TextAIState extends State<TextAI> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter MLKit Vision'),
+        title: Text('텍스트 인식 촬영'),
       ),
       body: _controller.value.isInitialized
           ? Stack(

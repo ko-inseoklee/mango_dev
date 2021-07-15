@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/analyze/textAI.dart';
 import 'package:mangodevelopment/view/camera.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
@@ -142,7 +143,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                       //       return ComingSoonDialog();
                       //     });
 
-                      Get.to(CameraPage());
+                      Get.to(TextAI());
                     },
                   ),
                 ),
