@@ -11,8 +11,6 @@ import './view/home.dart';
 import './view/login/login.dart';
 import 'color.dart';
 
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// FirebaseMessaging messaging = FirebaseMessaging.instance;
 late var cameras;
 
 Future<void> main() async {
@@ -21,15 +19,4 @@ Future<void> main() async {
   cameras = await availableCameras();
 
   runApp(MangoApp());
-
-
-  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  //   print('Got a message whilst in the foreground!');
-  //   print('Message data: ${message.data}');
-  //
-  //   if (message.notification != null) {
-  //     print(message.notification!.body);
-  //     print('Message also contained a notification: ${message.notification}');
-  //   }
-  // });
 }

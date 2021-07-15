@@ -117,6 +117,7 @@ class _FriendListPageState extends State<FriendListPage> {
           body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -138,25 +139,35 @@ class _FriendListPageState extends State<FriendListPage> {
                   Divider(
                     thickness: 1,
                   ),
-                  ListTile(
-                    leading: CircleAvatar(
-                      radius: 25,
-                      // backgroundImage: AssetImage(''),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        radius: 30,
+                        // backgroundImage: AssetImage(''),
+                      ),
+                      title: Text(
+                        userViewModelController.user.value.userName,
+                      ),
                     ),
-                    title: Text(
-                      userViewModelController.user.value.userName,
-                    ),
+                  ),
+                  ExpansionTile(
+                    title: Text('요청 대기 중'),
+                    children: <Widget>[
+                      ListTile(title: Text('1'),),
+                      ListTile(title: Text('1'),),
+                    ],
                   ),
                   Divider(thickness: 1),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text('친구 ' + _friendNum.toString())),
+                        alignment: Alignment.centerLeft, child: Text('친구 ')),
                   ),
                   Flexible(
+                    // fit: FlexFit.tight,
+                    fit: FlexFit.loose,
                     child: StreamBuilder<QuerySnapshot>(
-                      // TODO: doc id => current uid 로!!
                       stream: (_search != '')
                           ? mango_dev
                               .collection('user')
@@ -171,7 +182,6 @@ class _FriendListPageState extends State<FriendListPage> {
                               .doc(userViewModelController.user.value.userID)
                               .collection('FriendList')
                               .snapshots(),
-
                       builder:
                           (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) {
@@ -179,8 +189,6 @@ class _FriendListPageState extends State<FriendListPage> {
                             child: CircularProgressIndicator(),
                           );
                         } else {
-                          _friendNum = snapshot.data!.size;
-
                           return ListView.separated(
                             itemCount: snapshot.data!.size,
                             itemBuilder: (context, index) {
@@ -216,7 +224,7 @@ class _FriendListPageState extends State<FriendListPage> {
       BuildContext context, DocumentSnapshot docs, String userID) {
     return ListTile(
       leading: CircleAvatar(
-        radius: 25,
+        radius: 26,
         // backgroundImage: AssetImage(''),
       ),
       title: Text(docs.get('userName')),
