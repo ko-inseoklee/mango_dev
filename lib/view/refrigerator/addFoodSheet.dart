@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/camera.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
-import 'package:mangodevelopment/view/widget/comingSoon.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 
 import '../../app.dart';
 import '../../color.dart';
@@ -21,7 +20,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        borderRadius: BorderRadius.all(Radius.circular(20.0))),
       title: Container(
         width: deviceWidth,
         child: Row(
@@ -108,75 +107,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
             SizedBox(
               height: 30 * (deviceWidth / prototypeWidth),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ButtonTheme(
-                  // colorScheme: Theme.of(context).colorScheme,
-                  height: 120 * (deviceWidth / prototypeWidth),
-                  minWidth: 120 * (deviceWidth / prototypeWidth),
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(color: MangoDisabledColor),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.photo_camera,
-                          size: 60,
-                          color: MangoDisabledColor,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: 10.0 * deviceWidth / prototypeWidth,
-                          ),
-                          child:
-                              Text('촬영', style: TextStyle(color: MangoBlack)),
-                        )
-                      ],
-                    ),
-                    onPressed: () {
-                      // showDialog(
-                      //     context: context,
-                      //     builder: (_) {
-                      //       return ComingSoonDialog();
-                      //     });
-
-                      Get.to(CameraPage());
-                    },
-                  ),
-                ),
-                ButtonTheme(
-                  // colorScheme: Theme.of(context).colorScheme,
-                  height: 120 * (deviceWidth / prototypeWidth),
-                  minWidth: 120 * (deviceWidth / prototypeWidth),
-                  child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                        side: BorderSide(color: MangoDisabledColor),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.collections,
-                          size: 60,
-                          color: MangoDisabledColor,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: 10.0 * deviceWidth / prototypeWidth,
-                          ),
-                          child: Text('앨범에서 선택',
-                              style: TextStyle(color: MangoBlack)),
-                        )
-                      ],
-                    ),
-                    onPressed: () {
-                      Get.back();
-                    },
-                  ),
-                )
-              ],
-            ),
+            imageSelectCard(),
             Container(
               height: 40 * (deviceHeight / prototypeHeight),
             ),
