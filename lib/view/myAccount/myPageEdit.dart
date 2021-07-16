@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/login/login.dart';
+import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
+import 'package:mangodevelopment/view/widget/dialog/imageSelectDialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -118,8 +120,8 @@ class _MyPageEditState extends State<MyPageEdit> {
                         child: ElevatedButton(
                           //TODO. onPressed => 수정 : camera / gallery
                           onPressed: () {
-                            getGalleryImage();
-                            print(isImageChange);
+                            //getGalleryImage();
+                            Get.dialog(ImageSelectDialog());
                           },
                           child: Icon(Icons.camera_alt, color: Colors.white),
                           style: ElevatedButton.styleFrom(

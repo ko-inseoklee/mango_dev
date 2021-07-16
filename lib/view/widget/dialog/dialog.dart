@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import '../../../app.dart';
 import '../../../color.dart';
+import '../../camera.dart';
 
 class mangoDialog extends StatefulWidget {
   final String dialogTitle;
@@ -52,4 +55,70 @@ void comingSoon(BuildContext context) {
         return mangoDialog(
             dialogTitle: "Coming soon", hasOK: false, contentText: "준비 중입니다.", onTapOK: () {  });
       });
+}
+
+Widget imageSelectCard(){
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceAround,
+    children: [
+      ButtonTheme(
+        // colorScheme: Theme.of(context).colorScheme,
+        height: 120 * (deviceWidth / prototypeWidth),
+        minWidth: 120 * (deviceWidth / prototypeWidth),
+        child: FlatButton(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: MangoDisabledColor),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              Icon(
+                Icons.photo_camera,
+                size: 60,
+                color: MangoDisabledColor,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 10.0 * deviceWidth / prototypeWidth,
+                ),
+                child:
+                Text('촬영', style: TextStyle(color: MangoBlack)),
+              )
+            ],
+          ),
+          onPressed: () {
+            Get.to(CameraPage());
+          },
+        ),
+      ),
+      ButtonTheme(
+        // colorScheme: Theme.of(context).colorScheme,
+        height: 120 * (deviceWidth / prototypeWidth),
+        minWidth: 120 * (deviceWidth / prototypeWidth),
+        child: FlatButton(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: MangoDisabledColor),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              Icon(
+                Icons.collections,
+                size: 60,
+                color: MangoDisabledColor,
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: 10.0 * deviceWidth / prototypeWidth,
+                ),
+                child: Text('앨범에서 선택',
+                    style: TextStyle(color: MangoBlack)),
+              )
+            ],
+          ),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      )
+    ],
+  );
 }
