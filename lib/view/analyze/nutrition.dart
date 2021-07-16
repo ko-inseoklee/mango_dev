@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mangodevelopment/view/analyze/textAI.dart';
 
 class NutritionPage extends StatefulWidget {
   final String title;
@@ -24,7 +26,10 @@ class _NutritionPageState extends State<NutritionPage> {
         centerTitle: true,
       ),
       body: Center(
-        child: Text('영양 페이지'),
+        child: InkWell(
+          child: Text('영양 페이지'),
+          onTap: () {},
+        ),
       ),
     );
   }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'package:mangodevelopment/view/analyze/textAI.dart';
+import 'package:mangodevelopment/view/camera.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 
