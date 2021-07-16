@@ -151,13 +151,13 @@ class _FriendListPageState extends State<FriendListPage> {
                       ),
                     ),
                   ),
-                  ExpansionTile(
-                    title: Text('요청 대기 중'),
-                    children: <Widget>[
-                      ListTile(title: Text('1'),),
-                      ListTile(title: Text('1'),),
-                    ],
-                  ),
+                  // ExpansionTile(
+                  //   title: Text('요청 대기 중'),
+                  //   children: <Widget>[
+                  //     ListTile(title: Text('1'),),
+                  //     ListTile(title: Text('1'),),
+                  //   ],
+                  // ),
                   Divider(thickness: 1),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
