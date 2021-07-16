@@ -5,6 +5,7 @@ import 'package:mangodevelopment/view/market/market.dart';
 import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
+import 'package:mangodevelopment/view/refrigerator/testRefri.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -44,6 +45,9 @@ class HomePageState extends State<HomePage> {
               index: _controller.tabIndex.value,
               children: [
                 RefrigeratorPage(title: '나의 냉장고'),
+                // SubRefrigeratorPage(
+                //   title: '나의 냉장고',
+                // ),
                 MarketPage(title: '마켓 페이지'),
                 TradePage(title: '거래 광장 페이지'),
                 NutritionPage(title: '영양 정보 페이지'),

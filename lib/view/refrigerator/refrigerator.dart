@@ -154,50 +154,69 @@ class _ShowInOnceState extends State<ShowInOnce> {
           height: deviceHeight - 250,
           child: ListView(
             children: [
-              GetX<FoodSectionsController>(
-                  init: refrigeratorSectionController.change(
-                      title: '냉장',
-                      isFold: _foldRefrigerator,
-                      isSelected: isSelected,
-                      onPressed: () {
-                        _foldFrozen = !_foldFrozen;
-                        _foldAll = checkAllFold();
-                      },
-                      onSelectParam: (String value) {
-                        selectFoods(value);
-                      },
-                      foods: _frozenFoods),
-                  builder: (_) {
-                    return _.foodSections();
-                  }),
-              // FoodSections(
-              //     title: '냉동',
-              //     isFold: _foldFrozen,
-              //     isSelected: isSelected,
-              //     onPressed: () {
-              //       setState(() {
-              //         _foldFrozen = !_foldFrozen;
-              //         _foldAll = checkAllFold();
-              //       });
-              //     },
-              //     onSelectParam: (String value) {
-              //       selectFoods(value);
-              //     },
-              //     foods: _frozenFoods),
-              // FoodSections(
-              //     title: '실온',
-              //     isFold: _foldRoomTemp,
-              //     isSelected: isSelected,
-              //     onPressed: () {
-              //       setState(() {
-              //         _foldRoomTemp = !_foldRoomTemp;
-              //         _foldAll = checkAllFold();
-              //       });
-              //     },
-              //     onSelectParam: (String value) {
-              //       selectFoods(value);
-              //     },
-              //     foods: _roomTempFoods),
+              // GetX<FoodSectionsController>(
+              //     init: refrigeratorSectionController.change(
+              //         title: '냉장',
+              //         isFold: _foldRefrigerator,
+              //         isSelected: isSelected,
+              //         onPressed: () {
+              //           refrigeratorSectionController
+              //                   .foodSections.value.isFold =
+              //               !refrigeratorSectionController
+              //                   .foodSections.value.isFold;
+              //           print(refrigeratorSectionController
+              //               .foodSections.value.isFold);
+              //           _foldAll = checkAllFold();
+              //         },
+              //         onSelectParam: (String value) {
+              //           selectFoods(value);
+              //         },
+              //         foods: _frozenFoods),
+              //     builder: (_) {
+              //       return _.foodSections();
+              //     }),
+              FoodSections(
+                  title: '냉장',
+                  isFold: _foldRefrigerator,
+                  isSelected: isSelected,
+                  onPressed: () {
+                    setState(() {
+                      _foldRefrigerator = !_foldRefrigerator;
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  onSelectParam: (String value) {
+                    selectFoods(value);
+                  },
+                  foods: _refrigerationFoods),
+              FoodSections(
+                  title: '냉동',
+                  isFold: _foldFrozen,
+                  isSelected: isSelected,
+                  onPressed: () {
+                    setState(() {
+                      _foldFrozen = !_foldFrozen;
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  onSelectParam: (String value) {
+                    selectFoods(value);
+                  },
+                  foods: _frozenFoods),
+              FoodSections(
+                  title: '실온',
+                  isFold: _foldRoomTemp,
+                  isSelected: isSelected,
+                  onPressed: () {
+                    setState(() {
+                      _foldRoomTemp = !_foldRoomTemp;
+                      _foldAll = checkAllFold();
+                    });
+                  },
+                  onSelectParam: (String value) {
+                    selectFoods(value);
+                  },
+                  foods: _roomTempFoods),
             ],
           ),
         ),
@@ -297,7 +316,6 @@ class _ShowInOnceState extends State<ShowInOnce> {
             await _refrigerator.loadFoods();
             setState(() {
               _tempFoodsID.clear();
-              isSelected = !isSelected;
               _foldAll = true;
               _foldRefrigerator = true;
               _foldFrozen = true;
@@ -478,166 +496,166 @@ class _ShowInCategoriesState extends State<ShowInCategories> {
         ),
         Container(
           height: deviceHeight - 250,
-          // child: ListView(
-          //   children: [
-          //     FoodSections(
-          //         title: categories[0],
-          //         isFold: _foldCategory[0],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[0] = !_foldCategory[0];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c0Foods),
-          //     FoodSections(
-          //         title: categories[1],
-          //         isFold: _foldCategory[1],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[1] = !_foldCategory[1];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c1Foods),
-          //     FoodSections(
-          //         title: categories[2],
-          //         isFold: _foldCategory[2],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[2] = !_foldCategory[2];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c2Foods),
-          //     FoodSections(
-          //         title: categories[3],
-          //         isFold: _foldCategory[3],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[3] = !_foldCategory[3];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c3Foods),
-          //     FoodSections(
-          //         title: categories[4],
-          //         isFold: _foldCategory[4],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[4] = !_foldCategory[4];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c4Foods),
-          //     FoodSections(
-          //         title: categories[5],
-          //         isFold: _foldCategory[5],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[5] = !_foldCategory[5];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c5Foods),
-          //     FoodSections(
-          //         title: categories[6],
-          //         isFold: _foldCategory[6],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[6] = !_foldCategory[6];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c6Foods),
-          //     FoodSections(
-          //         title: categories[7],
-          //         isFold: _foldCategory[7],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[7] = !_foldCategory[7];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c7Foods),
-          //     FoodSections(
-          //         title: categories[8],
-          //         isFold: _foldCategory[8],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[8] = !_foldCategory[8];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c8Foods),
-          //     FoodSections(
-          //         title: categories[9],
-          //         isFold: _foldCategory[9],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[9] = !_foldCategory[9];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c9Foods),
-          //     FoodSections(
-          //         title: categories[10],
-          //         isFold: _foldCategory[10],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[10] = !_foldCategory[10];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c10Foods),
-          //     FoodSections(
-          //         title: categories[11],
-          //         isFold: _foldCategory[11],
-          //         onPressed: () {
-          //           setState(() {
-          //             _foldCategory[11] = !_foldCategory[11];
-          //             _foldAll = checkAllFold();
-          //           });
-          //         },
-          //         onSelectParam: (String value) {
-          //           print(value);
-          //         },
-          //         foods: c11Foods),
-          //   ],
-          // ),
+          child: ListView(
+            children: [
+              // FoodSections(
+              //     title: categories[0],
+              //     isFold: _foldCategory[0],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[0] = !_foldCategory[0];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c0Foods),
+              // FoodSections(
+              //     title: categories[1],
+              //     isFold: _foldCategory[1],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[1] = !_foldCategory[1];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c1Foods),
+              // FoodSections(
+              //     title: categories[2],
+              //     isFold: _foldCategory[2],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[2] = !_foldCategory[2];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c2Foods),
+              // FoodSections(
+              //     title: categories[3],
+              //     isFold: _foldCategory[3],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[3] = !_foldCategory[3];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c3Foods),
+              // FoodSections(
+              //     title: categories[4],
+              //     isFold: _foldCategory[4],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[4] = !_foldCategory[4];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c4Foods),
+              // FoodSections(
+              //     title: categories[5],
+              //     isFold: _foldCategory[5],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[5] = !_foldCategory[5];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c5Foods),
+              // FoodSections(
+              //     title: categories[6],
+              //     isFold: _foldCategory[6],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[6] = !_foldCategory[6];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c6Foods),
+              // FoodSections(
+              //     title: categories[7],
+              //     isFold: _foldCategory[7],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[7] = !_foldCategory[7];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c7Foods),
+              // FoodSections(
+              //     title: categories[8],
+              //     isFold: _foldCategory[8],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[8] = !_foldCategory[8];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c8Foods),
+              // FoodSections(
+              //     title: categories[9],
+              //     isFold: _foldCategory[9],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[9] = !_foldCategory[9];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c9Foods),
+              // FoodSections(
+              //     title: categories[10],
+              //     isFold: _foldCategory[10],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[10] = !_foldCategory[10];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c10Foods),
+              // FoodSections(
+              //     title: categories[11],
+              //     isFold: _foldCategory[11],
+              //     onPressed: () {
+              //       setState(() {
+              //         _foldCategory[11] = !_foldCategory[11];
+              //         _foldAll = checkAllFold();
+              //       });
+              //     },
+              //     onSelectParam: (String value) {
+              //       print(value);
+              //     },
+              //     foods: c11Foods),
+            ],
+          ),
         ),
       ],
     );
