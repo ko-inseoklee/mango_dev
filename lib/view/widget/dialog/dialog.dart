@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../../app.dart';
 import '../../../color.dart';
 import '../../camera.dart';
-import '../../gellary.dart';
 
 class mangoDialog extends StatefulWidget {
   final String dialogTitle;
