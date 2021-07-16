@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
+// import 'package:google_ml_kit/google_ml_kit.dart';
 
 class DetailScreen extends StatefulWidget {
   final String imagePath;
@@ -15,9 +15,9 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   late final String _imagePath;
-  late final TextDetector _textDetector;
+  // late final TextDetector _textDetector;
   Size? _imageSize;
-  List<TextElement> _elements = [];
+  // List<TextElement> _elements = [];
 
   List<String>? _listStrings;
 
@@ -46,10 +46,10 @@ class _DetailScreenState extends State<DetailScreen> {
     _getImageSize(File(_imagePath));
 
     // Creating an InputImage object using the image path
-    final inputImage = InputImage.fromFilePath(_imagePath);
+    // final inputImage = InputImage.fromFilePath(_imagePath);
 
     // Retrieving the RecognisedText from the InputImage
-    final text = await _textDetector.processImage(inputImage);
+    // final text = await _textDetector.processImage(inputImage);
 
     // Regular expression for verifying an email address
     // String pattern =
@@ -59,17 +59,17 @@ class _DetailScreenState extends State<DetailScreen> {
     List<String> stringList = [];
 
 // Finding and storing the text String(s)
-    for (TextBlock block in text.textBlocks) {
-      for (TextLine line in block.textLines) {
-        // if (regEx.hasMatch(line.lineText)) {
-        stringList.add(line.lineText);
-        // }
-
-        for (TextElement element in line.textElements) {
-          _elements.add(element);
-        }
-      }
-    }
+//     for (TextBlock block in text.textBlocks) {
+//       for (TextLine line in block.textLines) {
+//         // if (regEx.hasMatch(line.lineText)) {
+//         stringList.add(line.lineText);
+//         // }
+//
+//         for (TextElement element in line.textElements) {
+//           _elements.add(element);
+//         }
+//       }
+//     }
 
     setState(() {
       _listStrings = stringList;
@@ -80,7 +80,7 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     _imagePath = widget.imagePath;
     // Initializing the text detector
-    _textDetector = GoogleMlKit.vision.textDetector();
+    // _textDetector = GoogleMlKit.vision.textDetector();
     _recognizeText();
     super.initState();
   }
@@ -88,7 +88,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void dispose() {
     // Disposing the text detector when not used anymore
-    _textDetector.close();
+    // _textDetector.close();
     super.dispose();
   }
 
@@ -105,10 +105,10 @@ class _DetailScreenState extends State<DetailScreen> {
                   width: double.maxFinite,
                   color: Colors.black,
                   child: CustomPaint(
-                    foregroundPainter: TextDetectorPainter(
-                      _imageSize!,
-                      _elements,
-                    ),
+                    // foregroundPainter: TextDetectorPainter(
+                    //   _imageSize!,
+                    //   // _elements,
+                    // ),
                     child: AspectRatio(
                       aspectRatio: _imageSize!.aspectRatio,
                       child: Image.file(
@@ -170,33 +170,36 @@ class _DetailScreenState extends State<DetailScreen> {
 }
 
 class TextDetectorPainter extends CustomPainter {
-  TextDetectorPainter(this.absoluteImageSize, this.elements);
+  TextDetectorPainter(
+    this.absoluteImageSize,
+    /*this.elements*/
+  );
 
   final Size absoluteImageSize;
-  final List<TextElement> elements;
+  // final List<TextElement> elements;
 
   @override
   void paint(Canvas canvas, Size size) {
     final double scaleX = size.width / absoluteImageSize.width;
     final double scaleY = size.height / absoluteImageSize.height;
 
-    Rect scaleRect(TextElement container) {
+/*    Rect scaleRect(TextElement container) {
       return Rect.fromLTRB(
         container.rect.left * scaleX,
         container.rect.top * scaleY,
         container.rect.right * scaleX,
         container.rect.bottom * scaleY,
       );
-    }
+    }*/
 
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
       ..color = Colors.red
       ..strokeWidth = 2.0;
 
-    for (TextElement element in elements) {
-      canvas.drawRect(scaleRect(element), paint);
-    }
+    // for (TextElement element in elements) {
+    //   canvas.drawRect(scaleRect(element), paint);
+    // }
   }
 
   @override

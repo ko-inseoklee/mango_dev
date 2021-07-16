@@ -925,18 +925,18 @@ class TemporaryFood {
         registrationDay = registrationDay;
   String get getName => name;
 
-  TemporaryFood.init(int index, DateTime shelfLife, DateTime registrationDay)
+  TemporaryFood.init()
       : rId = Uuid().v4(),
         fId = Uuid().v4(),
-        idx = index,
+        idx = 0,
         status = true,
         name = '-',
         number = 0,
         category = '-',
         method = 0,
         displayType = true,
-        shelfLife = shelfLife,
-        registrationDay = registrationDay;
+        shelfLife = DateTime.now(),
+        registrationDay = DateTime.now();
 
   // TemporaryFood(
   // index: maxIdx,
