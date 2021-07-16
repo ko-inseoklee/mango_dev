@@ -14,9 +14,10 @@ class _ImageSelectDialogState extends State<ImageSelectDialog> {
     return AlertDialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20.0))),
-      title: Center(child: Text('프로필 사진 수정')),
+      title: Container(
+          width: deviceWidth, child: Center(child: Text('프로필 사진 수정'))),
       content: Container(
-        height: 200 * (deviceWidth / prototypeWidth),
+        height: 150 * (deviceWidth / prototypeWidth),
         child: imageSelectCard(),
       ),
     );

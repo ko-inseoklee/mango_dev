@@ -235,13 +235,4 @@ class _MyPageEditState extends State<MyPageEdit> {
       ),
     );
   }
-
-  getGalleryImage() async {
-    ImagePicker imagePicker = ImagePicker();
-    var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
-    setState(() {
-      _image = pickedFile;
-      isImageChange = true;
-    });
-  }
 }
