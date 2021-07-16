@@ -49,6 +49,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
 
+    print(_refrigerator.refID);
+
     maxIdx = foods.length;
 
     return Scaffold(

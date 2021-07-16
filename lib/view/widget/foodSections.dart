@@ -7,15 +7,19 @@ import 'package:mangodevelopment/viewModel/categoryController.dart';
 import '../../color.dart';
 
 class FoodSections extends StatefulWidget {
-  final String title;
+  String title;
   bool isFold;
-  final VoidCallback onPressed;
+  bool isSelected;
+  VoidCallback onPressed;
+  Function(String) onSelectParam;
   List<TemporaryFood> foods;
   FoodSections(
       {Key? key,
       required this.title,
       required this.isFold,
+      required this.isSelected,
       required this.onPressed,
+      required this.onSelectParam,
       required this.foods})
       : super(key: key);
 
@@ -24,6 +28,8 @@ class FoodSections extends StatefulWidget {
 }
 
 class _FoodSectionsState extends State<FoodSections> {
+  List<String> _tempFoodsID = [];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -81,43 +87,73 @@ class _FoodSectionsState extends State<FoodSections> {
   }
 
   Widget _buildFoodCard(TemporaryFood food) {
-    return Card(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset(
-              'images/category/${categoryImg[translateToKo(food.category)]}'),
-          Container(
-              padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+    return TextButton(
+      onPressed: () {
+        setState(() {
+          if (!widget.isSelected) {
+            selectFoods(food.fId);
+            widget.onSelectParam(food.fId);
+          }
+        });
+      },
+      child: Card(
+        color: widget.isSelected
+            ? MangoWhite
+            : !_tempFoodsID.contains(food.fId)
+                ? MangoWhite
+                : Orange50,
+        shape: RoundedRectangleBorder(
+            side: BorderSide(
+                color: widget.isSelected
+                    ? MangoDisabledColorLight
+                    : !_tempFoodsID.contains(food.fId)
+                        ? MangoDisabledColorLight
+                        : Orange700),
+            borderRadius: BorderRadius.circular(10)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+                'images/category/${categoryImg[translateToKo(food.category)]}'),
+            Container(
+                padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    Text(
+                      food.name,
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                    Spacer(),
+                    Text(food.number.toString() + '개')
+                  ],
+                )),
+            Container(
+              padding: EdgeInsets.only(left: 12.0),
               alignment: Alignment.centerLeft,
-              child: Row(
-                children: [
-                  Text(
-                    food.name,
-                    style: Theme.of(context).textTheme.subtitle2,
-                  ),
-                  Spacer(),
-                  Text(food.number.toString() + '개')
-                ],
-              )),
-          Container(
-            padding: EdgeInsets.only(left: 12.0),
-            alignment: Alignment.centerLeft,
-            child: food.displayType
-                ? Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(color: Red500))
-                : Text('${DateFormat.yMd().format(food.registrationDay)}일 등록',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(color: Purple500)),
-          ),
-        ],
+              child: food.displayType
+                  ? Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(color: Red500, fontSize: 12.0))
+                  : Text('${DateFormat.yMd().format(food.registrationDay)}일 등록',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(color: Purple500, fontSize: 12.0)),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  void selectFoods(String value) {
+    if (!_tempFoodsID.contains(value))
+      _tempFoodsID.add(value);
+    else
+      _tempFoodsID.remove(value);
   }
 }

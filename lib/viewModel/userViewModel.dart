@@ -10,7 +10,7 @@ class UserViewModel extends GetxController {
   var user = User.init(
     userID: '',
     creationTime: DateTime.now(),
-    refrigeratorID: '',
+    refrigeratorID: '1',
     refrigerationAlarm: 0,
     isRefShelf: false,
     frozenAlarm: 0,
@@ -20,7 +20,7 @@ class UserViewModel extends GetxController {
     lastSignIn: DateTime.now(),
     profileImageReference: '',
     userName: '',
-    tokens: '',
+    tokens: [],
   ).obs;
 
   String get userID => this.user.value.userID;
@@ -85,11 +85,17 @@ class UserViewModel extends GetxController {
   //update Firebase User info from 'User' class (local) Data
   Future<void> updateUserInfo(String uid) async {
     await FirebaseFirestore.instance.collection('user').doc(uid).update({
+      'userID': this.user.value.userID,
       'userName': this.user.value.userName,
+      'refrigeratorID': this.user.value.refrigeratorID,
       'profileImageReference': this.user.value.profileImageReference,
+      'isRefShelf': this.user.value.isRefShelf,
       'refrigerationAlarm': this.user.value.refrigerationAlarm,
+      'isFroShelf': this.user.value.isFroShelf,
       'frozenAlarm': this.user.value.frozenAlarm,
-      'roomTempAlarm': this.user.value.roomTempAlarm
+      'isRTShelf': this.user.value.isRTShelf,
+      'roomTempAlarm': this.user.value.roomTempAlarm,
+      'tokens': this.user.value.tokens
     });
   }
 
@@ -100,13 +106,21 @@ class UserViewModel extends GetxController {
         .doc(uid)
         .get()
         .then((value) {
-      Map<String, dynamic> data = value.data() as Map<String, dynamic>;
-      this.user.value.refrigerationAlarm = data['refrigerationAlarm'];
-      this.user.value.frozenAlarm = data['frozenAlarm'];
-      this.user.value.roomTempAlarm = data['roomTempAlarm'];
-      this.user.value.profileImageReference = data['profileImageReference'];
-      this.user.value.userName = data['userName'];
-      this.user.value.userID = data['userID'];
+      if (value.exists) {
+        Map<String, dynamic> data = value.data() as Map<String, dynamic>;
+        this.user.value.isRefShelf = data['isRefShelf'];
+        this.user.value.isFroShelf = data['isFroShelf'];
+        this.user.value.isRTShelf = data['isRTShelf'];
+        this.user.value.refrigerationAlarm = data['refrigerationAlarm'];
+        this.user.value.frozenAlarm = data['frozenAlarm'];
+        this.user.value.roomTempAlarm = data['roomTempAlarm'];
+        this.user.value.profileImageReference = data['profileImageReference'];
+        this.user.value.userName = data['userName'];
+        this.user.value.userID = data['userID'];
+        this.user.value.refrigeratorID = data['refrigeratorID'];
+      } else {
+        print('fail to load..');
+      }
     });
   }
 

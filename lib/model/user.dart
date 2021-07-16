@@ -10,8 +10,8 @@ final rTAlarmTime = 'room_temp_shelf_life_alarm';
 
 class User {
   String userID;
-  final DateTime creationTime;
-  final String refrigeratorID;
+  DateTime creationTime;
+  String refrigeratorID;
   int refrigerationAlarm;
   bool isRefShelf;
   int frozenAlarm;
@@ -21,7 +21,7 @@ class User {
   DateTime lastSignIn;
   String profileImageReference;
   String userName;
-  String tokens;
+  List<String> tokens;
 
   //final DocumentReference reference;
 
@@ -38,7 +38,7 @@ class User {
     required DateTime lastSignIn,
     required String profileImageReference,
     required String userName,
-    required String tokens,
+    required List<String> tokens,
     //required DocumentReference reference
   })  : this.userID = userID,
         this.creationTime = creationTime,
