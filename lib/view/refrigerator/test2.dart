@@ -8,33 +8,131 @@ import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'package:mangodevelopment/widgetController/foodSectionController.dart';
 
 import '../../color.dart';
 import 'addFoodDirect.dart';
 
-class TestRefPage extends StatelessWidget {
-  TestRefPage({Key? key}) : super(key: key);
+class TestRefPage extends StatefulWidget {
+  String title;
+  TestRefPage({Key? key, required String title}) : title = title;
 
-  late UserViewModel _user;
-  ShowFoodsController _controller = Get.put(new ShowFoodsController());
-  TestRefViewModel _refrigerator = Get.put(new TestRefViewModel());
+  @override
+  _TestRefPageState createState() => _TestRefPageState();
+}
+
+class _TestRefPageState extends State<TestRefPage> {
+  int currentTab = 0;
+
+  late UserViewModel user;
+
+  ShowFoodsController controller = Get.put(new ShowFoodsController());
+
+  TestRefViewModel refrigerator = Get.put(new TestRefViewModel());
 
   @override
   Widget build(BuildContext context) {
-    _user = Get.find<UserViewModel>();
-    _refrigerator.loadRefID(rID: _user.user.value.refrigeratorID);
+    user = Get.find<UserViewModel>();
+    refrigerator.loadRefID(rID: user.user.value.refrigeratorID);
+    // print(refrigerator.ref.value.rID);
+    print(user.user.value.isRefShelf);
+    print(user.user.value.refrigerationAlarm);
+
+    print(user.user.value.isFroShelf);
+    print(user.user.value.frozenAlarm);
+
+    print(user.user.value.isRTShelf);
+    print(user.user.value.roomTempAlarm);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('테스트 페이지'),
+        title: Text(widget.title),
+        centerTitle: true,
       ),
-      body: ListView(
+      body: Column(
         children: [
-          TestFoodSections(title: '냉장', idx: 0),
-          TestFoodSections(title: '냉동', idx: 1),
-          TestFoodSections(title: '실온', idx: 2)
+          Container(
+              height: 50,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      tabView(title: '유통기한별 보기', idx: 0),
+                      tabView(title: '한눈에 보기', idx: 1),
+                      tabView(title: '카테고리별 보기', idx: 2),
+                    ],
+                  ),
+                ],
+              )),
+          Container(
+            height: deviceHeight - 200,
+            child: ListView(
+              children: [
+                currentTab == 0
+                    ? Container(
+                        child: Text('유통기한별 보기'),
+                      )
+                    : currentTab == 1
+                        ? secondTab()
+                        : thirdTab(),
+              ],
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  Widget tabView({required String title, required int idx}) {
+    return Container(
+      width: 130,
+      height: 40,
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: currentTab == idx
+                  ? BorderSide(color: Orange700)
+                  : BorderSide.none)),
+      child: TextButton(
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.subtitle1!.copyWith(
+              color: currentTab == idx ? Orange700 : MangoDisabledColor),
+        ),
+        onPressed: () {
+          setState(() {
+            currentTab = idx;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget secondTab() {
+    return Column(
+      children: [
+        TestFoodSections(title: '냉장', idx: 0),
+        TestFoodSections(title: '냉동', idx: 1),
+        TestFoodSections(title: '실온', idx: 2)
+      ],
+    );
+  }
+
+  Widget thirdTab() {
+    return Column(
+      children: [
+        TestFoodSections(title: '과일', idx: 3),
+        TestFoodSections(title: '채소', idx: 4),
+        TestFoodSections(title: '우유/유제품', idx: 5),
+        TestFoodSections(title: '수산물', idx: 6),
+        TestFoodSections(title: '곡물', idx: 7),
+        TestFoodSections(title: '조미료/양념', idx: 8),
+        TestFoodSections(title: '육류', idx: 9),
+        TestFoodSections(title: '냉장/냉동식품', idx: 10),
+        TestFoodSections(title: '베이커리', idx: 11),
+        TestFoodSections(title: '김치/반찬', idx: 12),
+        TestFoodSections(title: '즉석식품', idx: 13),
+        TestFoodSections(title: '물/음료', idx: 14)
+      ],
     );
   }
 }
@@ -60,8 +158,14 @@ class TestFoodSections extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () async {
-                await _controller.loadFoodsWithStoreType(
-                    rID: _refrigerator.ref.value.rID, storeType: idx);
+                if (idx < 3)
+                  await _controller.loadFoodsWithStoreType(
+                      rID: _refrigerator.ref.value.rID, storeType: idx);
+                else
+                  await _controller.loadFoodsWithCategory(
+                      rID: _refrigerator.ref.value.rID,
+                      idx: idx,
+                      category: title);
 
                 _controller.addFoods(
                     food: _controller.foods.value.showRefFoods[idx], idx: idx);
@@ -105,9 +209,11 @@ class TestFoodSections extends StatelessWidget {
                           child: Text('냉장고가 비었습니다.'),
                         )
                       : Container(
-                          height:
-                              _controller.foods.value.showRefFoods[idx].length *
-                                  100,
+                          height: ((_controller.foods.value.showRefFoods[idx]
+                                          .length /
+                                      3) +
+                                  1) *
+                              150,
                           child: GridView.count(
                             crossAxisCount: 3,
                             childAspectRatio: 50 / 60,

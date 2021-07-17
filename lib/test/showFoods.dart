@@ -15,8 +15,44 @@ class ShowFoods {
 }
 
 class ShowFoodsController extends GetxController {
-  var foods =
-      ShowFoods.init(foodList: [[], [], []], isFolds: [true, true, true]).obs;
+  var foods = ShowFoods.init(foodList: [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ], isFolds: [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ]).obs;
+  //
+  // changeView({required int view}) {
+  //   viewType = view;
+  //   update();
+  // }
 
   changeBool({required bool isFold, required int idx}) {
     foods.update((val) {
@@ -50,6 +86,24 @@ class ShowFoodsController extends GetxController {
         });
       });
       print(foods.value.showRefFoods[storeType].length);
+    });
+  }
+
+  loadFoodsWithCategory(
+      {required String rID, required int idx, required String category}) async {
+    await FirebaseFirestore.instance
+        .collection('myFood')
+        .where('rId', isEqualTo: rID)
+        .where('category', isEqualTo: category)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        foods.update((val) {
+          val?.showRefFoods[idx]
+              .add(TemporaryFood.fromSnapshot(element.data()));
+        });
+      });
+      print(foods.value.showRefFoods[idx].length);
     });
   }
 }

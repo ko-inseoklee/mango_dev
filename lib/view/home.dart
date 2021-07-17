@@ -51,7 +51,9 @@ class HomePageState extends State<HomePage> {
                 // SubRefrigeratorPage(
                 //   title: '나의 냉장고',
                 // ),
-                TestRefPage(),
+                TestRefPage(
+                  title: '나의 냉장고',
+                ),
                 MarketPage(title: '마켓 페이지'),
                 TradePage(title: '거래 광장 페이지'),
                 NutritionPage(title: '영양 정보 페이지'),
