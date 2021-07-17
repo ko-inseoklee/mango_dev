@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../../../app.dart';
-import 'dialog.dart';
+import 'imageSelectCard.dart';
 
-class ImageSelectDialog extends StatefulWidget {
-  @override
-  _ImageSelectDialogState createState() => _ImageSelectDialogState();
-}
+class ImageSelectDialog extends StatelessWidget {
 
-class _ImageSelectDialogState extends State<ImageSelectDialog> {
+  UserViewModel _userViewModelController = Get.find<UserViewModel>();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -18,7 +17,10 @@ class _ImageSelectDialogState extends State<ImageSelectDialog> {
           width: deviceWidth, child: Center(child: Text('프로필 사진 수정'))),
       content: Container(
         height: 150 * (deviceWidth / prototypeWidth),
-        child: imageSelectCard(),
+        child: imageSelectCard(onTapCamera: () { }, onTapGallery: () async{
+          await getGalleryImage().then((value) => _userViewModelController.user.value.profileImageReference = value);
+          Get.back();
+        },),
       ),
     );
   }
