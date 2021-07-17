@@ -19,6 +19,8 @@ const Orange700 = Color(0xFFFE9700);
 const Red200 = Color(0xFFF8CBBB);
 const Red500 = Color(0xFFEE7243);
 
+const Purple100 = Color(0xFFCBCCE7);
+const Purple200 = Color(0xFFA9ACD7);
 const Purple500 = Color(0xFF5B57AE);
 
 const MangoWhite = Colors.white;

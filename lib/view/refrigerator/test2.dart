@@ -137,11 +137,13 @@ class TestFoodSections extends StatelessWidget {
 
   late ShowFoodsController _controller;
   late TestRefViewModel _refrigerator;
+  late UserViewModel user;
 
   @override
   Widget build(BuildContext context) {
     _controller = Get.find<ShowFoodsController>();
     _refrigerator = Get.find<TestRefViewModel>();
+    user = Get.find<UserViewModel>();
 
     return Container(
       child: Column(
@@ -226,17 +228,38 @@ class TestFoodSections extends StatelessWidget {
   }
 
   Widget _buildFoodCard(TemporaryFood food, BuildContext context) {
+    int registerRef = user.user.value.refrigerationAlarm;
+    int registerFro = user.user.value.frozenAlarm;
+    int registerRT = user.user.value.roomTempAlarm;
+
     return TextButton(
       onPressed: () {},
       child: Card(
         child: Stack(
           children: [
             Container(
-              color: food.status
+              color: food.displayType
                   ? food.shelfLife.difference(DateTime.now()).inDays <= 0
                       ? Red200
                       : MangoWhite
-                  : MangoWhite,
+                  : food.method == 0
+                      ? DateTime.now().difference(food.registrationDay).inDays >
+                              registerRef
+                          ? Purple100
+                          : MangoWhite
+                      : food.method == 1
+                          ? DateTime.now()
+                                      .difference(food.registrationDay)
+                                      .inDays >
+                                  registerFro
+                              ? Purple100
+                              : MangoWhite
+                          : DateTime.now()
+                                      .difference(food.registrationDay)
+                                      .inDays >
+                                  registerRT
+                              ? Purple100
+                              : MangoWhite,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -276,10 +299,69 @@ class TestFoodSections extends StatelessWidget {
               ),
             ),
             Positioned(
-              width: 60,
-              height: 25,
-              child: !food.status
-                  ? Container(child: Text(''))
+              width: 70,
+              height: 30,
+              child: !food.displayType
+                  ? food.method == 0
+                      ? DateTime.now().difference(food.registrationDay).inDays >
+                              registerRef
+                          ? Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: Purple100,
+                                  borderRadius: BorderRadius.circular(5),
+                                  border: Border.all(color: Purple200)),
+                              child: Text(
+                                'STABLE',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(
+                                        color: Purple500,
+                                        fontWeight: FontWeight.w700),
+                              ))
+                          : Text('')
+                      : food.method == 1
+                          ? DateTime.now()
+                                      .difference(food.registrationDay)
+                                      .inDays >
+                                  registerFro
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Purple100,
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(color: Purple200)),
+                                  child: Text(
+                                    'STABLE',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(
+                                            color: Purple500,
+                                            fontWeight: FontWeight.w700),
+                                  ))
+                              : Text('')
+                          : DateTime.now()
+                                      .difference(food.registrationDay)
+                                      .inDays >
+                                  registerRT
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      color: Purple100,
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(color: Purple200)),
+                                  child: Text(
+                                    'STABLE',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .subtitle1!
+                                        .copyWith(
+                                            color: Purple500,
+                                            fontWeight: FontWeight.w700),
+                                  ))
+                              : Text('')
                   : food.shelfLife.difference(DateTime.now()).inDays <= 0
                       ? Container(
                           alignment: Alignment.center,
