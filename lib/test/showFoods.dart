@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
+import 'package:mangodevelopment/viewModel/foodViewModel.dart';
 
 class ShowFoods {
   List<List<TemporaryFood>> showRefFoods = [];
@@ -48,11 +49,6 @@ class ShowFoodsController extends GetxController {
     true,
     true
   ]).obs;
-  //
-  // changeView({required int view}) {
-  //   viewType = view;
-  //   update();
-  // }
 
   changeBool({required bool isFold, required int idx}) {
     foods.update((val) {

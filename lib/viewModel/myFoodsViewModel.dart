@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/myFood.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
+import 'package:mangodevelopment/viewModel/foodViewModel.dart';
 
 class MyFoodsViewModel extends GetxController {
   List<TemporaryFood>? foods;

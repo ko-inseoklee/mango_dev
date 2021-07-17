@@ -6,9 +6,8 @@ import 'package:mangodevelopment/test/showFoods.dart';
 import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
-import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
+import 'package:mangodevelopment/viewModel/foodViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
-import 'package:mangodevelopment/widgetController/foodSectionController.dart';
 
 import '../../color.dart';
 import 'addFoodDirect.dart';
@@ -34,15 +33,6 @@ class _TestRefPageState extends State<TestRefPage> {
   Widget build(BuildContext context) {
     user = Get.find<UserViewModel>();
     refrigerator.loadRefID(rID: user.user.value.refrigeratorID);
-    // print(refrigerator.ref.value.rID);
-    print(user.user.value.isRefShelf);
-    print(user.user.value.refrigerationAlarm);
-
-    print(user.user.value.isFroShelf);
-    print(user.user.value.frozenAlarm);
-
-    print(user.user.value.isRTShelf);
-    print(user.user.value.roomTempAlarm);
 
     return Scaffold(
       appBar: AppBar(
@@ -239,39 +229,92 @@ class TestFoodSections extends StatelessWidget {
     return TextButton(
       onPressed: () {},
       child: Card(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
           children: [
-            Image.asset(
-                'images/category/${categoryImg[translateToKo(food.category)]}'),
             Container(
-                padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
-                    Text(
-                      food.name,
-                      style: Theme.of(context).textTheme.subtitle2,
-                    ),
-                    Spacer(),
-                    Text(food.number.toString() + '개')
-                  ],
-                )),
-            Container(
-              padding: EdgeInsets.only(left: 12.0),
-              alignment: Alignment.centerLeft,
-              child: food.displayType
-                  ? Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(color: Red500, fontSize: 12.0))
-                  : Text('${DateFormat.yMd().format(food.registrationDay)}일 등록',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(color: Purple500, fontSize: 12.0)),
+              color: food.status
+                  ? food.shelfLife.difference(DateTime.now()).inDays <= 0
+                      ? Red200
+                      : MangoWhite
+                  : MangoWhite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                      'images/category/${categoryImg[translateToKo(food.category)]}'),
+                  Container(
+                      padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          Text(
+                            food.name,
+                            style: Theme.of(context).textTheme.subtitle2,
+                          ),
+                          Spacer(),
+                          Text(food.number.toString() + '개')
+                        ],
+                      )),
+                  Container(
+                    padding: EdgeInsets.only(left: 12.0),
+                    alignment: Alignment.centerLeft,
+                    child: food.displayType
+                        ? Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(color: Red500, fontSize: 12.0))
+                        : Text(
+                            '${DateFormat.yMd().format(food.registrationDay)}일 등록',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(color: Purple500, fontSize: 12.0)),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              width: 60,
+              height: 25,
+              child: !food.status
+                  ? Container(child: Text(''))
+                  : food.shelfLife.difference(DateTime.now()).inDays <= 0
+                      ? Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Red200,
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Orange700)),
+                          child: Text(
+                            'OVER',
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                                    color: Red500, fontWeight: FontWeight.w700),
+                          ))
+                      : food.shelfLife.difference(DateTime.now()).inDays <= 7
+                          ? Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Red200,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                'D-${food.shelfLife.difference(DateTime.now()).inDays + 1}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle1!
+                                    .copyWith(
+                                        color: Red500,
+                                        fontWeight: FontWeight.w700),
+                              ),
+                            )
+                          : Container(),
+              left: 5,
+              top: 5,
             ),
           ],
         ),
