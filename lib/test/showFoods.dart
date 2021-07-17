@@ -81,7 +81,6 @@ class ShowFoodsController extends GetxController {
               .add(TemporaryFood.fromSnapshot(element.data()));
         });
       });
-      print(foods.value.showRefFoods[storeType].length);
     });
   }
 

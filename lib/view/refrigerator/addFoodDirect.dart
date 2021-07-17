@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/view/widget/comingSoon.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/viewModel/foodViewModel.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
@@ -49,8 +51,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
-
-    print(_refrigerator.refID);
 
     maxIdx = foods.length;
 
@@ -111,10 +111,31 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                 color: Orange400, borderRadius: BorderRadius.circular(10)),
             child: TextButton(
               onPressed: () async {
-                await MyFoodsViewModel()
-                    .addFoods(_refrigerator.refID, foods)
-                    .then((value) => print('ok'));
-                await _refrigerator.loadFoods().then((value) => Get.back());
+                bool isFilled = true;
+                foods.forEach((element) {
+                  if (element.name == '-' ||
+                      element.category == '-' ||
+                      element.number == 0) {
+                    isFilled = false;
+                  }
+                });
+                if (isFilled) {
+                  await MyFoodsViewModel()
+                      .addFoods(_refrigerator.refID, foods)
+                      .then((value) => print('ok'));
+                  await _refrigerator.loadFoods().then((value) => Get.back());
+                } else {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return mangoDialog(
+                            dialogTitle: '품목 정보 입력',
+                            contentText: '정보가 모두 기입되지 않았습니다.',
+                            onTapOK: () {},
+                            hasOK: false);
+                      });
+                }
+
                 //TODO: push refrigerator.
               },
               child: Text(
