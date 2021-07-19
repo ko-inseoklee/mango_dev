@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/analyze/textAI.dart';
 
 import '../../../app.dart';
 import '../../../color.dart';
@@ -86,7 +87,7 @@ Widget imageSelectCard(){
             ],
           ),
           onPressed: () {
-            Get.to(CameraPage());
+            Get.to(TextAI());
           },
         ),
       ),
