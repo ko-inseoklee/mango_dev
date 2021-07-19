@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
-import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+import 'package:mangodevelopment/model/food.dart';
 
 class ShowFoods {
   List<List<TemporaryFood>> showRefFoods = [];
@@ -54,6 +54,14 @@ class ShowFoodsController extends GetxController {
     foods.update((val) {
       val!.showInOnceIsFolds[idx] = isFold;
     });
+  }
+
+  setWidget({required TemporaryFood food}) {
+    int idx = 0;
+
+    food.selectedWidget.forEach((element) {});
+
+    return idx;
   }
 
   addFoods({required List<TemporaryFood> food, required int idx}) {

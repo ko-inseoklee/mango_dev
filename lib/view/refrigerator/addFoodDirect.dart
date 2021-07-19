@@ -9,10 +9,11 @@ import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
-import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../color.dart';
@@ -28,6 +29,7 @@ class AddFoodDirectPage extends StatefulWidget {
 
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   late RefrigeratorViewModel _refrigerator;
+  late UserViewModel user;
 
   List<TemporaryFood> foods = [];
 
@@ -51,6 +53,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
+    user = Get.find();
 
     maxIdx = foods.length;
 
@@ -120,6 +123,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                   }
                 });
                 if (isFilled) {
+                  setWidget();
+
                   await MyFoodsViewModel()
                       .addFoods(_refrigerator.refID, foods)
                       .then((value) => print('ok'));
@@ -163,6 +168,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
         shelfLife: DateTime.now(),
         registrationDay: DateTime.now(),
         selectedWidget: [
+          false,
+          false,
           false,
           false,
           false,
@@ -912,5 +919,46 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   String convertDate(DateTime time) {
     return '${time.year}.${time.month}.${time.day}';
+  }
+
+  setWidget() {
+    foods.forEach((element) {
+      element.selectedWidget[setTrue(element)] = true;
+    });
+  }
+
+  setTrue(TemporaryFood food) {
+    if (!food.selectedWidget[7]) {
+      if (food.displayType) {
+        if (food.shelfLife.difference(DateTime.now()).inDays <= 0)
+          return 6;
+        else if (food.shelfLife.difference(DateTime.now()).inDays <= 7)
+          return 5;
+        else
+          return 4;
+      } else {
+        if (food.method == 0) {
+          if (DateTime.now().difference(food.registrationDay).inDays >
+              user.user.value.refrigerationAlarm)
+            return 1;
+          else
+            return 0;
+        } else if (food.method == 1) {
+          if (DateTime.now().difference(food.registrationDay).inDays >
+              user.user.value.frozenAlarm)
+            return 2;
+          else
+            return 0;
+        } else {
+          if (DateTime.now().difference(food.registrationDay).inDays >
+              user.user.value.refrigerationAlarm)
+            return 1;
+          else
+            return 0;
+        }
+      }
+    } else {
+      return 7;
+    }
   }
 }

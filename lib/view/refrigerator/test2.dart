@@ -6,7 +6,7 @@ import 'package:mangodevelopment/test/showFoods.dart';
 import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
-import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../../color.dart';

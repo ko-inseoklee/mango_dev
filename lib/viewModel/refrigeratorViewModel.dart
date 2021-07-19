@@ -5,7 +5,7 @@ import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 
 import '../main.dart';
 import '../model/refrigerator.dart';
-import 'foodViewModel.dart';
+import '../model/food.dart';
 
 CollectionReference refCollection =
     FirebaseFirestore.instance.collection('refrigerator');

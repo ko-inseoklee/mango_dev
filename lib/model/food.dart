@@ -4,7 +4,7 @@ class TemporaryFood {
   final String fId;
   final String rId;
   int idx;
-  //
+  // 삭제 or not
   bool status;
   String name;
   int number;
@@ -16,13 +16,23 @@ class TemporaryFood {
   DateTime shelfLife;
   DateTime registrationDay;
 
+  bool registerNormal;
+  bool registerRefAbnormal;
+  bool registerFroAbnormal;
+  bool registerRTAbnormal;
+  bool shelfNormal;
+  bool shelfDDay;
+  bool shelfOver;
+  bool isModify;
   /*
   0: registerNormal
-  1: registerAbnormal
-  2: shelfNormal
-  3: shelfDDay
-  4: shelfOver
-  5: isModify
+  1: registerRefAbnormal
+  2: registerFroAbnormal
+  3: registerRTAbnormal
+  4: shelfNormal
+  5: shelfDDay
+  6: shelfOver
+  7: isModify
    */
   List<bool> selectedWidget;
 
@@ -64,6 +74,8 @@ class TemporaryFood {
         shelfLife = DateTime.now(),
         registrationDay = DateTime.now(),
         selectedWidget = [
+          false,
+          false,
           false,
           false,
           false,
