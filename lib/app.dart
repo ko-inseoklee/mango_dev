@@ -22,9 +22,6 @@ var prototypeHeight = 812.0;
 var platform = true;
 
 Future<void> saveTokenToDatabase(String token) async {
-  // TODO: change to current userID
-
-
   String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
   // print('userID = ' + userId);
 
@@ -66,7 +63,6 @@ class _MangoAppState extends State<MangoApp> {
         // Get.to(route2);
       }
     });
-
 
     //opened in foreground
     FirebaseMessaging.onMessage.listen((message) {

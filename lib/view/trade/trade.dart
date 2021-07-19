@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/widget/postCardWidget.dart';
 import 'package:mangodevelopment/viewModel/push_test.dart';
 
 class TradePage extends StatefulWidget {
@@ -13,6 +15,8 @@ class TradePage extends StatefulWidget {
 }
 
 class _TradePageState extends State<TradePage> {
+  List<Post> Posts = localPostList.loadPostList();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,22 +30,34 @@ class _TradePageState extends State<TradePage> {
         title: Text(widget.title),
         centerTitle: true,
       ),
-      body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          InkWell(
-            onTap: (){
-              Get.to(Test());
-            },
-            child: Image(
-              image: AssetImage('images/login/logo.png'),
-            ),
-          ),
-          Text(
-            '친구를 추가해서 \n거래를 시작해보세요',
-            textAlign: TextAlign.center,
-          ),
-        ]),
-      ),
+      body: ListView.builder(
+          itemCount: Posts.length,
+          itemBuilder: (context, int index) {
+            return MangoPostCard(
+                food: Posts[index].foodName,
+                owner: Posts[index].uid,
+                min: Posts[index].registTime.minute,
+                text: Posts[index].subtitle,
+                num: Posts[index].num,
+                due: Posts[index].shelfLife);
+          }),
+      // Center(
+
+      // child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      // InkWell(
+      //   onTap: (){
+      //     Get.to(Test());
+      //   },
+      //   child: Image(
+      //     image: AssetImage('images/login/logo.png'),
+      //   ),
+      // ),
+      // Text(
+      //   '친구를 추가해서 \n거래를 시작해보세요',
+      //   textAlign: TextAlign.center,
+      // ),
+      // ]),
+      // ),
     );
   }
 }
