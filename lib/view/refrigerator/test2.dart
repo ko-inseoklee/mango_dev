@@ -97,6 +97,10 @@ class _TestRefPageState extends State<TestRefPage> {
     );
   }
 
+  Widget firstTab() {
+    return Column(children: []);
+  }
+
   Widget secondTab() {
     return Column(
       children: [
@@ -124,6 +128,19 @@ class _TestRefPageState extends State<TestRefPage> {
         TestFoodSections(title: '물/음료', idx: 14)
       ],
     );
+  }
+}
+
+class ShowWithShelf extends StatelessWidget {
+  ShowWithShelf({Key? key}) : super(key: key);
+
+  late UserViewModel user;
+  late TestRefViewModel refrigerator;
+  late ShowFoodsController foods;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
 

@@ -4,14 +4,27 @@ class TemporaryFood {
   final String fId;
   final String rId;
   int idx;
+  //
   bool status;
   String name;
   int number;
   String category;
+  // 냉장, 냉동, 실온
   int method;
   bool displayType;
+  // 유통기한, 표시기준
   DateTime shelfLife;
   DateTime registrationDay;
+
+  /*
+  0: registerNormal
+  1: registerAbnormal
+  2: shelfNormal
+  3: shelfDDay
+  4: shelfOver
+  5: isModify
+   */
+  List<bool> selectedWidget;
 
   TemporaryFood(
       {required this.fId,
@@ -24,7 +37,8 @@ class TemporaryFood {
       required int method,
       required bool displayType,
       required DateTime shelfLife,
-      required DateTime registrationDay})
+      required DateTime registrationDay,
+      required List<bool> selectedWidget})
       : idx = index,
         status = status,
         name = name,
@@ -33,7 +47,8 @@ class TemporaryFood {
         method = method,
         displayType = displayType,
         shelfLife = shelfLife,
-        registrationDay = registrationDay;
+        registrationDay = registrationDay,
+        selectedWidget = selectedWidget;
   String get getName => name;
 
   TemporaryFood.init()
@@ -47,7 +62,15 @@ class TemporaryFood {
         method = 0,
         displayType = true,
         shelfLife = DateTime.now(),
-        registrationDay = DateTime.now();
+        registrationDay = DateTime.now(),
+        selectedWidget = [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ];
 
   TemporaryFood.fromSnapshot(Map<String, dynamic> food)
       : rId = food['rId'],
@@ -60,5 +83,6 @@ class TemporaryFood {
         method = food['storeType'],
         shelfLife = food['shelfLife'].toDate(),
         registrationDay = food['registrationDay'].toDate(),
-        displayType = food['displayType'];
+        displayType = food['displayType'],
+        selectedWidget = food['selectedWidget'];
 }

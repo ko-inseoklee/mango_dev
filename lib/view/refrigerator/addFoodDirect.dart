@@ -161,7 +161,15 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
         method: 0,
         displayType: true,
         shelfLife: DateTime.now(),
-        registrationDay: DateTime.now());
+        registrationDay: DateTime.now(),
+        selectedWidget: [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ]);
     foods.add(temp);
 
     currentIdx = maxIdx;
