@@ -6,7 +6,10 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/view/widget/comingSoon.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
+import 'package:mangodevelopment/viewModel/foodViewModel.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
@@ -48,8 +51,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
-
-    print(_refrigerator.refID);
 
     maxIdx = foods.length;
 
@@ -110,14 +111,31 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                 color: Orange400, borderRadius: BorderRadius.circular(10)),
             child: TextButton(
               onPressed: () async {
-                await MyFoodsViewModel()
-                    .addFoods(_refrigerator.refID, foods)
-                    .then((value) => print('ok'));
-                await _refrigerator
-                    .loadFoods()
-                    .then((value) => Get.off(HomePage(
-                          title: '홈페이지',
-                        )));
+                bool isFilled = true;
+                foods.forEach((element) {
+                  if (element.name == '-' ||
+                      element.category == '-' ||
+                      element.number == 0) {
+                    isFilled = false;
+                  }
+                });
+                if (isFilled) {
+                  await MyFoodsViewModel()
+                      .addFoods(_refrigerator.refID, foods)
+                      .then((value) => print('ok'));
+                  await _refrigerator.loadFoods().then((value) => Get.back());
+                } else {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return mangoDialog(
+                            dialogTitle: '품목 정보 입력',
+                            contentText: '정보가 모두 기입되지 않았습니다.',
+                            onTapOK: () {},
+                            hasOK: false);
+                      });
+                }
+
                 //TODO: push refrigerator.
               },
               child: Text(
@@ -143,7 +161,15 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
         method: 0,
         displayType: true,
         shelfLife: DateTime.now(),
-        registrationDay: DateTime.now());
+        registrationDay: DateTime.now(),
+        selectedWidget: [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+        ]);
     foods.add(temp);
 
     currentIdx = maxIdx;
@@ -888,79 +914,3 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
     return '${time.year}.${time.month}.${time.day}';
   }
 }
-
-class TemporaryFood {
-  final String fId;
-  final String rId;
-  int idx;
-  bool status;
-  String name;
-  int number;
-  String category;
-  int method;
-  bool displayType;
-  DateTime shelfLife;
-  DateTime registrationDay;
-
-  TemporaryFood(
-      {required this.fId,
-      required this.rId,
-      required int index,
-      required bool status,
-      required String name,
-      required int num,
-      required String category,
-      required int method,
-      required bool displayType,
-      required DateTime shelfLife,
-      required DateTime registrationDay})
-      : idx = index,
-        status = status,
-        name = name,
-        number = num,
-        category = category,
-        method = method,
-        displayType = displayType,
-        shelfLife = shelfLife,
-        registrationDay = registrationDay;
-  String get getName => name;
-
-  TemporaryFood.init(int index, DateTime shelfLife, DateTime registrationDay)
-      : rId = Uuid().v4(),
-        fId = Uuid().v4(),
-        idx = index,
-        status = true,
-        name = '-',
-        number = 0,
-        category = '-',
-        method = 0,
-        displayType = true,
-        shelfLife = shelfLife,
-        registrationDay = registrationDay;
-
-  // TemporaryFood(
-  // index: maxIdx,
-  // status: true,
-  // name: '-',
-  // num: 0,
-  // category: '-',
-  // method: 0,
-  // displayType: true,
-  // shelfLife: convertDate(DateTime.now()),
-  // registrationDay: convertDate(DateTime.now()));
-
-  TemporaryFood.fromSnapshot(Map<String, dynamic> food)
-      : rId = food['rId'],
-        fId = food['fId'],
-        idx = 0,
-        status = true,
-        name = food['name'],
-        number = food['number'],
-        category = food['category'],
-        method = food['storeType'],
-        shelfLife = food['shelfLife'].toDate(),
-        registrationDay = food['registrationDay'].toDate(),
-        displayType = food['displayType'];
-}
-
-// Refrigerator.fromSnapshot(Map<String, dynamic> data) : refID = data['refID'];

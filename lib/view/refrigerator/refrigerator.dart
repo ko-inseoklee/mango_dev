@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/widget/foodSections.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
+import 'package:mangodevelopment/viewModel/foodViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
-import 'package:mangodevelopment/widgetController/foodSectionController.dart';
 import '../../app.dart';
 import '../widget/appBar.dart';
 import 'addFoodDirect.dart';
@@ -122,8 +122,6 @@ class _ShowInOnceState extends State<ShowInOnce> {
 
   bool isSelected = true;
   List<String> _tempFoodsID = [];
-
-  var refrigeratorSectionController = Get.put(FoodSectionsController());
 
   @override
   void initState() {

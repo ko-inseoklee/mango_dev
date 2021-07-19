@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
+import 'package:mangodevelopment/viewModel/foodViewModel.dart';
 
 import '../../color.dart';
 

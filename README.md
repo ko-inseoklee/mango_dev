@@ -21,5 +21,8 @@ A new Flutter project.
         인식에 따른 유사 음식 추천 - AI 활용 등록방법 적용 후 추가.
 
     - screen uil package 사용하기. (개발 이후)
-    - Get빌더 사용해서 푸드 섹션 변경하기.
-    - setstate 먹이지 않고 화면 변경하는 법.
+    - boolean 값들에 따라 보여주는 각각의 위젯을 빌드해주는 방식으로 변경하기
+        - AddFood할때, 각각의 bool값들의 연산을 DB에 입력시키기
+
+
+    - 빌드를 다시하면 로그은 페이지로 넘어감.

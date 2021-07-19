@@ -5,6 +5,7 @@ import 'package:mangodevelopment/view/market/market.dart';
 import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
+import 'package:mangodevelopment/view/refrigerator/test2.dart';
 import 'package:mangodevelopment/view/refrigerator/testRefri.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -37,6 +38,8 @@ class HomePageState extends State<HomePage> {
         .loadRefrigerator(_userViewModelController.user.value.refrigeratorID);
     print('${_refrigeratorViewModel.refrigerator.value.refID}');
 
+    // print(_refrigeratorViewModel.refrigerator.value.refID);
+
     return GetBuilder<MangoBNBController>(
       init: _controller,
       builder: (_) {
@@ -45,10 +48,13 @@ class HomePageState extends State<HomePage> {
             child: IndexedStack(
               index: _controller.tabIndex.value,
               children: [
-                RefrigeratorPage(title: '나의 냉장고'),
+                // RefrigeratorPage(title: '나의 냉장고'),
                 // SubRefrigeratorPage(
                 //   title: '나의 냉장고',
                 // ),
+                TestRefPage(
+                  title: '나의 냉장고',
+                ),
                 MarketPage(title: '마켓 페이지'),
                 TradePage(title: '거래 광장 페이지'),
                 NutritionPage(title: '영양 정보 페이지'),
