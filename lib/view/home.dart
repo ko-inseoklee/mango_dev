@@ -35,6 +35,7 @@ class HomePageState extends State<HomePage> {
     _refrigeratorViewModel = Get.put(RefrigeratorViewModel());
     _refrigeratorViewModel
         .loadRefrigerator(_userViewModelController.user.value.refrigeratorID);
+    print('${_refrigeratorViewModel.refrigerator.value.refID}');
 
     return GetBuilder<MangoBNBController>(
       init: _controller,

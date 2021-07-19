@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectDialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -12,6 +13,7 @@ import 'dart:io';
 
 import '../../app.dart';
 import '../../color.dart';
+import 'myPage.dart';
 
 class MyPageEdit extends StatefulWidget {
   @override
@@ -25,11 +27,11 @@ class _MyPageEditState extends State<MyPageEdit> {
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
 
-  var _image;
-  bool isImageChange = false;
-
   @override
   Widget build(BuildContext context) {
+    String _preProfileImage =
+        userViewModelController.user.value.profileImageReference;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('내 정보 수정'),
@@ -37,10 +39,8 @@ class _MyPageEditState extends State<MyPageEdit> {
         leading: IconButton(
           icon: Text('취소'),
           onPressed: () {
-            print(isImageChange);
-            setState(() {
-              isImageChange = false;
-            });
+            userViewModelController.user.value.profileImageReference =
+                _preProfileImage;
             Get.back();
           },
         ),
@@ -52,16 +52,8 @@ class _MyPageEditState extends State<MyPageEdit> {
               _nameController.text != ""
                   ? userViewModelController.userName = "${_nameController.text}"
                   : null;
-              // ignore: unnecessary_statements
-              isImageChange == true
-                  ? userViewModelController.user.value.profileImageReference =
-                      _image.path
-                  : null;
               await userViewModelController
                   .updateUserInfo(Get.find<Authentication>().user!.uid);
-              setState(() {
-                isImageChange = false;
-              });
               Get.back();
             },
           ),
@@ -94,33 +86,21 @@ class _MyPageEditState extends State<MyPageEdit> {
                                 ),
                               ),
                             )
-                          : isImageChange == false
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.file(
-                                    File(userViewModelController
-                                        .user.value.profileImageReference),
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                )
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.file(
-                                    File(_image.path),
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                ),
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(50),
+                              child: Image.file(
+                                File(userViewModelController
+                                    .user.value.profileImageReference),
+                                width: 90 * deviceWidth / prototypeWidth,
+                                height: 90 * deviceWidth / prototypeWidth,
+                                fit: BoxFit.fitHeight,
+                              ),
+                            ),
                       Positioned(
                         left: 44 * deviceWidth / prototypeWidth,
                         top: 50 * deviceWidth / prototypeWidth,
                         child: ElevatedButton(
-                          //TODO. onPressed => 수정 : camera / gallery
                           onPressed: () {
-                            //getGalleryImage();
                             Get.dialog(ImageSelectDialog());
                           },
                           child: Icon(Icons.camera_alt, color: Colors.white),
@@ -212,8 +192,15 @@ class _MyPageEditState extends State<MyPageEdit> {
                   settingMenu(
                     menuName: "로그아웃",
                     onTap: () async {
-                      await _auth.signOut();
-                      await Get.offAll(LogInPage(title: ''));
+                      Get.dialog(mangoDialog(
+                        hasOK: true,
+                        dialogTitle: '로그아웃',
+                        onTapOK: () async {
+                          await _auth.signOut();
+                          await Get.offAll(LogInPage(title: ''));
+                        },
+                        contentText: '정말로 로그아웃 하시겠습니까?',
+                      ));
                     },
                     trailingWidth: 10,
                     trailing: SizedBox(),
@@ -221,8 +208,15 @@ class _MyPageEditState extends State<MyPageEdit> {
                   settingMenu(
                     menuName: "회원탈퇴",
                     onTap: () async {
-                      await userViewModelController.deleteUser(_auth.user!.uid);
-                      await Get.offAll(LogInPage(title: ''));
+                      Get.dialog(mangoDialog(
+                          dialogTitle: '회원탈퇴',
+                          contentText: '정말로 회원탈퇴 하시겠습니까?',
+                          onTapOK: () async {
+                            await userViewModelController
+                                .deleteUser(_auth.user!.uid);
+                            await Get.offAll(LogInPage(title: ''));
+                          },
+                          hasOK: true));
                     },
                     trailingWidth: 10,
                     trailing: SizedBox(),
@@ -234,14 +228,5 @@ class _MyPageEditState extends State<MyPageEdit> {
         ),
       ),
     );
-  }
-
-  getGalleryImage() async {
-    ImagePicker imagePicker = ImagePicker();
-    var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
-    setState(() {
-      _image = pickedFile;
-      isImageChange = true;
-    });
   }
 }
