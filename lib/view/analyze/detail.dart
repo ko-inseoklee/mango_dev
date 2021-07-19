@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-// import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:get/get.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 
 class DetailScreen extends StatefulWidget {
   final String imagePath;
@@ -97,6 +98,11 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Image Details"),
+        leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
+          Get.back();
+          Get.back();
+          Get.back();
+        },),
       ),
       body: _imageSize != null
           ? Stack(

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:mangodevelopment/view/analyze/textAI.dart';
-import 'package:mangodevelopment/view/camera.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
-import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
+import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 
 import '../../app.dart';
 import '../../color.dart';
+import '../camera.dart';
 
 class AddFoodSheet extends StatefulWidget {
   const AddFoodSheet({Key? key}) : super(key: key);
@@ -110,7 +109,8 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
             SizedBox(
               height: 30 * (deviceWidth / prototypeWidth),
             ),
-            imageSelectCard(),
+            //TODO. onTapGallery needed!
+            imageSelectCard(onTapGallery: () {  }, onTapCamera: () { CameraPage(); },),
             Container(
               height: 40 * (deviceHeight / prototypeHeight),
             ),
