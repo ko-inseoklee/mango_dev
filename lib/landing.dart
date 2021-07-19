@@ -1,11 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/login/addUserInfo.dart';
 import 'package:mangodevelopment/view/widget/mangoIndicator.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
-import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'view/home.dart';
@@ -19,6 +18,26 @@ class Landing extends StatefulWidget {
 class _LandingState extends State<Landing> {
   Authentication authController = Get.put(Authentication());
 
+  // Future<SharedPreferences>_prefs = SharedPreferences.getInstance();
+  // late Future<String> _id;
+  //
+  // Future<void> loadId(BuildContext context) async{
+  //   final SharedPreferences prefs = await _prefs;
+  //   final String id = (prefs.getString('id') ?? authController.user!.uid);
+  //
+  //   setState(() {
+  //     _id = prefs.setString('id', id).then((value){ return id;});
+  //   });
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    authController.id = authController.prefs.then((SharedPreferences prefs) {
+      return (prefs.getString('id') ?? '');
+    });
+  }
+
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   // if (Platform.isIOS) iOS_Permission();
@@ -30,27 +49,31 @@ class _LandingState extends State<Landing> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    print('exitUSer? ${authController.exitUser.value}');
-
-    return authController.user == null
-        ? LogInPage(
-            title: 'hi',
-          )
-        : authController.exitUser.value
-            ? FutureBuilder(
-                future: authController.hasData(authController.user!.uid),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData == false) {
-                    return MangoCircularIndicator();
-                  } else if (snapshot.data == false) {
-                    return AddUserInfoPage();
-                  } else {
-                    //userViewModelController.setUserInfo(authController.user!.uid);
-                    return HomePage(title: 'hi');
-                  }
-                })
-            : LogInPage(
-                title: 'hi',
-              );
+    return FutureBuilder<String>(
+        future: authController.id,
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+              return MangoCircularIndicator();
+            default:
+              if (snapshot.data == '') {
+                return LogInPage(title: 'hi');
+              } else {
+                return FutureBuilder(
+                    future: authController.hasData(authController.user!.uid),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData == false) {
+                        return MangoCircularIndicator();
+                      } else if (snapshot.data == false) {
+                        //_prefs!.setString('id', authController.user!.uid);
+                        return AddUserInfoPage();
+                      } else {
+                        //_prefs!.setString('id', authController.user!.uid);
+                        return HomePage(title: 'hi');
+                      }
+                    });
+              }
+          }
+        });
   }
 }

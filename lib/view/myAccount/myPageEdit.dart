@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/login/login.dart';
-import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectDialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
@@ -212,6 +210,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                           dialogTitle: '회원탈퇴',
                           contentText: '정말로 회원탈퇴 하시겠습니까?',
                           onTapOK: () async {
+                            await _auth.signOut();
                             await userViewModelController
                                 .deleteUser(_auth.user!.uid);
                             await Get.offAll(LogInPage(title: ''));
