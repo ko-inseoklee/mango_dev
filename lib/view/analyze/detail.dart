@@ -16,9 +16,9 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   late final String _imagePath;
-  // late final TextDetector _textDetector;
+  late final TextDetector _textDetector;
   Size? _imageSize;
-  // List<TextElement> _elements = [];
+  List<TextElement> _elements = [];
 
   List<String>? _listStrings;
 
@@ -47,30 +47,25 @@ class _DetailScreenState extends State<DetailScreen> {
     _getImageSize(File(_imagePath));
 
     // Creating an InputImage object using the image path
-    // final inputImage = InputImage.fromFilePath(_imagePath);
+    final inputImage = InputImage.fromFilePath(_imagePath);
 
     // Retrieving the RecognisedText from the InputImage
-    // final text = await _textDetector.processImage(inputImage);
+    final text = await _textDetector.processImage(inputImage);
 
-    // Regular expression for verifying an email address
-    // String pattern =
-    //     r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
-    // RegExp regEx = RegExp(pattern);
-    //
     List<String> stringList = [];
 
 // Finding and storing the text String(s)
-//     for (TextBlock block in text.textBlocks) {
-//       for (TextLine line in block.textLines) {
-//         // if (regEx.hasMatch(line.lineText)) {
-//         stringList.add(line.lineText);
-//         // }
-//
-//         for (TextElement element in line.textElements) {
-//           _elements.add(element);
-//         }
-//       }
-//     }
+    for (TextBlock block in text.textBlocks) {
+      for (TextLine line in block.textLines) {
+        // if (regEx.hasMatch(line.lineText)) {
+        stringList.add(line.lineText);
+        // }
+
+        for (TextElement element in line.textElements) {
+          _elements.add(element);
+        }
+      }
+    }
 
     setState(() {
       _listStrings = stringList;
@@ -81,7 +76,7 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     _imagePath = widget.imagePath;
     // Initializing the text detector
-    // _textDetector = GoogleMlKit.vision.textDetector();
+    _textDetector = GoogleMlKit.vision.textDetector();
     _recognizeText();
     super.initState();
   }
@@ -89,7 +84,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void dispose() {
     // Disposing the text detector when not used anymore
-    // _textDetector.close();
+    _textDetector.close();
     super.dispose();
   }
 
@@ -98,11 +93,14 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Image Details"),
-        leading: IconButton(icon: Icon(Icons.arrow_back),onPressed: (){
-          Get.back();
-          Get.back();
-          Get.back();
-        },),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.back();
+            Get.back();
+            Get.back();
+          },
+        ),
       ),
       body: _imageSize != null
           ? Stack(
@@ -182,6 +180,7 @@ class TextDetectorPainter extends CustomPainter {
   );
 
   final Size absoluteImageSize;
+
   // final List<TextElement> elements;
 
   @override
