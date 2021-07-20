@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectDialog.dart';
@@ -11,7 +12,6 @@ import 'dart:io';
 
 import '../../app.dart';
 import '../../color.dart';
-import 'myPage.dart';
 
 class MyPageEdit extends StatefulWidget {
   @override
@@ -24,6 +24,8 @@ class _MyPageEditState extends State<MyPageEdit> {
 
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
+
+  PickedFile? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -84,16 +86,27 @@ class _MyPageEditState extends State<MyPageEdit> {
                                 ),
                               ),
                             )
-                          : ClipRRect(
-                              borderRadius: BorderRadius.circular(50),
-                              child: Image.file(
-                                File(userViewModelController
-                                    .user.value.profileImageReference),
-                                width: 90 * deviceWidth / prototypeWidth,
-                                height: 90 * deviceWidth / prototypeWidth,
-                                fit: BoxFit.fitHeight,
-                              ),
-                            ),
+                          : _image == null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.file(
+                                    File(userViewModelController
+                                        .user.value.profileImageReference),
+                                    width: 90 * deviceWidth / prototypeWidth,
+                                    height: 90 * deviceWidth / prototypeWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                )
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.file(
+                                    File(userViewModelController
+                                        .user.value.profileImageReference),
+                                    width: 90 * deviceWidth / prototypeWidth,
+                                    height: 90 * deviceWidth / prototypeWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                ),
                       Positioned(
                         left: 44 * deviceWidth / prototypeWidth,
                         top: 50 * deviceWidth / prototypeWidth,
