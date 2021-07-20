@@ -25,7 +25,7 @@ Future<void> saveTokenToDatabase(String token) async {
   String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
 
   await FirebaseFirestore.instance.collection('user').doc(userId).update({
-    'tokens': FieldValue.arrayUnion([token]),
+    'tokens': token,
   });
 }
 
@@ -80,6 +80,7 @@ class _MangoAppState extends State<MangoApp> {
     //when user taps on the notification
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if (message.notification != null) {
+
         print(message.notification!.body);
         print(message.notification!.title);
         //print route from message
