@@ -45,8 +45,6 @@ class MangoApp extends StatefulWidget {
 }
 
 class _MangoAppState extends State<MangoApp> {
-  late String _token;
-
   @override
   void initState() {
     super.initState();
@@ -54,38 +52,39 @@ class _MangoAppState extends State<MangoApp> {
     FirebaseMessaging.instance.getInitialMessage();
 
     getDeviceToken();
+
     //give message of notification on which user taps
     //open app from terminated state
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         print(message.notification!.body);
         print(message.notification!.title);
+
         // final route2 = message.data['route'];
         // Get.to(route2);
       }
     });
 
-    //opened in foreground
+    // //opened in foreground
     FirebaseMessaging.onMessage.listen((message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
+
       if (message.notification != null) {
+        Get.snackbar(message.notification!.title as String,
+            message.notification!.body as String);
         // flutterLocalNoification
         print(message.notification!.body);
         print(message.notification!.title);
       }
     });
 
-    //opened in background
-    //when user taps on the notification
+    // //opened in background
+    // //when user taps on the notification
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if (message.notification != null) {
-
         print(message.notification!.body);
         print(message.notification!.title);
         //print route from message
         // final route = message.data['route'];
-        // Get.to(route);
       }
     });
   }

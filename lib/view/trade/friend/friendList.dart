@@ -232,7 +232,7 @@ class _FriendListPageState extends State<FriendListPage> {
       trailing: !_edit
           ? IconButton(
               onPressed: () {
-                sendFriendRequest(docs.get('tokens'));
+                // sendFriendRequest(docs.get('tokens'));
               },
               icon: Icon(Icons.send))
           : ElevatedButton(
