@@ -102,15 +102,23 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                           ))
                       .toList();
 
+                  // TODO: check if chat page is null
+                  var empty = true;
+                  if (docs.length != 0) empty = false;
+
                   return Stack(
                     children: <Widget>[
                       Container(
-                        child: ListView(
-                          controller: scrollController,
-                          children: <Widget>[
-                            ...messages,
-                          ],
-                        ),
+                        child: empty
+                            ? Center(
+                                child: Text('채팅을 시작해 보세요'),
+                              )
+                            : ListView(
+                                controller: scrollController,
+                                children: <Widget>[
+                                  ...messages,
+                                ],
+                              ),
                       ),
                       Container(
                         child: Padding(
