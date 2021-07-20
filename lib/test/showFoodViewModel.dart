@@ -6,7 +6,8 @@ import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'showFood.dart';
 
 class ShowFoodsController extends GetxController {
-  var foods = ShowFoods.init(foodsLength: 0, allFold: true, foodList: [
+  var foods =
+      ShowFoods.init(currentTab: 0, foodsLength: 0, allFold: true, foodList: [
     [],
     [],
     [],
@@ -52,6 +53,12 @@ class ShowFoodsController extends GetxController {
     true
   ]).obs;
 
+  changeViewmode({required int viewMode}) {
+    foods.update((val) {
+      val!.currentTab = viewMode;
+    });
+  }
+
   changeBool({required bool isFold, required int idx}) {
     foods.update((val) {
       val!.showInOnceIsFolds[idx] = isFold;
@@ -61,6 +68,12 @@ class ShowFoodsController extends GetxController {
   addFoods({required List<TemporaryFood> food, required int idx}) {
     foods.update((val) {
       val!.showRefFoods[idx] = food;
+    });
+  }
+
+  clearFoods({required int idx}) {
+    foods.update((val) {
+      val!.showRefFoods[idx].clear();
     });
   }
 
@@ -88,12 +101,6 @@ class ShowFoodsController extends GetxController {
     });
   }
 
-  clearFoods({required int idx}) {
-    foods.update((val) {
-      val!.showRefFoods[idx].clear();
-    });
-  }
-
   getFoodsLength({required String rID}) async {
     await FirebaseFirestore.instance
         .collection('myFood')
@@ -107,6 +114,9 @@ class ShowFoodsController extends GetxController {
   }
 
   loadAllFoods({required String rID}) async {
+    for (int i = 0; i <= 20; i++) {
+      this.clearFoods(idx: i);
+    }
     await loadFoodsWithShelfOver(rID: rID);
     await loadFoodsWithShelfDDay(rID: rID);
     await loadFoodsWithRefRegister(rID: rID);

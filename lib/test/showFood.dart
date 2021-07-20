@@ -7,15 +7,18 @@ class ShowFoods {
   List<bool> showInOnceIsFolds = [];
 
   int foodsLength;
+  int currentTab;
   bool allFold;
 
   ShowFoods.init(
       {required List<List<TemporaryFood>> foodList,
       required bool allFold,
       required int foodsLength,
+      required int currentTab,
       required List<bool> isFolds})
       : showRefFoods = foodList,
         allFold = allFold,
+        currentTab = currentTab,
         foodsLength = foodsLength,
         showInOnceIsFolds = isFolds;
 }

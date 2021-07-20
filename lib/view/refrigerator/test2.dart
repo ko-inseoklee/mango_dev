@@ -21,8 +21,6 @@ class TestRefPage extends StatefulWidget {
 }
 
 class _TestRefPageState extends State<TestRefPage> {
-  int currentTab = 0;
-
   late UserViewModel user;
 
   ShowFoodsController controller = Get.put(new ShowFoodsController());
@@ -60,9 +58,18 @@ class _TestRefPageState extends State<TestRefPage> {
                 children: [
                   Row(
                     children: [
-                      tabView(title: '유통기한별 보기', idx: 0),
-                      tabView(title: '한눈에 보기', idx: 1),
-                      tabView(title: '카테고리별 보기', idx: 2),
+                      Obx(() {
+                        return tabView(title: '유통기한별 보기', idx: 0);
+                      }),
+                      Obx(() {
+                        return tabView(title: '한눈에 보기', idx: 1);
+                      }),
+                      Obx(() {
+                        return tabView(title: '카테고리별 보기', idx: 2);
+                      }),
+                      // tabView(title: '유통기한별 보기', idx: 0),
+                      // tabView(title: '한눈에 보기', idx: 1),
+                      // tabView(title: '카테고리별 보기', idx: 2),
                     ],
                   ),
                 ],
@@ -87,7 +94,7 @@ class _TestRefPageState extends State<TestRefPage> {
                     child: TextButton(
                   onPressed: () {
                     controller.foldAll(
-                        storeType: currentTab,
+                        storeType: controller.foods.value.currentTab,
                         isFold: controller.foods.value.allFold);
                   },
                   child: Obx(() {
@@ -107,11 +114,13 @@ class _TestRefPageState extends State<TestRefPage> {
             height: deviceHeight - 237,
             child: ListView(
               children: [
-                currentTab == 0
-                    ? firstTab()
-                    : currentTab == 1
-                        ? secondTab()
-                        : thirdTab(),
+                Obx(() {
+                  return controller.foods.value.currentTab == 0
+                      ? firstTab()
+                      : controller.foods.value.currentTab == 1
+                          ? secondTab()
+                          : thirdTab();
+                })
               ],
             ),
           ),
@@ -126,19 +135,19 @@ class _TestRefPageState extends State<TestRefPage> {
       height: 40,
       decoration: BoxDecoration(
           border: Border(
-              bottom: currentTab == idx
+              bottom: controller.foods.value.currentTab == idx
                   ? BorderSide(color: Orange700)
                   : BorderSide.none)),
       child: TextButton(
         child: Text(
           title,
           style: Theme.of(context).textTheme.subtitle1!.copyWith(
-              color: currentTab == idx ? Orange700 : MangoDisabledColor),
+              color: controller.foods.value.currentTab == idx
+                  ? Orange700
+                  : MangoDisabledColor),
         ),
         onPressed: () {
-          setState(() {
-            currentTab = idx;
-          });
+          controller.changeViewmode(viewMode: idx);
         },
       ),
     );
@@ -225,60 +234,9 @@ class TestFoodSections extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () async {
-                // switch (idx) {
-                //   case 0:
-                //     await _controller.loadFoodsWithStoreType(
-                //         rID: _refrigerator.ref.value.rID, storeType: idx);
-                //     break;
-                //   case 1:
-                //     await _controller.loadFoodsWithStoreType(
-                //         rID: _refrigerator.ref.value.rID, storeType: idx);
-                //     break;
-                //   case 2:
-                //     await _controller.loadFoodsWithStoreType(
-                //         rID: _refrigerator.ref.value.rID, storeType: idx);
-                //     break;
-                //   case 15:
-                //     await _controller.loadFoodsWithShelfDDay(
-                //         rID: _refrigerator.ref.value.rID);
-                //     break;
-                //   case 16:
-                //     await _controller.loadFoodsWithRefRegister(
-                //       rID: _refrigerator.ref.value.rID,
-                //     );
-                //     break;
-                //   case 17:
-                //     await _controller.loadFoodsWithFroRegister(
-                //       rID: _refrigerator.ref.value.rID,
-                //     );
-                //     break;
-                //   case 18:
-                //     await _controller.loadFoodsWithRTRegister(
-                //       rID: _refrigerator.ref.value.rID,
-                //     );
-                //     break;
-                //   case 19:
-                //     await _controller.loadFoodsNormal(
-                //         rID: _refrigerator.ref.value.rID);
-                //     break;
-                //   case 20:
-                //     await _controller.loadFoodsWithShelfOver(
-                //         rID: _refrigerator.ref.value.rID);
-                //     break;
-                //   default:
-                //     await _controller.loadFoodsWithCategory(
-                //         rID: _refrigerator.ref.value.rID,
-                //         idx: idx,
-                //         category: title);
-                // }
-                // _controller.addFoods(
-                //     food: _controller.foods.value.showRefFoods[idx], idx: idx);
                 _controller.changeBool(
                     isFold: !_controller.foods.value.showInOnceIsFolds[idx],
                     idx: idx);
-                // if (_controller.foods.value.showInOnceIsFolds[idx]) {
-                //   _controller.clearFoods(idx: idx);
-                // }
               },
               child: Row(
                 children: [
@@ -341,40 +299,271 @@ class TestFoodSections extends StatelessWidget {
   }
 
   Widget _buildFoodCard(TemporaryFood food, BuildContext context) {
-    int registerRef = user.user.value.refrigerationAlarm;
-    int registerFro = user.user.value.frozenAlarm;
-    int registerRT = user.user.value.roomTempAlarm;
+    if (food.isModify)
+      return normalCard(food, context);
+    else if (food.shelfOver)
+      return shelfOverCard(food, context);
+    else if (food.shelfDDay)
+      return shelfDDayCard(food, context);
+    else if (food.registerRTAbnormal ||
+        food.registerFroAbnormal ||
+        food.registerRefAbnormal)
+      return registStaleCard(food, context);
+    else
+      return normalCard(food, context);
+  }
 
+  // Widget cCard(){
+  //   return TextButton(
+  //     onPressed: () {},
+  //     child: Stack(
+  //       children: [
+  //         Container(
+  //           decoration: BoxDecoration(
+  //               color: food.displayType
+  //                   ? food.shelfLife.difference(DateTime.now()).inDays <= 0
+  //                   ? Red200
+  //                   : MangoWhite
+  //                   : food.method == 0
+  //                   ? DateTime.now()
+  //                   .difference(food.registrationDay)
+  //                   .inDays >
+  //                   registerRef
+  //                   ? Purple100
+  //                   : MangoWhite
+  //                   : food.method == 1
+  //                   ? DateTime.now()
+  //                   .difference(food.registrationDay)
+  //                   .inDays >
+  //                   registerFro
+  //                   ? Purple100
+  //                   : MangoWhite
+  //                   : DateTime.now()
+  //                   .difference(food.registrationDay)
+  //                   .inDays >
+  //                   registerRT
+  //                   ? Purple100
+  //                   : MangoWhite,
+  //               borderRadius: BorderRadius.circular(10),
+  //               border: Border.all(color: MangoDisabledColorLight, width: 2.0)),
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             crossAxisAlignment: CrossAxisAlignment.center,
+  //             children: [
+  //               Image.asset(
+  //                   'images/category/${categoryImg[translateToKo(food.category)]}'),
+  //               Container(
+  //                   padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+  //                   alignment: Alignment.centerLeft,
+  //                   child: Row(
+  //                     children: [
+  //                       Text(
+  //                         food.name,
+  //                         style: Theme.of(context).textTheme.subtitle2,
+  //                       ),
+  //                       Spacer(),
+  //                       Text(
+  //                         food.number.toString() + '개',
+  //                         style:
+  //                         Theme.of(context).textTheme.subtitle2!.copyWith(),
+  //                       )
+  //                     ],
+  //                   )),
+  //               Container(
+  //                 padding: EdgeInsets.only(left: 12.0),
+  //                 alignment: Alignment.centerLeft,
+  //                 child: food.displayType
+  //                     ? Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
+  //                     style: Theme.of(context)
+  //                         .textTheme
+  //                         .bodyText2!
+  //                         .copyWith(color: Red500, fontSize: 12.0))
+  //                     : Text(
+  //                     '${DateFormat.yMd().format(food.registrationDay)}일 등록',
+  //                     style: Theme.of(context)
+  //                         .textTheme
+  //                         .bodyText2!
+  //                         .copyWith(color: Purple500, fontSize: 12.0)),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         Positioned(
+  //           width: 70,
+  //           height: 30,
+  //           child: !food.displayType
+  //               ? food.method == 0
+  //               ? DateTime.now().difference(food.registrationDay).inDays >
+  //               registerRef
+  //               ? Container(
+  //               alignment: Alignment.center,
+  //               decoration: BoxDecoration(
+  //                   color: Purple100,
+  //                   borderRadius: BorderRadius.circular(5),
+  //                   border: Border.all(color: Purple200)),
+  //               child: Text(
+  //                 'STALE',
+  //                 style: Theme.of(context)
+  //                     .textTheme
+  //                     .subtitle1!
+  //                     .copyWith(
+  //                     color: Purple500,
+  //                     fontWeight: FontWeight.w700,
+  //                     fontSize: 22.0),
+  //               ))
+  //               : Text('')
+  //               : food.method == 1
+  //               ? DateTime.now()
+  //               .difference(food.registrationDay)
+  //               .inDays >
+  //               registerFro
+  //               ? Container(
+  //               alignment: Alignment.center,
+  //               decoration: BoxDecoration(
+  //                   color: Purple100,
+  //                   borderRadius: BorderRadius.circular(5),
+  //                   border: Border.all(color: Purple200)),
+  //               child: Text(
+  //                 'STALE',
+  //                 style: Theme.of(context)
+  //                     .textTheme
+  //                     .subtitle1!
+  //                     .copyWith(
+  //                     color: Purple500,
+  //                     fontWeight: FontWeight.w700,
+  //                     fontSize: 22.0),
+  //               ))
+  //               : Text('')
+  //               : DateTime.now()
+  //               .difference(food.registrationDay)
+  //               .inDays >
+  //               registerRT
+  //               ? Container(
+  //               alignment: Alignment.center,
+  //               decoration: BoxDecoration(
+  //                   color: Purple100,
+  //                   borderRadius: BorderRadius.circular(5),
+  //                   border: Border.all(color: Purple200)),
+  //               child: Text(
+  //                 'STALE',
+  //                 style: Theme.of(context)
+  //                     .textTheme
+  //                     .subtitle1!
+  //                     .copyWith(
+  //                     color: Purple500,
+  //                     fontWeight: FontWeight.w700,
+  //                     fontSize: 22.0),
+  //               ))
+  //               : Text('')
+  //               : food.shelfLife.difference(DateTime.now()).inDays <= 0
+  //               ? Container(
+  //               alignment: Alignment.center,
+  //               decoration: BoxDecoration(
+  //                   color: Red200,
+  //                   borderRadius: BorderRadius.circular(5),
+  //                   border: Border.all(color: Orange700)),
+  //               child: Text(
+  //                 'OVER',
+  //                 style: Theme.of(context)
+  //                     .textTheme
+  //                     .subtitle1!
+  //                     .copyWith(
+  //                     color: Red500,
+  //                     fontWeight: FontWeight.w700,
+  //                     fontSize: 22.0),
+  //               ))
+  //               : food.shelfLife.difference(DateTime.now()).inDays <= 7
+  //               ? Container(
+  //             alignment: Alignment.center,
+  //             decoration: BoxDecoration(
+  //               color: Red200,
+  //               borderRadius: BorderRadius.circular(5),
+  //             ),
+  //             child: Text(
+  //               'D-${food.shelfLife.difference(DateTime.now()).inDays + 1}',
+  //               style: Theme.of(context)
+  //                   .textTheme
+  //                   .subtitle1!
+  //                   .copyWith(
+  //                   color: Red500,
+  //                   fontWeight: FontWeight.w700,
+  //                   fontSize: 22.0),
+  //             ),
+  //           )
+  //               : Container(),
+  //           left: 5,
+  //           top: 5,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget normalCard(TemporaryFood food, BuildContext context) {
     return TextButton(
       onPressed: () {},
       child: Stack(
         children: [
           Container(
             decoration: BoxDecoration(
-                color: food.displayType
-                    ? food.shelfLife.difference(DateTime.now()).inDays <= 0
-                        ? Red200
-                        : MangoWhite
-                    : food.method == 0
-                        ? DateTime.now()
-                                    .difference(food.registrationDay)
-                                    .inDays >
-                                registerRef
-                            ? Purple100
-                            : MangoWhite
-                        : food.method == 1
-                            ? DateTime.now()
-                                        .difference(food.registrationDay)
-                                        .inDays >
-                                    registerFro
-                                ? Purple100
-                                : MangoWhite
-                            : DateTime.now()
-                                        .difference(food.registrationDay)
-                                        .inDays >
-                                    registerRT
-                                ? Purple100
-                                : MangoWhite,
+                color: MangoWhite,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: MangoDisabledColorLight, width: 2.0)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                    'images/category/${categoryImg[translateToKo(food.category)]}'),
+                Container(
+                    padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          food.name,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                        Spacer(),
+                        Text(
+                          food.number.toString() + '개',
+                          style:
+                              Theme.of(context).textTheme.subtitle2!.copyWith(),
+                        )
+                      ],
+                    )),
+                Container(
+                  padding: EdgeInsets.only(left: 12.0),
+                  alignment: Alignment.centerLeft,
+                  child: food.displayType
+                      ? Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2!
+                              .copyWith(color: Red500, fontSize: 12.0))
+                      : Text(
+                          '${DateFormat.yMd().format(food.registrationDay)}일 등록',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2!
+                              .copyWith(color: Purple500, fontSize: 12.0)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget shelfOverCard(TemporaryFood food, BuildContext context) {
+    return TextButton(
+      onPressed: () {},
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: Red200,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: MangoDisabledColorLight, width: 2.0)),
             child: Column(
@@ -422,106 +611,144 @@ class TestFoodSections extends StatelessWidget {
           Positioned(
             width: 70,
             height: 30,
-            child: !food.displayType
-                ? food.method == 0
-                    ? DateTime.now().difference(food.registrationDay).inDays >
-                            registerRef
-                        ? Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: Purple100,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: Purple200)),
-                            child: Text(
-                              'STALE',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1!
-                                  .copyWith(
-                                      color: Purple500,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 22.0),
-                            ))
-                        : Text('')
-                    : food.method == 1
-                        ? DateTime.now()
-                                    .difference(food.registrationDay)
-                                    .inDays >
-                                registerFro
-                            ? Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Purple100,
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(color: Purple200)),
-                                child: Text(
-                                  'STALE',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                          color: Purple500,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 22.0),
-                                ))
-                            : Text('')
-                        : DateTime.now()
-                                    .difference(food.registrationDay)
-                                    .inDays >
-                                registerRT
-                            ? Container(
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                    color: Purple100,
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(color: Purple200)),
-                                child: Text(
-                                  'STALE',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(
-                                          color: Purple500,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 22.0),
-                                ))
-                            : Text('')
-                : food.shelfLife.difference(DateTime.now()).inDays <= 0
-                    ? Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: Red200,
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(color: Orange700)),
-                        child: Text(
-                          'OVER',
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle1!
-                              .copyWith(
-                                  color: Red500,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 22.0),
-                        ))
-                    : food.shelfLife.difference(DateTime.now()).inDays <= 7
-                        ? Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Red200,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Text(
-                              'D-${food.shelfLife.difference(DateTime.now()).inDays + 1}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle1!
-                                  .copyWith(
-                                      color: Red500,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 22.0),
-                            ),
-                          )
-                        : Container(),
+            child: Text(
+              'OVER',
+              style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  color: Red500, fontWeight: FontWeight.w700, fontSize: 22.0),
+            ),
+            left: 5,
+            top: 5,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget shelfDDayCard(TemporaryFood food, BuildContext context) {
+    return TextButton(
+      onPressed: () {},
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: MangoWhite,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: MangoDisabledColorLight, width: 2.0)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                    'images/category/${categoryImg[translateToKo(food.category)]}'),
+                Container(
+                    padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          food.name,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                        Spacer(),
+                        Text(
+                          food.number.toString() + '개',
+                          style:
+                              Theme.of(context).textTheme.subtitle2!.copyWith(),
+                        )
+                      ],
+                    )),
+                Container(
+                  padding: EdgeInsets.only(left: 12.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text('${DateFormat.yMd().format(food.shelfLife)}일 까지',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(color: Red500, fontSize: 12.0)),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            child: Container(
+              alignment: Alignment.center,
+              width: 40,
+              height: 30,
+              decoration: BoxDecoration(
+                  color: Red200, borderRadius: BorderRadius.circular(5)),
+              child: Text(
+                'D-${food.shelfLife.difference(DateTime.now()).inDays + 1}',
+                style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                    color: Red500, fontWeight: FontWeight.w700, fontSize: 22.0),
+              ),
+            ),
+            left: 5,
+            top: 5,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget registStaleCard(TemporaryFood food, BuildContext context) {
+    return TextButton(
+      onPressed: () {},
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: Purple100,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Purple200, width: 2.0)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                    'images/category/${categoryImg[translateToKo(food.category)]}'),
+                Container(
+                    padding: EdgeInsets.fromLTRB(12.0, 0, 12.0, 6.0),
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          food.name,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                        Spacer(),
+                        Text(
+                          food.number.toString() + '개',
+                          style:
+                              Theme.of(context).textTheme.subtitle2!.copyWith(),
+                        )
+                      ],
+                    )),
+                Container(
+                  padding: EdgeInsets.only(left: 12.0),
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      '${DateFormat.yMd().format(food.registrationDay)}일 등록',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2!
+                          .copyWith(color: Purple500, fontSize: 12.0)),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            child: Container(
+                alignment: Alignment.center,
+                width: 70,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Purple100,
+                ),
+                child: Text('STALE',
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: Purple500,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 22.0))),
             left: 5,
             top: 5,
           ),

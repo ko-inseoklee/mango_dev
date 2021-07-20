@@ -5,6 +5,7 @@ import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
+import 'package:mangodevelopment/test/showFoodViewModel.dart';
 import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
@@ -31,6 +32,7 @@ class AddFoodDirectPage extends StatefulWidget {
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   late TestRefViewModel _refrigerator;
   late UserViewModel user;
+  late ShowFoodsController _showController;
 
   List<TemporaryFood> foods = [];
 
@@ -54,6 +56,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
+    _showController = Get.find();
 
     print('ref id == ${_refrigerator.ref.value.rID}');
     user = Get.find();
@@ -130,8 +133,16 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
                   await MyFoodsViewModel()
                       .addFoods(_refrigerator.ref.value.rID, foods)
-                      .then((value) => Get.back());
+                      .then((value) {
+                    for (int i = 0; i <= 20; i++) {
+                      _showController.clearFoods(idx: i);
+                    }
+                    _showController
+                        .loadAllFoods(rID: _refrigerator.ref.value.rID)
+                        .then((value) => Get.back());
+                  });
                   // await _refrigerator.loadFoods().then((value) => Get.back());
+
                 } else {
                   showDialog(
                       context: context,
@@ -983,8 +994,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
             return 0;
         } else {
           if (DateTime.now().difference(food.registrationDay).inDays >
-              user.user.value.refrigerationAlarm)
-            return 1;
+              user.user.value.roomTempAlarm)
+            return 3;
           else
             return 0;
         }
