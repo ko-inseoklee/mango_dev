@@ -111,7 +111,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   child: CustomPaint(
                     foregroundPainter: TextDetectorPainter(
                       _imageSize!,
-                      // _elements,
+                      _elements,
                     ),
                     child: AspectRatio(
                       aspectRatio: _imageSize!.aspectRatio,
@@ -174,14 +174,11 @@ class _DetailScreenState extends State<DetailScreen> {
 }
 
 class TextDetectorPainter extends CustomPainter {
-  TextDetectorPainter(
-    this.absoluteImageSize,
-    /*this.elements*/
-  );
+  TextDetectorPainter(this.absoluteImageSize, this.elements);
 
   final Size absoluteImageSize;
 
-  // final List<TextElement> elements;
+  final List<TextElement> elements;
 
   @override
   void paint(Canvas canvas, Size size) {

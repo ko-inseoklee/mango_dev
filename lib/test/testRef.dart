@@ -14,8 +14,6 @@ class TestRefViewModel extends GetxController {
   var ref = new TestRef.init(rID: '', uID: '').obs;
 
   loadRefID({required String rID}) async {
-    print("load start: rid == $rID");
-
     await FirebaseFirestore.instance
         .collection('refrigerator')
         .doc(rID)
@@ -27,7 +25,6 @@ class TestRefViewModel extends GetxController {
           val?.uID = data['userID'];
           val?.rID = data['refID'];
         });
-        print('success in the test Ref == ${ref.value.rID}');
       } else {
         print('Load Fail..');
       }

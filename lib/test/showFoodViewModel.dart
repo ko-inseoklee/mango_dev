@@ -6,7 +6,7 @@ import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'showFood.dart';
 
 class ShowFoodsController extends GetxController {
-  var foods = ShowFoods.init(foodsLength: 0, foodList: [
+  var foods = ShowFoods.init(foodsLength: 0, allFold: true, foodList: [
     [],
     [],
     [],
@@ -64,6 +64,30 @@ class ShowFoodsController extends GetxController {
     });
   }
 
+  foldAll({required int storeType, required bool isFold}) {
+    int from = 0;
+    int to = 0;
+    switch (storeType) {
+      case 1:
+        from = 0;
+        to = 2;
+        break;
+      case 2:
+        from = 3;
+        to = 14;
+        break;
+      default:
+        from = 15;
+        to = 20;
+    }
+    foods.update((val) {
+      for (int i = from; i <= to; i++) {
+        val!.showInOnceIsFolds[i] = isFold ? false : true;
+      }
+      val!.allFold = !val.allFold;
+    });
+  }
+
   clearFoods({required int idx}) {
     foods.update((val) {
       val!.showRefFoods[idx].clear();
@@ -71,7 +95,6 @@ class ShowFoodsController extends GetxController {
   }
 
   getFoodsLength({required String rID}) async {
-    print('get food == $rID');
     await FirebaseFirestore.instance
         .collection('myFood')
         .where('rId', isEqualTo: rID)
@@ -84,17 +107,17 @@ class ShowFoodsController extends GetxController {
   }
 
   loadAllFoods({required String rID}) async {
-    loadFoodsWithShelfOver(rID: rID);
-    loadFoodsWithShelfDDay(rID: rID);
-    loadFoodsWithRefRegister(rID: rID);
-    loadFoodsWithFroRegister(rID: rID);
-    loadFoodsWithRTRegister(rID: rID);
-    loadFoodsNormal(rID: rID);
+    await loadFoodsWithShelfOver(rID: rID);
+    await loadFoodsWithShelfDDay(rID: rID);
+    await loadFoodsWithRefRegister(rID: rID);
+    await loadFoodsWithFroRegister(rID: rID);
+    await loadFoodsWithRTRegister(rID: rID);
+    await loadFoodsNormal(rID: rID);
     for (int i = 0; i < 3; i++) {
-      loadFoodsWithStoreType(rID: rID, storeType: i);
+      await loadFoodsWithStoreType(rID: rID, storeType: i);
     }
     for (int i = 3; i < 15; i++) {
-      loadFoodsWithCategory(
+      await loadFoodsWithCategory(
         rID: rID,
         idx: i,
         category: categories[i - 3],

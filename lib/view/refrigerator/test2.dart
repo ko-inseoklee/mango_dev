@@ -35,15 +35,18 @@ class _TestRefPageState extends State<TestRefPage> {
     super.initState();
     user = Get.find<UserViewModel>();
     refrigerator.loadRefID(rID: user.user.value.refrigeratorID).then((value) {
-      print('on init = ${user.user.value.refrigeratorID}');
+      print('on init = ${refrigerator.ref.value.rID}');
+      controller
+          .loadAllFoods(rID: user.user.value.refrigeratorID)
+          .then((value) {
+        controller.getFoodsLength(rID: refrigerator.ref.value.rID);
+        print('on init 실온 == ${controller.foods.value.showRefFoods[3].length}');
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    controller.getFoodsLength(rID: refrigerator.ref.value.rID);
-    controller.loadAllFoods(rID: refrigerator.ref.value.rID);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -83,18 +86,15 @@ class _TestRefPageState extends State<TestRefPage> {
                 Container(
                     child: TextButton(
                   onPressed: () {
-                    switch (currentTab) {
-                      case 1:
-                        print('1');
-                        break;
-                      case 2:
-                        print('2');
-                        break;
-                      default:
-                        print('0');
-                    }
+                    controller.foldAll(
+                        storeType: currentTab,
+                        isFold: controller.foods.value.allFold);
                   },
-                  child: Text('모두 펼치기'),
+                  child: Obx(() {
+                    return controller.foods.value.allFold
+                        ? Text('모두 펼치기')
+                        : Text('모두 접기');
+                  }),
                 )),
                 Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.0),
