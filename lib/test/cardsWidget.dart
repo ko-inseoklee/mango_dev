@@ -3,7 +3,7 @@
 // import 'package:intl/intl.dart';
 // import 'package:mangodevelopment/color.dart';
 // import 'package:mangodevelopment/viewModel/categoryController.dart';
-// import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+// import 'package:mangodevelopment/viewModel/food.dart';
 //
 // class CardWidgets extends GetxController {
 //   Rx<TemporaryFood> food;

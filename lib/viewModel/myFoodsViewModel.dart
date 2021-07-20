@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/myFood.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
-import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+import 'package:mangodevelopment/model/food.dart';
 
 class MyFoodsViewModel extends GetxController {
   List<TemporaryFood>? foods;
@@ -67,6 +68,8 @@ class MyFoodsViewModel extends GetxController {
 
   Future<void> addFoods(String refID, List<TemporaryFood> foods) async {
     for (TemporaryFood food in foods) {
+      int i = 0;
+
       await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
         'fId': food.fId,
         'rId': food.rId,
@@ -77,6 +80,14 @@ class MyFoodsViewModel extends GetxController {
         'displayType': food.displayType,
         'shelfLife': food.shelfLife,
         'registrationDay': food.registrationDay,
+        'registerNormal': food.registerNormal,
+        'registerRefAbnormal': food.registerRefAbnormal,
+        'registerFroAbnormal': food.registerFroAbnormal,
+        'registerRTAbnormal': food.registerRTAbnormal,
+        'shelfNormal': food.shelfNormal,
+        'shelfDDay': food.shelfDDay,
+        'shelfOver': food.shelfOver,
+        'isModify': food.isModify
       });
     }
   }

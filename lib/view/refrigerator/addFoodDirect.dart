@@ -5,14 +5,16 @@ import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
+import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
-import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../color.dart';
@@ -27,7 +29,8 @@ class AddFoodDirectPage extends StatefulWidget {
 }
 
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
-  late RefrigeratorViewModel _refrigerator;
+  late TestRefViewModel _refrigerator;
+  late UserViewModel user;
 
   List<TemporaryFood> foods = [];
 
@@ -51,6 +54,9 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
+
+    print('ref id == ${_refrigerator.ref.value.rID}');
+    user = Get.find();
 
     maxIdx = foods.length;
 
@@ -120,10 +126,12 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                   }
                 });
                 if (isFilled) {
+                  setWidget();
+
                   await MyFoodsViewModel()
-                      .addFoods(_refrigerator.refID, foods)
-                      .then((value) => print('ok'));
-                  await _refrigerator.loadFoods().then((value) => Get.back());
+                      .addFoods(_refrigerator.ref.value.rID, foods)
+                      .then((value) => Get.back());
+                  // await _refrigerator.loadFoods().then((value) => Get.back());
                 } else {
                   showDialog(
                       context: context,
@@ -151,25 +159,26 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   void addChip() {
     var temp = new TemporaryFood(
-        rId: _refrigerator.refID,
-        fId: Uuid().v4(),
-        index: maxIdx,
-        status: true,
-        name: '-',
-        num: 0,
-        category: '-',
-        method: 0,
-        displayType: true,
-        shelfLife: DateTime.now(),
-        registrationDay: DateTime.now(),
-        selectedWidget: [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ]);
+      rId: _refrigerator.ref.value.rID,
+      fId: Uuid().v4(),
+      index: maxIdx,
+      status: true,
+      name: '-',
+      num: 0,
+      category: '-',
+      method: 0,
+      displayType: true,
+      shelfLife: DateTime.now(),
+      registrationDay: DateTime.now(),
+      shelfOver: false,
+      registerNormal: false,
+      shelfNormal: false,
+      registerFroAbnormal: false,
+      shelfDDay: false,
+      registerRefAbnormal: false,
+      registerRTAbnormal: false,
+      isModify: false,
+    );
     foods.add(temp);
 
     currentIdx = maxIdx;
@@ -912,5 +921,76 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   String convertDate(DateTime time) {
     return '${time.year}.${time.month}.${time.day}';
+  }
+
+  setWidget() {
+    foods.forEach((element) {
+      switch (setTrue(element)) {
+        case 0:
+          element.registerNormal = true;
+          break;
+        case 1:
+          element.registerRefAbnormal = true;
+          break;
+        case 2:
+          element.registerFroAbnormal = true;
+          break;
+        case 3:
+          element.registerRTAbnormal = true;
+          break;
+        case 4:
+          element.shelfNormal = true;
+          break;
+        case 5:
+          element.shelfDDay = true;
+          break;
+        case 6:
+          element.shelfOver = true;
+          break;
+
+        case 7:
+          element.isModify = true;
+          break;
+
+        default:
+          element.shelfNormal = true;
+          break;
+      }
+    });
+  }
+
+  setTrue(TemporaryFood food) {
+    if (!food.isModify) {
+      if (food.displayType) {
+        if (food.shelfLife.difference(DateTime.now()).inDays <= 0)
+          return 6;
+        else if (food.shelfLife.difference(DateTime.now()).inDays <= 7)
+          return 5;
+        else
+          return 4;
+      } else {
+        if (food.method == 0) {
+          if (DateTime.now().difference(food.registrationDay).inDays >
+              user.user.value.refrigerationAlarm)
+            return 1;
+          else
+            return 0;
+        } else if (food.method == 1) {
+          if (DateTime.now().difference(food.registrationDay).inDays >
+              user.user.value.frozenAlarm)
+            return 2;
+          else
+            return 0;
+        } else {
+          if (DateTime.now().difference(food.registrationDay).inDays >
+              user.user.value.refrigerationAlarm)
+            return 1;
+          else
+            return 0;
+        }
+      }
+    } else {
+      return 7;
+    }
   }
 }

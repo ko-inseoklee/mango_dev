@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/analyze/nutrition.dart';
 import 'package:mangodevelopment/view/market/market.dart';
 import 'package:mangodevelopment/view/myAccount/myPage.dart';
@@ -26,19 +27,19 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   MangoBNBController _controller = MangoBNBController();
   UserViewModel _userViewModelController = Get.put(UserViewModel());
-  late RefrigeratorViewModel _refrigeratorViewModel;
+  late TestRefViewModel _refrigeratorViewModel;
   Authentication authController = Get.find<Authentication>();
 
   @override
   Widget build(BuildContext context) {
-    _userViewModelController.setUserInfo(authController.user!.uid);
+    _userViewModelController
+        .setUserInfo(authController.user!.uid)
+        .then((value) {
+      _refrigeratorViewModel.loadRefID(
+          rID: _userViewModelController.user.value.refrigeratorID);
+    });
     _userViewModelController.makeFriendList(authController.user!.uid);
-    _refrigeratorViewModel = Get.put(RefrigeratorViewModel());
-    _refrigeratorViewModel
-        .loadRefrigerator(_userViewModelController.user.value.refrigeratorID);
-    print('${_refrigeratorViewModel.refrigerator.value.refID}');
-
-    // print(_refrigeratorViewModel.refrigerator.value.refID);
+    _refrigeratorViewModel = Get.put(TestRefViewModel());
 
     return GetBuilder<MangoBNBController>(
       init: _controller,

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
-import 'package:mangodevelopment/test/showFoods.dart';
+import 'package:mangodevelopment/test/showFoodViewModel.dart';
 import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
-import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../../color.dart';
@@ -30,9 +30,19 @@ class _TestRefPageState extends State<TestRefPage> {
   TestRefViewModel refrigerator = Get.put(new TestRefViewModel());
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     user = Get.find<UserViewModel>();
-    refrigerator.loadRefID(rID: user.user.value.refrigeratorID);
+    refrigerator.loadRefID(rID: user.user.value.refrigeratorID).then((value) {
+      print('on init = ${user.user.value.refrigeratorID}');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    controller.getFoodsLength(rID: refrigerator.ref.value.rID);
+    controller.loadAllFoods(rID: refrigerator.ref.value.rID);
 
     return Scaffold(
       appBar: AppBar(
@@ -55,13 +65,50 @@ class _TestRefPageState extends State<TestRefPage> {
                 ],
               )),
           Container(
-            height: deviceHeight - 200,
+            height: 40,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Obx(() {
+                    return Text(
+                      '전체 ${controller.foods.value.foodsLength} 개',
+                      style: Theme.of(context).textTheme.subtitle1,
+                    );
+                  }),
+                ),
+                Spacer(),
+                Container(
+                    child: TextButton(
+                  onPressed: () {
+                    switch (currentTab) {
+                      case 1:
+                        print('1');
+                        break;
+                      case 2:
+                        print('2');
+                        break;
+                      default:
+                        print('0');
+                    }
+                  },
+                  child: Text('모두 펼치기'),
+                )),
+                Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text('선택')),
+              ],
+            ),
+          ),
+          MangoDivider(),
+          Container(
+            height: deviceHeight - 237,
             child: ListView(
               children: [
                 currentTab == 0
-                    ? Container(
-                        child: Text('유통기한별 보기'),
-                      )
+                    ? firstTab()
                     : currentTab == 1
                         ? secondTab()
                         : thirdTab(),
@@ -98,7 +145,18 @@ class _TestRefPageState extends State<TestRefPage> {
   }
 
   Widget firstTab() {
-    return Column(children: []);
+    return Column(children: [
+      TestFoodSections(title: '유통기한 경과', idx: 20),
+      TestFoodSections(title: '유통기한 7일 이내', idx: 15),
+      TestFoodSections(
+          title: '구매일로부터 ${user.user.value.roomTempAlarm}일 경과 - 실온', idx: 18),
+      TestFoodSections(
+          title: '구매일로부터 ${user.user.value.refrigerationAlarm}일 경과 - 냉장',
+          idx: 16),
+      TestFoodSections(
+          title: '구매일로부터 ${user.user.value.frozenAlarm}일 경과 - 냉동', idx: 17),
+      TestFoodSections(title: '안심 Zone', idx: 19),
+    ]);
   }
 
   Widget secondTab() {
@@ -167,23 +225,60 @@ class TestFoodSections extends StatelessWidget {
         children: [
           TextButton(
               onPressed: () async {
-                if (idx < 3)
-                  await _controller.loadFoodsWithStoreType(
-                      rID: _refrigerator.ref.value.rID, storeType: idx);
-                else
-                  await _controller.loadFoodsWithCategory(
-                      rID: _refrigerator.ref.value.rID,
-                      idx: idx,
-                      category: title);
-
-                _controller.addFoods(
-                    food: _controller.foods.value.showRefFoods[idx], idx: idx);
+                // switch (idx) {
+                //   case 0:
+                //     await _controller.loadFoodsWithStoreType(
+                //         rID: _refrigerator.ref.value.rID, storeType: idx);
+                //     break;
+                //   case 1:
+                //     await _controller.loadFoodsWithStoreType(
+                //         rID: _refrigerator.ref.value.rID, storeType: idx);
+                //     break;
+                //   case 2:
+                //     await _controller.loadFoodsWithStoreType(
+                //         rID: _refrigerator.ref.value.rID, storeType: idx);
+                //     break;
+                //   case 15:
+                //     await _controller.loadFoodsWithShelfDDay(
+                //         rID: _refrigerator.ref.value.rID);
+                //     break;
+                //   case 16:
+                //     await _controller.loadFoodsWithRefRegister(
+                //       rID: _refrigerator.ref.value.rID,
+                //     );
+                //     break;
+                //   case 17:
+                //     await _controller.loadFoodsWithFroRegister(
+                //       rID: _refrigerator.ref.value.rID,
+                //     );
+                //     break;
+                //   case 18:
+                //     await _controller.loadFoodsWithRTRegister(
+                //       rID: _refrigerator.ref.value.rID,
+                //     );
+                //     break;
+                //   case 19:
+                //     await _controller.loadFoodsNormal(
+                //         rID: _refrigerator.ref.value.rID);
+                //     break;
+                //   case 20:
+                //     await _controller.loadFoodsWithShelfOver(
+                //         rID: _refrigerator.ref.value.rID);
+                //     break;
+                //   default:
+                //     await _controller.loadFoodsWithCategory(
+                //         rID: _refrigerator.ref.value.rID,
+                //         idx: idx,
+                //         category: title);
+                // }
+                // _controller.addFoods(
+                //     food: _controller.foods.value.showRefFoods[idx], idx: idx);
                 _controller.changeBool(
                     isFold: !_controller.foods.value.showInOnceIsFolds[idx],
                     idx: idx);
-                if (_controller.foods.value.showInOnceIsFolds[idx]) {
-                  _controller.clearFoods(idx: idx);
-                }
+                // if (_controller.foods.value.showInOnceIsFolds[idx]) {
+                //   _controller.clearFoods(idx: idx);
+                // }
               },
               child: Row(
                 children: [
@@ -222,10 +317,11 @@ class TestFoodSections extends StatelessWidget {
                                           .length /
                                       3) +
                                   1) *
-                              150,
+                              160,
                           child: GridView.count(
+                            // count 3,50,60 - 2,45,50
                             crossAxisCount: 3,
-                            childAspectRatio: 50 / 60,
+                            childAspectRatio: 55 / 70,
                             children: _buildFoodCards(
                                 _controller.foods.value.showRefFoods[idx],
                                 context),

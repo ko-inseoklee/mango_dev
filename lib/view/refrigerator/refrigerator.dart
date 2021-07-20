@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/widget/foodSections.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
-import 'package:mangodevelopment/viewModel/foodViewModel.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import '../../app.dart';
 import '../widget/appBar.dart';
