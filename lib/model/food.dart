@@ -16,6 +16,7 @@ class TemporaryFood {
   DateTime shelfLife;
   DateTime registrationDay;
 
+  //For making proper widget.
   bool registerNormal;
   bool registerRefAbnormal;
   bool registerFroAbnormal;
@@ -34,22 +35,28 @@ class TemporaryFood {
   6: shelfOver
   7: isModify
    */
-  List<bool> selectedWidget;
 
-  TemporaryFood(
-      {required this.fId,
-      required this.rId,
-      required int index,
-      required bool status,
-      required String name,
-      required int num,
-      required String category,
-      required int method,
-      required bool displayType,
-      required DateTime shelfLife,
-      required DateTime registrationDay,
-      required List<bool> selectedWidget})
-      : idx = index,
+  TemporaryFood({
+    required this.fId,
+    required this.rId,
+    required int index,
+    required bool status,
+    required String name,
+    required int num,
+    required String category,
+    required int method,
+    required bool displayType,
+    required DateTime shelfLife,
+    required DateTime registrationDay,
+    required bool registerNormal,
+    required bool registerRefAbnormal,
+    required bool registerFroAbnormal,
+    required bool registerRTAbnormal,
+    required bool shelfNormal,
+    required bool shelfDDay,
+    required bool shelfOver,
+    required bool isModify,
+  })  : idx = index,
         status = status,
         name = name,
         number = num,
@@ -58,7 +65,14 @@ class TemporaryFood {
         displayType = displayType,
         shelfLife = shelfLife,
         registrationDay = registrationDay,
-        selectedWidget = selectedWidget;
+        registerNormal = registerNormal,
+        registerRefAbnormal = registerRefAbnormal,
+        registerFroAbnormal = registerFroAbnormal,
+        registerRTAbnormal = registerRTAbnormal,
+        shelfNormal = shelfNormal,
+        shelfDDay = shelfDDay,
+        shelfOver = shelfOver,
+        isModify = isModify;
   String get getName => name;
 
   TemporaryFood.init()
@@ -73,16 +87,14 @@ class TemporaryFood {
         displayType = true,
         shelfLife = DateTime.now(),
         registrationDay = DateTime.now(),
-        selectedWidget = [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ];
+        registerNormal = false,
+        registerRefAbnormal = false,
+        registerFroAbnormal = false,
+        registerRTAbnormal = false,
+        shelfNormal = false,
+        shelfDDay = false,
+        shelfOver = false,
+        isModify = false;
 
   TemporaryFood.fromSnapshot(Map<String, dynamic> food)
       : rId = food['rId'],
@@ -96,5 +108,12 @@ class TemporaryFood {
         shelfLife = food['shelfLife'].toDate(),
         registrationDay = food['registrationDay'].toDate(),
         displayType = food['displayType'],
-        selectedWidget = food['selectedWidget'];
+        registerNormal = food['registerNormal'],
+        registerRefAbnormal = food['registerRefAbnormal'],
+        registerFroAbnormal = food['registerFroAbnormal'],
+        registerRTAbnormal = food['registerRTAbnormal'],
+        shelfNormal = food['shelfNormal'],
+        shelfDDay = food['shelfDDay'],
+        shelfOver = food['shelfOver'],
+        isModify = food['isModify'];
 }

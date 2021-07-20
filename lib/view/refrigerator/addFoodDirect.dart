@@ -5,6 +5,7 @@ import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
+import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
@@ -28,7 +29,7 @@ class AddFoodDirectPage extends StatefulWidget {
 }
 
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
-  late RefrigeratorViewModel _refrigerator;
+  late TestRefViewModel _refrigerator;
   late UserViewModel user;
 
   List<TemporaryFood> foods = [];
@@ -53,6 +54,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
+
+    print('ref id == ${_refrigerator.ref.value.rID}');
     user = Get.find();
 
     maxIdx = foods.length;
@@ -126,9 +129,9 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                   setWidget();
 
                   await MyFoodsViewModel()
-                      .addFoods(_refrigerator.refID, foods)
-                      .then((value) => print('ok'));
-                  await _refrigerator.loadFoods().then((value) => Get.back());
+                      .addFoods(_refrigerator.ref.value.rID, foods)
+                      .then((value) => Get.back());
+                  // await _refrigerator.loadFoods().then((value) => Get.back());
                 } else {
                   showDialog(
                       context: context,
@@ -156,27 +159,26 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   void addChip() {
     var temp = new TemporaryFood(
-        rId: _refrigerator.refID,
-        fId: Uuid().v4(),
-        index: maxIdx,
-        status: true,
-        name: '-',
-        num: 0,
-        category: '-',
-        method: 0,
-        displayType: true,
-        shelfLife: DateTime.now(),
-        registrationDay: DateTime.now(),
-        selectedWidget: [
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-          false,
-        ]);
+      rId: _refrigerator.ref.value.rID,
+      fId: Uuid().v4(),
+      index: maxIdx,
+      status: true,
+      name: '-',
+      num: 0,
+      category: '-',
+      method: 0,
+      displayType: true,
+      shelfLife: DateTime.now(),
+      registrationDay: DateTime.now(),
+      shelfOver: false,
+      registerNormal: false,
+      shelfNormal: false,
+      registerFroAbnormal: false,
+      shelfDDay: false,
+      registerRefAbnormal: false,
+      registerRTAbnormal: false,
+      isModify: false,
+    );
     foods.add(temp);
 
     currentIdx = maxIdx;
@@ -923,12 +925,42 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   setWidget() {
     foods.forEach((element) {
-      element.selectedWidget[setTrue(element)] = true;
+      switch (setTrue(element)) {
+        case 0:
+          element.registerNormal = true;
+          break;
+        case 1:
+          element.registerRefAbnormal = true;
+          break;
+        case 2:
+          element.registerFroAbnormal = true;
+          break;
+        case 3:
+          element.registerRTAbnormal = true;
+          break;
+        case 4:
+          element.shelfNormal = true;
+          break;
+        case 5:
+          element.shelfDDay = true;
+          break;
+        case 6:
+          element.shelfOver = true;
+          break;
+
+        case 7:
+          element.isModify = true;
+          break;
+
+        default:
+          element.shelfNormal = true;
+          break;
+      }
     });
   }
 
   setTrue(TemporaryFood food) {
-    if (!food.selectedWidget[7]) {
+    if (!food.isModify) {
       if (food.displayType) {
         if (food.shelfLife.difference(DateTime.now()).inDays <= 0)
           return 6;

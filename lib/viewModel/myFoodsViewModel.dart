@@ -69,18 +69,6 @@ class MyFoodsViewModel extends GetxController {
   Future<void> addFoods(String refID, List<TemporaryFood> foods) async {
     for (TemporaryFood food in foods) {
       int i = 0;
-      List<String> _tempData = [
-        '0',
-        '1',
-        '2',
-        '3',
-        '4',
-        '5',
-        '6',
-        '7',
-      ];
-      Map temp = Map.fromIterable(food.selectedWidget,
-          key: (e) => _tempData[i++], value: (e) => e);
 
       await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
         'fId': food.fId,
@@ -92,7 +80,14 @@ class MyFoodsViewModel extends GetxController {
         'displayType': food.displayType,
         'shelfLife': food.shelfLife,
         'registrationDay': food.registrationDay,
-        // 'selectedWidget': temp,
+        'registerNormal': food.registerNormal,
+        'registerRefAbnormal': food.registerRefAbnormal,
+        'registerFroAbnormal': food.registerFroAbnormal,
+        'registerRTAbnormal': food.registerRTAbnormal,
+        'shelfNormal': food.shelfNormal,
+        'shelfDDay': food.shelfDDay,
+        'shelfOver': food.shelfOver,
+        'isModify': food.isModify
       });
     }
   }
