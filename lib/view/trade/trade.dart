@@ -34,6 +34,7 @@ class _TradePageState extends State<TradePage> {
           itemCount: Posts.length,
           itemBuilder: (context, int index) {
             return MangoPostCard(
+                postID: Posts[index].postID,
                 foodName: Posts[index].foodName,
                 owner: Posts[index].uid,
                 profileImageRef: Posts[index].profileImageRef,

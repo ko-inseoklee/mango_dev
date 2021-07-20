@@ -7,6 +7,8 @@ import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class MangoPostCard extends StatelessWidget {
+  String postID;
+
   String foodName;
   String owner;
   String profileImageRef;
@@ -17,6 +19,7 @@ class MangoPostCard extends StatelessWidget {
 
   MangoPostCard(
       {Key? key,
+      required String postID,
       required String foodName,
       required String owner,
       required String profileImageRef,
@@ -24,7 +27,8 @@ class MangoPostCard extends StatelessWidget {
       required String subtitle,
       required int num,
       required DateTime shelfLife})
-      : foodName = foodName,
+      : postID = postID,
+        foodName = foodName,
         owner = owner,
         profileImageRef = profileImageRef,
         createSince = DateTime.now(),
@@ -144,7 +148,8 @@ class MangoPostCard extends StatelessWidget {
                             child: Icon(Icons.send_rounded),
                             // onPressed: () => showAlertDialog('치즈', 3, '2021.1.30'),
                             onPressed: () {
-                              Get.to(ChatDetailPage(), arguments: owner);
+                              Get.to(ChatDetailPage(),
+                                  arguments: [owner, postID]);
                             },
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all<
