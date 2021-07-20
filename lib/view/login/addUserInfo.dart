@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/landing.dart';
+import 'package:mangodevelopment/main.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
@@ -110,12 +111,13 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                 child: ElevatedButton(
                     //TODO: It will be change '인증' after adding phone number authentication.
                     child: Text('다음'),
-                    onPressed: () {
+                    onPressed: () async {
                       setState(() {
                         // 나중에 사용할 것. 두번째 페이지 변경
                         _isFirstPage = false;
                       });
                       _userName = _nameController.text;
+                      _tokens = (await FirebaseMessaging.instance.getToken())!;
                       _isFirstPage = false;
                     }
                     //style: ButtonStyle(),
@@ -124,6 +126,12 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
         ),
       ),
     );
+  }
+
+  Future<String?> getDeviceToken() async {
+    //save device token
+    String? token = await FirebaseMessaging.instance.getToken();
+    return token;
   }
 
   Widget setAlarmPage(BuildContext context) {

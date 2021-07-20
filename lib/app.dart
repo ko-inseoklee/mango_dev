@@ -21,11 +21,21 @@ var prototypeHeight = 812.0;
 
 var platform = true;
 
-// Future<String?> getDeviceToken() async {
-//   //save device token
-//   String? token = await FirebaseMessaging.instance.getToken();
-//   return token;
-// }
+Future<void> saveTokenToDatabase(String token) async {
+  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
+
+  await FirebaseFirestore.instance.collection('user').doc(userId).update({
+    'tokens': FieldValue.arrayUnion([token]),
+  });
+}
+
+Future<void> getDeviceToken() async {
+  //save device token
+  String? token = await FirebaseMessaging.instance.getToken();
+
+  await saveTokenToDatabase(token!);
+  FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+}
 
 class MangoApp extends StatefulWidget {
   const MangoApp({Key? key}) : super(key: key);
@@ -43,8 +53,7 @@ class _MangoAppState extends State<MangoApp> {
 
     FirebaseMessaging.instance.getInitialMessage();
 
-    // _token = getDeviceToken() as String;
-
+    getDeviceToken();
     //give message of notification on which user taps
     //open app from terminated state
     FirebaseMessaging.instance.getInitialMessage().then((message) {
