@@ -6,8 +6,8 @@ import '../../../app.dart';
 import 'imageSelectCard.dart';
 
 class ImageSelectDialog extends StatelessWidget {
-
   UserViewModel _userViewModelController = Get.find<UserViewModel>();
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -17,10 +17,15 @@ class ImageSelectDialog extends StatelessWidget {
           width: deviceWidth, child: Center(child: Text('프로필 사진 수정'))),
       content: Container(
         height: 150 * (deviceWidth / prototypeWidth),
-        child: imageSelectCard(onTapCamera: () { }, onTapGallery: () async{
-          await getGalleryImage().then((value) => _userViewModelController.user.value.profileImageReference = value);
-          Get.back();
-        },),
+        child: imageSelectCard(
+          onTapCamera: () {},
+          onTapGallery: () async {
+            await getGalleryImage().then((value) {
+              _userViewModelController.user.value.profileImageReference = value;
+            });
+            Get.back();
+          },
+        ),
       ),
     );
   }
