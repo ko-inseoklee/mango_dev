@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 import '../../../app.dart';
 import '../../../color.dart';
-import '../../camera.dart';
 
 class imageSelectCard extends StatefulWidget {
 
@@ -88,5 +88,7 @@ class _imageSelectCardState extends State<imageSelectCard> {
 Future<String> getGalleryImage() async {
   ImagePicker imagePicker = ImagePicker();
   var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+
   return pickedFile!.path;
+
 }

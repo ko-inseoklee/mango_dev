@@ -1,10 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/color.dart';
-import 'package:mangodevelopment/view/home.dart';
-import 'package:mangodevelopment/view/login/addUserInfo.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 
 import '../../landing.dart';
@@ -117,13 +114,10 @@ class LogInPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: () {
-                Get.find<Authentication>().googleLogin().then((value){ Get.off(Landing()); });
-                //Get.find<Authentication>().googleLogin();
-                // authController.googleLogin().then((value){
-                //   authController.hasData(authController.user!.uid).then((value){})
-                //   Get.to(AddUserInfoPage())
-                //       : Get.to(HomePage(title: 'hi'));
-                // });
+                Get.find<Authentication>().googleLogin().then((value){
+                  authController.loadId();
+                  Get.off(Landing());
+                });
               },
             ),
           ),
