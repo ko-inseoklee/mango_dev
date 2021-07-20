@@ -21,21 +21,11 @@ var prototypeHeight = 812.0;
 
 var platform = true;
 
-Future<void> saveTokenToDatabase(String token) async {
-  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
-  // print('userID = ' + userId);
-
-  await FirebaseFirestore.instance.collection('user').doc(userId).update({
-    'tokens': FieldValue.arrayUnion([token]),
-  });
-}
-
-Future<void> getDeviceToken() async {
-  //save device token
-  String? token = await FirebaseMessaging.instance.getToken();
-  await saveTokenToDatabase(token!);
-  FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
-}
+// Future<String?> getDeviceToken() async {
+//   //save device token
+//   String? token = await FirebaseMessaging.instance.getToken();
+//   return token;
+// }
 
 class MangoApp extends StatefulWidget {
   const MangoApp({Key? key}) : super(key: key);
@@ -45,13 +35,15 @@ class MangoApp extends StatefulWidget {
 }
 
 class _MangoAppState extends State<MangoApp> {
+  late String _token;
+
   @override
   void initState() {
     super.initState();
 
     FirebaseMessaging.instance.getInitialMessage();
 
-    getDeviceToken();
+    // _token = getDeviceToken() as String;
 
     //give message of notification on which user taps
     //open app from terminated state
@@ -91,7 +83,7 @@ class _MangoAppState extends State<MangoApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      home: Landing(),
+      home: Landing(token: _token),
       theme: _mangoTheme,
       getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
     );

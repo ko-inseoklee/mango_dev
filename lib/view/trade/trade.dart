@@ -34,12 +34,13 @@ class _TradePageState extends State<TradePage> {
           itemCount: Posts.length,
           itemBuilder: (context, int index) {
             return MangoPostCard(
-                food: Posts[index].foodName,
+                foodName: Posts[index].foodName,
                 owner: Posts[index].uid,
-                min: Posts[index].registTime.minute,
-                text: Posts[index].subtitle,
+                profileImageRef: Posts[index].profileImageRef,
+                createTime: Posts[index].registTime,
+                subtitle: Posts[index].subtitle,
                 num: Posts[index].num,
-                due: Posts[index].shelfLife);
+                shelfLife: Posts[index].shelfLife);
           }),
       // Center(
 
