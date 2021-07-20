@@ -1,22 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 import 'package:mangodevelopment/model/food.dart';
-
-class ShowFoods {
-  List<List<TemporaryFood>> showRefFoods = [];
-  List<bool> showInOnceIsFolds = [];
-
-  ShowFoods.init(
-      {required List<List<TemporaryFood>> foodList,
-      required List<bool> isFolds})
-      : showRefFoods = foodList,
-        showInOnceIsFolds = isFolds;
-}
+import 'package:mangodevelopment/viewModel/categoryController.dart';
+import 'showFood.dart';
 
 class ShowFoodsController extends GetxController {
-  var foods = ShowFoods.init(foodList: [
+  var foods = ShowFoods.init(foodsLength: 0, foodList: [
     [],
     [],
     [],
@@ -78,6 +68,38 @@ class ShowFoodsController extends GetxController {
     foods.update((val) {
       val!.showRefFoods[idx].clear();
     });
+  }
+
+  getFoodsLength({required String rID}) async {
+    print('get food == $rID');
+    await FirebaseFirestore.instance
+        .collection('myFood')
+        .where('rId', isEqualTo: rID)
+        .get()
+        .then((value) {
+      foods.update((val) {
+        val?.foodsLength = value.docs.length;
+      });
+    });
+  }
+
+  loadAllFoods({required String rID}) async {
+    loadFoodsWithShelfOver(rID: rID);
+    loadFoodsWithShelfDDay(rID: rID);
+    loadFoodsWithRefRegister(rID: rID);
+    loadFoodsWithFroRegister(rID: rID);
+    loadFoodsWithRTRegister(rID: rID);
+    loadFoodsNormal(rID: rID);
+    for (int i = 0; i < 3; i++) {
+      loadFoodsWithStoreType(rID: rID, storeType: i);
+    }
+    for (int i = 3; i < 15; i++) {
+      loadFoodsWithCategory(
+        rID: rID,
+        idx: i,
+        category: categories[i - 3],
+      );
+    }
   }
 
   loadFoodsWithShelfOver({required String rID}) async {
