@@ -109,10 +109,10 @@ class _DetailScreenState extends State<DetailScreen> {
                   width: double.maxFinite,
                   color: Colors.black,
                   child: CustomPaint(
-                    // foregroundPainter: TextDetectorPainter(
-                    //   _imageSize!,
-                    //   // _elements,
-                    // ),
+                    foregroundPainter: TextDetectorPainter(
+                      _imageSize!,
+                      // _elements,
+                    ),
                     child: AspectRatio(
                       aspectRatio: _imageSize!.aspectRatio,
                       child: Image.file(
@@ -188,23 +188,23 @@ class TextDetectorPainter extends CustomPainter {
     final double scaleX = size.width / absoluteImageSize.width;
     final double scaleY = size.height / absoluteImageSize.height;
 
-/*    Rect scaleRect(TextElement container) {
+    Rect scaleRect(TextElement container) {
       return Rect.fromLTRB(
         container.rect.left * scaleX,
         container.rect.top * scaleY,
         container.rect.right * scaleX,
         container.rect.bottom * scaleY,
       );
-    }*/
+    }
 
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
       ..color = Colors.red
       ..strokeWidth = 2.0;
 
-    // for (TextElement element in elements) {
-    //   canvas.drawRect(scaleRect(element), paint);
-    // }
+    for (TextElement element in elements) {
+      canvas.drawRect(scaleRect(element), paint);
+    }
   }
 
   @override
