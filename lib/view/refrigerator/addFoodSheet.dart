@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/analyze/textAI.dart';
 
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
@@ -22,7 +23,7 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
   Widget build(BuildContext context) {
     return AlertDialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          borderRadius: BorderRadius.all(Radius.circular(20.0))),
       title: Container(
         width: deviceWidth,
         child: Row(
@@ -110,7 +111,12 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
               height: 30 * (deviceWidth / prototypeWidth),
             ),
             //TODO. onTapGallery needed!
-            imageSelectCard(onTapGallery: () {  }, onTapCamera: () { CameraPage(); },),
+            imageSelectCard(
+              onTapGallery: () {},
+              onTapCamera: () {
+                Get.off(TextAI());
+              },
+            ),
             Container(
               height: 40 * (deviceHeight / prototypeHeight),
             ),
