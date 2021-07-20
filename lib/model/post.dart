@@ -1,4 +1,5 @@
 class Post {
+  int state; // 0: 나눔중, 1: 거래중, 2: 거래완료
   final String postID;
   final String uid;
   String profileImageRef;
@@ -10,9 +11,10 @@ class Post {
   final DateTime registTime;
   String subtitle;
 
-  Post(this.postID, this.uid, String profileImageRef, this.foodName, int num,
-      DateTime shelfLife, this.registTime, String subtitle)
-      : profileImageRef = profileImageRef,
+  Post(int state, this.postID, this.uid, String profileImageRef, this.foodName,
+      int num, DateTime shelfLife, this.registTime, String subtitle)
+      : state = state,
+        profileImageRef = profileImageRef,
         num = num,
         shelfLife = shelfLife,
         subtitle = subtitle;
@@ -22,6 +24,7 @@ class localPostList {
   static List<Post> loadPostList() {
     List<Post> Posts = <Post>[
       Post(
+        0,
         'random1',
         'c7C6rengEzNjTB0St3hqrObsiCY2',
         '/data/user/0/com.dobby.mangodevelopment.mangodevelopment/cache/image_picker276594650273670702.jpg',
@@ -32,6 +35,7 @@ class localPostList {
         '나눔합니다',
       ),
       Post(
+        1,
         'random2',
         'uYGuIzoPWKNvWxovizq1m3yYQOB3',
         '-1',

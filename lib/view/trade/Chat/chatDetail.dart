@@ -9,19 +9,25 @@ class ChatDetailPage extends StatefulWidget {
   _ChatDetailPageState createState() => _ChatDetailPageState();
 }
 
+// required info from POST
+
 class _ChatDetailPageState extends State<ChatDetailPage> {
-  var friendId = Get.arguments[0];
-  var postID = Get.arguments[1];
+  var postID = Get.arguments[0];
+  var state = Get.arguments[1];
+  var friendId = Get.arguments[2];
+  var foodName = Get.arguments[3];
+  var num = Get.arguments[4];
+  var subtitle = Get.arguments[5];
+  var shelfLife = Get.arguments[6];
 
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
 
-  Future<void> callback(String docID, String from) async {
-    print('CALLBACK');
-    print('docID: ' + docID + ' from + ' + from);
-
+  // chatRoom Doc ID
+  // 1.PostID  2.user+friend ID
+  Future<void> send(String docID, String from) async {
     if (messageController.text.length > 0) {
       await mango_dev
           .collection('chatRooms')
@@ -48,18 +54,21 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     UserViewModel userViewModelController = Get.find<UserViewModel>();
     // var chatList = mango_dev.collection('chatRooms').doc(postID);
 
-    var category;
-
-    // FirebaseFirestore.instance
-    //     .collection('chatRooms')
-    //     .doc(userViewModelController.user.value.userID)
-    //     .get()
-    //     .then((DocumentSnapshot ds) {
-    //   setState(() {
-    //     category = ds.get('category');
-    //   });
-    // });
-
+    // 0: 나눔중, 1: 거래중, 2: 거래완료
+    String _state = '';
+    if (state == 0) {
+      setState(() {
+        _state = '나눔중';
+      });
+    } else if (state == 1) {
+      setState(() {
+        _state = '거래 중';
+      });
+    } else if (state == 2) {
+      setState(() {
+        _state = '거래 완료';
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('채팅 페이지'),
@@ -93,10 +102,49 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                           ))
                       .toList();
 
-                  return ListView(
-                    controller: scrollController,
+                  return Stack(
                     children: <Widget>[
-                      ...messages,
+                      Container(
+                        child: ListView(
+                          controller: scrollController,
+                          children: <Widget>[
+                            ...messages,
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: ListTile(
+                            //TODO: change to post foodIMG
+                            leading: IconButton(
+                              icon: Icon(Icons.camera),
+                              onPressed: () => print('gg'),
+                            ),
+                            title: Text(_state +
+                                ' ' +
+                                foodName +
+                                ' ' +
+                                num.toString() +
+                                '개'),
+                            subtitle: Text(subtitle),
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 0.5,
+                                blurRadius: 5,
+                                offset:
+                                    Offset(0, 1), // changes position of shadow
+                              ),
+                            ],
+                            // border: Border.all(
+                            //   color: Colors.grey, // red as border color
+                            // ),
+                            color: Colors.white),
+                      ),
                     ],
                   );
                 },
@@ -107,9 +155,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                      // onSubmitted: (value) => callback(
-                      //     postID, //generate docID by Post
-                      //     userViewModelController.user.value.userID),
+                      onSubmitted: (value) => send(
+                          postID, //generate docID by Post
+                          userViewModelController.user.value.userID),
                       // from who ?
                       decoration: InputDecoration(
                         hintText: 'Enter a Message...',
@@ -123,10 +171,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       Icons.send,
                       color: messageController.text.isEmpty
                           ? Colors.grey
-                          : Colors.blue,
+                          : Colors.orangeAccent,
                     ),
                     onPressed: () {
-                      callback(
+                      send(
                           postID, //generate docID by Post
                           userViewModelController.user.value.userID);
 
@@ -170,7 +218,7 @@ class Message extends StatelessWidget {
           Container(
             margin: me ? EdgeInsets.only(right: 20) : EdgeInsets.only(left: 20),
             child: Material(
-              color: me ? Colors.blueAccent[100] : Colors.grey[300],
+              color: me ? Colors.orangeAccent[100] : Colors.grey[300],
               borderRadius: BorderRadius.circular(10.0),
               elevation: 6.0,
               child: Container(
