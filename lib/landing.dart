@@ -18,18 +18,6 @@ class Landing extends StatefulWidget {
 class _LandingState extends State<Landing> {
   Authentication authController = Get.put(Authentication());
 
-  // Future<SharedPreferences>_prefs = SharedPreferences.getInstance();
-  // late Future<String> _id;
-  //
-  // Future<void> loadId(BuildContext context) async{
-  //   final SharedPreferences prefs = await _prefs;
-  //   final String id = (prefs.getString('id') ?? authController.user!.uid);
-  //
-  //   setState(() {
-  //     _id = prefs.setString('id', id).then((value){ return id;});
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
