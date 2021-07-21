@@ -226,7 +226,8 @@ class _FriendListPageState extends State<FriendListPage> {
     return ListTile(
       leading: CircleAvatar(
         radius: 26,
-        // backgroundImage: AssetImage(''),
+        //TODO: profile image
+        // backgroundImage: (docs.get('profImgRef')),
       ),
       title: Text(docs.get('userName')),
       trailing: !_edit

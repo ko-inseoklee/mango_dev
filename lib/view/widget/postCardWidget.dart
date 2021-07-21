@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -10,7 +11,7 @@ import 'package:mangodevelopment/viewModel/userViewModel.dart';
 String calculate(DateTime registTime) {
   Duration diff = DateTime.now().difference(registTime);
 
-  if (diff.inDays > 1) {
+  if (diff.inDays >= 1) {
     return diff.inDays.toString() + '일';
   } else if (diff.inHours > 1) {
     return diff.inHours.toString() + '시간';
@@ -154,21 +155,24 @@ class MangoPostCard extends StatelessWidget {
                           child: ElevatedButton(
                             // color: Theme.of(context).accentColor,
                             child: Icon(Icons.send_rounded),
-                            // onPressed: () => showAlertDialog('치즈', 3, '2021.1.30'),
                             onPressed: () {
-                              // mango_dev.collection('chatRooms').doc().set({
-                              //   'user': [
-                              //     userName,
-                              //     userViewModelController.user.value.userName
-                              //   ],
-                              //   'postID': postID
-                              // });
+                              mango_dev
+                                  .collection('chatRooms')
+                                  .doc(postID +
+                                      userViewModelController.user.value.userID)
+                                  .set({
+                                'chatID': postID +
+                                    userViewModelController.user.value.userID,
+                                'takerID':
+                                    userViewModelController.user.value.userID,
+                                'postID': postID
+                              });
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
                                 state,
                                 ownerID,
                                 foodName,
-                                num,
+                                foodNum,
                                 subtitle,
                                 shelfLife,
                                 ownerName,
