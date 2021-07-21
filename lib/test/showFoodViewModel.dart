@@ -6,54 +6,60 @@ import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'showFood.dart';
 
 class ShowFoodsController extends GetxController {
-  var foods =
-      ShowFoods.init(currentTab: 0, foodsLength: 0, allFold: true, foodList: [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-  ], isFolds: [
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true
-  ]).obs;
+  var foods = ShowFoods.init(
+      isModify: false,
+      currentTab: 0,
+      foodsLength: 0,
+      allFold: true,
+      canModifyFoods: [],
+      foodList: [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+      ],
+      isFolds: [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]).obs;
 
-  changeViewmode({required int viewMode}) {
+  changeViewMode({required int viewMode}) {
     foods.update((val) {
       val!.currentTab = viewMode;
     });
@@ -74,6 +80,37 @@ class ShowFoodsController extends GetxController {
   clearFoods({required int idx}) {
     foods.update((val) {
       val!.showRefFoods[idx].clear();
+    });
+  }
+
+  changeIsModify() {
+    foods.update((val) {
+      val!.isModify = !val.isModify;
+    });
+  }
+
+  clearCanModify() {
+    foods.update((val) {
+      for (TemporaryFood food in val!.canModifyFoods) {
+        food.isModify = false;
+      }
+      val.canModifyFoods.clear();
+    });
+  }
+
+  addCanModify({required TemporaryFood food}) {
+    foods.update((val) {
+      if (!val!.canModifyFoods.contains(food)) {
+        val.canModifyFoods.add(food);
+      }
+    });
+  }
+
+  removeCanModify({required String fID}) {
+    foods.update((val) {
+      if (val!.canModifyFoods.contains(fID)) {
+        val.canModifyFoods.remove(fID);
+      }
     });
   }
 
@@ -143,8 +180,11 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+
         foods.update((val) {
-          val?.showRefFoods[20].add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[20].contains(temp))
+            val.showRefFoods[20].add(temp);
         });
       });
       this
@@ -163,8 +203,11 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+
         foods.update((val) {
-          val?.showRefFoods[15].add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[15].contains(temp))
+            val.showRefFoods[15].add(temp);
         });
       });
       this
@@ -185,8 +228,11 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+
         foods.update((val) {
-          val?.showRefFoods[16].add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[16].contains(temp))
+            val.showRefFoods[16].add(temp);
         });
       });
       this
@@ -207,8 +253,10 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
         foods.update((val) {
-          val?.showRefFoods[17].add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[17].contains(temp))
+            val.showRefFoods[17].add(temp);
         });
       });
       this
@@ -229,8 +277,10 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
         foods.update((val) {
-          val?.showRefFoods[18].add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[18].contains(temp))
+            val.showRefFoods[18].add(temp);
         });
       });
       this
@@ -249,8 +299,10 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
         foods.update((val) {
-          val?.showRefFoods[19].add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[19].contains(temp))
+            val.showRefFoods[19].add(temp);
         });
       });
     });
@@ -262,8 +314,10 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
         foods.update((val) {
-          val?.showRefFoods[19].add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[19].contains(temp))
+            val.showRefFoods[19].add(temp);
         });
       });
     });
@@ -277,9 +331,10 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
         foods.update((val) {
-          val?.showRefFoods[storeType]
-              .add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[storeType].contains(temp))
+            val.showRefFoods[storeType].add(temp);
         });
       });
     });
@@ -294,11 +349,34 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
+        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+
         foods.update((val) {
-          val?.showRefFoods[idx]
-              .add(TemporaryFood.fromSnapshot(element.data()));
+          if (!val!.showRefFoods[idx].contains(temp))
+            val.showRefFoods[idx].add(temp);
         });
       });
+    });
+  }
+
+  changeCanModify({required String fID, required int idx}) {
+    foods.update((val) {
+      var temp =
+          val!.showRefFoods[idx].firstWhere((element) => element.fId == fID);
+
+      if (!val.canModifyFoods.contains(temp)) {
+        val.showRefFoods[idx]
+            .firstWhere((element) => element.fId == fID)
+            .isModify = true;
+        val.canModifyFoods.add(temp);
+      } else {
+        val.showRefFoods[idx]
+            .firstWhere((element) => element.fId == fID)
+            .isModify = false;
+        val.canModifyFoods.remove(temp);
+      }
+
+      print('after length : ${val.canModifyFoods.length}');
     });
   }
 }
