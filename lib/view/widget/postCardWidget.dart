@@ -3,69 +3,71 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
+String calculate(DateTime registTime) {
+  Duration diff = DateTime.now().difference(registTime);
+
+  if (diff.inDays >= 1) {
+    return diff.inDays.toString() + '일';
+  } else if (diff.inHours > 1) {
+    return diff.inHours.toString() + '시간';
+  } else if (diff.inMinutes > 1) {
+    return diff.inMinutes.toString() + '분';
+  } else {
+    return '방금';
+  }
+}
+
 class MangoPostCard extends StatelessWidget {
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
-  String postID;
-  int state;
+  // 게시글 관련 정보
+  late String postID;
+  late int state; // 0 - 나눔중, 1 - 거래중, 2 - 거래완료
+  late DateTime registTime;
+  late String subtitle;
 
-  String foodName;
-  String owner;
-  String profileImageRef;
-  DateTime createSince;
-  String subtitle;
-  int num;
-  DateTime shelfLife;
-  String userName;
+  // 게시글에 올린 음식 관련 정보
+  late String foodName;
+  late int foodNum;
+  late DateTime shelfLife;
+  late int shelfType; // 0 - 유통기한, 1 - 등록일
+
+  // 게시글 작성자 관련 정보
+  late String ownerID;
+  late String ownerName;
+  late String profileImageRef;
 
   MangoPostCard(
       {Key? key,
       required String postID,
       required int state,
       required String foodName,
-      required String owner,
+      required String ownerID,
       required String profileImageRef,
-      required DateTime createTime,
+      required Timestamp registTime,
       required String subtitle,
-      required int num,
-      required DateTime shelfLife,
-      required userName})
+      required int foodNum,
+      required Timestamp shelfLife,
+      required ownerName})
       : postID = postID,
         state = state,
         foodName = foodName,
-        owner = owner,
+        ownerID = ownerID,
         profileImageRef = profileImageRef,
-        createSince = DateTime.now(),
+        registTime = registTime.toDate(),
         // DateTime.now().subtract(Duration(
         //     days: createTime.day,
         //     hours: createTime.hour,
         //     minutes: createTime.minute)),
         subtitle = subtitle,
-        num = num,
-        shelfLife = shelfLife,
-        userName = userName;
-
-  String calculateTime() {
-    // print(createTime.toString());
-    print(createSince.day.toString() +
-        '일 ' +
-        createSince.hour.toString() +
-        '시간 ' +
-        createSince.minute.toString() +
-        '분 ');
-    if (createSince.day < 1) {
-      if (createSince.hour < 1) {
-        return createSince.minute.toString() + ' 분 전';
-      }
-      return createSince.hour.toString() + '시간 전';
-    } else {
-      return createSince.day.toString() + '일 전';
-    }
-  }
+        foodNum = foodNum,
+        shelfLife = shelfLife.toDate(),
+        ownerName = ownerName;
 
   @override
   Widget build(BuildContext context) {
@@ -92,12 +94,10 @@ class MangoPostCard extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: Text(createSince.month.toString() +
-                          '/' +
-                          createSince.day.toString()),
+                      child: Text(calculate(registTime) + ' 전'),
                     ),
                     Text(
-                      foodName + '  $num개',
+                      foodName + '  $foodNum개',
                     ),
                     Text(
                       '유통기한 ${shelfLife.year}.${shelfLife.month}.${shelfLife.day}',
@@ -155,24 +155,27 @@ class MangoPostCard extends StatelessWidget {
                           child: ElevatedButton(
                             // color: Theme.of(context).accentColor,
                             child: Icon(Icons.send_rounded),
-                            // onPressed: () => showAlertDialog('치즈', 3, '2021.1.30'),
                             onPressed: () {
-                              // mango_dev.collection('chatRooms').doc().set({
-                              //   'user': [
-                              //     userName,
-                              //     userViewModelController.user.value.userName
-                              //   ],
-                              //   'postID': postID
-                              // });
+                              mango_dev
+                                  .collection('chatRooms')
+                                  .doc(postID +
+                                      userViewModelController.user.value.userID)
+                                  .set({
+                                'chatID': postID +
+                                    userViewModelController.user.value.userID,
+                                'takerID':
+                                    userViewModelController.user.value.userID,
+                                'postID': postID
+                              });
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
                                 state,
-                                owner,
+                                ownerID,
                                 foodName,
-                                num,
+                                foodNum,
                                 subtitle,
                                 shelfLife,
-                                userName,
+                                ownerName,
                               ]);
                             },
                             style: ButtonStyle(

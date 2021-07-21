@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/viewModel/addFriendViewModel.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class FriendListViewModel extends GetxController {
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
+  UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  Future<void> addFriend(
-      String curr_uid, String curr_name, String uid, String name) async {
+  Future<void> addFriend(String curr_uid, String curr_name, String uid,
+      String name, String img) async {
     if (curr_uid == uid) {
       print('자기를 추가할 수 없습니다');
       // TODO: alert 창 띄우기
@@ -63,7 +65,8 @@ class FriendListViewModel extends GetxController {
       'userID': uid,
       'tokens': friendToken,
       'caseNumber': otherNameList.length,
-      'case': FieldValue.arrayUnion(otherNameList)
+      'case': FieldValue.arrayUnion(otherNameList),
+      'profImgRef': userViewModelController.user.value.profileImageReference
     }).then((_) {
       print('success');
     }).catchError((_) {
@@ -80,12 +83,25 @@ class FriendListViewModel extends GetxController {
           'userID': curr_uid,
           'tokens': myToken,
           'caseNumber': myNameList.length,
-          'case': FieldValue.arrayUnion(myNameList)
+          'case': FieldValue.arrayUnion(myNameList),
+          'profImgRef': img
         })
         .then((value) => print('success2'))
         .catchError((_) {
           print('error2');
         });
+
+    await mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: uid)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        element.reference.update({
+          'ownerFriendList': FieldValue.arrayUnion([curr_uid])
+        });
+      });
+    });
 
     sendFriendRequest(friendToken, curr_name);
 
@@ -116,6 +132,18 @@ class FriendListViewModel extends GetxController {
             .doc(element.id)
             .delete()
             .then((value) => print('deleted2'));
+      });
+    });
+
+    mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: uid)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        element.reference.update({
+          'ownerFriendList': FieldValue.arrayRemove([curr_uid])
+        });
       });
     });
   }

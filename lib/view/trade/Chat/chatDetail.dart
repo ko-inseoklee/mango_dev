@@ -16,11 +16,29 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   var state = Get.arguments[1];
   var friendId = Get.arguments[2];
   var foodName = Get.arguments[3];
-  var num = Get.arguments[4];
+  var foodNum = Get.arguments[4];
   var subtitle = Get.arguments[5];
   var shelfLife = Get.arguments[6];
-  var userName = Get.arguments[7];
+  var ownerName = Get.arguments[7];
   var profileImageRef = '-1';
+
+  var _stream;
+
+  @override
+  void initState() {
+    super.initState();
+
+    mango_dev
+        .collection('chatRooms')
+        .where('postID', isEqualTo: postID)
+        .where('takerID', isEqualTo: userViewModelController.user.value.userID)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        _stream = element.reference.collection('messages').snapshots();
+      });
+    });
+  }
 
 //TODO: 상대방, 내 프로필 이미지 사용하기
 
@@ -29,13 +47,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
 
+  UserViewModel userViewModelController = Get.find<UserViewModel>();
+
   // chatRoom Doc ID -> randomly
   Future<void> send(String postID, String from) async {
     if (messageController.text.length > 0) {
       await mango_dev
           .collection('chatRooms')
-          .where('uid', arrayContains: from)
           .where('postID', isEqualTo: postID)
+          .where('takerID',
+              isEqualTo: userViewModelController.user.value.userID)
           .get()
           .then((value) {
         value.docs.forEach((element) {
@@ -47,7 +68,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             'text': messageController.text,
             'from': from,
             'date': DateTime.now().toIso8601String().toString(),
-            'to': friendId,
+            'to': ownerName,
           });
         });
       });
@@ -82,25 +103,24 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       });
     }
 
-    var _stream;
-    mango_dev
-        .collection('chatRooms')
-        .where('uid',
-            arrayContains: userViewModelController.user.value.userName)
-        .where('postID', isEqualTo: postID)
-        .get()
-        .then((value) {
-      value.docs.forEach((element) {
-        setState(() {
-          _stream = mango_dev
-              .collection('chatRooms')
-              .doc(element.id)
-              .collection('messages')
-              .orderBy('date')
-              .snapshots();
-        });
-      });
-    });
+    // mango_dev
+    //     .collection('chatRooms')
+    //     .where('uid',
+    //         arrayContains: userViewModelController.user.value.userName)
+    //     .where('postID', isEqualTo: postID)
+    //     .get()
+    //     .then((value) {
+    //   value.docs.forEach((element) {
+    //     setState(() {
+    //       _stream = mango_dev
+    //           .collection('chatRooms')
+    //           .doc(element.id)
+    //           .collection('messages')
+    //           .orderBy('date')
+    //           .snapshots();
+    //     });
+    //   });
+    // });
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -112,7 +132,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           children: <Widget>[
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: _stream,
+                stream: mango_dev
+                    .collection('chatRooms')
+                    .doc(postID + userViewModelController.user.value.userID)
+                    .collection('messages')
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
                     return Center(
@@ -168,7 +192,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 ' ' +
                                 foodName +
                                 ' ' +
-                                num.toString() +
+                                foodNum.toString() +
                                 '개'),
                             subtitle: Text(subtitle),
                           ),
@@ -285,7 +309,7 @@ class Message extends StatelessWidget {
                   height: 35,
                   width: 30,
                   child: Container(
-                    color: Colors.blue,
+                    color: Colors.amberAccent,
                   ),
                 )
               ],

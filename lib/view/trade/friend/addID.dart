@@ -127,7 +127,8 @@ class _AddIDPageState extends State<AddIDPage> {
                                                                     .userName,
                                                                 data['userID'],
                                                                 data[
-                                                                    'userName']);
+                                                                    'userName'],
+                                                        data['profileImageReference']);
                                                         // TODO: get named until 사용 알아보기
                                                         Get.back();
                                                         Get.back();
