@@ -157,13 +157,13 @@ class MangoPostCard extends StatelessWidget {
                             child: Icon(Icons.send_rounded),
                             // onPressed: () => showAlertDialog('치즈', 3, '2021.1.30'),
                             onPressed: () {
-                              mango_dev.collection('chatRooms').doc().update({
-                                'user': [
-                                  userName,
-                                  userViewModelController.user.value.userName
-                                ],
-                                'postID': postID
-                              });
+                              // mango_dev.collection('chatRooms').doc().set({
+                              //   'user': [
+                              //     userName,
+                              //     userViewModelController.user.value.userName
+                              //   ],
+                              //   'postID': postID
+                              // });
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
                                 state,
@@ -171,7 +171,8 @@ class MangoPostCard extends StatelessWidget {
                                 foodName,
                                 num,
                                 subtitle,
-                                shelfLife
+                                shelfLife,
+                                userName,
                               ]);
                             },
                             style: ButtonStyle(
