@@ -7,53 +7,66 @@ import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
+String calculate(DateTime registTime) {
+  Duration diff = DateTime.now().difference(registTime);
+
+  if (diff.inDays > 1) {
+    return diff.inDays.toString() + '일';
+  } else if (diff.inHours > 1) {
+    return diff.inHours.toString() + '시간';
+  } else if (diff.inMinutes > 1) {
+    return diff.inMinutes.toString() + '분';
+  } else {
+    return '방금';
+  }
+}
+
 class MangoPostCard extends StatelessWidget {
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   // 게시글 관련 정보
-  String postID;
-  int state;
-  DateTime createSince;
-  String subtitle;
+  late String postID;
+  late int state; // 0 - 나눔중, 1 - 거래중, 2 - 거래완료
+  late DateTime registTime;
+  late String subtitle;
 
   // 게시글에 올린 음식 관련 정보
-  String foodName;
-  int num;
-  DateTime shelfLife;
+  late String foodName;
+  late int foodNum;
+  late DateTime shelfLife;
+  late int shelfType; // 0 - 유통기한, 1 - 등록일
 
   // 게시글 작성자 관련 정보
-  String owner;
-  String userName;
-  String profileImageRef;
-
+  late String ownerID;
+  late String ownerName;
+  late String profileImageRef;
 
   MangoPostCard(
       {Key? key,
       required String postID,
       required int state,
       required String foodName,
-      required String owner,
+      required String ownerID,
       required String profileImageRef,
-      required DateTime createTime,
+      required Timestamp registTime,
       required String subtitle,
-      required int num,
-      required DateTime shelfLife,
-      required userName})
+      required int foodNum,
+      required Timestamp shelfLife,
+      required ownerName})
       : postID = postID,
         state = state,
         foodName = foodName,
-        owner = owner,
+        ownerID = ownerID,
         profileImageRef = profileImageRef,
-        createSince = DateTime.now(),
+        registTime = registTime.toDate(),
         // DateTime.now().subtract(Duration(
         //     days: createTime.day,
         //     hours: createTime.hour,
         //     minutes: createTime.minute)),
         subtitle = subtitle,
-        num = num,
-        shelfLife = shelfLife,
-        userName = userName;
-
+        foodNum = foodNum,
+        shelfLife = shelfLife.toDate(),
+        ownerName = ownerName;
 
   @override
   Widget build(BuildContext context) {
@@ -80,12 +93,10 @@ class MangoPostCard extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: Text(createSince.month.toString() +
-                          '/' +
-                          createSince.day.toString()),
+                      child: Text(calculate(registTime) + ' 전'),
                     ),
                     Text(
-                      foodName + '  $num개',
+                      foodName + '  $foodNum개',
                     ),
                     Text(
                       '유통기한 ${shelfLife.year}.${shelfLife.month}.${shelfLife.day}',
@@ -155,12 +166,12 @@ class MangoPostCard extends StatelessWidget {
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
                                 state,
-                                owner,
+                                ownerID,
                                 foodName,
                                 num,
                                 subtitle,
                                 shelfLife,
-                                userName,
+                                ownerName,
                               ]);
                             },
                             style: ButtonStyle(
