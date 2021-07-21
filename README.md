@@ -21,11 +21,15 @@ A new Flutter project.
         인식에 따른 유사 음식 추천 - AI 활용 등록방법 적용 후 추가.
 
     - screen uil package 사용하기. (개발 이후)
-    - boolean 값들에 따라 보여주는 각각의 위젯을 빌드해주는 방식으로 변경하기
-        - AddFood할때, 각각의 bool값들의 연산을 DB에 입력시키기
+
+    - CRUD : U
+        수정 클릭 시: 선택화면 빠져나와야 함.
+
+    - 직접입력 시 default 섹션 하나 / 수량 default 1 / focus 이동
+
+    - 자체 pre-set 제작
 
 
-    - 빌드를 다시하면 로그은 페이지로 넘어감.
 
 
 - Development plan
@@ -66,4 +70,8 @@ A new Flutter project.
             3. 기타 될 수 있는 기능들 추가.
 
     3. Later
-        - 각 표시 기준(bool 값) 매일 날짜 기준으로 업데이트 시키기.
+        - 각 표시 기준(위젯 표기 boolean 값) 매일 날짜 기준으로 업데이트 시키기.
+
+
+- ScreenUtil 적용
+    test2.dart

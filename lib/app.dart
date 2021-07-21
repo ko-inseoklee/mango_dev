@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/home.dart';
 
@@ -91,12 +92,31 @@ class _MangoAppState extends State<MangoApp> {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      home: Landing(),
-      theme: _mangoTheme,
-      getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
+    return ScreenUtilInit(
+      builder: () => GetMaterialApp(
+        home: Landing(),
+        theme: _mangoTheme,
+        getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
+      ),
+      designSize: Size(375, 812),
     );
   }
+}
+
+Future<void> saveTokenToDatabase(String token) async {
+  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
+
+  await FirebaseFirestore.instance.collection('user').doc(userId).update({
+    'tokens': FieldValue.arrayUnion([token]),
+  });
+}
+
+Future<void> getDeviceToken() async {
+  //save device token
+  String? token = await FirebaseMessaging.instance.getToken();
+
+  await saveTokenToDatabase(token!);
+  FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
 }
 
 final ThemeData _mangoTheme = _buildMangoTheme();

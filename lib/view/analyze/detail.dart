@@ -173,6 +173,7 @@ class TextDetectorPainter extends CustomPainter {
   TextDetectorPainter(this.absoluteImageSize, this.elements);
 
   final Size absoluteImageSize;
+
   final List<TextElement> elements;
 
   @override

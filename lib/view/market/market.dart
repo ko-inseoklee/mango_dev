@@ -1,61 +1,110 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/test/foodSections.dart';
 
-class MarketPage extends StatelessWidget {
+class MarketPage extends StatefulWidget {
   final String title;
 
   MarketPage({Key? key, required this.title}) : super(key: key);
 
-  var _controller1 =
-      Get.put<RefrigeratorViewController>(RefrigeratorViewController());
-  var _controller2 =
-      Get.put<RefrigeratorViewController>(RefrigeratorViewController());
+  @override
+  _MarketPageState createState() => _MarketPageState();
+}
+
+class _MarketPageState extends State<MarketPage> {
+  int index = 0;
+
+  List<String> imgList = [
+    'images/prototype/market1.png',
+    'images/prototype/market2.png',
+    'images/prototype/market3.png',
+  ];
+
+  final prototypeDotSize = ScreenUtil().setSp(12);
+  final prototypeDotPadding = ScreenUtil().setWidth(7.5);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
         centerTitle: true,
       ),
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(
-        child: Text('마켓 페이지'),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: ScreenUtil().setHeight(0.1),
+            ),
+            Expanded(
+              child: PageView.builder(
+                  scrollDirection: Axis.horizontal,
+                  controller: PageController(initialPage: 0),
+                  onPageChanged: (int index) {
+                    setState(() {
+                      this.index = index;
+                    });
+                  },
+                  itemCount: imgList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            imgList[index],
+                            width: ScreenUtil().setWidth(320),
+                            height: ScreenUtil().setHeight(467),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+            ),
+            Container(child: scrollProgress(index)),
+            SizedBox(
+              height: ScreenUtil().setHeight(30),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget scrollProgress(int idx) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        idx == 0 ? activeIcon() : inactiveIcon(),
+        idx == 1 ? activeIcon() : inactiveIcon(),
+        idx == 2 ? activeIcon() : inactiveIcon(),
+      ],
+    );
+  }
+
+  Widget activeIcon() {
+    return Padding(
+        padding:
+            EdgeInsets.fromLTRB(prototypeDotPadding, 0, prototypeDotPadding, 0),
+        child: Icon(
+          Icons.fiber_manual_record,
+          size: prototypeDotSize,
+          color: Theme.of(context).accentColor,
+        ));
+  }
+
+  Widget inactiveIcon() {
+    return Padding(
+      padding:
+          EdgeInsets.fromLTRB(prototypeDotPadding, 0, prototypeDotPadding, 0),
+      child: Icon(
+        Icons.fiber_manual_record,
+        size: prototypeDotSize,
+        color: Theme.of(context).unselectedWidgetColor,
       ),
     );
   }
 }
-
-//
-// body: Column(
-// children: [
-// GetX<RefrigeratorViewController>(
-// init: _controller1,
-// builder: (_) {
-// return _.foodSection.value.refIsFold
-// ? Text(_.foodSection.value.refIsFold.toString())
-//     : Text('아니다임마!');
-// },
-// ),
-// TextButton(
-// onPressed: () {
-// _controller1.changeRefIsFold(
-// isFold: !_controller1.foodSection.value.refIsFold);
-// },
-// child: Text('rev1')),
-// GetX<RefrigeratorViewController>(
-// init: _controller2,
-// builder: (_) {
-// return _.foodSection.value.froIsFold
-// ? Text(_.foodSection.value.froIsFold.toString())
-//     : Text('아니다임마!');
-// },
-// ),
-// TextButton(
-// onPressed: () {
-// _controller2.changeFroIsFold(
-// isFold: !_controller2.foodSection.value.froIsFold);
-// },
-// child: Text('rev2'))
-// ],
-// ),
