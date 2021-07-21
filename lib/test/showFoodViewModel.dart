@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
@@ -103,6 +104,27 @@ class ShowFoodsController extends GetxController {
       if (!val!.canModifyFoods.contains(food)) {
         val.canModifyFoods.add(food);
       }
+    });
+  }
+
+  changeCanModify({required String fID, required int idx}) {
+    foods.update((val) {
+      var temp =
+          val!.showRefFoods[idx].firstWhere((element) => element.fId == fID);
+
+      if (!val.canModifyFoods.contains(temp)) {
+        val.showRefFoods[idx]
+            .firstWhere((element) => element.fId == fID)
+            .isModify = true;
+        val.canModifyFoods.add(temp);
+      } else {
+        val.showRefFoods[idx]
+            .firstWhere((element) => element.fId == fID)
+            .isModify = false;
+        val.canModifyFoods.remove(temp);
+      }
+
+      print('after length : ${val.canModifyFoods.length}');
     });
   }
 
@@ -359,24 +381,13 @@ class ShowFoodsController extends GetxController {
     });
   }
 
-  changeCanModify({required String fID, required int idx}) {
-    foods.update((val) {
-      var temp =
-          val!.showRefFoods[idx].firstWhere((element) => element.fId == fID);
-
-      if (!val.canModifyFoods.contains(temp)) {
-        val.showRefFoods[idx]
-            .firstWhere((element) => element.fId == fID)
-            .isModify = true;
-        val.canModifyFoods.add(temp);
-      } else {
-        val.showRefFoods[idx]
-            .firstWhere((element) => element.fId == fID)
-            .isModify = false;
-        val.canModifyFoods.remove(temp);
-      }
-
-      print('after length : ${val.canModifyFoods.length}');
-    });
+  deleteFood({required String rID, required List<TemporaryFood> foods}) async {
+    for (TemporaryFood food in foods) {
+      await FirebaseFirestore.instance
+          .collection('myFood')
+          .doc(food.fId)
+          .delete();
+    }
+    await loadAllFoods(rID: rID);
   }
 }

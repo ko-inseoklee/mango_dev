@@ -139,7 +139,11 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                     }
                     _showController
                         .loadAllFoods(rID: _refrigerator.ref.value.rID)
-                        .then((value) => Get.back());
+                        .then((value) {
+                      _showController.getFoodsLength(
+                          rID: _refrigerator.ref.value.rID);
+                      Get.back();
+                    });
                   });
                   // await _refrigerator.loadFoods().then((value) => Get.back());
 

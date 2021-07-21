@@ -143,7 +143,24 @@ class _TestRefPageState extends State<TestRefPage> {
                         Spacer(),
                         Container(
                             child: TextButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await controller
+                                .deleteFood(
+                                    rID: refrigerator.ref.value.rID,
+                                    foods:
+                                        controller.foods.value.canModifyFoods)
+                                .then((value) {
+                              controller.clearCanModify();
+                            });
+                            await controller
+                                .getFoodsLength(rID: refrigerator.ref.value.rID)
+                                .then((value) {
+                              controller.changeIsModify();
+                              controller.foldAll(
+                                  storeType: controller.foods.value.currentTab,
+                                  isFold: controller.foods.value.allFold);
+                            });
+                          },
                           child: Text('삭제',
                               style: Theme.of(context).textTheme.subtitle2),
                         )),
