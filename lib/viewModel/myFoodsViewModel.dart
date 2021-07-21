@@ -72,7 +72,7 @@ class MyFoodsViewModel extends GetxController {
 
       await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
         'fId': food.fId,
-        'rId': food.rId,
+        'rId': refID,
         'name': food.name,
         'category': food.category,
         'number': food.number,
@@ -119,6 +119,16 @@ class MyFoodsViewModel extends GetxController {
         'isModify': food.isModify
       });
     }
+  }
+
+  void deleteRef({required String uid}) {
+    var refID;
+    FirebaseFirestore.instance
+        .collection('refrigeraotr')
+        .where('userID', isEqualTo: uid)
+        .get()
+        .then((value) => refID = value.docs.first.data()['refID']);
+    FirebaseFirestore.instance.collection('re').doc(refID).delete();
   }
 
   List<TemporaryFood> sortByCategory(

@@ -214,22 +214,31 @@ class _TestRefPageState extends State<TestRefPage> {
             }),
           ),
           MangoDivider(),
-          Container(
-            height: controller.foods.value.currentTab == 0
-                ? ScreenUtil().setHeight(465)
-                : ScreenUtil().setHeight(586),
-            child: ListView(
-              children: [
-                Obx(() {
-                  return controller.foods.value.currentTab == 0
-                      ? firstTab()
-                      : controller.foods.value.currentTab == 1
-                          ? secondTab()
-                          : thirdTab();
-                })
-              ],
-            ),
-          ),
+          Obx(() {
+            return controller.foods.value.currentTab == 0
+                ? Container(
+                    height: ScreenUtil().setHeight(465),
+                    child: ListView(
+                      children: [
+                        Obx(() {
+                          return firstTab();
+                        })
+                      ],
+                    ),
+                  )
+                : Container(
+                    height: ScreenUtil().setHeight(575),
+                    child: ListView(
+                      children: [
+                        Obx(() {
+                          return controller.foods.value.currentTab == 1
+                              ? secondTab()
+                              : thirdTab();
+                        })
+                      ],
+                    ),
+                  );
+          })
         ],
       ),
     );

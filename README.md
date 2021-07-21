@@ -22,20 +22,12 @@ A new Flutter project.
 
     - screen uil package 사용하기. (개발 이후)
 
-    - CRUD : U
-        수정 클릭 시: 선택화면 빠져나와야 함.
-
     - 직접입력 시 default 섹션 하나 / 수량 default 1 / focus 이동
 
     - 자체 pre-set 제작
 
-
-
-
 - Development plan
     1. Before Home
-
-        1) 빌드 때 로그인이 되어 있으면, 홈으로 넘어가게 하기 (LANDING 페이지 제대로 활용)
 
         2) SMS 인증 기능 추가
 
@@ -51,12 +43,6 @@ A new Flutter project.
             4. 인식 후 정보 입력(이름, 수량) / focusnode → category.
             5. UT - 영수증 // 영어 영수증 준비.
             6. 직접입력 focusNode = 이름 → 수량 → 카테고리
-
-        2) 냉장고
-
-            1. 유통기한 별 보기
-            2. RUD
-            3. 유통기한 별 보기 → 레시피 페이지 → WEBVIEW(만개의 레시피)
 
         3) 나눔
 
