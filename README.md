@@ -22,8 +22,13 @@ A new Flutter project.
 
     - screen uil package 사용하기. (개발 이후)
 
-    - Food에 CRUD 적용하면 바로 업데이트가 되지 않음.
-        - Add를 한번만 하게 바꾸던가 / clear 해주고 다시 넣어주던가.
+    - CRUD : U
+        수정 클릭 시: 선택화면 빠져나와야 함.
+
+
+    - 직접입력 시 default 섹션 하나 / 수량 default 1 / focus 이동
+
+
 
 
 - Development plan

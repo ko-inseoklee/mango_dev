@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/test/showFoodViewModel.dart';
 import 'package:mangodevelopment/test/testRef.dart';
+import 'package:mangodevelopment/view/refrigerator/modifyFoods.dart';
+import 'package:mangodevelopment/view/refrigerator/recipe.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/model/food.dart';
@@ -76,6 +78,29 @@ class _TestRefPageState extends State<TestRefPage> {
                   ),
                 ],
               )),
+          Obx(() {
+            return controller.foods.value.currentTab == 0
+                ? Container(
+                    width: deviceWidth,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image:
+                            AssetImage('images/prototype/recommandRecipe.png'),
+                      ),
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        Get.to(() => RecipePage(title: '레시피 페이지'));
+                      },
+                      child: Text(''),
+                    ),
+                  )
+                : SizedBox(
+                    height: 0.1,
+                  );
+          }),
           Container(
             height: 40,
             child: Obx(() {
@@ -166,7 +191,12 @@ class _TestRefPageState extends State<TestRefPage> {
                         )),
                         Container(
                             child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.changeIdx();
+                            Get.to(ModifyFoods(title: '품목 수정'),
+                                arguments:
+                                    controller.foods.value.canModifyFoods);
+                          },
                           child: Text('수정',
                               style: Theme.of(context).textTheme.subtitle2),
                         )),
@@ -187,7 +217,9 @@ class _TestRefPageState extends State<TestRefPage> {
           ),
           MangoDivider(),
           Container(
-            height: deviceHeight - 237,
+            height: controller.foods.value.currentTab == 0
+                ? deviceHeight - 357
+                : deviceHeight - 237,
             child: ListView(
               children: [
                 Obx(() {

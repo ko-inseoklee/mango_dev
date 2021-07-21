@@ -66,6 +66,16 @@ class ShowFoodsController extends GetxController {
     });
   }
 
+  changeIdx() {
+    int i = 0;
+    foods.update((val) {
+      for (TemporaryFood food in val!.canModifyFoods) {
+        food.idx = i;
+        i++;
+      }
+    });
+  }
+
   changeBool({required bool isFold, required int idx}) {
     foods.update((val) {
       val!.showInOnceIsFolds[idx] = isFold;

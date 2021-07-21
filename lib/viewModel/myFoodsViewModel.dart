@@ -92,6 +92,35 @@ class MyFoodsViewModel extends GetxController {
     }
   }
 
+  Future<void> updateFood(String refID, List<TemporaryFood> foods) async {
+    for (TemporaryFood food in foods) {
+      int i = 0;
+
+      await FirebaseFirestore.instance
+          .collection('myFood')
+          .doc(food.fId)
+          .update({
+        'fId': food.fId,
+        'rId': food.rId,
+        'name': food.name,
+        'category': food.category,
+        'number': food.number,
+        'storeType': food.method,
+        'displayType': food.displayType,
+        'shelfLife': food.shelfLife,
+        'registrationDay': food.registrationDay,
+        'registerNormal': food.registerNormal,
+        'registerRefAbnormal': food.registerRefAbnormal,
+        'registerFroAbnormal': food.registerFroAbnormal,
+        'registerRTAbnormal': food.registerRTAbnormal,
+        'shelfNormal': food.shelfNormal,
+        'shelfDDay': food.shelfDDay,
+        'shelfOver': food.shelfOver,
+        'isModify': food.isModify
+      });
+    }
+  }
+
   List<TemporaryFood> sortByCategory(
       List<TemporaryFood> foods, String category) {
     List<TemporaryFood> _tempFood = [];
