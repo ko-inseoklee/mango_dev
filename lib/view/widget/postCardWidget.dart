@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
@@ -7,6 +8,8 @@ import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class MangoPostCard extends StatelessWidget {
+  final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
+
   String postID;
   int state;
 
@@ -17,6 +20,7 @@ class MangoPostCard extends StatelessWidget {
   String subtitle;
   int num;
   DateTime shelfLife;
+  String userName;
 
   MangoPostCard(
       {Key? key,
@@ -28,7 +32,8 @@ class MangoPostCard extends StatelessWidget {
       required DateTime createTime,
       required String subtitle,
       required int num,
-      required DateTime shelfLife})
+      required DateTime shelfLife,
+      required userName})
       : postID = postID,
         state = state,
         foodName = foodName,
@@ -41,7 +46,8 @@ class MangoPostCard extends StatelessWidget {
         //     minutes: createTime.minute)),
         subtitle = subtitle,
         num = num,
-        shelfLife = shelfLife;
+        shelfLife = shelfLife,
+        userName = userName;
 
   String calculateTime() {
     // print(createTime.toString());
@@ -151,6 +157,13 @@ class MangoPostCard extends StatelessWidget {
                             child: Icon(Icons.send_rounded),
                             // onPressed: () => showAlertDialog('치즈', 3, '2021.1.30'),
                             onPressed: () {
+                              mango_dev.collection('chatRooms').doc().update({
+                                'user': [
+                                  userName,
+                                  userViewModelController.user.value.userName
+                                ],
+                                'postID': postID
+                              });
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
                                 state,

@@ -19,25 +19,37 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   var num = Get.arguments[4];
   var subtitle = Get.arguments[5];
   var shelfLife = Get.arguments[6];
+  var userName = Get.arguments[7];
+  var profileImageRef = '-1';
+
+//TODO: 상대방, 내 프로필 이미지 사용하기
 
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
 
-  // chatRoom Doc ID
-  // 1.PostID  2.user+friend ID
-  Future<void> send(String docID, String from) async {
+  // chatRoom Doc ID -> randomly
+  Future<void> send(String postID, String from) async {
     if (messageController.text.length > 0) {
       await mango_dev
           .collection('chatRooms')
-          .doc(docID)
-          .collection('messages')
-          .add({
-        'text': messageController.text,
-        'from': from,
-        'date': DateTime.now().toIso8601String().toString(),
-        'to': friendId,
+          .where('uid', arrayContains: from)
+          .where('postID', isEqualTo: postID)
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          mango_dev
+              .collection('chatRooms')
+              .doc(element.id)
+              .collection('messages')
+              .add({
+            'text': messageController.text,
+            'from': from,
+            'date': DateTime.now().toIso8601String().toString(),
+            'to': friendId,
+          });
+        });
       });
       messageController.clear();
 
@@ -69,9 +81,30 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         _state = '거래 완료';
       });
     }
+
+    var _stream;
+    mango_dev
+        .collection('chatRooms')
+        .where('uid',
+            arrayContains: userViewModelController.user.value.userName)
+        .where('postID', isEqualTo: postID)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        setState(() {
+          _stream = mango_dev
+              .collection('chatRooms')
+              .doc(element.id)
+              .collection('messages')
+              .orderBy('date')
+              .snapshots();
+        });
+      });
+    });
     return Scaffold(
       appBar: AppBar(
-        title: Text('채팅 페이지'),
+        centerTitle: true,
+        title: Text(friendId),
       ),
       body: SafeArea(
         child: Column(
@@ -79,12 +112,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           children: <Widget>[
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
-                stream: mango_dev
-                    .collection('chatRooms')
-                    .doc(postID) // TODO: access to generated random docID
-                    .collection('messages')
-                    .orderBy('date')
-                    .snapshots(),
+                stream: _stream,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
                     return Center(
@@ -98,12 +126,18 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             from: doc['from'],
                             text: doc['text'],
                             to: doc['to'],
-                            me: userViewModelController.userID == doc['from'],
+                            me: userViewModelController.user.value.userName ==
+                                doc['from'],
                           ))
                       .toList();
 
                   // TODO: check if chat page is null
                   var empty = true;
+                  if (messages.toList().length == 0)
+                    return Center(
+                      child: Text('채팅을 시작해 보세요'),
+                    );
+
                   if (docs.length != 0) empty = false;
 
                   return Stack(
@@ -116,6 +150,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             : ListView(
                                 controller: scrollController,
                                 children: <Widget>[
+                                  SizedBox(height: 100),
                                   ...messages,
                                 ],
                               ),
@@ -165,7 +200,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     child: TextField(
                       onSubmitted: (value) => send(
                           postID, //generate docID by Post
-                          userViewModelController.user.value.userID),
+                          userViewModelController.user.value.userName),
                       // from who ?
                       decoration: InputDecoration(
                         hintText: 'Enter a Message...',
@@ -184,7 +219,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     onPressed: () {
                       send(
                           postID, //generate docID by Post
-                          userViewModelController.user.value.userID);
+                          userViewModelController.user.value.userName);
 
                       messageController.clear();
                     },
@@ -214,30 +249,49 @@ class Message extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(from);
-    return Container(
-      child: Column(
-        crossAxisAlignment:
-            me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            from,
-          ),
-          Container(
-            margin: me ? EdgeInsets.only(right: 20) : EdgeInsets.only(left: 20),
-            child: Material(
-              color: me ? Colors.orangeAccent[100] : Colors.grey[300],
-              borderRadius: BorderRadius.circular(10.0),
-              elevation: 6.0,
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 15.0),
-                child: Text(
-                  text,
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Container(
+        child: Column(
+          crossAxisAlignment:
+              me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Text(
+                from,
               ),
             ),
-          )
-        ],
+            Wrap(
+              children: <Widget>[
+                Container(
+                  margin: me
+                      ? EdgeInsets.only(right: 10)
+                      : EdgeInsets.only(left: 10),
+                  child: Material(
+                    color: me ? Colors.orangeAccent[100] : Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10.0),
+                    elevation: 6.0,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 15.0),
+                      child: Text(
+                        text,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 35,
+                  width: 30,
+                  child: Container(
+                    color: Colors.blue,
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
