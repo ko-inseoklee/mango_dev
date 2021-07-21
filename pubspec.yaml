@@ -43,6 +43,7 @@ dependencies:
   google_ml_kit: ^0.3.0
   shared_preferences: ^2.0.6
   webview_flutter: ^2.0.10
+  flutter_screenutil: ^5.0.0+2
 
 dev_dependencies:
   flutter_test:

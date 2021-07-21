@@ -81,7 +81,7 @@ class TemporaryFood {
         idx = 0,
         status = true,
         name = '-',
-        number = 0,
+        number = 1,
         category = '-',
         method = 0,
         displayType = true,

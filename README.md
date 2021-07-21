@@ -25,7 +25,6 @@ A new Flutter project.
     - CRUD : U
         수정 클릭 시: 선택화면 빠져나와야 함.
 
-
     - 직접입력 시 default 섹션 하나 / 수량 default 1 / focus 이동
 
 
@@ -70,3 +69,7 @@ A new Flutter project.
 
     3. Later
         - 각 표시 기준(위젯 표기 boolean 값) 매일 날짜 기준으로 업데이트 시키기.
+
+
+- ScreenUtil 적용
+    test2.dart

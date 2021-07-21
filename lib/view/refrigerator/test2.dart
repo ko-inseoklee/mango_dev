@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
@@ -57,7 +58,7 @@ class _TestRefPageState extends State<TestRefPage> {
       body: Column(
         children: [
           Container(
-              height: 50,
+              height: ScreenUtil().setHeight(43),
               child: Column(
                 children: [
                   Row(
@@ -71,9 +72,6 @@ class _TestRefPageState extends State<TestRefPage> {
                       Obx(() {
                         return tabView(title: '카테고리별 보기', idx: 2);
                       }),
-                      // tabView(title: '유통기한별 보기', idx: 0),
-                      // tabView(title: '한눈에 보기', idx: 1),
-                      // tabView(title: '카테고리별 보기', idx: 2),
                     ],
                   ),
                 ],
@@ -81,8 +79,8 @@ class _TestRefPageState extends State<TestRefPage> {
           Obx(() {
             return controller.foods.value.currentTab == 0
                 ? Container(
-                    width: deviceWidth,
-                    height: 120,
+                    width: ScreenUtil().setWidth(375),
+                    height: ScreenUtil().setHeight(106),
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         fit: BoxFit.fill,
@@ -98,11 +96,11 @@ class _TestRefPageState extends State<TestRefPage> {
                     ),
                   )
                 : SizedBox(
-                    height: 0.1,
+                    height: ScreenUtil().setHeight(0.1),
                   );
           }),
           Container(
-            height: 40,
+            height: ScreenUtil().setHeight(41),
             child: Obx(() {
               return !controller.foods.value.isModify
                   ? Row(
@@ -218,8 +216,8 @@ class _TestRefPageState extends State<TestRefPage> {
           MangoDivider(),
           Container(
             height: controller.foods.value.currentTab == 0
-                ? deviceHeight - 357
-                : deviceHeight - 237,
+                ? ScreenUtil().setHeight(465)
+                : ScreenUtil().setHeight(586),
             child: ListView(
               children: [
                 Obx(() {
@@ -239,8 +237,8 @@ class _TestRefPageState extends State<TestRefPage> {
 
   Widget tabView({required String title, required int idx}) {
     return Container(
-      width: 130,
-      height: 40,
+      width: ScreenUtil().setWidth(125),
+      height: ScreenUtil().setHeight(43),
       decoration: BoxDecoration(
           border: Border(
               bottom: controller.foods.value.currentTab == idx
@@ -363,25 +361,40 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
             return Container(
               child: _controller.foods.value.showInOnceIsFolds[widget.idx]
                   ? SizedBox(
-                      height: 0.1,
+                      height: ScreenUtil().setHeight(0.1),
                     )
                   : _controller.foods.value.showRefFoods[widget.idx].length == 0
                       ? Container(
-                          alignment: Alignment.center,
-                          height: 100,
-                          child: Text('냉장고가 비었습니다.'),
+                          alignment: Alignment.bottomCenter,
+                          height: ScreenUtil().setHeight(150),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                height: ScreenUtil().setHeight(20),
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    vertical: ScreenUtil().setHeight(4)),
+                                height: ScreenUtil().setHeight(50),
+                                child: Image.asset('images/login/logo.png'),
+                              ),
+                              Container(child: Text('냉장고가 비었습니다. 품목을 추가하세요!')),
+                            ],
+                          ),
                         )
                       : Container(
-                          width: deviceWidth,
-                          height: ((_controller.foods.value
-                                          .showRefFoods[widget.idx].length /
-                                      3) +
-                                  1) *
-                              160,
+                          width: ScreenUtil().setWidth(375),
+                          height: (((_controller.foods.value
+                                              .showRefFoods[widget.idx].length /
+                                          3) +
+                                      1) *
+                                  ScreenUtil().setHeight(157)) +
+                              ScreenUtil().setHeight(25),
                           child: GridView.count(
                             // count 3,50,60 - 2,45,50
                             crossAxisCount: 3,
-                            childAspectRatio: 55 / 70,
+                            childAspectRatio: ScreenUtil().setWidth(108) /
+                                ScreenUtil().setHeight(157),
                             children: _buildFoodCards(
                                 _controller
                                     .foods.value.showRefFoods[widget.idx],
@@ -427,7 +440,9 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
             decoration: BoxDecoration(
                 color: MangoWhite,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: MangoDisabledColorLight, width: 2.0)),
+                border: Border.all(
+                    color: MangoDisabledColorLight,
+                    width: ScreenUtil().setWidth(2.0))),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -486,7 +501,8 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
             decoration: BoxDecoration(
                 color: Orange200,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Orange400, width: 2.0)),
+                border: Border.all(
+                    color: Orange400, width: ScreenUtil().setWidth(2.0))),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -545,7 +561,9 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
             decoration: BoxDecoration(
                 color: Red200,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: MangoDisabledColorLight, width: 2.0)),
+                border: Border.all(
+                    color: MangoDisabledColorLight,
+                    width: ScreenUtil().setWidth(2.0))),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -589,15 +607,17 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
             ),
           ),
           Positioned(
-            width: 70,
-            height: 30,
+            width: ScreenUtil().setWidth(62),
+            height: ScreenUtil().setHeight(24),
             child: Text(
               'OVER',
               style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                  color: Red500, fontWeight: FontWeight.w700, fontSize: 22.0),
+                  color: Red500,
+                  fontWeight: FontWeight.w900,
+                  fontSize: ScreenUtil().setSp(20)),
             ),
-            left: 5,
-            top: 5,
+            left: ScreenUtil().setWidth(9),
+            top: ScreenUtil().setHeight(8.0),
           ),
         ],
       ),
@@ -615,7 +635,9 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
             decoration: BoxDecoration(
                 color: MangoWhite,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: MangoDisabledColorLight, width: 2.0)),
+                border: Border.all(
+                    color: MangoDisabledColorLight,
+                    width: ScreenUtil().setWidth(2.0))),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -654,14 +676,16 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
           Positioned(
             child: Container(
               alignment: Alignment.center,
-              width: 40,
-              height: 30,
+              width: ScreenUtil().setWidth(44),
+              height: ScreenUtil().setHeight(24),
               decoration: BoxDecoration(
                   color: Red200, borderRadius: BorderRadius.circular(5)),
               child: Text(
                 'D-${food.shelfLife.difference(DateTime.now()).inDays + 1}',
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color: Red500, fontWeight: FontWeight.w700, fontSize: 22.0),
+                    color: Red500,
+                    fontWeight: FontWeight.w700,
+                    fontSize: ScreenUtil().setSp(20)),
               ),
             ),
             left: 5,
@@ -683,7 +707,8 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
             decoration: BoxDecoration(
                 color: Purple100,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Purple200, width: 2.0)),
+                border: Border.all(
+                    color: Purple200, width: ScreenUtil().setWidth(2.0))),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -723,8 +748,8 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
           Positioned(
             child: Container(
                 alignment: Alignment.center,
-                width: 70,
-                height: 30,
+                width: ScreenUtil().setWidth(71),
+                height: ScreenUtil().setHeight(24.0),
                 decoration: BoxDecoration(
                   color: Purple100,
                 ),

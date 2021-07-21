@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
@@ -34,13 +35,12 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   late UserViewModel user;
   late ShowFoodsController _showController;
 
-  List<TemporaryFood> foods = [];
+  List<TemporaryFood> foods = [TemporaryFood.init()];
 
   int currentIdx = 0;
   int maxIdx = 0;
 
-  TextEditingController _textEditingController =
-      new TextEditingController(text: '-');
+  TextEditingController _textEditingController = new TextEditingController();
 
   int tempNum = 0;
 
@@ -51,6 +51,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    // addChip();
+    _textEditingController.text = foods[0].name;
   }
 
   @override
@@ -75,7 +77,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 80 * (deviceHeight / prototypeHeight),
+            height: ScreenUtil().setHeight(67),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -114,7 +116,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-            height: 60 * (deviceHeight / prototypeHeight),
+            height: ScreenUtil().setHeight(60),
             width: deviceWidth,
             decoration: BoxDecoration(
                 color: Orange400, borderRadius: BorderRadius.circular(10)),
@@ -145,8 +147,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                       Get.back();
                     });
                   });
-                  // await _refrigerator.loadFoods().then((value) => Get.back());
-
                 } else {
                   showDialog(
                       context: context,
@@ -238,7 +238,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                   12.0 * deviceWidth / prototypeWidth),
               decoration: BoxDecoration(
                   color: currentIdx == food.idx ? MangoWhite : MangoBehindColor,
-                  borderRadius: BorderRadius.circular(20.0),
+                  borderRadius: BorderRadius.circular(25.0),
                   border: Border.all(
                       color: currentIdx == food.idx
                           ? Orange700
