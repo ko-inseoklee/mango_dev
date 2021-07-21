@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
@@ -7,6 +8,11 @@ import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class MangoPostCard extends StatelessWidget {
+  final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
+
+  String postID;
+  int state;
+
   String foodName;
   String owner;
   String profileImageRef;
@@ -14,17 +20,23 @@ class MangoPostCard extends StatelessWidget {
   String subtitle;
   int num;
   DateTime shelfLife;
+  String userName;
 
   MangoPostCard(
       {Key? key,
+      required String postID,
+      required int state,
       required String foodName,
       required String owner,
       required String profileImageRef,
       required DateTime createTime,
       required String subtitle,
       required int num,
-      required DateTime shelfLife})
-      : foodName = foodName,
+      required DateTime shelfLife,
+      required userName})
+      : postID = postID,
+        state = state,
+        foodName = foodName,
         owner = owner,
         profileImageRef = profileImageRef,
         createSince = DateTime.now(),
@@ -34,7 +46,8 @@ class MangoPostCard extends StatelessWidget {
         //     minutes: createTime.minute)),
         subtitle = subtitle,
         num = num,
-        shelfLife = shelfLife;
+        shelfLife = shelfLife,
+        userName = userName;
 
   String calculateTime() {
     // print(createTime.toString());
@@ -144,7 +157,23 @@ class MangoPostCard extends StatelessWidget {
                             child: Icon(Icons.send_rounded),
                             // onPressed: () => showAlertDialog('치즈', 3, '2021.1.30'),
                             onPressed: () {
-                              Get.to(ChatDetailPage(), arguments: owner);
+                              // mango_dev.collection('chatRooms').doc().set({
+                              //   'user': [
+                              //     userName,
+                              //     userViewModelController.user.value.userName
+                              //   ],
+                              //   'postID': postID
+                              // });
+                              Get.to(ChatDetailPage(), arguments: [
+                                postID,
+                                state,
+                                owner,
+                                foodName,
+                                num,
+                                subtitle,
+                                shelfLife,
+                                userName,
+                              ]);
                             },
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all<

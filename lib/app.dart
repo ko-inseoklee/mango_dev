@@ -22,6 +22,22 @@ var prototypeHeight = 812.0;
 
 var platform = true;
 
+Future<void> saveTokenToDatabase(String token) async {
+  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
+
+  await FirebaseFirestore.instance.collection('user').doc(userId).update({
+    'tokens': token,
+  });
+}
+
+Future<void> getDeviceToken() async {
+  //save device token
+  String? token = await FirebaseMessaging.instance.getToken();
+
+  await saveTokenToDatabase(token!);
+  FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
+}
+
 class MangoApp extends StatefulWidget {
   const MangoApp({Key? key}) : super(key: key);
 
@@ -30,8 +46,6 @@ class MangoApp extends StatefulWidget {
 }
 
 class _MangoAppState extends State<MangoApp> {
-  late String _token;
-
   @override
   void initState() {
     super.initState();
@@ -39,37 +53,39 @@ class _MangoAppState extends State<MangoApp> {
     FirebaseMessaging.instance.getInitialMessage();
 
     getDeviceToken();
+
     //give message of notification on which user taps
     //open app from terminated state
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         print(message.notification!.body);
         print(message.notification!.title);
+
         // final route2 = message.data['route'];
         // Get.to(route2);
       }
     });
 
-    //opened in foreground
+    // //opened in foreground
     FirebaseMessaging.onMessage.listen((message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
+
       if (message.notification != null) {
+        Get.snackbar(message.notification!.title as String,
+            message.notification!.body as String);
         // flutterLocalNoification
         print(message.notification!.body);
         print(message.notification!.title);
       }
     });
 
-    //opened in background
-    //when user taps on the notification
+    // //opened in background
+    // //when user taps on the notification
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if (message.notification != null) {
         print(message.notification!.body);
         print(message.notification!.title);
         //print route from message
         // final route = message.data['route'];
-        // Get.to(route);
       }
     });
   }

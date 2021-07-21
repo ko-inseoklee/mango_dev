@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/user.dart';
+import 'package:mangodevelopment/viewModel/addFriendViewModel.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/view/trade/friend/addEmail.dart';
 import 'package:mangodevelopment/view/trade/friend/addID.dart';
@@ -229,7 +230,11 @@ class _FriendListPageState extends State<FriendListPage> {
       ),
       title: Text(docs.get('userName')),
       trailing: !_edit
-          ? Text('')
+          ? IconButton(
+              onPressed: () {
+                // sendFriendRequest(docs.get('tokens'));
+              },
+              icon: Icon(Icons.send))
           : ElevatedButton(
               onPressed: () {
                 // TODO: get current user info

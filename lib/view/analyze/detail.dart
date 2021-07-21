@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -52,6 +51,11 @@ class _DetailScreenState extends State<DetailScreen> {
     // Retrieving the RecognisedText from the InputImage
     final text = await _textDetector.processImage(inputImage);
 
+    // Regular expression for verifying an email address
+    // String pattern =
+    //     r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$";
+    // RegExp regEx = RegExp(pattern);
+    //
     List<String> stringList = [];
 
 // Finding and storing the text String(s)
@@ -93,82 +97,74 @@ class _DetailScreenState extends State<DetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Image Details"),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Get.back();
-            Get.back();
-            Get.back();
-          },
-        ),
       ),
       body: _imageSize != null
           ? Stack(
-              children: [
-                Container(
-                  width: double.maxFinite,
-                  color: Colors.black,
-                  child: CustomPaint(
-                    foregroundPainter: TextDetectorPainter(
-                      _imageSize!,
-                      _elements,
-                    ),
-                    child: AspectRatio(
-                      aspectRatio: _imageSize!.aspectRatio,
-                      child: Image.file(
-                        File(_imagePath),
-                      ),
-                    ),
-                  ),
+        children: [
+          Container(
+            width: double.maxFinite,
+            color: Colors.black,
+            child: CustomPaint(
+              foregroundPainter: TextDetectorPainter(
+                _imageSize!,
+                _elements,
+              ),
+              child: AspectRatio(
+                aspectRatio: _imageSize!.aspectRatio,
+                child: Image.file(
+                  File(_imagePath),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Card(
-                    elevation: 8,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: Text(
-                              "Identified Text",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            height: 60,
-                            child: SingleChildScrollView(
-                              child: _listStrings != null
-                                  ? ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: BouncingScrollPhysics(),
-                                      itemCount: _listStrings!.length,
-                                      itemBuilder: (context, index) =>
-                                          Text(_listStrings![index]),
-                                    )
-                                  : Container(),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : Container(
-              color: Colors.black,
-              child: Center(
-                child: CircularProgressIndicator(),
               ),
             ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Card(
+              elevation: 8,
+              color: Colors.white,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Text(
+                        "Identified Text",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 60,
+                      child: SingleChildScrollView(
+                        child: _listStrings != null
+                            ? ListView.builder(
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          itemCount: _listStrings!.length,
+                          itemBuilder: (context, index) =>
+                              Text(_listStrings![index]),
+                        )
+                            : Container(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      )
+          : Container(
+        color: Colors.black,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
     );
   }
 }
@@ -199,13 +195,13 @@ class TextDetectorPainter extends CustomPainter {
       ..color = Colors.red
       ..strokeWidth = 2.0;
 
-    for (TextElement element in elements) {
-      canvas.drawRect(scaleRect(element), paint);
-    }
+    // for (TextElement element in elements) {
+    //   canvas.drawRect(scaleRect(element), paint);
+    // }
   }
 
   @override
-  bool shouldRepaint(TextDetectorPainter oldDelegate) {
+  bool shouldRepaint(TextDetectorPainter oldDealegate) {
     return true;
   }
 }
