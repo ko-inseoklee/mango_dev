@@ -5,6 +5,7 @@ import 'package:mangodevelopment/view/myAccount/myPageEdit.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
+import 'package:mangodevelopment/viewModel/fileStorage.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'dart:io';
 
@@ -21,11 +22,10 @@ class MyPage extends StatefulWidget {
 
 class _MyPageState extends State<MyPage> {
   Authentication _auth = Get.find<Authentication>();
+  FileStorage _fileStoarge = Get.put(FileStorage());
 
   @override
   Widget build(BuildContext context) {
-
-    String _profileImagePath = '';
 
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
       return Scaffold(
@@ -48,26 +48,31 @@ class _MyPageState extends State<MyPage> {
                           5 * deviceWidth / prototypeWidth,
                           0,
                           5 * deviceWidth / prototypeWidth),
-                      child: userViewModelController.user.value.profileImageReference == '-1' ?
-                      Container(
+                      child: userViewModelController
+                          .user.value.profileImageReference ==
+                          '-1'
+                          ? Container(
                         width: 90 * deviceWidth / prototypeWidth,
                         height: 90 * deviceWidth / prototypeWidth,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.fill,
-                            image: AssetImage('images/default_profile.png'),
+                            image:
+                            AssetImage('images/default_profile.png'),
                           ),
                         ),
-                      ) : _profileImagePath != ''
-                          ? ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            _profileImagePath,
-                            width: 90 * deviceWidth / prototypeWidth,
-                            height: 90 * deviceWidth / prototypeWidth,
-                            fit: BoxFit.fitHeight,
-                          ))
+                      )
+                          // : _fileStoarge.isNetworkImage.value == true
+                          // ? ClipRRect(
+                          // borderRadius: BorderRadius.circular(50),
+                          // child: Image.network(
+                          //   userViewModelController
+                          //       .user.value.profileImageReference,
+                          //   width: 90 * deviceWidth / prototypeWidth,
+                          //   height: 90 * deviceWidth / prototypeWidth,
+                          //   fit: BoxFit.fitHeight,
+                          // ))
                           : ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: Image.file(
@@ -81,7 +86,11 @@ class _MyPageState extends State<MyPage> {
                     ),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(16.0* deviceWidth / prototypeWidth, 40.0 * deviceWidth / prototypeWidth, 0, 0),
+                        padding: EdgeInsets.fromLTRB(
+                            16.0 * deviceWidth / prototypeWidth,
+                            40.0 * deviceWidth / prototypeWidth,
+                            0,
+                            0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -95,15 +104,14 @@ class _MyPageState extends State<MyPage> {
                       ),
                     ),
                     //TODO. 수정페이지로 이동
-                    IconButton(onPressed: () async{
-                      // setState(() async{
-                      //   _profileImagePath = await Get.to(MyPageEdit(),transition: Transition.topLevel);
-                      // });
-                      var result = await Get.to(MyPageEdit(),transition: Transition.topLevel);
-                      setState(() {
-                        _profileImagePath = result;
-                      });
-                    }, icon: Icon(Icons.arrow_forward_ios_sharp))
+                    IconButton(
+                        onPressed: () async {
+                          var result = await Get.to(MyPageEdit(),
+                              transition: Transition.topLevel);
+                          setState(() {
+                          });
+                        },
+                        icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),
               ),
@@ -201,7 +209,9 @@ class _MyPageState extends State<MyPage> {
                   size: 28 * deviceWidth / prototypeWidth,
                   color: Theme.of(context).accentColor,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  comingSoon(context);
+                },
                 //TODO: condition should be deleted after make certain contents.
                 // onPressed: () => menu.menuName == '앱 설정'
                 //     ? Navigator.of(context).push(MaterialPageRoute(

@@ -68,6 +68,7 @@ flutter:
     - images/default_profile.png
     - images/category/
     - images/prototype/
+    - images/testObject/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

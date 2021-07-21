@@ -65,6 +65,11 @@ class UserViewModel extends GetxController {
     update();
   }
 
+  Future<void> setUserName(String name) async{
+    this.user.value.userName = name;
+    update();
+  }
+
   Future<void> findUserSnapshot(String uid) async {
     await FirebaseFirestore.instance
         .collection('user')
@@ -169,15 +174,4 @@ class UserViewModel extends GetxController {
     this.user.value.userName = userName;
   }
 
-// void uploadImage(ImageSource imageSource) async{
-//   try{
-//     final pickedFile = await ImagePicker().getImage(source: imageSource);
-//     isImageLoading(true);
-//     if(pickedFile != null) {
-//       var response = await
-//     }
-//   } finally{
-//     isImageLoading(false);
-//   }
-// }
 }
