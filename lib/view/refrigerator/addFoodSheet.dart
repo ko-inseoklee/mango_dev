@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/view/analyze/textAI.dart';
 
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
+import 'package:mangodevelopment/view/testObject/testObject1.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 
 import '../../app.dart';
@@ -114,7 +115,51 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
             imageSelectCard(
               onTapGallery: () {},
               onTapCamera: () {
-                Get.off(TextAI());
+                if (isBarcode == true) {
+                  Get.off(TextAI());
+                } else {
+                  Get.back();
+                  Get.dialog(AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    content: Container(
+                      width: deviceWidth,
+                      height: 450 * (deviceWidth / prototypeWidth),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Spacer(flex: 2,),
+                          Image.asset(
+                            'images/testObject/AIref.png',
+                            width: 250 * (deviceWidth / prototypeWidth),
+                            height: 250 * (deviceWidth / prototypeWidth),
+                          ),
+                          Spacer(flex: 1,),
+                          Container(
+                            child: Text(
+                                'MANGO를 사용하면 카메라를 이용하여 \n식품을 손쉽게 등록할 수 있습니다.'
+                                '\n\n처음에 일치하는 식품이 인식되지 않으면, \n식품 근처로 이동하거나 카메라를 조준해주세요.',
+                                style: Theme.of(context).textTheme.caption,
+                                textAlign: TextAlign.center),
+                          ),
+                          Spacer(flex: 1,),
+                          ConstrainedBox(
+                            constraints: BoxConstraints.tightFor(
+                              width: deviceWidth
+                            ),
+                            child: TextButton(onPressed: (){
+                              Get.off(TestObject1());
+                            }, child: Text('확인', style: TextStyle(color: Colors.black)),
+                              style: TextButton.styleFrom(
+                                backgroundColor: Theme.of(context).accentColor
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ));
+                }
               },
             ),
             Container(

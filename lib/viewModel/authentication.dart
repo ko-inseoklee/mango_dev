@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Authentication extends GetxController{
@@ -58,9 +59,19 @@ class Authentication extends GetxController{
     update();
   }
 
+  Future<void> logOut() async{
+    try{
+      _auth.signOut();
+      prefs.then((SharedPreferences pref) => pref.remove('id'));
+      update();
+    }catch (e){
+      print('exception error: $e');
+    }
+  }
 
   Future<void> signOut() async {
     try{
+      deleteAll(user!.uid);
       _auth.signOut();
       prefs.then((SharedPreferences pref) => pref.remove('id'));
       update();
@@ -79,6 +90,10 @@ class Authentication extends GetxController{
         .then((value) => result = value.exists);
 
     return result;
+  }
+
+  Future<void> deleteAll(String uid) async{
+    await UserViewModel().deleteUser(uid);
   }
 
 

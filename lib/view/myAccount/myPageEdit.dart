@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
@@ -26,10 +25,10 @@ class _MyPageEditState extends State<MyPageEdit> {
 
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
+  bool isChangeImage = false;
 
   @override
   Widget build(BuildContext context) {
-    String _profileImagePath = '';
 
     return Scaffold(
       appBar: AppBar(
@@ -38,6 +37,9 @@ class _MyPageEditState extends State<MyPageEdit> {
         leading: IconButton(
           icon: Text('취소'),
           onPressed: () {
+            setState(() {
+              _fileStoarge.isNetworkImage = false.obs;
+            });
             Get.back();
           },
         ),
@@ -45,20 +47,25 @@ class _MyPageEditState extends State<MyPageEdit> {
           IconButton(
             icon: Text('저장'),
             onPressed: () async {
-              // ignore: unnecessary_statements
-              _nameController.text != ""
-                  ? userViewModelController.userName = "${_nameController.text}"
-                  : null;
-              // ignore: unnecessary_statements
-              _profileImagePath != ''
-                  ? userViewModelController.user.value.profileImageReference =
-                      _profileImagePath
-                  : null;
-              await userViewModelController
-                  .updateUserInfo(Get.find<Authentication>().user!.uid);
-              _profileImagePath != ''
-              ? Get.back(result: _profileImagePath)
-                  : Get.back();
+              // _nameController.text != '' ?
+              // userViewModelController.user.value.userName =
+              //     _nameController.text
+              //     : null;
+              _nameController.text != ''?
+                  await userViewModelController.setUserName(_nameController.text)
+              : null;
+
+               _fileStoarge.isNetworkImage.value == true ?
+                await _fileStoarge
+                    .uploadFile(
+                    userViewModelController.user.value.profileImageReference,
+                    'profile/${_auth.user!.uid}')
+                    .then((value) {
+                      _fileStoarge.isNetworkImage = false.obs;
+                }) : null;
+              await userViewModelController.updateUserInfo(_auth.user!.uid).then((value){
+                Get.back(result: userViewModelController.user.value.profileImageReference);
+              });
             },
           ),
         ],
@@ -90,15 +97,16 @@ class _MyPageEditState extends State<MyPageEdit> {
                                 ),
                               ),
                             )
-                      : _profileImagePath != ''
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.network(
-                                    _profileImagePath,
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
-                                    fit: BoxFit.fitHeight,
-                                  ))
+                          // : _fileStoarge.isNetworkImage.value == true
+                          //     ? ClipRRect(
+                          //         borderRadius: BorderRadius.circular(50),
+                          //         child: Image.network(
+                          //           userViewModelController
+                          //               .user.value.profileImageReference,
+                          //           width: 90 * deviceWidth / prototypeWidth,
+                          //           height: 90 * deviceWidth / prototypeWidth,
+                          //           fit: BoxFit.fitHeight,
+                          //         ))
                               : ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: Image.file(
@@ -113,8 +121,8 @@ class _MyPageEditState extends State<MyPageEdit> {
                         left: 44 * deviceWidth / prototypeWidth,
                         top: 50 * deviceWidth / prototypeWidth,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Get.dialog(AlertDialog(
+                          onPressed: () async {
+                            var image = await Get.dialog(AlertDialog(
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20.0))),
@@ -127,22 +135,21 @@ class _MyPageEditState extends State<MyPageEdit> {
                                   onTapCamera: () {},
                                   onTapGallery: () async {
                                     await getGalleryImage().then((value) {
-                                      _fileStoarge.uploadFile(
-                                          value, 'profile/${_auth.user!.uid}').then((value){
-                                            setState(() {
-                                              _profileImagePath = value;
-                                            });
-                                      });
+                                      userViewModelController.user.value
+                                          .profileImageReference = value;
                                       setState(() {
-                                        userViewModelController.user.value
-                                            .profileImageReference = value;
+                                        _fileStoarge.isNetworkImage = true.obs;
                                       });
+                                      Get.back(result: value);
                                     });
-                                    Get.back();
                                   },
                                 ),
                               ),
                             ));
+                            setState(() {
+                              userViewModelController
+                                  .user.value.profileImageReference = image;
+                            });
                           },
                           child: Icon(Icons.camera_alt, color: Colors.white),
                           style: ElevatedButton.styleFrom(
@@ -237,7 +244,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                         hasOK: true,
                         dialogTitle: '로그아웃',
                         onTapOK: () async {
-                          await _auth.signOut();
+                          await _auth.logOut();
                           await Get.offAll(LogInPage(title: ''));
                         },
                         contentText: '정말로 로그아웃 하시겠습니까?',
@@ -254,8 +261,6 @@ class _MyPageEditState extends State<MyPageEdit> {
                           contentText: '정말로 회원탈퇴 하시겠습니까?',
                           onTapOK: () async {
                             await _auth.signOut();
-                            await userViewModelController
-                                .deleteUser(_auth.user!.uid);
                             await Get.offAll(LogInPage(title: ''));
                           },
                           hasOK: true));
@@ -271,4 +276,28 @@ class _MyPageEditState extends State<MyPageEdit> {
       ),
     );
   }
+
+  // Future<void> _loadChangeInfo() async{
+  //
+  //   print('isNetWork???? ${_fileStoarge.isNetworkImage.value}');
+  //
+  //   // ignore: unnecessary_statements
+  //   _fileStoarge.isNetworkImage.value == false ?
+  //   await _fileStoarge
+  //       .uploadFile(
+  //       userViewModelController.user.value.profileImageReference,
+  //       'profile/${_auth.user!.uid}')
+  //       .then((value) {
+  //     userViewModelController.user.value.profileImageReference =
+  //         value;
+  //     setState(() {
+  //       _fileStoarge.isNetworkImage = true.obs;
+  //       _nameController.text != '' ?
+  //       userViewModelController.user.value.userName = _nameController.text
+  //           : null;
+  //     });
+  //   }) : _nameController.text != '' ?
+  //   userViewModelController.user.value.userName = _nameController.text
+  //       : null;
+  // }
 }
