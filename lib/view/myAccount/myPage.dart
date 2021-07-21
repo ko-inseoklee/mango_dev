@@ -24,6 +24,9 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    String _profileImagePath = '';
+
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
       return Scaffold(
         appBar: AppBar(
@@ -56,11 +59,20 @@ class _MyPageState extends State<MyPage> {
                             image: AssetImage('images/default_profile.png'),
                           ),
                         ),
-                      ) :
-                      ClipRRect(
+                      ) : _profileImagePath != ''
+                          ? ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.network(
+                            _profileImagePath,
+                            width: 90 * deviceWidth / prototypeWidth,
+                            height: 90 * deviceWidth / prototypeWidth,
+                            fit: BoxFit.fitHeight,
+                          ))
+                          : ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: Image.file(
-                          File(userViewModelController.user.value.profileImageReference), //TODO. SOLVE this problem
+                          File(userViewModelController
+                              .user.value.profileImageReference),
                           width: 90 * deviceWidth / prototypeWidth,
                           height: 90 * deviceWidth / prototypeWidth,
                           fit: BoxFit.fitHeight,
@@ -83,8 +95,14 @@ class _MyPageState extends State<MyPage> {
                       ),
                     ),
                     //TODO. 수정페이지로 이동
-                    IconButton(onPressed: (){
-                      Get.to(MyPageEdit(),transition: Transition.topLevel);
+                    IconButton(onPressed: () async{
+                      // setState(() async{
+                      //   _profileImagePath = await Get.to(MyPageEdit(),transition: Transition.topLevel);
+                      // });
+                      var result = await Get.to(MyPageEdit(),transition: Transition.topLevel);
+                      setState(() {
+                        _profileImagePath = result;
+                      });
                     }, icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),

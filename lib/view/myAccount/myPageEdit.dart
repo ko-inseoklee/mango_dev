@@ -4,9 +4,10 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
-import 'package:mangodevelopment/view/widget/dialog/imageSelectDialog.dart';
+import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
+import 'package:mangodevelopment/viewModel/fileStorage.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'dart:io';
 
@@ -21,16 +22,14 @@ class MyPageEdit extends StatefulWidget {
 class _MyPageEditState extends State<MyPageEdit> {
   Authentication _auth = Get.find<Authentication>();
   var userViewModelController = Get.find<UserViewModel>();
+  FileStorage _fileStoarge = Get.put(FileStorage());
 
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
 
-  PickedFile? _image;
-
   @override
   Widget build(BuildContext context) {
-    String _preProfileImage =
-        userViewModelController.user.value.profileImageReference;
+    String _profileImagePath = '';
 
     return Scaffold(
       appBar: AppBar(
@@ -39,8 +38,6 @@ class _MyPageEditState extends State<MyPageEdit> {
         leading: IconButton(
           icon: Text('취소'),
           onPressed: () {
-            userViewModelController.user.value.profileImageReference =
-                _preProfileImage;
             Get.back();
           },
         ),
@@ -52,9 +49,16 @@ class _MyPageEditState extends State<MyPageEdit> {
               _nameController.text != ""
                   ? userViewModelController.userName = "${_nameController.text}"
                   : null;
+              // ignore: unnecessary_statements
+              _profileImagePath != ''
+                  ? userViewModelController.user.value.profileImageReference =
+                      _profileImagePath
+                  : null;
               await userViewModelController
                   .updateUserInfo(Get.find<Authentication>().user!.uid);
-              Get.back();
+              _profileImagePath != ''
+              ? Get.back(result: _profileImagePath)
+                  : Get.back();
             },
           ),
         ],
@@ -86,17 +90,15 @@ class _MyPageEditState extends State<MyPageEdit> {
                                 ),
                               ),
                             )
-                          : _image == null
+                      : _profileImagePath != ''
                               ? ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
-                                  child: Image.file(
-                                    File(userViewModelController
-                                        .user.value.profileImageReference),
+                                  child: Image.network(
+                                    _profileImagePath,
                                     width: 90 * deviceWidth / prototypeWidth,
                                     height: 90 * deviceWidth / prototypeWidth,
                                     fit: BoxFit.fitHeight,
-                                  ),
-                                )
+                                  ))
                               : ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: Image.file(
@@ -112,7 +114,35 @@ class _MyPageEditState extends State<MyPageEdit> {
                         top: 50 * deviceWidth / prototypeWidth,
                         child: ElevatedButton(
                           onPressed: () {
-                            Get.dialog(ImageSelectDialog());
+                            Get.dialog(AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0))),
+                              title: Container(
+                                  width: deviceWidth,
+                                  child: Center(child: Text('프로필 사진 수정'))),
+                              content: Container(
+                                height: 150 * (deviceWidth / prototypeWidth),
+                                child: imageSelectCard(
+                                  onTapCamera: () {},
+                                  onTapGallery: () async {
+                                    await getGalleryImage().then((value) {
+                                      _fileStoarge.uploadFile(
+                                          value, 'profile/${_auth.user!.uid}').then((value){
+                                            setState(() {
+                                              _profileImagePath = value;
+                                            });
+                                      });
+                                      setState(() {
+                                        userViewModelController.user.value
+                                            .profileImageReference = value;
+                                      });
+                                    });
+                                    Get.back();
+                                  },
+                                ),
+                              ),
+                            ));
                           },
                           child: Icon(Icons.camera_alt, color: Colors.white),
                           style: ElevatedButton.styleFrom(
