@@ -31,7 +31,7 @@ class HomePageState extends State<HomePage> {
   UserViewModel _userViewModelController = Get.put(UserViewModel());
   TestRefViewModel _refrigeratorViewModel = Get.put(TestRefViewModel());
   Authentication authController = Get.find<Authentication>();
-  postViewModel postController = Get.put(postViewModel());
+  // postViewModel postController = Get.put(postViewModel());
 
   @override
   Widget build(BuildContext context) {

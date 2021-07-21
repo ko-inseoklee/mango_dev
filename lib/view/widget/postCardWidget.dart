@@ -10,17 +10,22 @@ import 'package:mangodevelopment/viewModel/userViewModel.dart';
 class MangoPostCard extends StatelessWidget {
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
+  // 게시글 관련 정보
   String postID;
   int state;
-
-  String foodName;
-  String owner;
-  String profileImageRef;
   DateTime createSince;
   String subtitle;
+
+  // 게시글에 올린 음식 관련 정보
+  String foodName;
   int num;
   DateTime shelfLife;
+
+  // 게시글 작성자 관련 정보
+  String owner;
   String userName;
+  String profileImageRef;
+
 
   MangoPostCard(
       {Key? key,
