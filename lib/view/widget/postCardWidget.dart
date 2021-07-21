@@ -49,23 +49,6 @@ class MangoPostCard extends StatelessWidget {
         shelfLife = shelfLife,
         userName = userName;
 
-  String calculateTime() {
-    // print(createTime.toString());
-    print(createSince.day.toString() +
-        '일 ' +
-        createSince.hour.toString() +
-        '시간 ' +
-        createSince.minute.toString() +
-        '분 ');
-    if (createSince.day < 1) {
-      if (createSince.hour < 1) {
-        return createSince.minute.toString() + ' 분 전';
-      }
-      return createSince.hour.toString() + '시간 전';
-    } else {
-      return createSince.day.toString() + '일 전';
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

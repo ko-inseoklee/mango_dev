@@ -10,6 +10,7 @@ import 'package:mangodevelopment/view/refrigerator/test2.dart';
 import 'package:mangodevelopment/view/refrigerator/testRefri.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
+import 'package:mangodevelopment/viewModel/postViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../color.dart';
@@ -18,6 +19,7 @@ import './widget/bottomNavigationBar/bottomNavigationBar.dart';
 
 class HomePage extends StatefulWidget {
   final title;
+
   const HomePage({Key? key, required this.title}) : super(key: key);
 
   @override
@@ -29,6 +31,7 @@ class HomePageState extends State<HomePage> {
   UserViewModel _userViewModelController = Get.put(UserViewModel());
   TestRefViewModel _refrigeratorViewModel = Get.put(TestRefViewModel());
   Authentication authController = Get.find<Authentication>();
+  postViewModel postController = Get.put(postViewModel());
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,7 @@ import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/widget/postCardWidget.dart';
+import 'package:mangodevelopment/viewModel/postViewModel.dart';
 import 'package:mangodevelopment/viewModel/push_test.dart';
 
 import 'Chat/chatList.dart';
@@ -19,6 +20,7 @@ class TradePage extends StatefulWidget {
 
 class _TradePageState extends State<TradePage> {
   List<Post> Posts = localPostList.loadPostList();
+  postViewModel postController = Get.find<postViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +47,17 @@ class _TradePageState extends State<TradePage> {
           itemCount: Posts.length,
           itemBuilder: (context, int index) {
             return MangoPostCard(
-              postID: Posts[index].postID,
-              state: Posts[index].state,
-              foodName: Posts[index].foodName,
-              owner: Posts[index].uid,
-              profileImageRef: Posts[index].profileImageRef,
-              createTime: Posts[index].registTime,
-              subtitle: Posts[index].subtitle,
-              num: Posts[index].num,
-              shelfLife: Posts[index].shelfLife,
-              userName: Posts[index].userName,
+              postID: postController.post.value.postID,
+              state: postController.post.value.state,
+              foodName: postController.post.value.foods.name,
+              owner: postController.post.value.owner.userID,
+              profileImageRef:
+                  postController.post.value.owner.profileImageReference,
+              createTime: postController.post.value.registTime,
+              subtitle: postController.post.value.subtitle,
+              num: postController.post.value.foods.number,
+              shelfLife: postController.post.value.foods.shelfLife,
+              userName: postController.post.value.taker.userName,
             );
           }),
       // Center(
