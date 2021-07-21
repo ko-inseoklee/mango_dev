@@ -68,7 +68,6 @@ class _MangoAppState extends State<MangoApp> {
 
     // //opened in foreground
     FirebaseMessaging.onMessage.listen((message) {
-
       if (message.notification != null) {
         Get.snackbar(message.notification!.title as String,
             message.notification!.body as String);
@@ -101,22 +100,6 @@ class _MangoAppState extends State<MangoApp> {
       designSize: Size(375, 812),
     );
   }
-}
-
-Future<void> saveTokenToDatabase(String token) async {
-  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
-
-  await FirebaseFirestore.instance.collection('user').doc(userId).update({
-    'tokens': FieldValue.arrayUnion([token]),
-  });
-}
-
-Future<void> getDeviceToken() async {
-  //save device token
-  String? token = await FirebaseMessaging.instance.getToken();
-
-  await saveTokenToDatabase(token!);
-  FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
 }
 
 final ThemeData _mangoTheme = _buildMangoTheme();
