@@ -80,7 +80,7 @@ class TemporaryFood {
         fId = Uuid().v4(),
         idx = 0,
         status = true,
-        name = '-',
+        name = '',
         number = 1,
         category = '-',
         method = 0,

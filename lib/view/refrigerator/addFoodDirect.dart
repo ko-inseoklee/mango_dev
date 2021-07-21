@@ -136,8 +136,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                     }
                   });
                   if (isFilled) {
+                    Get.snackbar('등록 중', '품목을 등록 중입니다.');
                     setWidget();
-
                     await MyFoodsViewModel()
                         .addFoods(_refrigerator.ref.value.rID, foods)
                         .then((value) {
@@ -149,6 +149,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                           .then((value) {
                         _showController.getFoodsLength(
                             rID: _refrigerator.ref.value.rID);
+                        Get.back();
+                        Get.snackbar('등록 완료', '품목을 등록이 완료되었습니다.');
                         Get.back();
                       });
                     });
@@ -405,7 +407,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                                       },
                                       onEditingComplete: () {
                                         FocusScope.of(context).unfocus();
-                                        print('done');
+                                        showNumBSheet(idx: idx);
                                       },
                                     ),
                                   ),
@@ -464,88 +466,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                                     width: 25,
                                     child: TextButton(
                                       onPressed: () {
-                                        showModalBottomSheet(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(40),
-                                                    topRight:
-                                                        Radius.circular(40))),
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                  height: 300 *
-                                                      (deviceHeight /
-                                                          prototypeHeight),
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        margin:
-                                                            EdgeInsets.fromLTRB(
-                                                                0, 10, 0, 20),
-                                                        width: 40,
-                                                        height: 5,
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                MangoDisabledColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5)),
-                                                      ),
-                                                      Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                bottom: 40),
-                                                        child: Text(
-                                                          '수량',
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .bodyText1!
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        height: 150 *
-                                                            (deviceHeight /
-                                                                prototypeHeight),
-                                                        child: ListView.builder(
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return Container(
-                                                              height: 25,
-                                                              child: ListTile(
-                                                                contentPadding:
-                                                                    EdgeInsets
-                                                                        .all(
-                                                                            4.0),
-                                                                title: Center(
-                                                                  child: Text(
-                                                                      (index +
-                                                                              1)
-                                                                          .toString()),
-                                                                ),
-                                                                onTap: () {
-                                                                  setState(() {
-                                                                    foods[idx]
-                                                                            .number =
-                                                                        index;
-                                                                    Get.back();
-                                                                  });
-                                                                },
-                                                              ),
-                                                            );
-                                                          },
-                                                          itemCount: 50,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ));
-                                            });
+                                        showNumBSheet(idx: idx);
                                       },
                                       child: Icon(
                                         Icons.arrow_drop_down,
@@ -578,7 +499,9 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                                       style: Theme.of(context)
                                           .textTheme
                                           .subtitle2!
-                                          .copyWith(color: MangoDisabledColor),
+                                          .copyWith(
+                                              color: MangoDisabledColor,
+                                              fontSize: ScreenUtil().setSp(12)),
                                     ),
                                   ),
                                   Container(
@@ -590,63 +513,7 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                                     width: 25,
                                     child: TextButton(
                                       onPressed: () {
-                                        showModalBottomSheet(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(40),
-                                                    topRight:
-                                                        Radius.circular(40))),
-                                            context: context,
-                                            builder: (context) {
-                                              return Container(
-                                                  height: 400 *
-                                                      (deviceHeight /
-                                                          prototypeHeight),
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        margin:
-                                                            EdgeInsets.fromLTRB(
-                                                                0, 10, 0, 20),
-                                                        width: 40,
-                                                        height: 5,
-                                                        decoration: BoxDecoration(
-                                                            color:
-                                                                MangoDisabledColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5)),
-                                                      ),
-                                                      Container(
-                                                        padding:
-                                                            EdgeInsets.only(
-                                                                bottom: 15),
-                                                        child: Text(
-                                                          '카테고리',
-                                                          style: Theme.of(
-                                                                  context)
-                                                              .textTheme
-                                                              .bodyText1!
-                                                              .copyWith(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                        height: 230,
-                                                        child: GridView.count(
-                                                            childAspectRatio:
-                                                                107 / 49,
-                                                            crossAxisCount: 3,
-                                                            children:
-                                                                _buildGridCard()),
-                                                      )
-                                                    ],
-                                                  ));
-                                            });
+                                        showCategoryBSheet(idx);
                                       },
                                       child: Icon(
                                         Icons.arrow_drop_down,
@@ -917,6 +784,105 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
             : Text(' '),
       ],
     );
+  }
+
+  showNumBSheet({required int idx}) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40), topRight: Radius.circular(40))),
+        context: context,
+        builder: (context) {
+          return Container(
+              height: ScreenUtil().setHeight(284),
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 20),
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                        color: MangoDisabledColor,
+                        borderRadius: BorderRadius.circular(5)),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 40),
+                    child: Text(
+                      '수량',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  Container(
+                    height: ScreenUtil().setHeight(160),
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return Container(
+                          height: 25,
+                          child: ListTile(
+                            contentPadding: EdgeInsets.all(4.0),
+                            title: Center(
+                              child: Text((index + 1).toString()),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                foods[idx].number = index;
+                                Get.back();
+                                showCategoryBSheet(idx);
+                              });
+                            },
+                          ),
+                        );
+                      },
+                      itemCount: 50,
+                    ),
+                  )
+                ],
+              ));
+        });
+  }
+
+  showCategoryBSheet(int idx) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(40), topRight: Radius.circular(40))),
+        context: context,
+        builder: (context) {
+          return Container(
+              height: ScreenUtil().setHeight(350),
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 20),
+                    width: 40,
+                    height: 5,
+                    decoration: BoxDecoration(
+                        color: MangoDisabledColor,
+                        borderRadius: BorderRadius.circular(5)),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 15),
+                    child: Text(
+                      '카테고리',
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                  Container(
+                    height: ScreenUtil().setHeight(250),
+                    child: GridView.count(
+                        childAspectRatio: 107 / 49,
+                        crossAxisCount: 3,
+                        children: _buildGridCard()),
+                  )
+                ],
+              ));
+        });
   }
 
   List<Widget> _buildGridCard() {
