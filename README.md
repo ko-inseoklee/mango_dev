@@ -27,6 +27,8 @@ A new Flutter project.
 
     - 직접입력 시 default 섹션 하나 / 수량 default 1 / focus 이동
 
+    - 자체 pre-set 제작
+
 
 
 

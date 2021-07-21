@@ -40,19 +40,20 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   int currentIdx = 0;
   int maxIdx = 0;
 
-  TextEditingController _textEditingController = new TextEditingController();
+  TextEditingController _textEditingController =
+      new TextEditingController(text: '-');
 
   int tempNum = 0;
 
   DateTime sDay = DateTime.now();
   DateTime rDay = DateTime.now();
 
+  final _focusNode = FocusScopeNode();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // addChip();
-    _textEditingController.text = foods[0].name;
   }
 
   @override
@@ -72,102 +73,107 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
         title: widget.title,
         isLeading: true,
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: ScreenUtil().setHeight(67),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
-                  child: ActionChip(
-                      backgroundColor: Orange50,
-                      label: Icon(
-                        Icons.add,
-                        size: 18.0,
-                        color: Orange700,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          addChip();
-                        });
-                      }),
-                ),
-                Expanded(
-                    child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: _buildChips(foods: foods),
-                ))
-              ],
-            ),
-          ),
-          Container(
-            height: 8.0 * deviceHeight / prototypeHeight,
-            decoration: BoxDecoration(
-                color: MangoBehindColor,
-                border:
-                    Border(top: BorderSide(color: MangoDisabledColorLight))),
-          ),
-          Expanded(
-            child: foods.length != 0 ? InfoBody(currentIdx) : Text(''),
-          ),
-          Container(
-            margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
-            height: ScreenUtil().setHeight(60),
-            width: deviceWidth,
-            decoration: BoxDecoration(
-                color: Orange400, borderRadius: BorderRadius.circular(10)),
-            child: TextButton(
-              onPressed: () async {
-                bool isFilled = true;
-                foods.forEach((element) {
-                  if (element.name == '-' ||
-                      element.category == '-' ||
-                      element.number == 0) {
-                    isFilled = false;
-                  }
-                });
-                if (isFilled) {
-                  setWidget();
-
-                  await MyFoodsViewModel()
-                      .addFoods(_refrigerator.ref.value.rID, foods)
-                      .then((value) {
-                    for (int i = 0; i <= 20; i++) {
-                      _showController.clearFoods(idx: i);
-                    }
-                    _showController
-                        .loadAllFoods(rID: _refrigerator.ref.value.rID)
-                        .then((value) {
-                      _showController.getFoodsLength(
-                          rID: _refrigerator.ref.value.rID);
-                      Get.back();
-                    });
-                  });
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return mangoDialog(
-                            dialogTitle: '품목 정보 입력',
-                            contentText: '정보가 모두 기입되지 않았습니다.',
-                            onTapOK: () {},
-                            hasOK: false);
-                      });
-                }
-
-                //TODO: push refrigerator.
-              },
-              child: Text(
-                '등록',
-                style: Theme.of(context).textTheme.subtitle1,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              height: ScreenUtil().setHeight(67),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
+                    child: ActionChip(
+                        backgroundColor: Orange50,
+                        label: Icon(
+                          Icons.add,
+                          size: 18.0,
+                          color: Orange700,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            addChip();
+                          });
+                        }),
+                  ),
+                  Expanded(
+                      child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: _buildChips(foods: foods),
+                  ))
+                ],
               ),
             ),
-          )
-        ],
+            Container(
+              height: 8.0 * deviceHeight / prototypeHeight,
+              decoration: BoxDecoration(
+                  color: MangoBehindColor,
+                  border:
+                      Border(top: BorderSide(color: MangoDisabledColorLight))),
+            ),
+            Expanded(
+              child: foods.length != 0 ? InfoBody(currentIdx) : Text(''),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(20, 10, 20, 20),
+              height: ScreenUtil().setHeight(60),
+              width: deviceWidth,
+              decoration: BoxDecoration(
+                  color: Orange400, borderRadius: BorderRadius.circular(10)),
+              child: TextButton(
+                onPressed: () async {
+                  bool isFilled = true;
+                  foods.forEach((element) {
+                    if (element.name == '-' ||
+                        element.category == '-' ||
+                        element.number == 0) {
+                      isFilled = false;
+                    }
+                  });
+                  if (isFilled) {
+                    setWidget();
+
+                    await MyFoodsViewModel()
+                        .addFoods(_refrigerator.ref.value.rID, foods)
+                        .then((value) {
+                      for (int i = 0; i <= 20; i++) {
+                        _showController.clearFoods(idx: i);
+                      }
+                      _showController
+                          .loadAllFoods(rID: _refrigerator.ref.value.rID)
+                          .then((value) {
+                        _showController.getFoodsLength(
+                            rID: _refrigerator.ref.value.rID);
+                        Get.back();
+                      });
+                    });
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return mangoDialog(
+                              dialogTitle: '품목 정보 입력',
+                              contentText: '정보가 모두 기입되지 않았습니다.',
+                              onTapOK: () {},
+                              hasOK: false);
+                        });
+                  }
+
+                  //TODO: push refrigerator.
+                },
+                child: Text(
+                  '등록',
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -389,12 +395,17 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                                     child: TextFormField(
                                       controller: _textEditingController,
                                       textAlign: TextAlign.center,
+                                      // textInputAction: TextInputAction.next,
                                       style:
                                           Theme.of(context).textTheme.subtitle1,
                                       onChanged: (value) {
                                         setState(() {
                                           foods[idx].name = value;
                                         });
+                                      },
+                                      onEditingComplete: () {
+                                        FocusScope.of(context).unfocus();
+                                        print('done');
                                       },
                                     ),
                                   ),
