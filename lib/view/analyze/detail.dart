@@ -202,13 +202,13 @@ class TextDetectorPainter extends CustomPainter {
       ..color = Colors.red
       ..strokeWidth = 2.0;
 
-    for (TextElement element in elements) {
-      canvas.drawRect(scaleRect(element), paint);
-    }
+    // for (TextElement element in elements) {
+    //   canvas.drawRect(scaleRect(element), paint);
+    // }
   }
 
   @override
-  bool shouldRepaint(TextDetectorPainter oldDelegate) {
+  bool shouldRepaint(TextDetectorPainter oldDealegate) {
     return true;
   }
 }

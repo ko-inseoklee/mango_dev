@@ -10,6 +10,7 @@ import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/landing.dart';
 import 'package:mangodevelopment/main.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -41,11 +42,11 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
 
   //For Upload data on Firebase
   String _userName = 'testName';
-  int _refrigerationAlarm = 0;
+  int _refrigerationAlarm = 1;
   bool _isRefShelf = true;
-  int _frozenAlarm = 0;
+  int _frozenAlarm = 1;
   bool _isFroShelf = true;
-  int _roomTempAlarm = 0;
+  int _roomTempAlarm = 1;
   bool _isRTShelf = true;
   String uuid = '';
   String _tokens = '';
@@ -451,8 +452,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
     return showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-          topLeft: const Radius.circular(10.0),
-          topRight: const Radius.circular(10.0),
+          topLeft: const Radius.circular(30.0),
+          topRight: const Radius.circular(30.0),
         )),
         context: context,
         builder: (BuildContext builder) {
@@ -460,6 +461,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
             height: 284 * (deviceHeight / prototypeHeight),
             child: Column(
               children: [
+                dialogTopBar(),
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
@@ -470,26 +472,38 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                   ),
                 ),
                 Expanded(
-                  child: CupertinoPicker(
-                    itemExtent: 32,
-                    onSelectedItemChanged: (int newValue) {
-                      setState(() {
-                        type == 0
-                            ? _refrigerationAlarm = newValue + 1
-                            : type == 1
-                                ? _frozenAlarm = newValue + 1
-                                : _roomTempAlarm = newValue + 1;
-                      });
+                  child: GestureDetector(
+                    onTapDown: (details) {
+                      if (alarmIdx < 2 && alarmIdx == type) {
+                        setState(() {
+                          alarmIdx++;
+                        });
+                      }
+                      Get.back();
                     },
-                    children: List<Widget>.generate(60, (int index) {
-                      return Text(
-                        (++index).toString(),
-                        style: Theme.of(context).textTheme.headline5,
-                      );
-                    }),
-                    scrollController: FixedExtentScrollController(
-                        //initialItem: foods[index - 1].num - 1
-                        ),
+                    child: CupertinoPicker(
+                      itemExtent: 32,
+                      onSelectedItemChanged: (int newValue) {
+                        print(newValue);
+                        setState(() {
+                          type == 0
+                              ? _refrigerationAlarm = newValue + 1
+                              : type == 1
+                                  ? _frozenAlarm = newValue + 1
+                                  : _roomTempAlarm = newValue + 1;
+                        });
+                      },
+                      children: List<Widget>.generate(60, (int index) {
+                        return Text(
+                          (++index).toString(),
+                          style: Theme.of(context).textTheme.headline5,
+                        );
+                      }),
+                      scrollController: FixedExtentScrollController(
+                          //initialItem: foods[index - 1].num - 1
+                        initialItem: 1
+                          ),
+                    ),
                   ),
                 ),
               ],

@@ -59,6 +59,16 @@ void comingSoon(BuildContext context) {
             contentText: "준비 중입니다.",
             onTapOK: () {});
       });
+}
 
+Widget dialogTopBar(){
+  return Container(
+    margin: EdgeInsets.fromLTRB(0, 10, 0, 20),
+    width: 40,
+    height: 5,
+    decoration: BoxDecoration(
+        color: MangoDisabledColor,
+        borderRadius: BorderRadius.circular(5)),
+  );
 }
 
