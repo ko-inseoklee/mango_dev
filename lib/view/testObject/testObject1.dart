@@ -38,13 +38,12 @@ class SettingService extends GetxService{
   Future<SettingService> init() async{
     await 3.delay();
     Get.off(TestObject2(),transition: Transition.fadeIn);
-    await 3.delay();
+    await 4.delay();
     Get.off(TestObject3(),transition: Transition.fadeIn);
-    await 3.delay();
+    await 4.delay();
     Get.off(TestObject4(),transition: Transition.fadeIn);
-    await 3.delay();
+    await 5.delay();
     Get.off(TestObject5(),transition: Transition.fadeIn);
-    await 3.delay();
     return this;
   }
 }

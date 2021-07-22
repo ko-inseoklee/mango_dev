@@ -37,9 +37,6 @@ class _MyPageEditState extends State<MyPageEdit> {
         leading: IconButton(
           icon: Text('취소'),
           onPressed: () {
-            setState(() {
-              _fileStoarge.isNetworkImage = false.obs;
-            });
             Get.back();
           },
         ),
@@ -50,18 +47,20 @@ class _MyPageEditState extends State<MyPageEdit> {
               // _nameController.text != '' ?
               // userViewModelController.user.value.userName =
               //     _nameController.text
-              //     : null;
+              //     : null;장
+              Get.snackbar('저장 중', '수정사항을 저장 중입니다.');
               _nameController.text != ''?
                   await userViewModelController.setUserName(_nameController.text)
               : null;
 
-               _fileStoarge.isNetworkImage.value == true ?
+               _fileStoarge.isNetworkImage.value == false ?
                 await _fileStoarge
                     .uploadFile(
                     userViewModelController.user.value.profileImageReference,
                     'profile/${_auth.user!.uid}')
                     .then((value) {
-                      _fileStoarge.isNetworkImage = false.obs;
+                      userViewModelController.user.value.profileImageReference = value;
+                      _fileStoarge.isNetworkImage = true.obs;
                 }) : null;
               await userViewModelController.updateUserInfo(_auth.user!.uid).then((value){
                 Get.back(result: userViewModelController.user.value.profileImageReference);
@@ -97,16 +96,16 @@ class _MyPageEditState extends State<MyPageEdit> {
                                 ),
                               ),
                             )
-                          // : _fileStoarge.isNetworkImage.value == true
-                          //     ? ClipRRect(
-                          //         borderRadius: BorderRadius.circular(50),
-                          //         child: Image.network(
-                          //           userViewModelController
-                          //               .user.value.profileImageReference,
-                          //           width: 90 * deviceWidth / prototypeWidth,
-                          //           height: 90 * deviceWidth / prototypeWidth,
-                          //           fit: BoxFit.fitHeight,
-                          //         ))
+                          : _fileStoarge.isNetworkImage.value == true
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    userViewModelController
+                                        .user.value.profileImageReference,
+                                    width: 90 * deviceWidth / prototypeWidth,
+                                    height: 90 * deviceWidth / prototypeWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ))
                               : ClipRRect(
                                   borderRadius: BorderRadius.circular(50),
                                   child: Image.file(
@@ -138,7 +137,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                                       userViewModelController.user.value
                                           .profileImageReference = value;
                                       setState(() {
-                                        _fileStoarge.isNetworkImage = true.obs;
+                                        _fileStoarge.isNetworkImage = false.obs;
                                       });
                                       Get.back(result: value);
                                     });

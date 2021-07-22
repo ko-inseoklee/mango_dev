@@ -34,7 +34,7 @@ class _TestObjectGallery2State extends State<TestObjectGallery2> {
 
 class SettingService extends GetxService{
   Future<SettingService> init() async{
-    await 3.delay();
+    await 4.delay();
     Get.off(TestObjectGallery3(),transition: Transition.fadeIn);
     return this;
   }
