@@ -25,7 +25,7 @@ class _TestObject1State extends State<TestObject1> {
     return Scaffold(
         body: Center(
           child: Image.asset(
-            'images/testObject/screen2.png',
+            'images/testObject/screen5.png',
             width: deviceWidth,
             height: deviceHeight,
             fit: BoxFit.fill,

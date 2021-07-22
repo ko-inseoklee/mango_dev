@@ -8,7 +8,7 @@ class TestObject3 extends StatelessWidget {
     return Scaffold(
         body: Center(
           child: Image.asset(
-            'images/testObject/screen4.png',
+            'images/testObject/screen3.png',
             width: deviceWidth,
             height: deviceHeight,
             fit: BoxFit.fill,
