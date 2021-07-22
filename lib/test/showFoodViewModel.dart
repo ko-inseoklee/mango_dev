@@ -146,6 +146,7 @@ class ShowFoodsController extends GetxController {
     });
   }
 
+  //1: 한눈에보기 2: 카테고리별 보기 3: 유통기한별 보기
   foldAll({required int storeType, required bool isFold}) {
     int from = 0;
     int to = 0;

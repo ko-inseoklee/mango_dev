@@ -7,6 +7,7 @@ import 'package:mangodevelopment/test/showFoodViewModel.dart';
 import 'package:mangodevelopment/test/testRef.dart';
 import 'package:mangodevelopment/view/refrigerator/modifyFoods.dart';
 import 'package:mangodevelopment/view/refrigerator/recipe.dart';
+import 'package:mangodevelopment/view/trade/makePostInfo.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
 import 'package:mangodevelopment/viewModel/categoryController.dart';
 import 'package:mangodevelopment/model/food.dart';
@@ -562,7 +563,11 @@ class _TestFoodSectionsState extends State<TestFoodSections> {
   Widget shelfOverCard(TemporaryFood food, BuildContext context) {
     return TextButton(
       onPressed: () {
-        addModifyCard(fID: food.fId);
+        if (Get.currentRoute == '/MakePostPage') {
+          Get.to(MakePostInfo(), arguments: food);
+        } else {
+          addModifyCard(fID: food.fId);
+        }
       },
       child: Stack(
         children: [
