@@ -11,6 +11,7 @@ class TestObject2 extends StatelessWidget {
             'images/testObject/screen3.png',
             width: deviceWidth,
             height: deviceHeight,
+            fit: BoxFit.fill,
           ),
         ));
   }

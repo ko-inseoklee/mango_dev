@@ -28,6 +28,7 @@ class _TestObject1State extends State<TestObject1> {
             'images/testObject/screen2.png',
             width: deviceWidth,
             height: deviceHeight,
+            fit: BoxFit.fill,
           ),
         ));
   }
@@ -35,15 +36,15 @@ class _TestObject1State extends State<TestObject1> {
 
 class SettingService extends GetxService{
   Future<SettingService> init() async{
-    await 2.delay();
+    await 3.delay();
     Get.off(TestObject2(),transition: Transition.fadeIn);
-    await 2.delay();
+    await 3.delay();
     Get.off(TestObject3(),transition: Transition.fadeIn);
-    await 2.delay();
+    await 3.delay();
     Get.off(TestObject4(),transition: Transition.fadeIn);
-    await 2.delay();
+    await 3.delay();
     Get.off(TestObject5(),transition: Transition.fadeIn);
-    await 2.delay();
+    await 3.delay();
     return this;
   }
 }
