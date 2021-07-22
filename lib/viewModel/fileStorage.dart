@@ -7,7 +7,7 @@ class FileStorage extends GetxController {
   late FirebaseStorage storage; //= FirebaseStorage.instance; //storage instance
   late Reference storageRef; //= storage.ref().child(''); //storage
 
-  RxBool isNetworkImage = false.obs;
+  RxBool isNetworkImage = true.obs;
 
   FileStorage() {
     storage = FirebaseStorage.instance;

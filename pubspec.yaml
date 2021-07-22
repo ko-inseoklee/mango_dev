@@ -69,6 +69,7 @@ flutter:
     - images/category/
     - images/prototype/
     - images/testObject/
+    - images/testObjectGallery/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

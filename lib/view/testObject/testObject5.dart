@@ -14,6 +14,7 @@ class TestObject5 extends StatelessWidget {
             'images/testObject/screen6.png',
             width: deviceWidth,
             height: deviceHeight,
+            fit: BoxFit.fill,
           ),
           Positioned(
             bottom: 0,
@@ -25,6 +26,7 @@ class TestObject5 extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   Get.back();
+                  Get.snackbar('등록 완료', '품목을 등록이 완료되었습니다.');
                 },
                 child: Text(''),
               ),

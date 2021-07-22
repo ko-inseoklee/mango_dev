@@ -25,9 +25,10 @@ class _TestObject1State extends State<TestObject1> {
     return Scaffold(
         body: Center(
           child: Image.asset(
-            'images/testObject/screen2.png',
+            'images/testObject/screen5.png',
             width: deviceWidth,
             height: deviceHeight,
+            fit: BoxFit.fill,
           ),
         ));
   }
@@ -35,15 +36,14 @@ class _TestObject1State extends State<TestObject1> {
 
 class SettingService extends GetxService{
   Future<SettingService> init() async{
-    await 2.delay();
+    await 3.delay();
     Get.off(TestObject2(),transition: Transition.fadeIn);
-    await 2.delay();
+    await 4.delay();
     Get.off(TestObject3(),transition: Transition.fadeIn);
-    await 2.delay();
+    await 4.delay();
     Get.off(TestObject4(),transition: Transition.fadeIn);
-    await 2.delay();
+    await 5.delay();
     Get.off(TestObject5(),transition: Transition.fadeIn);
-    await 2.delay();
     return this;
   }
 }
