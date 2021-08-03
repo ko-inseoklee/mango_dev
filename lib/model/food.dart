@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-class TemporaryFood {
+class Food {
   final String fId;
   final String rId;
   int idx;
@@ -36,7 +36,7 @@ class TemporaryFood {
   7: isModify
    */
 
-  TemporaryFood({
+  Food({
     required this.fId,
     required this.rId,
     required int index,
@@ -75,7 +75,7 @@ class TemporaryFood {
         isModify = isModify;
   String get getName => name;
 
-  TemporaryFood.init()
+  Food.init()
       : rId = Uuid().v4(),
         fId = Uuid().v4(),
         idx = 0,
@@ -96,7 +96,7 @@ class TemporaryFood {
         shelfOver = false,
         isModify = false;
 
-  TemporaryFood.fromSnapshot(Map<String, dynamic> food)
+  Food.fromSnapshot(Map<String, dynamic> food)
       : rId = food['rId'],
         fId = food['fId'],
         idx = 0,

@@ -5,12 +5,12 @@ import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
-import 'package:mangodevelopment/test/showFoodViewModel.dart';
-import 'package:mangodevelopment/test/testRef.dart';
+import 'package:mangodevelopment/widgetController/showFoodViewModel.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
-import 'package:mangodevelopment/viewModel/categoryController.dart';
+import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
@@ -30,11 +30,11 @@ class ModifyFoods extends StatefulWidget {
 }
 
 class _ModifyFoodPageState extends State<ModifyFoods> {
-  late TestRefViewModel _refrigerator;
+  late RefrigeratorViewModel _refrigerator;
   late UserViewModel user;
   late ShowFoodsController _showController;
 
-  List<TemporaryFood> foods = Get.arguments;
+  List<Food> foods = Get.arguments;
 
   int currentIdx = 0;
   int maxIdx = 0;
@@ -170,7 +170,7 @@ class _ModifyFoodPageState extends State<ModifyFoods> {
   }
 
   void addChip() {
-    var temp = new TemporaryFood(
+    var temp = new Food(
       rId: _refrigerator.ref.value.rID,
       fId: Uuid().v4(),
       index: maxIdx,
@@ -221,7 +221,7 @@ class _ModifyFoodPageState extends State<ModifyFoods> {
     _textEditingController.text = foods[idx].name;
   }
 
-  Widget _buildChip({required TemporaryFood food}) {
+  Widget _buildChip({required Food food}) {
     return Stack(
       children: [
         Wrap(
@@ -294,7 +294,7 @@ class _ModifyFoodPageState extends State<ModifyFoods> {
     );
   }
 
-  List<Widget> _buildChips({required List<TemporaryFood> foods}) {
+  List<Widget> _buildChips({required List<Food> foods}) {
     return foods.map((e) => _buildChip(food: e)).toList();
   }
 
@@ -980,7 +980,7 @@ class _ModifyFoodPageState extends State<ModifyFoods> {
     });
   }
 
-  setTrue(TemporaryFood food) {
+  setTrue(Food food) {
     if (!food.isModify) {
       if (food.displayType) {
         if (food.shelfLife.difference(DateTime.now()).inDays <= 0)

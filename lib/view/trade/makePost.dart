@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/app.dart';
-import 'package:mangodevelopment/test/showFoodViewModel.dart';
-import 'package:mangodevelopment/view/refrigerator/test2.dart';
+import 'package:mangodevelopment/widgetController/showFoodViewModel.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/view/widget/refrigerator/foodSections.dart';
+import '../refrigerator/refrigerator.dart';
 
 class MakePostPage extends StatefulWidget {
   final String title;

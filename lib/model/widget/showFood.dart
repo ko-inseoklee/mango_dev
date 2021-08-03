@@ -1,8 +1,8 @@
 import 'package:mangodevelopment/model/food.dart';
 
 class ShowFoods {
-  List<List<TemporaryFood>> showRefFoods = [];
-  List<TemporaryFood> canModifyFoods = [];
+  List<List<Food>> showRefFoods = [];
+  List<Food> canModifyFoods = [];
 
   // 0-2 : 한눈에 보기 , 3-14: 카테고리별 보기, 15-20: 유통기한별 보기
   List<bool> showInOnceIsFolds = [];
@@ -13,8 +13,8 @@ class ShowFoods {
   bool isModify;
 
   ShowFoods.init(
-      {required List<List<TemporaryFood>> foodList,
-      required List<TemporaryFood> canModifyFoods,
+      {required List<List<Food>> foodList,
+      required List<Food> canModifyFoods,
       required bool allFold,
       required bool isModify,
       required int foodsLength,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
-import 'package:mangodevelopment/viewModel/categoryController.dart';
+import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:mangodevelopment/model/food.dart';
 
 import '../../color.dart';
@@ -13,7 +13,7 @@ class FoodSections extends StatefulWidget {
   bool isSelected;
   VoidCallback onPressed;
   Function(String) onSelectParam;
-  List<TemporaryFood> foods;
+  List<Food> foods;
   FoodSections(
       {Key? key,
       required this.title,
@@ -83,11 +83,11 @@ class _FoodSectionsState extends State<FoodSections> {
     );
   }
 
-  List<Widget> _buildFoodCards(List<TemporaryFood> foods) {
+  List<Widget> _buildFoodCards(List<Food> foods) {
     return foods.map((e) => _buildFoodCard(e)).toList();
   }
 
-  Widget _buildFoodCard(TemporaryFood food) {
+  Widget _buildFoodCard(Food food) {
     return TextButton(
       onPressed: () {
         setState(() {

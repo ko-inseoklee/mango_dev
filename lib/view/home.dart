@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/test/testRef.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/view/analyze/nutrition.dart';
 import 'package:mangodevelopment/view/market/market.dart';
 import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
-import 'package:mangodevelopment/view/refrigerator/test2.dart';
-import 'package:mangodevelopment/view/refrigerator/testRefri.dart';
+import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
 import 'package:mangodevelopment/view/trade/makePost.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -33,7 +32,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   MangoBNBController _controller = MangoBNBController();
   UserViewModel _userViewModelController = Get.put(UserViewModel());
-  TestRefViewModel _refrigeratorViewModel = Get.put(TestRefViewModel());
+  RefrigeratorViewModel _refrigeratorViewModel =
+      Get.put(RefrigeratorViewModel());
   Authentication authController = Get.find<Authentication>();
   // postViewModel postController = Get.put(postViewModel());
 
@@ -75,7 +75,7 @@ class HomePageState extends State<HomePage> {
                         // SubRefrigeratorPage(
                         //   title: '나의 냉장고',
                         // ),
-                        TestRefPage(
+                        RefrigeratorPage(
                           title: '나의 냉장고',
                         ),
                         MarketPage(title: '마켓 페이지'),

@@ -136,6 +136,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     .collection('chatRooms')
                     .doc(postID + userViewModelController.user.value.userID)
                     .collection('messages')
+                    .orderBy('da-;te')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)

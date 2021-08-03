@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
-import 'package:mangodevelopment/viewModel/categoryController.dart';
-import 'showFood.dart';
+import 'package:mangodevelopment/widgetController/categoryController.dart';
+import '../model/widget/showFood.dart';
 
 class ShowFoodsController extends GetxController {
   var foods = ShowFoods.init(
@@ -69,7 +69,7 @@ class ShowFoodsController extends GetxController {
   changeIdx() {
     int i = 0;
     foods.update((val) {
-      for (TemporaryFood food in val!.canModifyFoods) {
+      for (Food food in val!.canModifyFoods) {
         food.idx = i;
         i++;
       }
@@ -82,7 +82,7 @@ class ShowFoodsController extends GetxController {
     });
   }
 
-  addFoods({required List<TemporaryFood> food, required int idx}) {
+  addFoods({required List<Food> food, required int idx}) {
     foods.update((val) {
       val!.showRefFoods[idx] = food;
     });
@@ -102,14 +102,14 @@ class ShowFoodsController extends GetxController {
 
   clearCanModify() {
     foods.update((val) {
-      for (TemporaryFood food in val!.canModifyFoods) {
+      for (Food food in val!.canModifyFoods) {
         food.isModify = false;
       }
       val.canModifyFoods.clear();
     });
   }
 
-  addCanModify({required TemporaryFood food}) {
+  addCanModify({required Food food}) {
     foods.update((val) {
       if (!val!.canModifyFoods.contains(food)) {
         val.canModifyFoods.add(food);
@@ -213,7 +213,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
 
         foods.update((val) {
           if (!val!.showRefFoods[20].contains(temp))
@@ -236,7 +236,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
 
         foods.update((val) {
           if (!val!.showRefFoods[15].contains(temp))
@@ -261,7 +261,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
 
         foods.update((val) {
           if (!val!.showRefFoods[16].contains(temp))
@@ -286,7 +286,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
         foods.update((val) {
           if (!val!.showRefFoods[17].contains(temp))
             val.showRefFoods[17].add(temp);
@@ -310,7 +310,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
         foods.update((val) {
           if (!val!.showRefFoods[18].contains(temp))
             val.showRefFoods[18].add(temp);
@@ -332,7 +332,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
         foods.update((val) {
           if (!val!.showRefFoods[19].contains(temp))
             val.showRefFoods[19].add(temp);
@@ -347,7 +347,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
         foods.update((val) {
           if (!val!.showRefFoods[19].contains(temp))
             val.showRefFoods[19].add(temp);
@@ -364,7 +364,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
         foods.update((val) {
           if (!val!.showRefFoods[storeType].contains(temp))
             val.showRefFoods[storeType].add(temp);
@@ -382,7 +382,7 @@ class ShowFoodsController extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) {
-        TemporaryFood temp = TemporaryFood.fromSnapshot(element.data());
+        Food temp = Food.fromSnapshot(element.data());
 
         foods.update((val) {
           if (!val!.showRefFoods[idx].contains(temp))
@@ -392,8 +392,8 @@ class ShowFoodsController extends GetxController {
     });
   }
 
-  deleteFood({required String rID, required List<TemporaryFood> foods}) async {
-    for (TemporaryFood food in foods) {
+  deleteFood({required String rID, required List<Food> foods}) async {
+    for (Food food in foods) {
       await FirebaseFirestore.instance
           .collection('myFood')
           .doc(food.fId)

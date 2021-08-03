@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mangodevelopment/test/testRef.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
@@ -66,7 +66,7 @@ class UserViewModel extends GetxController {
     update();
   }
 
-  Future<void> setUserName(String name) async{
+  Future<void> setUserName(String name) async {
     this.user.value.userName = name;
     update();
   }
@@ -174,5 +174,4 @@ class UserViewModel extends GetxController {
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
   }
-
 }

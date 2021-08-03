@@ -10,7 +10,7 @@ class Post {
 
   late User owner;
   late User taker;
-  late TemporaryFood foods;
+  late Food foods;
 
   Post.init() {
     this.postID = '0';
@@ -49,7 +49,7 @@ class Post {
       tokens: [],
     );
 
-    this.foods = TemporaryFood.init();
+    this.foods = Food.init();
   }
 }
 
