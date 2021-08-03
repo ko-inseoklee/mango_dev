@@ -13,6 +13,8 @@ A new Flutter project.
            required String title,
            List<Widget> actions,
            required bool isLeading // whether having pop-button or not.
+    - FoodSection
+            required List<Food> foods
 
 - TODO
     - modal bottom sheet
@@ -57,7 +59,8 @@ A new Flutter project.
 
     3. Later
         - 각 표시 기준(위젯 표기 boolean 값) 매일 날짜 기준으로 업데이트 시키기.
+            -> User 의 lastSignIn 정보를 받아서, 날짜 기준으로 음식의 state 업데이트하기 (CSR(Client Side Rendering)
 
-
-- ScreenUtil 적용
-    test2.dart
+- Todo(Inseok)
+    - Food 모델 속성 변경정 -> addFood / modifyFood 페이지 수정 / showFoodViewModel 지우기 (에러 없이)
+    - 음식 상태별 카드 만들기.

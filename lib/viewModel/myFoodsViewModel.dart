@@ -62,8 +62,6 @@ class MyFoodsViewModel extends GetxController {
 
   Future<void> addFoods(String refID, List<Food> foods) async {
     for (Food food in foods) {
-      int i = 0;
-
       await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
         'fId': food.fId,
         'rId': refID,

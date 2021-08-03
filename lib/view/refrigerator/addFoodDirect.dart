@@ -136,24 +136,13 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                     }
                   });
                   if (isFilled) {
-                    Get.snackbar('등록 중', '품목을 등록 중입니다.');
-                    setWidget();
-                    await MyFoodsViewModel()
-                        .addFoods(_refrigerator.ref.value.rID, foods)
-                        .then((value) {
-                      for (int i = 0; i <= 20; i++) {
-                        _showController.clearFoods(idx: i);
-                      }
-                      _showController
-                          .loadAllFoods(rID: _refrigerator.ref.value.rID)
-                          .then((value) {
-                        _showController.getFoodsLength(
-                            rID: _refrigerator.ref.value.rID);
-                        Get.back();
-                        Get.snackbar('등록 완료', '품목을 등록이 완료되었습니다.');
-                        Get.back();
-                      });
-                    });
+                    try {
+                      await _refrigerator
+                          .addFoods(foods)
+                          .then((value) => Get.back());
+                    } catch (e) {
+                      print('error: $e');
+                    }
                   } else {
                     showDialog(
                         context: context,
