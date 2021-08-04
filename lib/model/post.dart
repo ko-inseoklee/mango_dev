@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/user.dart';
@@ -6,59 +7,42 @@ class Post {
   late String postID;
   late int state; // 0: 나눔중, 1: 거래중, 2: 거래완료
   late DateTime registTime;
-  var subtitle;
+  late String subtitle;
 
   late User owner;
-  late User taker;
+  late Future<List<String>> ownerFriendList;
+
   late TemporaryFood foods;
 
   Post.init() {
-    this.postID = '0';
+    this.postID = '';
     this.state = 0;
     this.registTime = DateTime.now();
     this.subtitle = '나눔합니다 :)';
-    this.owner = User.init(
-      userID: '',
-      creationTime: DateTime.now(),
-      refrigeratorID: '1',
-      refrigerationAlarm: 0,
-      isRefShelf: false,
-      frozenAlarm: 0,
-      isFroShelf: false,
-      roomTempAlarm: 0,
-      isRTShelf: false,
-      lastSignIn: DateTime.now(),
-      profileImageReference: '-1',
-      userName: '',
-      tokens: [],
-    );
-
-    this.taker = this.taker = User.init(
-      userID: '',
-      creationTime: DateTime.now(),
-      refrigeratorID: '1',
-      refrigerationAlarm: 0,
-      isRefShelf: false,
-      frozenAlarm: 0,
-      isFroShelf: false,
-      roomTempAlarm: 0,
-      isRTShelf: false,
-      lastSignIn: DateTime.now(),
-      profileImageReference: '',
-      userName: '',
-      tokens: [],
-    );
-
     this.foods = TemporaryFood.init();
+    this.ownerFriendList = loadFriendList(owner.userID);
   }
-}
 
-class localPostList {
-  static List<Post> loadPostList() {
-    List<Post> Posts = <Post>[
-      Post.init(),
-    ];
+  Post.fromSnapshot(DocumentSnapshot snapshot)
+      : postID = snapshot.get('postID'),
+        state = snapshot.get('state'),
+        registTime = snapshot.get('registTime'),
+        subtitle = snapshot.get('subtitle'),
+        ownerFriendList = snapshot.get('ownerFriendList');
 
-    return Posts;
+  Future<List<String>> loadFriendList(String userID) async {
+    var data = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(userID)
+        .collection('FriendList')
+        .get();
+
+    List<String> _list = [];
+
+    data.docs.forEach((element) {
+      _list.add(element.get('userID'));
+    });
+
+    return _list;
   }
 }
