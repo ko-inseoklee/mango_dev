@@ -55,7 +55,11 @@ class _TradePageState extends State<TradePage> {
                 Get.to(ChatList());
               },
               icon: Icon(Icons.chat_bubble_outline_outlined)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.notifications_none))
+          IconButton(
+              onPressed: () {
+                Get.to(CreatePost());
+              },
+              icon: Icon(Icons.notifications_none))
         ],
       ),
       // ignore: unrelated_type_equality_checks

@@ -10,7 +10,7 @@ class UserViewModel extends GetxController {
 
   var user = User.init(
     userID: '',
-    creationTime: DateTime.now(),
+    creationTime: Timestamp.now(),
     refrigeratorID: '1',
     refrigerationAlarm: 0,
     isRefShelf: false,
@@ -18,7 +18,7 @@ class UserViewModel extends GetxController {
     isFroShelf: false,
     roomTempAlarm: 0,
     isRTShelf: false,
-    lastSignIn: DateTime.now(),
+    lastSignIn: Timestamp.now(),
     profileImageReference: '',
     userName: '',
     tokens: '',

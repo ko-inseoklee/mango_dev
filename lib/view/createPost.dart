@@ -21,7 +21,7 @@ class CreatePost extends StatefulWidget {
 class _CreatePostState extends State<CreatePost> {
   // late UserViewModel _user;
 
-  Food arg = Get.arguments;
+  // Food arg = Get.arguments;
 
   TextEditingController _titleController = new TextEditingController();
   TextEditingController _contentController = new TextEditingController();
@@ -29,10 +29,10 @@ class _CreatePostState extends State<CreatePost> {
   late String title;
   late String content;
 
-  Future<void> addPost(String curr_uid) async {
+  Future<void> createPost(String curr_uid) async {
     var temp = Post.init();
 
-    temp.postID = ' '; // random 생성 (uuid 사용)
+    temp.postID = ' '; // random 생성 (uuid)
     temp.subtitle = '!!!'; // from text controller
     temp.ownerID = curr_uid; // curr_uid
     temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
@@ -42,96 +42,23 @@ class _CreatePostState extends State<CreatePost> {
             .first)
         .friendList
         .obs;
+
+    print(
+        'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.ownerID} / ownerFriendList: ${temp.ownerFriendList}');
   }
 
   @override
   Widget build(BuildContext context) {
-    // _user = Get.find<UserViewModel>();
-    print(arg.name);
+    UserViewModel user = Get.find<UserViewModel>();
 
     return Scaffold(
-      appBar: MangoAppBar(
-        isLeading: true,
-        title: '품목 등록',
-        actions: [
-          TextButton(
-              onPressed: () async {
-                String uid = Uuid().v4();
-                await FirebaseFirestore.instance
-                    .collection('post')
-                    .doc(uid)
-                    .set({
-                  'foodName': arg.name,
-                  'foodNum': arg.number,
-                  'ownerFriendList': FieldValue.arrayUnion([]),
-                });
-              },
-              child: Text(
-                '완료',
-                style: Theme.of(context).textTheme.subtitle1,
-              ))
-        ],
-      ),
+      appBar: AppBar(title: Text('게시글 등록')),
       body: Center(
-        child: ListView(
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-                  child: Image.asset(
-                      'images/category/${categoryImg[translateToKo(arg.category)]}'),
-                ),
-                Spacer(),
-                Container(
-                  padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-                  child: Column(
-                    children: [
-                      Text('음식 이름: ${arg.name}'),
-                      Text('보유 갯수: ${arg.number.toString()}'),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Container(
-              margin: EdgeInsets.all(ScreenUtil().setSp(8)),
-              padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-              child: Text('제목'),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: MangoDisabledColorLight)),
-              margin: EdgeInsets.all(ScreenUtil().setSp(8)),
-              padding: EdgeInsets.all(ScreenUtil().setSp(8)),
-              child: TextFormField(
-                controller: _titleController,
-                decoration: new InputDecoration(hintText: '글 제목'),
-              ),
-            ),
-            SizedBox(
-              height: ScreenUtil().setHeight(20),
-            ),
-            Container(
-              margin: EdgeInsets.all(ScreenUtil().setSp(8)),
-              padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-              child: Text('내용'),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: MangoDisabledColorLight)),
-              margin: EdgeInsets.all(ScreenUtil().setSp(8)),
-              padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-              child: TextFormField(
-                controller: _contentController,
-                maxLines: 10,
-                decoration: new InputDecoration(hintText: '내용을 입력하세요.'),
-                onChanged: (value) {
-                  content = value;
-                },
-              ),
-            )
-          ],
+        child: InkWell(
+          child: Text('click'),
+          onTap: () {
+            createPost(user.userID);
+          },
         ),
       ),
     );

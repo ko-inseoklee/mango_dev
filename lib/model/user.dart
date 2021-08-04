@@ -10,7 +10,7 @@ final rTAlarmTime = 'room_temp_shelf_life_alarm';
 
 class User {
   String userID;
-  DateTime creationTime;
+  Timestamp creationTime;
   String refrigeratorID;
   int refrigerationAlarm;
   bool isRefShelf;
@@ -18,7 +18,7 @@ class User {
   bool isFroShelf;
   int roomTempAlarm;
   bool isRTShelf;
-  DateTime lastSignIn;
+  Timestamp lastSignIn;
   String profileImageReference;
   String userName;
   String tokens;
@@ -28,7 +28,7 @@ class User {
 
   User.init({
     required String userID,
-    required DateTime creationTime,
+    required Timestamp creationTime,
     required String refrigeratorID,
     required int refrigerationAlarm,
     required bool isRefShelf,
@@ -36,7 +36,7 @@ class User {
     required bool isFroShelf,
     required int roomTempAlarm,
     required bool isRTShelf,
-    required DateTime lastSignIn,
+    required Timestamp lastSignIn,
     required String profileImageReference,
     required String userName,
     required String tokens,
