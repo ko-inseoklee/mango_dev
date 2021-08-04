@@ -81,8 +81,8 @@ class _TradePageState extends State<TradePage> {
           : StreamBuilder<QuerySnapshot>(
               stream: mango_dev
                   .collection('post')
-                  // .where('ownerFriendList',
-                  //     arrayContains: userViewModelController.user.value.userID)
+                  .where('ownerFriendList',
+                      arrayContains: userViewModelController.user.value.userID)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {

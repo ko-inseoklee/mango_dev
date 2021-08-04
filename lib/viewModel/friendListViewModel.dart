@@ -100,17 +100,29 @@ class FriendListViewModel extends GetxController {
         });
 
     // // post의 friend list 에 추가
-    // await mango_dev
-    //     .collection('post')
-    //     .where('ownerID', isEqualTo: uid)
-    //     .get()
-    //     .then((value) {
-    //   value.docs.forEach((element) {
-    //     element.reference.update({
-    //       'ownerFriendList': FieldValue.arrayUnion([curr_uid])
-    //     });
-    //   });
-    // });
+    await mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: uid)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        element.reference.update({
+          'ownerFriendList': FieldValue.arrayUnion([curr_uid])
+        });
+      });
+    });
+
+    await mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: curr_uid)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        element.reference.update({
+          'ownerFriendList': FieldValue.arrayUnion([uid])
+        });
+      });
+    });
 
     sendFriendRequest(friendToken, curr_name);
 
