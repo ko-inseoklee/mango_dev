@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/widget/foodSections.dart';
+import 'package:mangodevelopment/model/food.dart';
+import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/view/widget/refrigerator/foodSections.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
-
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
-
-List<String> canModifyFoods = [];
 
 class RefrigeratorPage extends StatefulWidget {
   String title;
@@ -19,8 +19,10 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
   int currentTab = 0;
 
   late UserViewModel user;
-
   RefrigeratorViewModel refrigerator = Get.put(new RefrigeratorViewModel());
+
+  //TODO: IS - Should add for view with category, shelfLife
+  List<String> onceTitle = ['냉장', '냉동', '실온'];
 
   @override
   void initState() {
@@ -30,7 +32,6 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
     refrigerator
         .loadRefID(rID: user.user.value.refrigeratorID)
         .then((value) async {
-      print(refrigerator.ref.value.rID);
       await refrigerator.loadFoods(rID: refrigerator.ref.value.rID);
     });
   }
@@ -38,11 +39,11 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
+      appBar: MangoAppBar(
+        isLeading: false,
+        title: widget.title,
       ),
-      body: refrigeratorView(viewType: 0),
+      body: refrigeratorView(viewType: currentTab),
     );
   }
 
@@ -58,59 +59,56 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
   }
 
   Widget viewWithOnce() {
-    return Column(
-      children: [
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.refrigerationFoods, title: '냉장');
-        }),
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.frozenFoods, title: '냉동');
-        }),
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.roomTempFoods, title: '실온');
-        })
-      ],
-    );
+    return Column(children: [
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.refrigerationFoods,
+            title: onceTitle[0]);
+      }),
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.frozenFoods, title: onceTitle[1]);
+      }),
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.roomTempFoods, title: onceTitle[2]);
+      }),
+    ]);
   }
 
   Widget viewWithShelfLife() {
-    return Column(
-      children: [
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.refrigerationFoods, title: '냉장');
-        }),
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.frozenFoods, title: '냉동');
-        }),
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.roomTempFoods, title: '실온');
-        })
-      ],
-    );
+    return Column(children: [
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.refrigerationFoods,
+            title: onceTitle[0]);
+      }),
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.frozenFoods, title: onceTitle[1]);
+      }),
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.roomTempFoods, title: onceTitle[2]);
+      }),
+    ]);
   }
 
   Widget viewWithCategories() {
-    return Column(
-      children: [
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.refrigerationFoods, title: '냉장');
-        }),
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.frozenFoods, title: '냉동');
-        }),
-        Obx(() {
-          return FoodsSection(
-              foods: refrigerator.ref.value.roomTempFoods, title: '실온');
-        })
-      ],
-    );
+    return Column(children: [
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.refrigerationFoods,
+            title: onceTitle[0]);
+      }),
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.frozenFoods, title: onceTitle[1]);
+      }),
+      Obx(() {
+        return FoodsSection(
+            foods: refrigerator.ref.value.roomTempFoods, title: onceTitle[2]);
+      }),
+    ]);
   }
 }

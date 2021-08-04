@@ -6,15 +6,22 @@ A new Flutter project.
 
 - 파베 연동이 안될 때
     - 안드로이드 에뮬레이터 인터넷 연결 확인
-    - Androidmanifest permission 넣어주기 (ACCESS NETWORK / INTERNET)
+    - AndroidManifest permission 넣어주기 (ACCESS NETWORK / INTERNET)
 
 - small API
     - MangoAppBar
-           required String title,
+           String title,
            List<Widget> actions,
            required bool isLeading // whether having pop-button or not.
-    - FoodSection
+    - FoodSection // For make refrigerator section (냉장, 냉동 등)
             required List<Food> foods
+
+    - mangoDialog
+          String dialogTitle,
+          String contentText // for body text
+          VoidCallback onTapOK // function that execute when the hasOK is true.
+          bool hasOK // whether OK button is appear or not.
+
 
 - TODO
     - modal bottom sheet
@@ -62,5 +69,5 @@ A new Flutter project.
             -> User 의 lastSignIn 정보를 받아서, 날짜 기준으로 음식의 state 업데이트하기 (CSR(Client Side Rendering)
 
 - Todo(Inseok)
-    - Food 모델 속성 변경정 -> addFood / modifyFood 페이지 수정 / showFoodViewModel 지우기 (에러 없이)
+    - Food 모델 속성 변경정 -> addFood / modifyFood 페이지 수정 / 'showFoodViewModel 지우기 (에러 없이)'
     - 음식 상태별 카드 만들기.

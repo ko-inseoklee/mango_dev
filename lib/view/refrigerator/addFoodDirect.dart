@@ -6,21 +6,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/app.dart';
-import 'package:mangodevelopment/widgetController/showFoodViewModel.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
-import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:mangodevelopment/model/food.dart';
-import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
-import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
-import 'package:mangodevelopment/viewModel/tempUserViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../color.dart';
-import '../home.dart';
 
 class AddFoodDirectPage extends StatefulWidget {
   final String title;
@@ -33,7 +27,6 @@ class AddFoodDirectPage extends StatefulWidget {
 class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   late RefrigeratorViewModel _refrigerator;
   late UserViewModel user;
-  late ShowFoodsController _showController;
 
   List<Food> foods = [Food.init()];
 
@@ -48,8 +41,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   DateTime sDay = DateTime.now();
   DateTime rDay = DateTime.now();
 
-  final _focusNode = FocusScopeNode();
-
   @override
   void initState() {
     // TODO: implement initState
@@ -59,7 +50,6 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
   @override
   Widget build(BuildContext context) {
     _refrigerator = Get.find();
-    _showController = Get.find();
 
     print('ref id == ${_refrigerator.ref.value.rID}');
     user = Get.find();
@@ -133,6 +123,8 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
                         element.category == '-' ||
                         element.number == 0) {
                       isFilled = false;
+                    } else {
+                      element.cardStatus = setCardStatus(element);
                     }
                   });
                   if (isFilled) {
@@ -171,26 +163,19 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
 
   void addChip() {
     var temp = new Food(
-      rId: _refrigerator.ref.value.rID,
-      fId: Uuid().v4(),
-      index: maxIdx,
-      status: true,
-      name: '-',
-      num: 0,
-      category: '-',
-      method: 0,
-      displayType: true,
-      shelfLife: DateTime.now(),
-      registrationDay: DateTime.now(),
-      shelfOver: false,
-      registerNormal: false,
-      shelfNormal: false,
-      registerFroAbnormal: false,
-      shelfDDay: false,
-      registerRefAbnormal: false,
-      registerRTAbnormal: false,
-      isModify: false,
-    );
+        rId: _refrigerator.ref.value.rID,
+        fId: Uuid().v4(),
+        index: maxIdx,
+        status: true,
+        name: '-',
+        num: 0,
+        category: '-',
+        method: 0,
+        displayType: true,
+        shelfLife: DateTime.now(),
+        registrationDay: DateTime.now(),
+        alarmDate: DateTime.now(),
+        cardStatus: -1);
     foods.add(temp);
 
     currentIdx = maxIdx;
@@ -900,78 +885,38 @@ class _AddFoodDirectPageState extends State<AddFoodDirectPage> {
     );
   }
 
-  String convertDate(DateTime time) {
-    return '${time.year}.${time.month}.${time.day}';
-  }
+  int setCardStatus(Food element) {
+    int standard = -1;
 
-  setWidget() {
-    foods.forEach((element) {
-      switch (setTrue(element)) {
-        case 0:
-          element.registerNormal = true;
-          break;
+    print('유통기한 == ${!element.displayType}');
+
+    if (!element.displayType) {
+      switch (element.method) {
         case 1:
-          element.registerRefAbnormal = true;
+          standard = user.user.value.frozenAlarm;
           break;
         case 2:
-          element.registerFroAbnormal = true;
+          standard = user.user.value.roomTempAlarm;
           break;
-        case 3:
-          element.registerRTAbnormal = true;
-          break;
-        case 4:
-          element.shelfNormal = true;
-          break;
-        case 5:
-          element.shelfDDay = true;
-          break;
-        case 6:
-          element.shelfOver = true;
-          break;
-
-        case 7:
-          element.isModify = true;
-          break;
-
         default:
-          element.shelfNormal = true;
-          break;
+          standard = user.user.value.refrigerationAlarm;
       }
-    });
-  }
-
-  setTrue(Food food) {
-    if (!food.isModify) {
-      if (food.displayType) {
-        if (food.shelfLife.difference(DateTime.now()).inDays <= 0)
-          return 6;
-        else if (food.shelfLife.difference(DateTime.now()).inDays <= 7)
-          return 5;
-        else
-          return 4;
+      if (DateTime.now().difference(element.registrationDay).inDays >=
+          standard) {
+        return 3;
       } else {
-        if (food.method == 0) {
-          if (DateTime.now().difference(food.registrationDay).inDays >
-              user.user.value.refrigerationAlarm)
-            return 1;
-          else
-            return 0;
-        } else if (food.method == 1) {
-          if (DateTime.now().difference(food.registrationDay).inDays >
-              user.user.value.frozenAlarm)
-            return 2;
-          else
-            return 0;
-        } else {
-          if (DateTime.now().difference(food.registrationDay).inDays >
-              user.user.value.roomTempAlarm)
-            return 3;
-          else
-            return 0;
-        }
+        return 0;
       }
     } else {
-      return 7;
+      int shelf = element.shelfLife.difference(DateTime.now()).inDays;
+      print('shelf == $shelf');
+      if (shelf <= 0) {
+        return 1;
+      } else if (shelf <= 7) {
+        return 2;
+      } else {
+        return 0;
+      }
     }
   }
 }

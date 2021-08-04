@@ -63,7 +63,7 @@ class RefrigeratorViewModel extends GetxController {
           });
         });
       } else {
-        print('사이즈가 0 입니다.');
+        print('load Food - 사이즈가 0 입니다.');
       }
     });
   }
@@ -80,14 +80,8 @@ class RefrigeratorViewModel extends GetxController {
         'displayType': food.displayType,
         'shelfLife': food.shelfLife,
         'registrationDay': food.registrationDay,
-        'registerNormal': food.registerNormal,
-        'registerRefAbnormal': food.registerRefAbnormal,
-        'registerFroAbnormal': food.registerFroAbnormal,
-        'registerRTAbnormal': food.registerRTAbnormal,
-        'shelfNormal': food.shelfNormal,
-        'shelfDDay': food.shelfDDay,
-        'shelfOver': food.shelfOver,
-        'isModify': food.isModify
+        'alarmDay': food.alarmDay,
+        'cardStatus': food.cardStatus
       }).then((value) {
         ref.update((val) {
           if (food.method == 1) {

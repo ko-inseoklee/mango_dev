@@ -72,14 +72,8 @@ class MyFoodsViewModel extends GetxController {
         'displayType': food.displayType,
         'shelfLife': food.shelfLife,
         'registrationDay': food.registrationDay,
-        'registerNormal': food.registerNormal,
-        'registerRefAbnormal': food.registerRefAbnormal,
-        'registerFroAbnormal': food.registerFroAbnormal,
-        'registerRTAbnormal': food.registerRTAbnormal,
-        'shelfNormal': food.shelfNormal,
-        'shelfDDay': food.shelfDDay,
-        'shelfOver': food.shelfOver,
-        'isModify': food.isModify
+        'alarmDay': food.alarmDay,
+        'cardStatus': food.cardStatus
       });
     }
   }
@@ -101,14 +95,8 @@ class MyFoodsViewModel extends GetxController {
         'displayType': food.displayType,
         'shelfLife': food.shelfLife,
         'registrationDay': food.registrationDay,
-        'registerNormal': food.registerNormal,
-        'registerRefAbnormal': food.registerRefAbnormal,
-        'registerFroAbnormal': food.registerFroAbnormal,
-        'registerRTAbnormal': food.registerRTAbnormal,
-        'shelfNormal': food.shelfNormal,
-        'shelfDDay': food.shelfDDay,
-        'shelfOver': food.shelfOver,
-        'isModify': food.isModify
+        'alarmDay': food.alarmDay,
+        'cardStatus': food.cardStatus
       });
     }
   }
@@ -116,7 +104,7 @@ class MyFoodsViewModel extends GetxController {
   void deleteRef({required String uid}) {
     var refID;
     FirebaseFirestore.instance
-        .collection('refrigeraotr')
+        .collection('refrigerator')
         .where('userID', isEqualTo: uid)
         .get()
         .then((value) => refID = value.docs.first.data()['refID']);

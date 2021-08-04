@@ -52,16 +52,12 @@ class HomePageState extends State<HomePage> {
         future: _userViewModelController.setUserInfo(authController.user!.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            print('loading...');
             return Center(
               child: CircularProgressIndicator(),
             );
           } else {
-            _refrigeratorViewModel
-                .loadRefID(
-                    rID: _userViewModelController.user.value.refrigeratorID)
-                .then((value) => print(
-                    'finish loading = ${_refrigeratorViewModel.ref.value.rID}'));
+            _refrigeratorViewModel.loadRefID(
+                rID: _userViewModelController.user.value.refrigeratorID);
 
             return GetBuilder<MangoBNBController>(
               init: _controller,

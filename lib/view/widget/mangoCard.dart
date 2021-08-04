@@ -8,7 +8,7 @@ class MangoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return whichCard(type: 0);
+    return whichCard(type: food.cardStatus);
   }
 
   Widget whichCard({required int type}) {
