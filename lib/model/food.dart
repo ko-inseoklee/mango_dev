@@ -62,6 +62,7 @@ class Food {
         alarmDay = DateTime.now(),
         cardStatus = -1;
 
+
   Food.fromSnapshot(Map<String, dynamic> food)
       : rId = food['rId'],
         fId = food['fId'],

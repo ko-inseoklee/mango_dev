@@ -227,6 +227,7 @@ class _FriendListPageState extends State<FriendListPage> {
       leading: CircleAvatar(
         radius: 26,
         //TODO: profile image
+
         // backgroundImage: (docs.get('profImgRef')),
       ),
       title: Text(docs.get('userName')),

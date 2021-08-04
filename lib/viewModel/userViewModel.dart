@@ -21,7 +21,8 @@ class UserViewModel extends GetxController {
     lastSignIn: DateTime.now(),
     profileImageReference: '',
     userName: '',
-    tokens: [],
+    tokens: '',
+    // friendList: Future.value([]),
   ).obs;
 
   String get userID => this.user.value.userID;

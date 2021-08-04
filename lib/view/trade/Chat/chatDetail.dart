@@ -136,7 +136,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     .collection('chatRooms')
                     .doc(postID + userViewModelController.user.value.userID)
                     .collection('messages')
-                    .orderBy('da-;te')
+                    .orderBy('date')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
@@ -175,7 +175,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                             : ListView(
                                 controller: scrollController,
                                 children: <Widget>[
-                                  SizedBox(height: 100),
+                                  SizedBox(
+                                    height: 100,
+                                    child: Image.asset('images/login/logo.png'),
+                                  ),
                                   ...messages,
                                 ],
                               ),
@@ -245,7 +248,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       send(
                           postID, //generate docID by Post
                           userViewModelController.user.value.userName);
-
                       messageController.clear();
                     },
                   )

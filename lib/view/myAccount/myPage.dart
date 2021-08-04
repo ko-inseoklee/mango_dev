@@ -63,16 +63,16 @@ class _MyPageState extends State<MyPage> {
                           ),
                         ),
                       )
-                          // : _fileStoarge.isNetworkImage.value == true
-                          // ? ClipRRect(
-                          // borderRadius: BorderRadius.circular(50),
-                          // child: Image.network(
-                          //   userViewModelController
-                          //       .user.value.profileImageReference,
-                          //   width: 90 * deviceWidth / prototypeWidth,
-                          //   height: 90 * deviceWidth / prototypeWidth,
-                          //   fit: BoxFit.fitHeight,
-                          // ))
+                          : _fileStoarge.isNetworkImage.value == true
+                          ? ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.network(
+                            userViewModelController
+                                .user.value.profileImageReference,
+                            width: 90 * deviceWidth / prototypeWidth,
+                            height: 90 * deviceWidth / prototypeWidth,
+                            fit: BoxFit.fitHeight,
+                          ))
                           : ClipRRect(
                         borderRadius: BorderRadius.circular(50),
                         child: Image.file(
@@ -110,7 +110,11 @@ class _MyPageState extends State<MyPage> {
                               transition: Transition.topLevel);
                           setState(() {
                           });
-                        },
+
+
+
+
+                          },
                         icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),

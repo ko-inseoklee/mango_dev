@@ -165,7 +165,8 @@ class MangoPostCard extends StatelessWidget {
                                     userViewModelController.user.value.userID,
                                 'takerID':
                                     userViewModelController.user.value.userID,
-                                'postID': postID
+                                'postID': postID,
+                                'ownerName': ownerName,
                               });
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
