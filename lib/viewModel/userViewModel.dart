@@ -22,7 +22,7 @@ class UserViewModel extends GetxController {
     profileImageReference: '',
     userName: '',
     tokens: '',
-    // friendList: Future.value([]),
+    friendList: [],
   ).obs;
 
   String get userID => this.user.value.userID;

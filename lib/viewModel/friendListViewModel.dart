@@ -56,6 +56,10 @@ class FriendListViewModel extends GetxController {
         .then((value) => friendToken = value.data()!['tokens']);
 
     // 내 친구 목록에 상대방 추가
+    await mango_dev.collection('user').doc(curr_uid).update({
+      'friends': FieldValue.arrayUnion([uid])
+    });
+
     await mango_dev
         .collection('user')
         .doc(curr_uid)
@@ -74,6 +78,10 @@ class FriendListViewModel extends GetxController {
     });
 
     // 상대방 친구 목록에 나 추가
+    await mango_dev.collection('user').doc(uid).update({
+      'friends': FieldValue.arrayUnion([curr_uid])
+    });
+
     await mango_dev
         .collection('user')
         .doc(uid)
@@ -91,17 +99,18 @@ class FriendListViewModel extends GetxController {
           print('error2');
         });
 
-    await mango_dev
-        .collection('post')
-        .where('ownerID', isEqualTo: uid)
-        .get()
-        .then((value) {
-      value.docs.forEach((element) {
-        element.reference.update({
-          'ownerFriendList': FieldValue.arrayUnion([curr_uid])
-        });
-      });
-    });
+    // // post의 friend list 에 추가
+    // await mango_dev
+    //     .collection('post')
+    //     .where('ownerID', isEqualTo: uid)
+    //     .get()
+    //     .then((value) {
+    //   value.docs.forEach((element) {
+    //     element.reference.update({
+    //       'ownerFriendList': FieldValue.arrayUnion([curr_uid])
+    //     });
+    //   });
+    // });
 
     sendFriendRequest(friendToken, curr_name);
 
@@ -125,6 +134,10 @@ class FriendListViewModel extends GetxController {
       });
     });
 
+    mango_dev.collection('user').doc(curr_uid).update({
+      'friends': FieldValue.arrayRemove([uid])
+    });
+
     //delete from others friend list
     otherfriendList.where('userID', isEqualTo: curr_uid).get().then((value) {
       value.docs.forEach((element) {
@@ -135,16 +148,21 @@ class FriendListViewModel extends GetxController {
       });
     });
 
-    mango_dev
-        .collection('post')
-        .where('ownerID', isEqualTo: uid)
-        .get()
-        .then((value) {
-      value.docs.forEach((element) {
-        element.reference.update({
-          'ownerFriendList': FieldValue.arrayRemove([curr_uid])
-        });
-      });
+    mango_dev.collection('user').doc(uid).update({
+      'friends': FieldValue.arrayRemove([curr_uid])
     });
+
+    // // post 친구목록에서 삭제
+    // mango_dev
+    //     .collection('post')
+    //     .where('ownerID', isEqualTo: uid)
+    //     .get()
+    //     .then((value) {
+    //   value.docs.forEach((element) {
+    //     element.reference.update({
+    //       'ownerFriendList': FieldValue.arrayRemove([curr_uid])
+    //     });
+    //   });
+    // });
   }
 }

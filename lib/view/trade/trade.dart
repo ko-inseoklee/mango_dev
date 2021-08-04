@@ -8,6 +8,7 @@ import 'package:mangodevelopment/viewModel/postViewModel.dart';
 import 'package:mangodevelopment/viewModel/push_test.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
+import '../createPost.dart';
 import 'Chat/chatList.dart';
 
 class TradePage extends StatefulWidget {
@@ -80,8 +81,8 @@ class _TradePageState extends State<TradePage> {
           : StreamBuilder<QuerySnapshot>(
               stream: mango_dev
                   .collection('post')
-                  .where('ownerFriendList',
-                      arrayContains: userViewModelController.user.value.userID)
+                  // .where('ownerFriendList',
+                  //     arrayContains: userViewModelController.user.value.userID)
                   .snapshots(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {

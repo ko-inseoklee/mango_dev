@@ -11,8 +11,7 @@ class Post {
 
   late User owner;
 
-
-  late Future<List<String>> ownerFriendList;
+  // late Future<List<String>> ownerFriendList;
 
   late Food foods;
 
@@ -22,16 +21,16 @@ class Post {
     this.registTime = DateTime.now();
     this.subtitle = '나눔합니다 :)';
     this.foods = Food.init();
-    this.ownerFriendList = loadFriendList(owner.userID);
-
+    // this.ownerFriendList = loadFriendList(owner.userID);
   }
 
   Post.fromSnapshot(DocumentSnapshot snapshot)
       : postID = snapshot.get('postID'),
         state = snapshot.get('state'),
         registTime = snapshot.get('registTime'),
-        subtitle = snapshot.get('subtitle'),
-        ownerFriendList = snapshot.get('ownerFriendList');
+        subtitle = snapshot.get('subtitle');
+
+  // ownerFriendList = snapshot.get('ownerFriendList');
 
   Future<List<String>> loadFriendList(String userID) async {
     var data = await FirebaseFirestore.instance
