@@ -106,13 +106,11 @@ class _MyPageState extends State<MyPage> {
                     //TODO. 수정페이지로 이동
                     IconButton(
                         onPressed: () async {
-                          var result = await Get.to(MyPageEdit(),
-                              transition: Transition.topLevel);
-                          setState(() {
+                          setState(() async{
+                            var result = await Get.to(MyPageEdit(),
+                                transition: Transition.topLevel);
+                            userViewModelController.profileImageReference = await result;
                           });
-
-
-
 
                           },
                         icon: Icon(Icons.arrow_forward_ios_sharp))
