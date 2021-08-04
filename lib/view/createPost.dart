@@ -19,15 +19,9 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
-  // late UserViewModel _user;
 
-  // Food arg = Get.arguments;
+  Food food = Get.arguments;
 
-  TextEditingController _titleController = new TextEditingController();
-  TextEditingController _contentController = new TextEditingController();
-
-  late String title;
-  late String content;
 
   Future<void> createPost(String curr_uid) async {
     var temp = Post.init();
@@ -42,6 +36,8 @@ class _CreatePostState extends State<CreatePost> {
             .first)
         .friendList
         .obs;
+
+    temp.foods = food;
 
     print(
         'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.ownerID} / ownerFriendList: ${temp.ownerFriendList}');
