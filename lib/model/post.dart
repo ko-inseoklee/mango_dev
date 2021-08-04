@@ -10,17 +10,20 @@ class Post {
   late String subtitle;
 
   late User owner;
+
+
   late Future<List<String>> ownerFriendList;
 
-  late TemporaryFood foods;
+  late Food foods;
 
   Post.init() {
     this.postID = '';
     this.state = 0;
     this.registTime = DateTime.now();
     this.subtitle = '나눔합니다 :)';
-    this.foods = TemporaryFood.init();
+    this.foods = Food.init();
     this.ownerFriendList = loadFriendList(owner.userID);
+
   }
 
   Post.fromSnapshot(DocumentSnapshot snapshot)

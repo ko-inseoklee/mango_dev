@@ -1,18 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
-import 'package:mangodevelopment/viewModel/myFoodsViewModel.dart';
-
-import '../main.dart';
-import '../model/refrigerator.dart';
-import '../model/food.dart';
-
-CollectionReference refCollection =
-    FirebaseFirestore.instance.collection('refrigerator');
+import 'package:mangodevelopment/model/food.dart';
+import 'package:mangodevelopment/model/refrigerator.dart';
+import 'package:mangodevelopment/view/widget/comingSoon.dart';
 
 class RefrigeratorViewModel extends GetxController {
-  var refrigerator = Refrigerator.init(refID: '', uID: '').obs;
-  var myFoodsViewModel = MyFoodsViewModel.init().obs;
+  var ref = new Refrigerator.init(
+      rID: '', uID: '', refFoods: [], froFoods: [], rTFoods: []).obs;
 
   Future<void> createRefrigeratorID(String uid, String rid) async {
     await FirebaseFirestore.instance.collection('refrigerator').doc(rid).set({
@@ -21,56 +16,102 @@ class RefrigeratorViewModel extends GetxController {
     });
   }
 
-  // RefrigeratorViewModel.fromUser(String uid,String rid):this.refrigerator = this.loadRefrigerator(rID)
-
-  // RefrigeratorViewModel.loadFromUser(String rID):
-
-  Future<void> loadRefrigerator(String rID) async {
+  loadRefID({required String rID}) async {
     await FirebaseFirestore.instance
         .collection('refrigerator')
         .doc(rID)
         .get()
         .then((value) {
       if (value.exists) {
-        this.refrigerator.value.uID = value.data()!['userID'];
-        this.refrigerator.value.refID = value.data()!['refID'];
+        Map<String, dynamic> data = value.data() as Map<String, dynamic>;
+        ref.update((val) {
+          val?.uID = data['userID'];
+          val?.rID = data['refID'];
+        });
       } else {
-        print('load failed');
+        print('Load Fail..');
       }
     });
-
-    // this.refrigerator = Refrigerator.fromSnapshot(data.data()!).obs;
-    update();
   }
 
-  get refID => this.refrigerator.value.refID;
+  loadFoods({required String rID}) async {
+    await FirebaseFirestore.instance
+        .collection('myFood')
+        .where('rId', isEqualTo: rID)
+        .get()
+        .then((value) {
+      if (value.size > 0) {
+        List<Food> tempRef = [];
+        List<Food> tempFro = [];
+        List<Food> tempRT = [];
 
-  Future<void> deleteFoods(List<String> foods) async {
-    for (var food in foods) {
-      await FirebaseFirestore.instance
-          .collection('myFood')
-          .doc(food)
-          .delete()
-          .then((value) => print('success to delete'));
+        value.docs.forEach((element) {
+          Food temp = Food.fromSnapshot(element.data());
+
+          ref.update((val) {
+            if (temp.method == 0) {
+              tempRef.add(temp);
+            } else if (temp.method == 1) {
+              tempFro.add(temp);
+            } else {
+              tempRT.add(temp);
+            }
+
+            val!.refrigerationFoods = tempRef;
+            val.frozenFoods = tempFro;
+            val.roomTempFoods = tempRT;
+          });
+        });
+      } else {
+        print('load Food - 사이즈가 0 입니다.');
+      }
+    });
+  }
+
+  Future<void> addFoods(List<Food> foods) async {
+    for (Food food in foods) {
+      await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
+        'fId': food.fId,
+        'rId': this.ref.value.rID,
+        'name': food.name,
+        'category': food.category,
+        'number': food.number,
+        'storeType': food.method,
+        'displayType': food.displayType,
+        'shelfLife': food.shelfLife,
+        'registrationDay': food.registrationDay,
+        'alarmDay': food.alarmDay,
+        'cardStatus': food.cardStatus
+      }).then((value) {
+        ref.update((val) {
+          if (food.method == 1) {
+            val!.frozenFoods.add(food);
+          } else if (food.method == 2) {
+            val!.roomTempFoods.add(food);
+          } else {
+            val!.refrigerationFoods.add(food);
+          }
+        });
+      });
     }
   }
 
-  Future<void> loadFoods() async {
-    this.myFoodsViewModel.value.foods!.clear();
-    List<TemporaryFood> _foods = [];
-
-    _foods = await myFoodsViewModel.value.loadFoods(refID);
-    myFoodsViewModel.value.foods = _foods.obs;
-    update();
+  showFoods({required int viewType}) {
+    switch (viewType) {
+      case 1:
+        showFoodsWithShelfLife();
+        break;
+      case 2:
+        showFoodsWithCategories();
+        break;
+      default:
+        showFoodsWithStoreType();
+    }
   }
 
-  Future<void> FindRefrigeratorSnapshot(String uid) async {
-    await refCollection.doc(uid).get().then((value) {
-      Map<String, dynamic> data = value.data() as Map<String, dynamic>;
-      this.refrigerator = Refrigerator.fromSnapshot(data).obs;
-      update();
-      print("refID == ${data['refID']}");
-    });
-    update();
-  }
+  void showFoodsWithShelfLife() {}
+
+  void showFoodsWithCategories() {}
+
+  void showFoodsWithStoreType() {}
 }

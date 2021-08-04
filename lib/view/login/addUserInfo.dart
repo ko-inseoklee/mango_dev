@@ -9,7 +9,7 @@ import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/landing.dart';
 import 'package:mangodevelopment/main.dart';
-import 'package:mangodevelopment/test/testRef.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -234,7 +234,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           'tokens': _tokens,
                         });
 
-                        await TestRefViewModel()
+                        await RefrigeratorViewModel()
                             .createRefrigeratorID(_auth.user!.uid, uuid);
                         //TODO. refirgeratorController()
                         // await refrigeratorController()

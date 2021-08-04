@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
-import 'package:mangodevelopment/viewModel/categoryController.dart';
+import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
@@ -19,7 +19,7 @@ class MakePostInfo extends StatefulWidget {
 class _MakePostInfoState extends State<MakePostInfo> {
   late UserViewModel _user;
 
-  TemporaryFood arg = Get.arguments;
+  Food arg = Get.arguments;
 
   TextEditingController _titleController = new TextEditingController();
   TextEditingController _contentController = new TextEditingController();

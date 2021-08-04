@@ -1,14 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'food.dart';
 
 class Refrigerator {
-  String refID;
+  String rID;
   String uID;
+  List<Food> refrigerationFoods;
+  List<Food> roomTempFoods;
+  List<Food> frozenFoods;
 
-  Refrigerator.init({required String uID, required String refID})
-      : this.refID = refID,
-        this.uID = uID;
-
-  Refrigerator.fromSnapshot(Map<String, dynamic> data)
-      : refID = data['refID'],
-        uID = data['userID'];
+  Refrigerator.init(
+      {required String rID,
+      required String uID,
+      required List<Food> refFoods,
+      required List<Food> rTFoods,
+      required List<Food> froFoods})
+      : rID = rID,
+        uID = uID,
+        refrigerationFoods = refFoods,
+        roomTempFoods = rTFoods,
+        frozenFoods = froFoods;
 }

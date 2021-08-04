@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mangodevelopment/test/testRef.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
