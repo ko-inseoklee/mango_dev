@@ -222,6 +222,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           'userID': _auth.user!.uid,
                           'creationTime': _auth.user!.metadata.creationTime!,
                           'refrigeratorID': uuid,
+                          'isAlarmOn': true,
                           'refrigerationAlarm': _refrigerationAlarm,
                           'isRefShelf': _isRefShelf,
                           'frozenAlarm': _frozenAlarm,

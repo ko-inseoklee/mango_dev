@@ -146,7 +146,7 @@ class _MyPageState extends State<MyPage> {
                         comingSoon(context);
                       },
                       trailingWidth: 10,
-                      trailing: SizedBox(),
+                      trailing: SizedBox(), isActive: true,
                     ),
                     settingMenu(
                       menuName: "공지사항",
@@ -154,7 +154,7 @@ class _MyPageState extends State<MyPage> {
                         comingSoon(context);
                       },
                       trailingWidth: 10,
-                      trailing: SizedBox(),
+                      trailing: SizedBox(), isActive: true,
                     ),
                   ],
                 ),

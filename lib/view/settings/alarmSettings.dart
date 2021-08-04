@@ -1,14 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../../app.dart';
 import '../../color.dart';
-import '../splash.dart';
+
+enum refrigerationAlarmType { shelfLife, registerDate }
+enum frozenAlarmType { shelfLife, registerDate }
+enum roomTempAlarmType { shelfLife, registerDate }
 
 class SettingAlarmPage extends StatefulWidget {
   final String title;
@@ -25,6 +31,16 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  UserViewModel _userViewModel = Get.find<UserViewModel>();
+  Authentication _auth = Get.find<Authentication>();
+
+  refrigerationAlarmType _refrigerationAlarmType =
+      refrigerationAlarmType.shelfLife;
+  frozenAlarmType _frozenAlarmType = frozenAlarmType.shelfLife;
+  roomTempAlarmType _roomTempAlarmType = roomTempAlarmType.shelfLife;
+
+  List<String> _storeType = ['냉장 제품', '냉동 제품', '실온 제품'];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -35,8 +51,23 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: Text('알람 관리'),
+        title: Text("알람 관리"),
         centerTitle: true,
+        leading: IconButton(
+          icon: Text('취소'),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Text('저장'),
+            onPressed: () async {
+              await _userViewModel.updateUserInfo(_auth.user!.uid);
+              Get.back();
+            },
+          ),
+        ],
       ),
       backgroundColor: MangoWhite,
       body: Container(
@@ -44,15 +75,14 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
         width: deviceWidth,
         child: ListView(children: [
           Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 child: Text(
                   '알림 설정',
                   style: Theme.of(context).textTheme.caption!.copyWith(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16.0,),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16.0,
+                      ),
                 ),
                 padding: EdgeInsets.fromLTRB(
                     15, 20 * deviceWidth / prototypeWidth, 0, 0),
@@ -61,17 +91,18 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
               //TODO: Push Notification 기능 추가
               settingMenu(
                 menuName: '푸시 알림 설정',
-                onTap: (){},
+                onTap: () {},
                 trailing: Switch(
-                  value: isSwitched,
+                  value: _userViewModel.user.value.isAlarmOn,
                   activeColor: Orange400,
                   onChanged: (value) {
                     setState(() {
-                      isSwitched = value;
+                      _userViewModel.isAlarmOn = value;
                     });
                   },
                 ),
                 trailingWidth: 60,
+                isActive: true,
               ),
               settingMenu(
                 menuName: '알림 주기 설정',
@@ -87,26 +118,38 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
                   color: Orange400,
                 ),
                 trailingWidth: 60,
+                isActive: true,
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
                 child: isExpanded
                     ? ConstrainedBox(
-                  constraints:
-                  BoxConstraints(minHeight: 60, maxHeight: ScreenUtil().setHeight(450)),
-                  child: Column(children: [
-                    Expanded(
-                        child: ListView(
-                          children: [setAlarm()],
-                        ))
-                  ]),
-                )
+                        constraints: BoxConstraints(
+                            minHeight: 60,
+                            maxHeight: ScreenUtil().setHeight(450)),
+                        child: Column(children: [
+                          Expanded(
+                              child: ListView.builder(
+                            itemBuilder: (BuildContext context, int index) {
+                              return alarmCard(_storeType[index], index);
+                            },
+                            itemCount: _storeType.length,
+                            //children: [setAlarm()],
+                          ))
+                        ]),
+                      )
                     : SizedBox(
-                  height: 0.001,
-                ),
+                        height: 0.001,
+                      ),
               ),
 
-              settingMenu(menuName: '알림음', onTap: () => comingSoon(context), trailing: Text('MANGO'), trailingWidth: 100,)
+              settingMenu(
+                menuName: '알림음',
+                onTap: () => comingSoon(context),
+                trailing: Text('MANGO'),
+                trailingWidth: 100,
+                isActive: true,
+              )
             ],
           ),
         ]),
@@ -114,350 +157,223 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
     );
   }
 
-  // Picker picker(BuildContext context) {
-  //   Picker picker = Picker(
-  //       textAlign: TextAlign.center,
-  //       adapter: PickerDataAdapter<int>(pickerdata: dateData()),
-  //       changeToFirst: false,
-  //       onConfirm: (Picker picker, List value) {
-  //         setState(() {
-  //           int val = picker.getSelectedValues()[0];
-  //           _refrigerationAlarm = val;
-  //
-  //           print(_refrigerationAlarm);
-  //         });
-  //       });
-  //   return picker;
-  // }
-  //
-  // void showPicker(BuildContext context, Picker picker) {
-  //   picker.showModal(this.context);
-  // }
-
-  List<int> dateData() {
-    List<int> result = [];
-    for (int i = 1; i <= 60; i++) {
-      result.add(i);
-    }
-
-    return result;
-  }
-}
-
-class setAlarm extends StatefulWidget {
-  @override
-  setAlarmState createState() => setAlarmState();
-}
-
-class setAlarmState extends State<setAlarm> {
-
-
-  UserViewModel userViewModel = Get.find<UserViewModel>();
-
-  @override
-  Widget build(BuildContext context) {
-      return Column(children: [
-        Container(
-            padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+  Widget alarmCard(String title, int type) {
+    return Column(children: [
+      Container(
+          padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
+          child: Row(
+            children: [
+              Text(
+                title,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: Orange400, fontWeight: FontWeight.w700),
+              ),
+            ],
+          )),
+      settingMenu(
+        menuName: '유통기한 기준',
+        onTap: () {},
+        trailing: TextButton(
+            onPressed: () {
+              setState(() {
+                type == 0
+                    ? _userViewModel.isRefShelf = true
+                    : type == 1
+                        ? _userViewModel.isFroShelf = true
+                        : _userViewModel.isRTShelf = true;
+              });
+              showCupertinoPicker(2, type);
+            },
             child: Row(
               children: [
-                Text(
-                  '실온 제품',
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(color: Orange400, fontWeight: FontWeight.w700),
+                Container(
+                  alignment: Alignment.center,
+                  width: 50,
+                  child: type == 0
+                      ? _userViewModel.user.value.isRefShelf == true
+                          ? Text(
+                              _userViewModel.user.value.refrigerationAlarm
+                                      .toString() +
+                                  "일 전",
+                              style: Theme.of(context).textTheme.subtitle2,
+                            )
+                          : Text('-')
+                      : type == 1
+                          ? _userViewModel.user.value.isFroShelf == true
+                              ? Text(
+                                  _userViewModel.user.value.frozenAlarm
+                                          .toString() +
+                                      "일 전",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                              : Text('-')
+                          : _userViewModel.user.value.isRTShelf == true
+                              ? Text(
+                                  _userViewModel.user.value.roomTempAlarm
+                                          .toString() +
+                                      "일 전",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                              : Text('-'),
                 ),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  color: type == 0
+                      ? _userViewModel.user.value.isRefShelf
+                          ? MangoBlack
+                          : MangoDisabledColor
+                      : type == 1
+                          ? _userViewModel.user.value.isFroShelf
+                              ? MangoBlack
+                              : MangoDisabledColor
+                          : _userViewModel.user.value.isRTShelf
+                              ? MangoBlack
+                              : MangoDisabledColor,
+                  size: 18.0,
+                )
               ],
             )),
-        settingMenu(
-          menuName: '유통기한 기준',
-          onTap: () {
-            if (!userViewModel.user.value.isRTShelf) {
-              userViewModel.isRTShelf = true;
-            }
-          },
-          trailing: FlatButton(
-              onPressed: () {
-                showMaterialNumberPicker(
-                    context: context,
-                    minNumber: 1,
-                    maxNumber: 60,
-                    selectedNumber: userViewModel.user.value.roomTempAlarm,
-                    onChanged: (value) {
-                      setState(() {
-                        userViewModel.roomTempAlarm = value;
-                      });
-                    });
-              },
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 50,
-                    child: userViewModel.user.value.isRTShelf
-                        ? Text(
-                      userViewModel.user.value.roomTempAlarm.toString() + "일 전",
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
-                        : Text('-'),
+        trailingWidth: 100,
+        isActive: type == 0
+            ? _userViewModel.user.value.isRefShelf
+            : type == 1
+                ? _userViewModel.user.value.isFroShelf
+                : _userViewModel.user.value.isRTShelf,
+      ),
+      settingMenu(
+        menuName: '구매일 기준',
+        onTap: () {},
+        trailing: TextButton(
+            onPressed: () {
+              setState(() {
+                type == 0
+                    ? _userViewModel.isRefShelf = false
+                    : type == 1
+                        ? _userViewModel.isFroShelf = false
+                        : _userViewModel.isRTShelf = false;
+              });
+              showCupertinoPicker(3, type);
+            },
+            child: Row(
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  width: 50,
+                  child: type == 0
+                      ? _userViewModel.user.value.isRefShelf == false
+                          ? Text(
+                              _userViewModel.user.value.refrigerationAlarm
+                                      .toString() +
+                                  "일 전",
+                              style: Theme.of(context).textTheme.subtitle2,
+                            )
+                          : Text('-')
+                      : type == 1
+                          ? _userViewModel.user.value.isFroShelf == false
+                              ? Text(
+                                  _userViewModel.user.value.frozenAlarm
+                                          .toString() +
+                                      "일 전",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                              : Text('-')
+                          : _userViewModel.user.value.isRTShelf == false
+                              ? Text(
+                                  _userViewModel.user.value.roomTempAlarm
+                                          .toString() +
+                                      "일 전",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                              : Text('-'),
+                ),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  color: type == 0
+                      ? !_userViewModel.user.value.isRefShelf
+                          ? MangoBlack
+                          : MangoDisabledColor
+                      : type == 1
+                          ? !_userViewModel.user.value.isFroShelf
+                              ? MangoBlack
+                              : MangoDisabledColor
+                          : !_userViewModel.user.value.isRTShelf
+                              ? MangoBlack
+                              : MangoDisabledColor,
+                  size: 18.0,
+                )
+              ],
+            )),
+        trailingWidth: 100,
+        isActive: type == 0
+            ? !_userViewModel.user.value.isRefShelf
+            : type == 1
+                ? !_userViewModel.user.value.isFroShelf
+                : !_userViewModel.user.value.isRTShelf,
+      ),
+    ]);
+  }
+
+  Future<dynamic> showCupertinoPicker(int index, int type) {
+    return showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: const Radius.circular(30.0),
+          topRight: const Radius.circular(30.0),
+        )),
+        context: context,
+        builder: (BuildContext builder) {
+          return Container(
+            height: 284 * (deviceHeight / prototypeHeight),
+            child: Column(
+              children: [
+                dialogTopBar(),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    '알림일 설정',
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6, //TODO. CHANGE NEXT TIME
                   ),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: userViewModel.user.value.isRTShelf
-                        ? MangoBlack
-                        : MangoDisabledColor,
-                    size: 18.0,
-                  )
-                ],
-              )),
-          trailingWidth: 100,
-          isActive: userViewModel.user.value.isRTShelf,
-        ),
-        settingMenu(
-          menuName: '구매일 기준',
-          onTap: () {
-            if (userViewModel.user.value.isRTShelf) {
-              userViewModel.isRTShelf = false;
-            }
-          },
-          trailing: FlatButton(
-              onPressed: () {
-                showMaterialNumberPicker(
-                    context: context,
-                    minNumber: 1,
-                    maxNumber: 60,
-                    selectedNumber: userViewModel.user.value.roomTempAlarm,
-                    onChanged: (value) {
-                      setState(() {
-                        userViewModel.refAlarm = value;
-                      });
-                    });
-              },
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 50,
-                    child: !userViewModel.user.value.isRTShelf
-                        ? Text(
-                      userViewModel.user.value.roomTempAlarm.toString() + "일 후",
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
-                        : Text('-'),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTapDown: (details) {
+                      Get.back();
+                    },
+                    child: CupertinoPicker(
+                      itemExtent: 32,
+                      onSelectedItemChanged: (int newValue) {
+                        print(newValue);
+                        setState(() {
+                          type == 0
+                              ? _userViewModel.refAlarm = newValue + 1
+                              : type == 1
+                                  ? _userViewModel.frozenAlarm = newValue + 1
+                                  : _userViewModel.roomTempAlarm = newValue + 1;
+                        });
+                      },
+                      children: List<Widget>.generate(60, (int index) {
+                        return Text(
+                          (++index).toString(),
+                          style: Theme.of(context).textTheme.headline5,
+                        );
+                      }),
+                      scrollController: FixedExtentScrollController(
+                          initialItem: type == 0
+                              ? _userViewModel.user.value.refrigerationAlarm - 1
+                              : type == 1
+                                  ? _userViewModel.user.value.frozenAlarm - 1
+                                  : _userViewModel.user.value.roomTempAlarm -
+                                      1),
+                    ),
                   ),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: !userViewModel.user.value.isRTShelf
-                        ? MangoBlack
-                        : MangoDisabledColor,
-                    size: 18.0,
-                  )
-                ],
-              )),
-          trailingWidth: 100,
-          isActive: !userViewModel.user.value.isRTShelf,
-        ),
-        Container(
-          padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
-          child: Text(
-            '냉장 제품',
-            style: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Orange400, fontWeight: FontWeight.w700),
-          ),
-          alignment: Alignment.centerLeft,
-        ),
-        settingMenu(
-          menuName: '유통기한 기준',
-          onTap: () {
-            if (!userViewModel.user.value.isRefShelf) {
-              userViewModel.isRTShelf = true;
-            }
-          },
-          isActive: userViewModel.user.value.isRefShelf,
-          trailing: FlatButton(
-              onPressed: () {
-                showMaterialNumberPicker(
-                    context: context,
-                    minNumber: 1,
-                    maxNumber: 60,
-                    selectedNumber: userViewModel.user.value.refrigerationAlarm,
-                    onChanged: (value) {
-                      setState(() {
-                        userViewModel.refAlarm = value;
-                      });
-                    });
-              },
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 50,
-                    child: userViewModel.user.value.isRefShelf
-                        ? Text(
-                      userViewModel.user.value.refrigerationAlarm.toString() +
-                          "일 전",
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
-                        : Text('-'),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: userViewModel.user.value.isRefShelf
-                        ? MangoBlack
-                        : MangoDisabledColor,
-                    size: 18.0,
-                  )
-                ],
-              )),
-          trailingWidth: 100,
-        ),
-        settingMenu(
-          menuName: '구매일 기준',
-          onTap: () {
-            if (userViewModel.user.value.isRefShelf) {
-               userViewModel.isRefShelf = false;
-            }
-          },
-          isActive: !userViewModel.user.value.isRefShelf,
-          trailing: FlatButton(
-              onPressed: () {
-                showMaterialNumberPicker(
-                    context: context,
-                    minNumber: 1,
-                    maxNumber: 60,
-                    selectedNumber: userViewModel.user.value.refrigerationAlarm,
-                    onChanged: (value) {
-                      setState(() {
-                        userViewModel.refAlarm = value;
-                      });
-                    });
-              },
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 50,
-                    child: !userViewModel.user.value.isRefShelf
-                        ? Text(
-                      userViewModel.user.value.refrigerationAlarm.toString() +
-                          "일 후",
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
-                        : Text('-'),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: !userViewModel.user.value.isRefShelf
-                        ? MangoBlack
-                        : MangoDisabledColor,
-                    size: 18.0,
-                  )
-                ],
-              )),
-          trailingWidth: 100,
-        ),
-        Container(
-          padding: EdgeInsets.fromLTRB(20, 15, 0, 0),
-          child: Text(
-            '냉동 제품',
-            style: Theme.of(context)
-                .textTheme
-                .subtitle2!
-                .copyWith(color: Orange400, fontWeight: FontWeight.w700),
-          ),
-          alignment: Alignment.centerLeft,
-        ),
-        settingMenu(
-          menuName: '유통기한 기준',
-          onTap: () {
-            if (!userViewModel.user.value.isFroShelf) {
-              userViewModel.isFroShelf = true;
-            }
-          },
-          isActive: userViewModel.user.value.isFroShelf,
-          trailing: FlatButton(
-              onPressed: () {
-                showMaterialNumberPicker(
-                    context: context,
-                    minNumber: 1,
-                    maxNumber: 60,
-                    selectedNumber: userViewModel.user.value.frozenAlarm,
-                    onChanged: (value) {
-                      setState(() {
-                        userViewModel.frozenAlarm = value;
-                      });
-                    });
-              },
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 50,
-                    child: userViewModel.user.value.isFroShelf
-                        ? Text(
-                      userViewModel.user.value.frozenAlarm.toString() + "일 전",
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
-                        : Text('-'),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: userViewModel.user.value.isFroShelf
-                        ? MangoBlack
-                        : MangoDisabledColor,
-                    size: 18.0,
-                  )
-                ],
-              )),
-          trailingWidth: 100,
-        ),
-        settingMenu(
-          menuName: '구매일 기준',
-          onTap: () {
-            if (userViewModel.user.value.isFroShelf) {
-              userViewModel.isFroShelf = false;
-            }
-          },
-          isActive: !userViewModel.user.value.isFroShelf,
-          trailing: FlatButton(
-              onPressed: () {
-                showMaterialNumberPicker(
-                    context: context,
-                    minNumber: 1,
-                    maxNumber: 60,
-                    selectedNumber: userViewModel.user.value.frozenAlarm,
-                    onChanged: (value) {
-                      setState(() {
-                        userViewModel.frozenAlarm = value;
-                      });
-                    });
-              },
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    width: 50,
-                    child: !userViewModel.user.value.isFroShelf
-                        ? Text(
-                      userViewModel.user.value.frozenAlarm.toString() + "일 후",
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
-                        : Text('-'),
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_down,
-                    color: !userViewModel.user.value.isFroShelf
-                        ? MangoBlack
-                        : MangoDisabledColor,
-                    size: 18.0,
-                  )
-                ],
-              )),
-          trailingWidth: 100,
-        ),
-      ]);
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

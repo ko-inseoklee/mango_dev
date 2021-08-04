@@ -248,7 +248,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                       ));
                     },
                     trailingWidth: 10,
-                    trailing: SizedBox(),
+                    trailing: SizedBox(), isActive: true,
                   ),
                   settingMenu(
                     menuName: "회원탈퇴",
@@ -263,7 +263,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                           hasOK: true));
                     },
                     trailingWidth: 10,
-                    trailing: SizedBox(),
+                    trailing: SizedBox(), isActive: true,
                   ),
                 ],
               ),

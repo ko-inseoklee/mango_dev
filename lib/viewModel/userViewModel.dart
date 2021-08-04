@@ -7,10 +7,12 @@ class UserViewModel extends GetxController {
   var isImageLoading = false.obs;
   var imageURL = '';
 
+  //isRefSelf == true => 유통기한기준, == false => 구매일 기준.
   var user = User.init(
     userID: '',
     creationTime: DateTime.now(),
     refrigeratorID: '1',
+    isAlarmOn: true,
     refrigerationAlarm: 0,
     isRefShelf: false,
     frozenAlarm: 0,
@@ -24,6 +26,11 @@ class UserViewModel extends GetxController {
   ).obs;
 
   String get userID => this.user.value.userID;
+
+  set isAlarmOn(bool value){
+    this.user.value.isAlarmOn = value;
+    update();
+  }
 
   set refAlarm(int value) {
     this.user.value.refrigerationAlarm = value;
@@ -98,6 +105,7 @@ class UserViewModel extends GetxController {
       'userID': this.user.value.userID,
       'userName': this.user.value.userName,
       'refrigeratorID': this.user.value.refrigeratorID,
+      'isAlarmOn': this.user.value.isAlarmOn,
       'profileImageReference': this.user.value.profileImageReference,
       'isRefShelf': this.user.value.isRefShelf,
       'refrigerationAlarm': this.user.value.refrigerationAlarm,
@@ -135,6 +143,7 @@ class UserViewModel extends GetxController {
         this.user.value.isRefShelf = data['isRefShelf'];
         this.user.value.isFroShelf = data['isFroShelf'];
         this.user.value.isRTShelf = data['isRTShelf'];
+        this.user.value.isAlarmOn = data['isAlarmOn'];
         this.user.value.refrigerationAlarm = data['refrigerationAlarm'];
         this.user.value.frozenAlarm = data['frozenAlarm'];
         this.user.value.roomTempAlarm = data['roomTempAlarm'];
@@ -159,6 +168,7 @@ class UserViewModel extends GetxController {
       String userID,
       DateTime creationTime,
       String refrigeratorID,
+      bool isAlarmOn,
       int refrigerationAlarm,
       bool isRefShelf,
       int frozenAlarm,
@@ -174,6 +184,7 @@ class UserViewModel extends GetxController {
       'userID': userID,
       'creationTime': creationTime,
       'refrigeratorID': refrigeratorID,
+      'isAlarmOn': isAlarmOn,
       'refrigerationAlarm': refrigerationAlarm,
       'isRefShelf': isRefShelf,
       'frozenAlarm': frozenAlarm,
@@ -186,6 +197,7 @@ class UserViewModel extends GetxController {
       'tokens': tokens,
     });
 
+    this.user.value.isAlarmOn = isAlarmOn;
     this.user.value.refrigerationAlarm = refrigerationAlarm;
     this.user.value.frozenAlarm = frozenAlarm;
     this.user.value.roomTempAlarm = roomTempAlarm;
