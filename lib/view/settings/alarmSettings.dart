@@ -175,66 +175,7 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
       settingMenu(
         menuName: '유통기한 기준',
         onTap: () {},
-        trailing: TextButton(
-            onPressed: () {
-              setState(() {
-                type == 0
-                    ? _userViewModel.isRefShelf = true
-                    : type == 1
-                        ? _userViewModel.isFroShelf = true
-                        : _userViewModel.isRTShelf = true;
-              });
-              showCupertinoPicker(2, type);
-            },
-            child: Row(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: 50,
-                  child: type == 0
-                      ? _userViewModel.user.value.isRefShelf == true
-                          ? Text(
-                              _userViewModel.user.value.refrigerationAlarm
-                                      .toString() +
-                                  "일 전",
-                              style: Theme.of(context).textTheme.subtitle2,
-                            )
-                          : Text('-')
-                      : type == 1
-                          ? _userViewModel.user.value.isFroShelf == true
-                              ? Text(
-                                  _userViewModel.user.value.frozenAlarm
-                                          .toString() +
-                                      "일 전",
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                )
-                              : Text('-')
-                          : _userViewModel.user.value.isRTShelf == true
-                              ? Text(
-                                  _userViewModel.user.value.roomTempAlarm
-                                          .toString() +
-                                      "일 전",
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                )
-                              : Text('-'),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  color: type == 0
-                      ? _userViewModel.user.value.isRefShelf
-                          ? MangoBlack
-                          : MangoDisabledColor
-                      : type == 1
-                          ? _userViewModel.user.value.isFroShelf
-                              ? MangoBlack
-                              : MangoDisabledColor
-                          : _userViewModel.user.value.isRTShelf
-                              ? MangoBlack
-                              : MangoDisabledColor,
-                  size: 18.0,
-                )
-              ],
-            )),
+        trailing: alarmTextButton(type, true),
         trailingWidth: 100,
         isActive: type == 0
             ? _userViewModel.user.value.isRefShelf
@@ -245,66 +186,7 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
       settingMenu(
         menuName: '구매일 기준',
         onTap: () {},
-        trailing: TextButton(
-            onPressed: () {
-              setState(() {
-                type == 0
-                    ? _userViewModel.isRefShelf = false
-                    : type == 1
-                        ? _userViewModel.isFroShelf = false
-                        : _userViewModel.isRTShelf = false;
-              });
-              showCupertinoPicker(3, type);
-            },
-            child: Row(
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  width: 50,
-                  child: type == 0
-                      ? _userViewModel.user.value.isRefShelf == false
-                          ? Text(
-                              _userViewModel.user.value.refrigerationAlarm
-                                      .toString() +
-                                  "일 전",
-                              style: Theme.of(context).textTheme.subtitle2,
-                            )
-                          : Text('-')
-                      : type == 1
-                          ? _userViewModel.user.value.isFroShelf == false
-                              ? Text(
-                                  _userViewModel.user.value.frozenAlarm
-                                          .toString() +
-                                      "일 전",
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                )
-                              : Text('-')
-                          : _userViewModel.user.value.isRTShelf == false
-                              ? Text(
-                                  _userViewModel.user.value.roomTempAlarm
-                                          .toString() +
-                                      "일 전",
-                                  style: Theme.of(context).textTheme.subtitle2,
-                                )
-                              : Text('-'),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  color: type == 0
-                      ? !_userViewModel.user.value.isRefShelf
-                          ? MangoBlack
-                          : MangoDisabledColor
-                      : type == 1
-                          ? !_userViewModel.user.value.isFroShelf
-                              ? MangoBlack
-                              : MangoDisabledColor
-                          : !_userViewModel.user.value.isRTShelf
-                              ? MangoBlack
-                              : MangoDisabledColor,
-                  size: 18.0,
-                )
-              ],
-            )),
+        trailing: alarmTextButton(type, false),
         trailingWidth: 100,
         isActive: type == 0
             ? !_userViewModel.user.value.isRefShelf
@@ -313,6 +195,69 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
                 : !_userViewModel.user.value.isRTShelf,
       ),
     ]);
+  }
+
+  Widget alarmTextButton(int type, bool value){
+    return TextButton(
+        onPressed: () {
+          setState(() {
+            type == 0
+                ? _userViewModel.isRefShelf = value
+                : type == 1
+                ? _userViewModel.isFroShelf = value
+                : _userViewModel.isRTShelf = value;
+          });
+          showCupertinoPicker(2, type);
+        },
+        child: Row(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              width: 50,
+              child: type == 0
+                  ? _userViewModel.user.value.isRefShelf == value
+                  ? Text(
+                _userViewModel.user.value.refrigerationAlarm
+                    .toString() +
+                    "일 전",
+                style: Theme.of(context).textTheme.subtitle2,
+              )
+                  : Text('-')
+                  : type == 1
+                  ? _userViewModel.user.value.isFroShelf == value
+                  ? Text(
+                _userViewModel.user.value.frozenAlarm
+                    .toString() +
+                    "일 전",
+                style: Theme.of(context).textTheme.subtitle2,
+              )
+                  : Text('-')
+                  : _userViewModel.user.value.isRTShelf == value
+                  ? Text(
+                _userViewModel.user.value.roomTempAlarm
+                    .toString() +
+                    "일 전",
+                style: Theme.of(context).textTheme.subtitle2,
+              )
+                  : Text('-'),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down,
+              color: type == 0
+                  ? _userViewModel.user.value.isRefShelf == value
+                  ? MangoBlack
+                  : MangoDisabledColor
+                  : type == 1
+                  ? _userViewModel.user.value.isFroShelf == value
+                  ? MangoBlack
+                  : MangoDisabledColor
+                  : _userViewModel.user.value.isRTShelf == value
+                  ? MangoBlack
+                  : MangoDisabledColor,
+              size: 18.0,
+            )
+          ],
+        ));
   }
 
   Future<dynamic> showCupertinoPicker(int index, int type) {
