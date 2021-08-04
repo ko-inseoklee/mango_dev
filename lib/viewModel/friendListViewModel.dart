@@ -99,7 +99,7 @@ class FriendListViewModel extends GetxController {
           print('error2');
         });
 
-    // // post의 friend list 에 추가
+    // post의 friend list 에 추가
     await mango_dev
         .collection('post')
         .where('ownerID', isEqualTo: uid)
@@ -164,17 +164,30 @@ class FriendListViewModel extends GetxController {
       'friends': FieldValue.arrayRemove([curr_uid])
     });
 
-    // // post 친구목록에서 삭제
-    // mango_dev
-    //     .collection('post')
-    //     .where('ownerID', isEqualTo: uid)
-    //     .get()
-    //     .then((value) {
-    //   value.docs.forEach((element) {
-    //     element.reference.update({
-    //       'ownerFriendList': FieldValue.arrayRemove([curr_uid])
-    //     });
-    //   });
-    // });
+    // post 친구목록에서 삭제
+     mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: uid)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        element.reference.update({
+          'ownerFriendList': FieldValue.arrayRemove([curr_uid])
+        });
+      });
+    });
+
+     mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: curr_uid)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        element.reference.update({
+          'ownerFriendList': FieldValue.arrayRemove([uid])
+        });
+      });
+    });
+
   }
 }
