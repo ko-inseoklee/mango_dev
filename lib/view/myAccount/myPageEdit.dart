@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -44,14 +45,7 @@ class _MyPageEditState extends State<MyPageEdit> {
           IconButton(
             icon: Text('저장'),
             onPressed: () async {
-              // _nameController.text != '' ?
-              // userViewModelController.user.value.userName =
-              //     _nameController.text
-              //     : null;장
-              Get.snackbar('저장 중', '수정사항을 저장 중입니다.');
-              _nameController.text != ''?
-                  await userViewModelController.setUserName(_nameController.text)
-              : null;
+              //Get.snackbar('저장 중', '수정사항을 저장 중입니다.');
 
                _fileStoarge.isNetworkImage.value == false ?
                 await _fileStoarge
@@ -62,7 +56,10 @@ class _MyPageEditState extends State<MyPageEdit> {
                       userViewModelController.user.value.profileImageReference = value;
                       _fileStoarge.isNetworkImage = true.obs;
                 }) : null;
-              await userViewModelController.updateUserInfo(_auth.user!.uid).then((value){
+              await userViewModelController.updateUserInfo(_auth.user!.uid).then((value) async{
+                _nameController.text != ''?
+                await FirebaseFirestore.instance.collection('user').doc(_auth.user!.uid).update({'userName': _nameController.text})
+                    : null;
                 Get.back(result: userViewModelController.user.value.profileImageReference);
               });
             },
