@@ -21,7 +21,8 @@ class User {
   DateTime lastSignIn;
   String profileImageReference;
   String userName;
-  List<String> tokens;
+  String tokens;
+  // Future<List<String>> friendList;
 
   //final DocumentReference reference;
 
@@ -38,7 +39,8 @@ class User {
     required DateTime lastSignIn,
     required String profileImageReference,
     required String userName,
-    required List<String> tokens,
+    required String tokens,
+    // required Future<List<String>> friendList,
     //required DocumentReference reference
   })  : this.userID = userID,
         this.creationTime = creationTime,
@@ -53,6 +55,7 @@ class User {
         this.profileImageReference = profileImageReference,
         this.userName = userName,
         this.tokens = tokens;
+        // this.friendList = friendList;
 
   //this.reference = reference;
 
@@ -70,6 +73,16 @@ class User {
         profileImageReference = snapshot.get('profileImageReference'),
         userName = snapshot.get('userName'),
         tokens = snapshot.get('tokens');
-//reference = snapshot.get('reference');
+        // friendList = loadFriendList(snapshot);
+
+        // friendList =
+        //     snapshot.reference.collection('FriendList').get().then((value) {
+        //   List<String> _list = [];
+        //   value.docs.forEach((element) {
+        //     _list.add(element.get('userID'));
+        //   });
+        //   print('LIST = ' + _list.toList().toString() + '!!' );
+        //   return _list;
+        // });
 
 }

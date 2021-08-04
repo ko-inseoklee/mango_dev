@@ -21,7 +21,8 @@ class UserViewModel extends GetxController {
     lastSignIn: DateTime.now(),
     profileImageReference: '',
     userName: '',
-    tokens: [],
+    tokens: '',
+    // friendList: Future.value([]),
   ).obs;
 
   String get userID => this.user.value.userID;
@@ -66,7 +67,7 @@ class UserViewModel extends GetxController {
     update();
   }
 
-  Future<void> setUserName(String name) async{
+  Future<void> setUserName(String name) async {
     this.user.value.userName = name;
     update();
   }
@@ -174,5 +175,4 @@ class UserViewModel extends GetxController {
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
   }
-
 }

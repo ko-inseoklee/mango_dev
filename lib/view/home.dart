@@ -24,7 +24,7 @@ import 'dart:math' as math;
 class HomePage extends StatefulWidget {
   final title;
 
-  const HomePage({Key? key, required this.title}) : super(key: key);
+  const                                                                                                                                                                                                                                                                                                                                           HomePage({Key? key, required this.title}) : super(key: key);
 
   @override
   HomePageState createState() => HomePageState();

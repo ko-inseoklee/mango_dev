@@ -96,7 +96,7 @@ class TemporaryFood {
         shelfOver = false,
         isModify = false;
 
-  TemporaryFood.fromSnapshot(Map<String, dynamic> food)
+  TemporaryFood.fromSnapshot(Map<String, dynamic> food) 
       : rId = food['rId'],
         fId = food['fId'],
         idx = 0,
