@@ -106,13 +106,14 @@ class _MyPageState extends State<MyPage> {
                     //TODO. 수정페이지로 이동
                     IconButton(
                         onPressed: () async {
-                          setState(() async{
-                            var result = await Get.to(MyPageEdit(),
-                                transition: Transition.topLevel);
-                            userViewModelController.profileImageReference = await result;
-                          });
+                          Get.to(MyPageEdit());
+                          // setState(() async{
+                          //   var result = await Get.to(MyPageEdit(),
+                          //       transition: Transition.topLevel);
+                          //   userViewModelController.profileImageReference = await result;
+                          // });
 
-                          },
+                        },
                         icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),
@@ -170,8 +171,8 @@ class _MyPageState extends State<MyPage> {
     List<myAccountMenu> _menus = [
       myAccountMenu(
           menuName: '전체 거래 내역', iconData: Icons.note_outlined, navRef: ''
-          //navRef: APPSETTINGS
-          ),
+        //navRef: APPSETTINGS
+      ),
       myAccountMenu(
           menuName: '나의 거래 게시글',
           iconData: Icons.account_box_outlined,
@@ -230,7 +231,7 @@ class _MyPageState extends State<MyPage> {
             ),
             Container(
               padding:
-                  EdgeInsets.only(top: 5.0 * deviceHeight / prototypeHeight),
+              EdgeInsets.only(top: 5.0 * deviceHeight / prototypeHeight),
               child: Text(
                 menu.menuName,
                 style: Theme.of(context).textTheme.caption,

@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
@@ -22,7 +21,6 @@ class UserViewModel extends GetxController {
     profileImageReference: '',
     userName: '',
     tokens: '',
-    // friendList: Future.value([]),
   ).obs;
 
   String get userID => this.user.value.userID;
@@ -67,8 +65,13 @@ class UserViewModel extends GetxController {
     update();
   }
 
-  Future<void> setUserName(String name) async {
+  Future<void> setUserName(String name) async{
     this.user.value.userName = name;
+    update();
+  }
+
+  Future<void> setUserProfileImage(String value) async{
+    this.user.value.profileImageReference = value;
     update();
   }
 
@@ -106,6 +109,20 @@ class UserViewModel extends GetxController {
     });
   }
 
+  Future<void> updateUserName(String uid, String value) async{
+    await FirebaseFirestore.instance.collection('user').doc(uid).update({
+      'userName': value,
+    });
+  }
+
+  Future<void> updateUserProfileImage(String uid, String value) async{
+    await FirebaseFirestore.instance.collection('user').doc(uid).update({
+      'profileImageReference': value,
+    });
+  }
+
+
+
   //Making 'User' class (local) from Firebase Data
   Future<void> setUserInfo(String uid) async {
     await FirebaseFirestore.instance
@@ -139,20 +156,20 @@ class UserViewModel extends GetxController {
   }
 
   Future<void> makeUserInformation(
-    String userID,
-    DateTime creationTime,
-    String refrigeratorID,
-    int refrigerationAlarm,
-    bool isRefShelf,
-    int frozenAlarm,
-    bool isFroShelf,
-    int roomTempAlarm,
-    bool isRTShelf,
-    DateTime lastSignIn,
-    String profileImageReference,
-    String userName,
-    String tokens,
-  ) async {
+      String userID,
+      DateTime creationTime,
+      String refrigeratorID,
+      int refrigerationAlarm,
+      bool isRefShelf,
+      int frozenAlarm,
+      bool isFroShelf,
+      int roomTempAlarm,
+      bool isRTShelf,
+      DateTime lastSignIn,
+      String profileImageReference,
+      String userName,
+      String tokens,
+      ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,
@@ -175,4 +192,5 @@ class UserViewModel extends GetxController {
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
   }
+
 }

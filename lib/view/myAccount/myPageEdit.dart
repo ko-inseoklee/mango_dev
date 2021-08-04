@@ -20,6 +20,8 @@ class MyPageEdit extends StatefulWidget {
 }
 
 class _MyPageEditState extends State<MyPageEdit> {
+  final _formKey = GlobalKey<FormState>();
+
   Authentication _auth = Get.find<Authentication>();
   var userViewModelController = Get.find<UserViewModel>();
   FileStorage _fileStoarge = Get.put(FileStorage());
@@ -30,7 +32,6 @@ class _MyPageEditState extends State<MyPageEdit> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('내 정보 수정'),
@@ -46,22 +47,22 @@ class _MyPageEditState extends State<MyPageEdit> {
             icon: Text('저장'),
             onPressed: () async {
               //Get.snackbar('저장 중', '수정사항을 저장 중입니다.');
+              if(_fileStoarge.isNetworkImage.value == false) {
+                print('isNetworkImage == false');
+                await _fileStoarge.uploadFile(userViewModelController.user.value.profileImageReference, 'profile/${_auth.user!.uid}')
+                    .then((value) async{
+                  _fileStoarge.isNetworkImage = true.obs;
+                  userViewModelController.profileImageReference = value;
+                  await userViewModelController.updateUserProfileImage(_auth.user!.uid, value);
+                });
+              }
+              if(_nameController.text != ''){
+                print('_nameController.text != null');
+                userViewModelController.user.value.userName = _nameController.text;
+                await userViewModelController.updateUserName(_auth.user!.uid, _nameController.text);
+              }
 
-               _fileStoarge.isNetworkImage.value == false ?
-                await _fileStoarge
-                    .uploadFile(
-                    userViewModelController.user.value.profileImageReference,
-                    'profile/${_auth.user!.uid}')
-                    .then((value) {
-                      userViewModelController.user.value.profileImageReference = value;
-                      _fileStoarge.isNetworkImage = true.obs;
-                }) : null;
-              await userViewModelController.updateUserInfo(_auth.user!.uid).then((value) async{
-                _nameController.text != ''?
-                await FirebaseFirestore.instance.collection('user').doc(_auth.user!.uid).update({'userName': _nameController.text})
-                    : null;
-                Get.back(result: userViewModelController.user.value.profileImageReference);
-              });
+              Get.back(result: userViewModelController.user.value.profileImageReference);
             },
           ),
         ],
@@ -79,40 +80,40 @@ class _MyPageEditState extends State<MyPageEdit> {
                   Stack(
                     children: [
                       userViewModelController
-                                  .user.value.profileImageReference ==
-                              '-1'
+                          .user.value.profileImageReference ==
+                          '-1'
                           ? Container(
-                              width: 90 * deviceWidth / prototypeWidth,
-                              height: 90 * deviceWidth / prototypeWidth,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image:
-                                      AssetImage('images/default_profile.png'),
-                                ),
-                              ),
-                            )
+                        width: 90 * deviceWidth / prototypeWidth,
+                        height: 90 * deviceWidth / prototypeWidth,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image:
+                            AssetImage('images/default_profile.png'),
+                          ),
+                        ),
+                      )
                           : _fileStoarge.isNetworkImage.value == true
-                              ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.network(
-                                    userViewModelController
-                                        .user.value.profileImageReference,
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
-                                    fit: BoxFit.fitHeight,
-                                  ))
-                              : ClipRRect(
-                                  borderRadius: BorderRadius.circular(50),
-                                  child: Image.file(
-                                    File(userViewModelController
-                                        .user.value.profileImageReference),
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
-                                    fit: BoxFit.fitHeight,
-                                  ),
-                                ),
+                          ? ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.network(
+                            userViewModelController
+                                .user.value.profileImageReference,
+                            width: 90 * deviceWidth / prototypeWidth,
+                            height: 90 * deviceWidth / prototypeWidth,
+                            fit: BoxFit.fitHeight,
+                          ))
+                          : ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image.file(
+                          File(userViewModelController
+                              .user.value.profileImageReference),
+                          width: 90 * deviceWidth / prototypeWidth,
+                          height: 90 * deviceWidth / prototypeWidth,
+                          fit: BoxFit.fitHeight,
+                        ),
+                      ),
                       Positioned(
                         left: 44 * deviceWidth / prototypeWidth,
                         top: 50 * deviceWidth / prototypeWidth,
@@ -121,7 +122,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                             var image = await Get.dialog(AlertDialog(
                               shape: RoundedRectangleBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20.0))),
+                                  BorderRadius.all(Radius.circular(20.0))),
                               title: Container(
                                   width: deviceWidth,
                                   child: Center(child: Text('프로필 사진 수정'))),
@@ -183,7 +184,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                         child: Text('이름'),
                       ),
                       prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
+                      BoxConstraints(minWidth: 0, minHeight: 0),
                       hintText: userViewModelController.user.value.userName,
                       errorBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 1.0)),
@@ -195,7 +196,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                   Spacer(
                     flex: 1,
                   ),
-                  TextField(
+                  TextFormField(
                     //maxLength: 12,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp('[0-9]'))
@@ -211,7 +212,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                         child: Text('전화번호'),
                       ),
                       prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
+                      BoxConstraints(minWidth: 0, minHeight: 0),
                       hintText: 'Coming soon...',
                       //TODO. after adding the function of phone number
                       errorBorder: OutlineInputBorder(
@@ -272,28 +273,4 @@ class _MyPageEditState extends State<MyPageEdit> {
       ),
     );
   }
-
-  // Future<void> _loadChangeInfo() async{
-  //
-  //   print('isNetWork???? ${_fileStoarge.isNetworkImage.value}');
-  //
-  //   // ignore: unnecessary_statements
-  //   _fileStoarge.isNetworkImage.value == false ?
-  //   await _fileStoarge
-  //       .uploadFile(
-  //       userViewModelController.user.value.profileImageReference,
-  //       'profile/${_auth.user!.uid}')
-  //       .then((value) {
-  //     userViewModelController.user.value.profileImageReference =
-  //         value;
-  //     setState(() {
-  //       _fileStoarge.isNetworkImage = true.obs;
-  //       _nameController.text != '' ?
-  //       userViewModelController.user.value.userName = _nameController.text
-  //           : null;
-  //     });
-  //   }) : _nameController.text != '' ?
-  //   userViewModelController.user.value.userName = _nameController.text
-  //       : null;
-  // }
 }
