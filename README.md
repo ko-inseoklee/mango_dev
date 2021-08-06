@@ -71,3 +71,6 @@ A new Flutter project.
 - Todo(Inseok)
     - 음식 상태별 카드 만들기.(완료) -> 카드 디자인 구성
     - Food class의 CardStatus CSR로 변경.
+  
+- TODO (jhyun)
+	- 새로운 device로 로그인시 친구의 교환된 정보 목록에서도 수정필요
