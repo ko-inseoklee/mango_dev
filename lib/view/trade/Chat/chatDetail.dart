@@ -12,15 +12,16 @@ class ChatDetailPage extends StatefulWidget {
 // required info from POST
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
-  var postID = Get.arguments[0];
-  var state = Get.arguments[1];
-  var friendId = Get.arguments[2];
-  var foodName = Get.arguments[3];
-  var foodNum = Get.arguments[4];
-  var subtitle = Get.arguments[5];
-  var shelfLife = Get.arguments[6];
-  var ownerName = Get.arguments[7];
-  var profileImageRef = '-1';
+  String postID = Get.arguments[0];
+  int state = Get.arguments[1];
+  String friendId = Get.arguments[2];
+  String foodName = Get.arguments[3];
+  int foodNum = Get.arguments[4];
+  String subtitle = Get.arguments[5];
+  DateTime shelfLife = Get.arguments[6];
+  String ownerName = Get.arguments[7];
+  String profileImageRef = Get.arguments[8];
+  String chatID = Get.arguments[9];
 
   var _stream;
 
@@ -30,8 +31,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
     mango_dev
         .collection('chatRooms')
-        .where('postID', isEqualTo: postID)
-        .where('takerID', isEqualTo: userViewModelController.user.value.userID)
+        .where('chatID', isEqualTo: chatID)
         .get()
         .then((value) {
       value.docs.forEach((element) {
@@ -49,14 +49,11 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  // chatRoom Doc ID -> randomly
-  Future<void> send(String postID, String from) async {
+  Future<void> send(String chatID, String curr_uid) async {
     if (messageController.text.length > 0) {
       await mango_dev
           .collection('chatRooms')
-          .where('postID', isEqualTo: postID)
-          .where('takerID',
-              isEqualTo: userViewModelController.user.value.userID)
+          .where('chatID', isEqualTo: chatID)
           .get()
           .then((value) {
         value.docs.forEach((element) {
@@ -66,9 +63,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               .collection('messages')
               .add({
             'text': messageController.text,
-            'from': from,
+            'from': element.get('takerID') == curr_uid
+                ? element.get('takerID')
+                : element.get('ownerID'),
             'date': DateTime.now().toIso8601String().toString(),
-            'to': ownerName,
+            'to': element.get('ownerID') == curr_uid
+                ? element.get('ownerID')
+                : element.get('takerID'),
           });
         });
       });
@@ -102,29 +103,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         _state = '거래 완료';
       });
     }
-
-    // mango_dev
-    //     .collection('chatRooms')
-    //     .where('uid',
-    //         arrayContains: userViewModelController.user.value.userName)
-    //     .where('postID', isEqualTo: postID)
-    //     .get()
-    //     .then((value) {
-    //   value.docs.forEach((element) {
-    //     setState(() {
-    //       _stream = mango_dev
-    //           .collection('chatRooms')
-    //           .doc(element.id)
-    //           .collection('messages')
-    //           .orderBy('date')
-    //           .snapshots();
-    //     });
-    //   });
-    // });
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(friendId),
+        title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
       ),
       body: SafeArea(
         child: Column(
@@ -134,7 +116,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: mango_dev
                     .collection('chatRooms')
-                    .doc(postID + userViewModelController.user.value.userID)
+                    .doc(postID.substring(0, 6) +
+                        userViewModelController.user.value.userID
+                            .substring(0, 6))
                     .collection('messages')
                     .orderBy('date')
                     .snapshots(),
@@ -227,7 +211,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   Expanded(
                     child: TextField(
                       onSubmitted: (value) => send(
-                          postID, //generate docID by Post
+                          chatID, //generate docID by Post
                           userViewModelController.user.value.userName),
                       // from who ?
                       decoration: InputDecoration(
@@ -246,7 +230,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     ),
                     onPressed: () {
                       send(
-                          postID, //generate docID by Post
+                          chatID, //generate docID by Post
                           userViewModelController.user.value.userName);
                       messageController.clear();
                     },

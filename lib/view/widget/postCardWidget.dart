@@ -8,6 +8,7 @@ import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'package:uuid/uuid.dart';
 
 String calculate(DateTime registTime) {
   Duration diff = DateTime.now().difference(registTime);
@@ -153,18 +154,12 @@ class MangoPostCard extends StatelessWidget {
                             // color: Theme.of(context).accentColor,
                             child: Icon(Icons.send_rounded),
                             onPressed: () {
-                              mango_dev
-                                  .collection('chatRooms')
-                                  .doc(postID +
-                                      userViewModelController.user.value.userID)
-                                  .set({
-                                'chatID': postID +
-                                    userViewModelController.user.value.userID,
-                                'takerID':
-                                    userViewModelController.user.value.userID,
-                                'postID': postID,
-                                'ownerName': ownerName,
-                              });
+                              // var chatID = Uuid().v4().toString();
+                              var chatID = postID.substring(0, 6) +
+                                  userViewModelController.userID
+                                      .substring(0, 6);
+                              createChatRoom(
+                                  chatID, userViewModelController.userID);
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
                                 state,
@@ -173,7 +168,9 @@ class MangoPostCard extends StatelessWidget {
                                 foodNum,
                                 subtitle,
                                 shelfLife,
-                                ownerName
+                                ownerName,
+                                profileImageRef,
+                                chatID,
                               ]);
                             },
                             style: ButtonStyle(
@@ -195,6 +192,16 @@ class MangoPostCard extends StatelessWidget {
           ),
         ),
       );
+    });
+  }
+
+  void createChatRoom(String chatID, String uid) {
+    mango_dev.collection('chatRooms').doc(chatID).set({
+      'chatID': chatID,
+      'takerID': uid,
+      'postID': postID,
+      'onwerID': ownerID,
+      'ownerName': ownerName,
     });
   }
 }
