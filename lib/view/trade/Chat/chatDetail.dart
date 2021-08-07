@@ -51,6 +51,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
   Future<void> send(String chatID, String curr_uid) async {
     if (messageController.text.length > 0) {
+      print('chatID: $chatID !!');
       await mango_dev
           .collection('chatRooms')
           .where('chatID', isEqualTo: chatID)
@@ -63,13 +64,12 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               .collection('messages')
               .add({
             'text': messageController.text,
-            'from': element.get('takerID') == curr_uid
-                ? element.get('takerID')
-                : element.get('ownerID'),
+            'from': curr_uid,
+
+            'to': element.get('takerName') == curr_uid
+                ? element.get('ownerName')
+                : element.get('takerName'),
             'date': DateTime.now().toIso8601String().toString(),
-            'to': element.get('ownerID') == curr_uid
-                ? element.get('ownerID')
-                : element.get('takerID'),
           });
         });
       });

@@ -159,7 +159,9 @@ class MangoPostCard extends StatelessWidget {
                                   userViewModelController.userID
                                       .substring(0, 6);
                               createChatRoom(
-                                  chatID, userViewModelController.userID);
+                                  chatID,
+                                  userViewModelController.userID,
+                                  userViewModelController.user.value.userName);
                               Get.to(ChatDetailPage(), arguments: [
                                 postID,
                                 state,
@@ -195,10 +197,11 @@ class MangoPostCard extends StatelessWidget {
     });
   }
 
-  void createChatRoom(String chatID, String uid) {
+  void createChatRoom(String chatID, String uid, String name) {
     mango_dev.collection('chatRooms').doc(chatID).set({
       'chatID': chatID,
       'takerID': uid,
+      'takerName': name,
       'postID': postID,
       'onwerID': ownerID,
       'ownerName': ownerName,
