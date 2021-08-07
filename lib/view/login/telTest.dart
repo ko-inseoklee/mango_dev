@@ -102,10 +102,11 @@ class _TelTestPageState extends State<TelTestPage> {
                       ),
                       Container(
                         padding: EdgeInsets.fromLTRB(
-                            0,
-                            14 * (deviceWidth / prototypeWidth),
-                            0,
-                            0,),
+                          0,
+                          14 * (deviceWidth / prototypeWidth),
+                          0,
+                          0,
+                        ),
                         width: _contentWidth * (deviceWidth * deviceHeight),
                         child: TextField(
                           maxLength: 6,
@@ -132,50 +133,54 @@ class _TelTestPageState extends State<TelTestPage> {
                           width: deviceWidth,
                           height: 46.0 * (deviceWidth / prototypeWidth)),
                       child: ElevatedButton(
-                          child: requestedAuth == false? Text('인증요청') : Text('다음'),
+                          child: requestedAuth == false
+                              ? Text('인증요청')
+                              : Text('다음'),
                           onPressed: () async {
                             // setState(() {
                             //   requestedAuth = true;
                             // });
                             //'인증요청'일 경우
-                            if(requestedAuth == false){
-                              await _auth.verifyPhoneNumber(
-                                  timeout: const Duration(seconds: 120),
-                                  phoneNumber: "+1" + _telController.text,
-                                  verificationCompleted:
-                                      (phoneAuthCredential) async {
-                                    print('otp 문자옴');
-                                  },
-                                  verificationFailed: (verificationFailed) {
-                                    print(verificationFailed.code);
-                                    print('코드 발송 실패');
-                                  },
-                                  codeSent: (verificationId, resendingToken) async {
-                                    print('코드 보냄');
-                                    Get.snackbar("MESSAGE",
-                                        "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
-                                    setState(() {
-                                      requestedAuth = true;
-                                      // FocusScope.of(context).requestFocus(otpFocusNode);
-                                      this.verificationId = verificationId;
-                                      print("verification id: $verificationId");
-                                    });
-                                  },
-                                  codeAutoRetrievalTimeout:
-                                      (String verificationId) {});
-                            }
+                            // if (requestedAuth == false) {
+                            //   await _auth.verifyPhoneNumber(
+                            //       timeout: const Duration(seconds: 120),
+                            //       phoneNumber: "+1" + _telController.text,
+                            //       verificationCompleted:
+                            //           (phoneAuthCredential) async {
+                            //         print('otp 문자옴');
+                            //       },
+                            //       verificationFailed: (verificationFailed) {
+                            //         print(verificationFailed.code);
+                            //         print('코드 발송 실패');
+                            //       },
+                            //       codeSent:
+                            //           (verificationId, resendingToken) async {
+                            //         print('코드 보냄');
+                            //         Get.snackbar("MESSAGE",
+                            //             "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
+                            //         setState(() {
+                            //           requestedAuth = true;
+                            //           // FocusScope.of(context).requestFocus(otpFocusNode);
+                            //           this.verificationId = verificationId;
+                            //           print("verification id: $verificationId");
+                            //         });
+                            //       },
+                            //       codeAutoRetrievalTimeout:
+                            //           (String verificationId) {});
+                            // }
                             //'다음'일 경우
-                            else{
-                              //if(authOk == true 일때)
-                              // PhoneAuthCredential phoneAuthCredential =
-                              // PhoneAuthProvider.credential(
-                              //     verificationId: verificationId,
-                              //     smsCode: _optController.text);
-                              // signInWithPhoneAuthCredential(phoneAuthCredential);
-                              // if(authOk == false 일때)
-                              // case 1) 폰 번호를 다시 입력하게 해서, 인증코드를 다시 받을 수 있게 하거나
-                              // case 2) 인증번호를 다시 입력하능하게 하거나
-                            }
+                            // else {
+                            //   // if(authOk == true 일때)
+                            //   PhoneAuthCredential phoneAuthCredential =
+                            //       PhoneAuthProvider.credential(
+                            //           verificationId: verificationId,
+                            //           smsCode: _optController.text);
+                            //   signInWithPhoneAuthCredential(
+                            //       phoneAuthCredential);
+                            //   // if(authOk == false 일때)
+                            //   // case 1) 폰 번호를 다시 입력하게 해서, 인증코드를 다시 받을 수 있게 하거나
+                            //   // case 2) 인증번호를 다시 입력하능하게 하거나
+                            // }
                           }
                           //style: ButtonStyle(),
                           )),
@@ -199,8 +204,26 @@ class _TelTestPageState extends State<TelTestPage> {
         });
         await _auth.currentUser!.delete();
         print('auth 정보삭제');
-        _auth.signOut();
+        await _auth.signOut();
         print('phone 로그인된 것 로그아웃');
+
+        Get.defaultDialog(
+          title: "",
+          content: Column(
+            children: [
+              Text(
+                "인증이 성공적으로 완료되었습니다.",
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 25, 8, 0),
+                child: ConstrainedBox(
+                    constraints: BoxConstraints.tightFor(width: deviceWidth,height: 46.0 * (deviceWidth / prototypeWidth)),
+                    child: ElevatedButton(onPressed: () {}, child: Text('확인'))),
+              )
+            ],
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
       print('인증실패..로그인실패');
