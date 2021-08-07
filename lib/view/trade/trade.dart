@@ -43,58 +43,84 @@ class _TradePageState extends State<TradePage> {
   Widget build(BuildContext context) {
     getFriendList(userViewModelController.user.value.userID);
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () {
-              Get.to(FriendListPage());
-            },
-          ),
-          title: Text(widget.title),
-          centerTitle: true,
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Get.to(ChatList());
-                },
-                icon: Icon(Icons.chat_bubble_outline_outlined)),
-            IconButton(
-                onPressed: () {
-                  Get.to(CreatePost());
-                },
-                icon: Icon(Icons.notifications_none))
-          ],
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.person),
+          onPressed: () {
+            Get.to(FriendListPage());
+          },
         ),
-        // ignore: unrelated_type_equality_checks
-        body: countDocuments(userViewModelController.user.value.userID) == 0
-            ? Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Get.to(Test());
-                        },
-                        child: Image(
-                          image: AssetImage('images/login/logo.png'),
-                        ),
+        title: Text(widget.title),
+        centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () {
+                Get.to(ChatList());
+              },
+              icon: Icon(Icons.chat_bubble_outline_outlined)),
+          IconButton(
+              onPressed: () {
+                Get.to(CreatePost());
+              },
+              icon: Icon(Icons.notifications_none))
+        ],
+      ),
+      // ignore: unrelated_type_equality_checks
+      body: countDocuments(userViewModelController.user.value.userID) == 0
+          ? Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Get.to(Test());
+                      },
+                      child: Image(
+                        image: AssetImage('images/login/logo.png'),
                       ),
-                      Text(
-                        '친구를 추가해서 \n거래를 시작해보세요',
-                        textAlign: TextAlign.center,
-                      ),
-                    ]),
-              )
-            : ListView.separated(
-                itemBuilder: (context, index) {
-                  return MangoPostCard(
-                    post: posts[index],
+                    ),
+                    Text(
+                      '친구를 추가해서 \n거래를 시작해보세요',
+                      textAlign: TextAlign.center,
+                    ),
+                  ]),
+            )
+          : StreamBuilder<QuerySnapshot>(
+              stream: mango_dev
+                  .collection('post')
+                  .where('ownerFriendList',
+                      arrayContains: userViewModelController.user.value.userID)
+                  .snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return Divider();
-                },
-                itemCount: posts.length));
+                }
+
+                return ListView.separated(
+                    itemBuilder: (context, index) {
+                      List<DocumentSnapshot> documents = snapshot.data!.docs;
+                      return MangoPostCard(
+                          postID: documents.elementAt(index)['postID'],
+                          state: documents.elementAt(index)['state'],
+                          foodName: documents.elementAt(index)['foodName'],
+                          ownerID: documents.elementAt(index)['ownerID'],
+                          profileImageRef:
+                              documents.elementAt(index)['profileImageRef'],
+                          registTime: documents.elementAt(index)['registTime'],
+                          subtitle: documents.elementAt(index)['subtitle'],
+                          foodNum: documents.elementAt(index)['foodNum'],
+                          shelfLife: documents.elementAt(index)['shelfLife'],
+                          ownerName: documents.elementAt(index)['ownerName']);
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider();
+                    },
+                    itemCount: snapshot.data!.size);
+              },
+            ),
+    );
   }
 
   void getFriendList(String uid) async {

@@ -44,4 +44,5 @@ class Post {
 //       subtitle = snapshot.get('subtitle'),
 //       ownerID = snapshot.get('ownerID'),
 //       ownerFriendList = List.from(snapshot.get('ownerFriendList'));
+
 }
