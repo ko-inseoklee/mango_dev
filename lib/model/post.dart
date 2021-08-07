@@ -2,13 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/user.dart';
+
 class PostList{
   late List<Post> posts;
 }
+
 class Post {
   late String postID;
   late int state; // 0: 나눔중, 1: 거래중, 2: 거래완료
-  late DateTime registTime;
+  late Timestamp registTime;
   late String subtitle;
 
   late User owner;
@@ -20,7 +22,7 @@ class Post {
   Post.init() {
     this.postID = '';
     this.state = 0;
-    this.registTime = DateTime.now();
+    this.registTime = Timestamp.now();
     this.subtitle = '나눔합니다';
     this.foods = Food.init();
     this.ownerID = '';

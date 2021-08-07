@@ -9,19 +9,22 @@ import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
-String calculate(DateTime registTime) {
-  Duration diff = DateTime.now().difference(registTime);
-
-  if (diff.inDays >= 1) {
-    return diff.inDays.toString() + '일';
-  } else if (diff.inHours > 1) {
-    return diff.inHours.toString() + '시간';
-  } else if (diff.inMinutes > 1) {
-    return diff.inMinutes.toString() + '분';
-  } else {
-    return '방금';
-  }
+String calculate(Timestamp registTime) {
+  return 'TT';
 }
+// String calculate(DateTime registTime) {
+//   Duration diff = DateTime.now().difference(registTime);
+//
+//   if (diff.inDays >= 1) {
+//     return diff.inDays.toString() + '일';
+//   } else if (diff.inHours > 1) {
+//     return diff.inHours.toString() + '시간';
+//   } else if (diff.inMinutes > 1) {
+//     return diff.inMinutes.toString() + '분';
+//   } else {
+//     return '방금';
+//   }
+// }
 
 class MangoPostCard extends StatelessWidget {
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;

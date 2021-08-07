@@ -8,7 +8,16 @@ class postViewModel extends GetxController {
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  var postList = PostList().obs;
+  var postList = Post.init().obs;
+  late List<Post> posts;
+
+  postViewModel() {
+    posts = [];
+  }
+
+  postViewModel.init() {
+    posts = [];
+  }
 
   getFriendPost(String currUid) async {
     await mango_dev
@@ -24,13 +33,23 @@ class postViewModel extends GetxController {
           Post temp = Post.fromSnapshot(element.data());
           postList.update((val) {
             posts.add(temp);
-
-            val!.posts = posts;
           });
         });
       } else {
         print('등록된 게시글이 없습니다!');
       }
+    });
+  }
+
+  loadPosts() async {
+    var data = await mango_dev
+        .collection('post')
+        .where('ownerFriendList',
+            arrayContains: userViewModelController.user.value.userID)
+        .get();
+
+    data.docs.forEach((element) {
+      this.posts.add(Post.fromSnapshot(element.data()));
     });
   }
 }

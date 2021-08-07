@@ -21,23 +21,17 @@ class TradePage extends StatefulWidget {
 }
 
 class _TradePageState extends State<TradePage> {
+  late List<Post> posts = [];
+  postViewModel post = Get.put(postViewModel());
+
   @override
   void initState() {
     super.initState();
     getFriendList(userViewModelController.user.value.userID);
+    // loadPost();
   }
 
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
-
-  // TODO: postViewModel post = Get.find<postViewModel>();
-  // 게시글 받아올 때 view model에서
-  //.where('ownerFriendList',arrayContains: userViewModelController.user.value.userID)
-  // 사용해서 List<Post>로 받기!!
-
-  postViewModel refrigerator = Get.put(new postViewModel());
-
-  late List<Post> posts =
-      postViewModel().getFriendPost(userViewModelController.user.value.userID);
 
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
@@ -114,6 +108,10 @@ class _TradePageState extends State<TradePage> {
         _friendList.add(doc['userID']);
       });
     });
+  }
+
+  void loadPost() async {
+    posts = await post.loadPosts();
   }
 
   void getPost() {
