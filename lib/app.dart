@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/home.dart';
+import 'package:mangodevelopment/view/login/telTest.dart';
 
 import 'color.dart';
 import 'landing.dart';
@@ -93,7 +94,8 @@ class _MangoAppState extends State<MangoApp> {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: () => GetMaterialApp(
-        home: Landing(),
+        //home: Landing(),
+        home: TelTestPage(),
         theme: _mangoTheme,
         getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
       ),
