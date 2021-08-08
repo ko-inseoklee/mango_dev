@@ -22,13 +22,14 @@ class _FoodsSectionState extends State<FoodsSection> {
 
   String selectedValue = '전체';
 
+  bool _isLongPressed = false;
+
   @override
   Widget build(BuildContext context) {
     showFoods =
         selectedFoods(selectedIdx: dropDownItems.indexOf(selectedValue));
 
     return Container(
-      // height: ScreenUtil().setHeight(200),
       child: Column(
         children: [
           Container(
@@ -87,9 +88,11 @@ class _FoodsSectionState extends State<FoodsSection> {
           ),
           Container(
             height: ScreenUtil().setHeight(550),
+            padding: EdgeInsets.all(ScreenUtil().setWidth(8)),
             child: GridView.count(
               crossAxisCount: 3,
-              childAspectRatio: 50 / 50,
+              childAspectRatio:
+                  ScreenUtil().setWidth(120) / ScreenUtil().setHeight(185),
               children: buildCards(foods: showFoods),
             ),
           ),
@@ -103,7 +106,15 @@ class _FoodsSectionState extends State<FoodsSection> {
   }
 
   Widget buildCard(Food e) {
-    return MangoCard(food: e);
+    return MangoCard(
+      food: e,
+      longPressed: () {
+        setState(() {
+          _isLongPressed = !_isLongPressed;
+        });
+      },
+      isLongPressed: _isLongPressed,
+    );
   }
 
   List<Food> selectedFoods({required int selectedIdx}) {

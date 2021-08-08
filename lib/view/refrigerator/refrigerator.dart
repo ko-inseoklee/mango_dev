@@ -43,6 +43,7 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        backgroundColor: MangoWhite,
         appBar: MangoAppBar(
           isLeading: false,
           title: widget.title,

@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
+import 'package:mangodevelopment/view/widget/comingSoon.dart';
+import 'package:mangodevelopment/widgetController/categoryController.dart';
+
+import '../../../color.dart';
 
 class MangoCard extends StatelessWidget {
   final Food food;
+  VoidCallback longPressed;
+  final bool isLongPressed;
 
-  const MangoCard({Key? key, required this.food}) : super(key: key);
+  MangoCard(
+      {Key? key,
+      required this.food,
+      required this.longPressed,
+      required this.isLongPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,34 +39,263 @@ class MangoCard extends StatelessWidget {
   }
 
   Widget staleCard() {
-    return ListTile(
-      leading: Text('stale'),
-      title: Text(food.name),
-      subtitle: Text(food.number.toString()),
-    );
+    return Stack(children: [
+      TextButton(
+        onLongPress: longPressed,
+        onPressed: () {},
+        child: Container(
+          child: Card(
+            shape: RoundedRectangleBorder(
+                side: BorderSide(color: MangoDisabledColorLight),
+                borderRadius: BorderRadius.circular(10)),
+            color: Purple100,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'images/category/${categoryImg[translateToKo(food.category)]}',
+                    scale: 1.2,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                  child: Text(
+                    food.name,
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
+                  child: Text(
+                      '${DateFormat.yMd().format(food.registrationDay)}일 등록',
+                      style: TextStyle(color: Purple500, fontSize: 12.0)),
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Purple200, borderRadius: BorderRadius.circular(5.0)),
+          width: ScreenUtil().setWidth(62),
+          height: ScreenUtil().setHeight(24),
+          child: Text(
+            'STALE',
+            style: TextStyle(
+                fontWeight: FontWeight.w700, color: Purple500, fontSize: 18.0),
+          ),
+        ),
+        top: 20,
+        left: 20,
+      ),
+      deleteButton()
+    ]);
   }
 
   Widget overCard() {
-    return ListTile(
-      leading: Text('over'),
-      title: Text(food.name),
-      subtitle: Text(food.number.toString()),
-    );
+    return Stack(children: [
+      TextButton(
+        onLongPress: longPressed,
+        onPressed: () {},
+        child: Container(
+          child: Card(
+            shape: RoundedRectangleBorder(
+                side: BorderSide(color: MangoDisabledColorLight),
+                borderRadius: BorderRadius.circular(10)),
+            color: Red50,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'images/category/${categoryImg[translateToKo(food.category)]}',
+                    scale: 1.2,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                  child: Text(
+                    food.name,
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
+                    child: Text(
+                        '${DateTime.now().difference(food.alarmDay).inDays}일 지남',
+                        style: TextStyle(color: Red500, fontSize: 12.0))),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Red200, borderRadius: BorderRadius.circular(5.0)),
+          width: ScreenUtil().setWidth(62),
+          height: ScreenUtil().setHeight(24),
+          child: Text(
+            'OVER',
+            style: TextStyle(
+                fontWeight: FontWeight.w700, color: Red500, fontSize: 18.0),
+          ),
+        ),
+        top: 20,
+        left: 20,
+      ),
+      deleteButton()
+    ]);
   }
 
   Widget dDayCard() {
-    return ListTile(
-      leading: Text('d-day'),
-      title: Text(food.name),
-      subtitle: Text(food.number.toString()),
-    );
+    return Stack(children: [
+      TextButton(
+        onLongPress: longPressed,
+        onPressed: () {},
+        child: Container(
+          child: Card(
+            shape: RoundedRectangleBorder(
+                side: BorderSide(color: MangoDisabledColorLight),
+                borderRadius: BorderRadius.circular(10)),
+            color: Red50,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    'images/category/${categoryImg[translateToKo(food.category)]}',
+                    scale: 1.2,
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                  child: Text(
+                    food.name,
+                    style: TextStyle(fontSize: 16.0),
+                  ),
+                ),
+                Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
+                    child: Text(
+                        '${food.alarmDay.difference(DateTime.now()).inDays}일 전',
+                        style: TextStyle(color: Red500, fontSize: 12.0))),
+              ],
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Red200, borderRadius: BorderRadius.circular(5.0)),
+          width: ScreenUtil().setWidth(44),
+          height: ScreenUtil().setHeight(24),
+          child: Text(
+            'D-${food.alarmDay.difference(DateTime.now()).inDays}',
+            style: TextStyle(
+                fontWeight: FontWeight.w700, color: Red500, fontSize: 18.0),
+          ),
+        ),
+        top: 20,
+        left: 20,
+      ),
+      deleteButton()
+    ]);
   }
 
   Widget normalCard() {
-    return ListTile(
-      leading: Text('normal'),
-      title: Text(food.name),
-      subtitle: Text(food.number.toString()),
-    );
+    return Stack(children: [
+      TextButton(
+        onLongPress: longPressed,
+        onPressed: () {},
+        child: Card(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: MangoDisabledColorLight),
+              borderRadius: BorderRadius.circular(10)),
+          color: MangoWhite,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'images/category/${categoryImg[translateToKo(food.category)]}',
+                  scale: 1.2,
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                child: Text(
+                  food.name,
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
+                child: food.displayType
+                    ? Text(
+                        '${food.alarmDay.difference(DateTime.now()).inDays}일 전',
+                        style: TextStyle(color: Red500, fontSize: 12.0))
+                    : Text(
+                        '${DateFormat.yMd().format(food.registrationDay)}일 등록',
+                        style: TextStyle(color: Purple500, fontSize: 12.0)),
+              ),
+            ],
+          ),
+        ),
+      ),
+      deleteButton(),
+    ]);
+  }
+
+  Widget deleteButton() {
+    return isLongPressed
+        ? Positioned(
+            top: 2,
+            right: 2,
+            child: Container(
+              width: ScreenUtil().setWidth(35),
+              height: ScreenUtil().setHeight(35),
+              decoration: BoxDecoration(
+                  color: Orange700, borderRadius: BorderRadius.circular(25)),
+              child: TextButton(
+                onPressed: () {
+                  Get.dialog(ComingSoonDialog());
+                },
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  child: Text(
+                    '-',
+                    style: TextStyle(
+                        color: MangoWhite, fontSize: ScreenUtil().setSp(18)),
+                  ),
+                ),
+              ),
+            ))
+        : SizedBox(
+            height: 0.1,
+          );
   }
 }
