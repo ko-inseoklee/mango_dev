@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/refrigerator.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
@@ -56,7 +57,6 @@ class RefrigeratorViewModel extends GetxController {
             } else {
               tempRT.add(temp);
             }
-
             val!.refrigerationFoods = tempRef;
             val.frozenFoods = tempFro;
             val.roomTempFoods = tempRT;
@@ -96,6 +96,17 @@ class RefrigeratorViewModel extends GetxController {
     }
   }
 
+  void updateShelf({required DateTime lastSignIn}) {
+    print(DateTime.now().difference(lastSignIn).inMinutes);
+    print(DateTime.now());
+    print(DateTime.now().subtract(Duration(hours: 12)));
+    print(DateTime.now()
+        .difference(DateTime.now().subtract(Duration(hours: 12)))
+        .inDays);
+    print(DateFormat().format(DateTime.now()));
+  }
+
+  // IS - this is view lists for other viewMode on refrigerator page.
   showFoods({required int viewType}) {
     switch (viewType) {
       case 1:
