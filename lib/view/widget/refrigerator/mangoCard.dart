@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
+import 'package:mangodevelopment/view/widget/dialog/deleteDialog.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/widgetController/categoryController.dart';
 
 import '../../../color.dart';
@@ -12,6 +14,8 @@ class MangoCard extends StatelessWidget {
   final Food food;
   VoidCallback longPressed;
   final bool isLongPressed;
+
+  late RefrigeratorViewModel _refController;
 
   MangoCard(
       {Key? key,
@@ -22,6 +26,8 @@ class MangoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _refController = Get.find<RefrigeratorViewModel>();
+
     return whichCard(type: food.cardStatus);
   }
 
@@ -282,7 +288,14 @@ class MangoCard extends StatelessWidget {
                   color: Orange700, borderRadius: BorderRadius.circular(25)),
               child: TextButton(
                 onPressed: () {
-                  Get.dialog(ComingSoonDialog());
+                  Get.dialog(DeleteDialog(
+                      deleteAll: false,
+                      food: food,
+                      onPressed: () async {
+                        _refController.deleteFood(fID: food.fId).then((value) {
+                          Get.back();
+                        });
+                      }));
                 },
                 child: Container(
                   alignment: Alignment.topCenter,
