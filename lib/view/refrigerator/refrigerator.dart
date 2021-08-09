@@ -48,19 +48,21 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
           isLeading: false,
           title: widget.title,
         ),
-        body: Column(
-          children: [
-            Container(height: ScreenUtil().setHeight(43), child: tabView()),
-            Container(
-              height: ScreenUtil().setHeight(620),
-              child: TabBarView(children: [
-                viewWithOnce(viewType: 0),
-                viewWithOnce(viewType: 1),
-                viewWithOnce(viewType: 2)
-              ]),
-            ),
-            // viewWithOnce(viewType: currentTab),
-          ],
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(height: ScreenUtil().setHeight(43), child: tabView()),
+              Container(
+                height: ScreenUtil().setHeight(620),
+                child: TabBarView(children: [
+                  viewWithOnce(viewType: 0),
+                  viewWithOnce(viewType: 1),
+                  viewWithOnce(viewType: 2)
+                ]),
+              ),
+              // viewWithOnce(viewType: currentTab),
+            ],
+          ),
         ),
       ),
     );
@@ -81,18 +83,17 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
     return viewType == 1
         ? Obx(() {
             return FoodsSection(
-                foods: refrigerator.ref.value.refrigerationFoods,
-                title: onceTitle[1]);
+                foods: refrigerator.ref.value.frozenFoods, title: onceTitle[1]);
           })
         : viewType == 2
             ? Obx(() {
                 return FoodsSection(
-                    foods: refrigerator.ref.value.frozenFoods,
+                    foods: refrigerator.ref.value.roomTempFoods,
                     title: onceTitle[2]);
               })
             : Obx(() {
                 return FoodsSection(
-                    foods: refrigerator.ref.value.roomTempFoods,
+                    foods: refrigerator.ref.value.refrigerationFoods,
                     title: onceTitle[0]);
               });
   }

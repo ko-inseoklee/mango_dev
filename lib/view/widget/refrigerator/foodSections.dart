@@ -30,128 +30,139 @@ class _FoodsSectionState extends State<FoodsSection> {
   late RefrigeratorViewModel _refViewModel;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    selectedValue = '전체';
+    showFoods =
+        selectedFoods(selectedIdx: dropDownItems.indexOf(selectedValue));
+  }
+
+  @override
   Widget build(BuildContext context) {
     showFoods =
         selectedFoods(selectedIdx: dropDownItems.indexOf(selectedValue));
 
     _refViewModel = Get.find<RefrigeratorViewModel>();
 
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            height: ScreenUtil().setHeight(60),
-            child: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      ScreenUtil().setWidth(14),
-                      ScreenUtil().setHeight(11),
-                      0,
-                      ScreenUtil().setHeight(11)),
-                  child: !_isLongPressed
-                      ? Text(
-                          '전체 ${showFoods.length}개',
-                          style: TextStyle(
-                              fontSize: ScreenUtil().setSp(16),
-                              color: MangoDisabledColorDark),
-                        )
-                      : Row(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isLongPressed = !_isLongPressed;
-                                    });
-                                  },
-                                  child: Text(
-                                    '취소',
-                                    style: TextStyle(
-                                        color: MangoDisabledColorDark,
-                                        fontSize: 14.0),
-                                  )),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: TextButton(
-                                  onPressed: () {
-                                    Get.dialog(DeleteDialog(
-                                      onPressed: () async {
-                                        await _refViewModel
-                                            .deleteFoods(foods: showFoods)
-                                            .then((value) => Get.back());
-                                      },
-                                      deleteAll: true,
-                                      foods: showFoods,
-                                    ));
-                                  },
-                                  child: Text(
-                                    '모두 삭제',
-                                    style: TextStyle(
-                                        color: MangoDisabledColorDark,
-                                        fontSize: 14.0),
-                                  )),
-                            ),
-                          ],
-                        ),
-                ),
-                Spacer(),
-                Container(
-                  child: Icon(
-                    Icons.filter_alt_outlined,
-                  ),
-                ),
-                Container(
-                  width: selectedValue == '전체'
-                      ? ScreenUtil().setWidth(100)
-                      : ScreenUtil().setWidth(120),
-                  padding: EdgeInsets.fromLTRB(0, ScreenUtil().setHeight(11),
-                      ScreenUtil().setWidth(14), ScreenUtil().setHeight(11)),
-                  child: DropdownButton(
-                    isExpanded: true,
-                    value: selectedValue,
-                    items: dropDownItems
-                        .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Center(
-                              child: Text(
-                                e,
-                                textAlign: TextAlign.center,
-                                style:
-                                    TextStyle(fontSize: ScreenUtil().setSp(16)),
+    return SingleChildScrollView(
+      child: Container(
+        child: Column(
+          children: [
+            Container(
+              height: ScreenUtil().setHeight(60),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        ScreenUtil().setWidth(14),
+                        ScreenUtil().setHeight(11),
+                        0,
+                        ScreenUtil().setHeight(11)),
+                    child: !_isLongPressed
+                        ? Text(
+                            '전체 ${showFoods.length}개',
+                            style: TextStyle(
+                                fontSize: ScreenUtil().setSp(16),
+                                color: MangoDisabledColorDark),
+                          )
+                        : Row(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _isLongPressed = !_isLongPressed;
+                                      });
+                                    },
+                                    child: Text(
+                                      '취소',
+                                      style: TextStyle(
+                                          color: MangoDisabledColorDark,
+                                          fontSize: 14.0),
+                                    )),
                               ),
-                            )))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedValue = value.toString();
-                      });
-                    },
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: TextButton(
+                                    onPressed: () {
+                                      Get.dialog(DeleteDialog(
+                                        onPressed: () async {
+                                          await _refViewModel
+                                              .deleteFoods(foods: showFoods)
+                                              .then((value) => Get.back());
+                                        },
+                                        deleteAll: true,
+                                        foods: showFoods,
+                                      ));
+                                    },
+                                    child: Text(
+                                      '모두 삭제',
+                                      style: TextStyle(
+                                          color: MangoDisabledColorDark,
+                                          fontSize: 14.0),
+                                    )),
+                              ),
+                            ],
+                          ),
                   ),
-                )
-              ],
+                  Spacer(),
+                  Container(
+                    child: Icon(
+                      Icons.filter_alt_outlined,
+                    ),
+                  ),
+                  Container(
+                    width: selectedValue == '전체'
+                        ? ScreenUtil().setWidth(100)
+                        : ScreenUtil().setWidth(120),
+                    padding: EdgeInsets.fromLTRB(0, ScreenUtil().setHeight(11),
+                        ScreenUtil().setWidth(14), ScreenUtil().setHeight(11)),
+                    child: DropdownButton(
+                      isExpanded: true,
+                      value: selectedValue,
+                      items: dropDownItems
+                          .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Center(
+                                child: Text(
+                                  e,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: ScreenUtil().setSp(16)),
+                                ),
+                              )))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedValue = value.toString();
+                        });
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          showFoods.length == 0
-              ? Container(
-                  padding: EdgeInsets.only(top: 200),
-                  child: Text('냉장고가 비었습니다.'),
-                )
-              : Container(
-                  height: ScreenUtil().setHeight(550),
-                  padding: EdgeInsets.all(ScreenUtil().setWidth(8)),
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    childAspectRatio: ScreenUtil().setWidth(120) /
-                        ScreenUtil().setHeight(185),
-                    children: buildCards(foods: showFoods),
+            showFoods.length == 0
+                ? Container(
+                    padding: EdgeInsets.only(top: 200),
+                    child: Text('냉장고가 비었습니다.'),
+                  )
+                : Container(
+                    height: ScreenUtil().setHeight(550),
+                    padding: EdgeInsets.all(ScreenUtil().setWidth(8)),
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      childAspectRatio: ScreenUtil().setWidth(120) /
+                          ScreenUtil().setHeight(185),
+                      children: buildCards(foods: showFoods),
+                    ),
                   ),
-                ),
-        ],
+          ],
+        ),
       ),
     );
   }

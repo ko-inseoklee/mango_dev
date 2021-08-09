@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/deleteDialog.dart';
+import 'package:mangodevelopment/view/widget/dialog/detailDialog.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/widgetController/categoryController.dart';
 
@@ -48,7 +49,7 @@ class MangoCard extends StatelessWidget {
     return Stack(children: [
       TextButton(
         onLongPress: longPressed,
-        onPressed: () {},
+        onPressed: onPressed(food: food),
         child: Container(
           child: Card(
             shape: RoundedRectangleBorder(
@@ -79,7 +80,8 @@ class MangoCard extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
                   child: Text(
                       '${DateFormat.yMd().format(food.registrationDay)}일 등록',
-                      style: TextStyle(color: Purple500, fontSize: 12.0)),
+                      style: TextStyle(
+                          color: Purple500, fontSize: ScreenUtil().setSp(12))),
                 )
               ],
             ),
@@ -110,7 +112,7 @@ class MangoCard extends StatelessWidget {
     return Stack(children: [
       TextButton(
         onLongPress: longPressed,
-        onPressed: () {},
+        onPressed: onPressed(food: food),
         child: Container(
           child: Card(
             shape: RoundedRectangleBorder(
@@ -171,7 +173,7 @@ class MangoCard extends StatelessWidget {
     return Stack(children: [
       TextButton(
         onLongPress: longPressed,
-        onPressed: () {},
+        onPressed: onPressed(food: food),
         child: Container(
           child: Card(
             shape: RoundedRectangleBorder(
@@ -201,7 +203,7 @@ class MangoCard extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
                     child: Text(
-                        '${food.alarmDay.difference(DateTime.now()).inDays}일 전',
+                        '${food.shelfLife.difference(DateTime.now()).inDays}일 전',
                         style: TextStyle(color: Red500, fontSize: 12.0))),
               ],
             ),
@@ -216,7 +218,7 @@ class MangoCard extends StatelessWidget {
           width: ScreenUtil().setWidth(44),
           height: ScreenUtil().setHeight(24),
           child: Text(
-            'D-${food.alarmDay.difference(DateTime.now()).inDays}',
+            'D-${food.shelfLife.difference(DateTime.now()).inDays}',
             style: TextStyle(
                 fontWeight: FontWeight.w700, color: Red500, fontSize: 18.0),
           ),
@@ -232,7 +234,7 @@ class MangoCard extends StatelessWidget {
     return Stack(children: [
       TextButton(
         onLongPress: longPressed,
-        onPressed: () {},
+        onPressed: onPressed(food: food),
         child: Card(
           shape: RoundedRectangleBorder(
               side: BorderSide(color: MangoDisabledColorLight),
@@ -262,11 +264,13 @@ class MangoCard extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
                 child: food.displayType
                     ? Text(
-                        '${food.alarmDay.difference(DateTime.now()).inDays}일 전',
+                        '${food.shelfLife.difference(DateTime.now()).inDays}일 전',
                         style: TextStyle(color: Red500, fontSize: 12.0))
                     : Text(
                         '${DateFormat.yMd().format(food.registrationDay)}일 등록',
-                        style: TextStyle(color: Purple500, fontSize: 12.0)),
+                        style: TextStyle(
+                            color: Purple500,
+                            fontSize: ScreenUtil().setSp(12))),
               ),
             ],
           ),
@@ -310,5 +314,15 @@ class MangoCard extends StatelessWidget {
         : SizedBox(
             height: 0.1,
           );
+  }
+
+  VoidCallback onPressed({required Food food}) {
+    return () {
+      Get.dialog(DetailDialog(
+          food: food,
+          onPressed: () async {
+            _refController.updateFood(food: food).then((value) => Get.back());
+          }));
+    };
   }
 }

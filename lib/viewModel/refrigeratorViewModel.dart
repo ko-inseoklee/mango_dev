@@ -50,12 +50,12 @@ class RefrigeratorViewModel extends GetxController {
           Food temp = Food.fromSnapshot(element.data());
 
           ref.update((val) {
-            if (temp.method == 0) {
-              tempRef.add(temp);
+            if (temp.method == 2) {
+              tempRT.add(temp);
             } else if (temp.method == 1) {
               tempFro.add(temp);
             } else {
-              tempRT.add(temp);
+              tempRef.add(temp);
             }
             val!.refrigerationFoods = tempRef;
             val.frozenFoods = tempFro;
@@ -94,6 +94,26 @@ class RefrigeratorViewModel extends GetxController {
         });
       });
     }
+  }
+
+  Future<void> updateFood({required Food food}) async {
+    await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
+      'fId': food.fId,
+      'rId': this.ref.value.rID,
+      'name': food.name,
+      'category': food.category,
+      'number': food.number,
+      'storeType': food.method,
+      'displayType': food.displayType,
+      'shelfLife': food.shelfLife,
+      'registrationDay': food.registrationDay,
+      'alarmDay': food.alarmDay,
+      'cardStatus': food.cardStatus
+    }).then((value) {
+      ref.update((val) {
+        loadFoods(rID: val!.rID);
+      });
+    });
   }
 
   Future<void> deleteFood({required String fID}) async {

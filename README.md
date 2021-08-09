@@ -70,6 +70,6 @@ A new Flutter project.
 
 - Todo(Inseok)
     - Food class의 CardStatus CSR로 변경.
-
-    - 삭제 기능 / 다이얼로그
     - 디테일 페이지 / 수정기능
+
+    - 에러: 마지막 하나 남은 것 삭제하면 화면 업데이트 되지 않음.
