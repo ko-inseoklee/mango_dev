@@ -73,3 +73,9 @@ A new Flutter project.
     - 디테일 페이지 / 수정기능
 
     - 에러: 마지막 하나 남은 것 삭제하면 화면 업데이트 되지 않음.
+    - 음식 상태별 카드 만들기.(완료) -> 카드 디자인 구성
+    - Food class의 CardStatus CSR로 변경.
+  
+- TODO (jhyun)
+	- 새로운 device로 로그인시 친구의 교환된 정보 목록에서도 수정필요
+	- profileImageRef 친구의 교환된 정보 목록에서도 수정필요
