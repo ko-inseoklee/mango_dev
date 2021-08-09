@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/refrigerator.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
@@ -49,14 +50,13 @@ class RefrigeratorViewModel extends GetxController {
           Food temp = Food.fromSnapshot(element.data());
 
           ref.update((val) {
-            if (temp.method == 0) {
-              tempRef.add(temp);
+            if (temp.method == 2) {
+              tempRT.add(temp);
             } else if (temp.method == 1) {
               tempFro.add(temp);
             } else {
-              tempRT.add(temp);
+              tempRef.add(temp);
             }
-
             val!.refrigerationFoods = tempRef;
             val.frozenFoods = tempFro;
             val.roomTempFoods = tempRT;
@@ -96,6 +96,61 @@ class RefrigeratorViewModel extends GetxController {
     }
   }
 
+  Future<void> updateFood({required Food food}) async {
+    await FirebaseFirestore.instance.collection('myFood').doc(food.fId).set({
+      'fId': food.fId,
+      'rId': this.ref.value.rID,
+      'name': food.name,
+      'category': food.category,
+      'number': food.number,
+      'storeType': food.method,
+      'displayType': food.displayType,
+      'shelfLife': food.shelfLife,
+      'registrationDay': food.registrationDay,
+      'alarmDay': food.alarmDay,
+      'cardStatus': food.cardStatus
+    }).then((value) {
+      ref.update((val) {
+        loadFoods(rID: val!.rID);
+      });
+    });
+  }
+
+  Future<void> deleteFood({required String fID}) async {
+    await FirebaseFirestore.instance
+        .collection('myFood')
+        .doc(fID)
+        .delete()
+        .then((value) {
+      ref.update((val) {
+        loadFoods(rID: val!.rID);
+      });
+    });
+  }
+
+  Future<void> deleteFoods({required List<Food> foods}) async {
+    foods.forEach((element) async {
+      await FirebaseFirestore.instance
+          .collection('myFood')
+          .doc(element.fId)
+          .delete();
+    });
+    ref.update((val) {
+      loadFoods(rID: val!.rID);
+    });
+  }
+
+  void updateShelf({required DateTime lastSignIn}) {
+    print(DateTime.now().difference(lastSignIn).inMinutes);
+    print(DateTime.now());
+    print(DateTime.now().subtract(Duration(hours: 12)));
+    print(DateTime.now()
+        .difference(DateTime.now().subtract(Duration(hours: 12)))
+        .inDays);
+    print(DateFormat().format(DateTime.now()));
+  }
+
+  // IS - this is view lists for other viewMode on refrigerator page.
   showFoods({required int viewType}) {
     switch (viewType) {
       case 1:

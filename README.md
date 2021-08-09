@@ -69,6 +69,10 @@ A new Flutter project.
             -> User 의 lastSignIn 정보를 받아서, 날짜 기준으로 음식의 state 업데이트하기 (CSR(Client Side Rendering)
 
 - Todo(Inseok)
+    - Food class의 CardStatus CSR로 변경.
+    - 디테일 페이지 / 수정기능
+
+    - 에러: 마지막 하나 남은 것 삭제하면 화면 업데이트 되지 않음.
     - 음식 상태별 카드 만들기.(완료) -> 카드 디자인 구성
     - Food class의 CardStatus CSR로 변경.
   
