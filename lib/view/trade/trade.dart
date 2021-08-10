@@ -28,7 +28,7 @@ class _TradePageState extends State<TradePage> {
   void initState() {
     super.initState();
     getFriendList(userViewModelController.user.value.userID);
-    // loadPost();
+    loadPost();
   }
 
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
@@ -102,17 +102,8 @@ class _TradePageState extends State<TradePage> {
                     itemBuilder: (context, index) {
                       List<DocumentSnapshot> documents = snapshot.data!.docs;
                       return MangoPostCard(
-                          postID: documents.elementAt(index)['postID'],
-                          state: documents.elementAt(index)['state'],
-                          foodName: documents.elementAt(index)['foodName'],
-                          ownerID: documents.elementAt(index)['ownerID'],
-                          profileImageRef:
-                              documents.elementAt(index)['profileImageRef'],
-                          registTime: documents.elementAt(index)['registTime'],
-                          subtitle: documents.elementAt(index)['subtitle'],
-                          foodNum: documents.elementAt(index)['foodNum'],
-                          shelfLife: documents.elementAt(index)['shelfLife'],
-                          ownerName: documents.elementAt(index)['ownerName']);
+                        post: posts[index],
+                      );
                     },
                     separatorBuilder: (BuildContext context, int index) {
                       return Divider();

@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
+import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
@@ -27,49 +28,49 @@ String calculate(DateTime registTime) {
 class MangoPostCard extends StatelessWidget {
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
-  // Post post;
+  Post post;
 
-//  게시글 관련 정보
-  late String postID;
-  late int state; // 0 - 나눔중, 1 - 거래중, 2 - 거래완료
-  late DateTime registTime;
-  late String subtitle;
+// //  게시글 관련 정보
+//   late String postID;
+//   late int state; // 0 - 나눔중, 1 - 거래중, 2 - 거래완료
+//   late DateTime registTime;
+//   late String subtitle;
+//
+//   // 게시글에 올린 음식 관련 정보
+//   late String foodName;
+//   late int foodNum;
+//   late DateTime shelfLife;
+//   late int shelfType; // 0 - 유통기한, 1 - 등록일
+//
+//   // 게시글 작성자 관련 정보
+//   late String ownerID;
+//   late String ownerName;
+//   late String profileImageRef;
 
-  // 게시글에 올린 음식 관련 정보
-  late String foodName;
-  late int foodNum;
-  late DateTime shelfLife;
-  late int shelfType; // 0 - 유통기한, 1 - 등록일
+  MangoPostCard({Key? key, required Post post}) : post = post;
 
-  // 게시글 작성자 관련 정보
-  late String ownerID;
-  late String ownerName;
-  late String profileImageRef;
-
-  // MangoPostCard({Key? key, required Post post}) : post = post;
-
-  MangoPostCard(
-      {Key? key,
-      required String postID,
-      required int state,
-      required String foodName,
-      required String ownerID,
-      required String profileImageRef,
-      required Timestamp registTime,
-      required String subtitle,
-      required int foodNum,
-      required Timestamp shelfLife,
-      required ownerName})
-      : postID = postID,
-        state = state,
-        foodName = foodName,
-        ownerID = ownerID,
-        profileImageRef = profileImageRef,
-        registTime = registTime.toDate(),
-        subtitle = subtitle,
-        foodNum = foodNum,
-        shelfLife = shelfLife.toDate(),
-        ownerName = ownerName;
+  // MangoPostCard(
+  //     {Key? key,
+  //     required String postID,
+  //     required int state,
+  //     required String foodName,
+  //     required String ownerID,
+  //     required String profileImageRef,
+  //     required Timestamp registTime,
+  //     required String subtitle,
+  //     required int foodNum,
+  //     required Timestamp shelfLife,
+  //     required ownerName})
+  //     : postID = postID,
+  //       state = state,
+  //       foodName = foodName,
+  //       ownerID = ownerID,
+  //       profileImageRef = profileImageRef,
+  //       registTime = registTime.toDate(),
+  //       subtitle = subtitle,
+  //       foodNum = foodNum,
+  //       shelfLife = shelfLife.toDate(),
+  //       ownerName = ownerName;
 
   @override
   Widget build(BuildContext context) {
@@ -90,25 +91,25 @@ class MangoPostCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Text(calculate(registTime) + ' 전'),
+                    // Align(
+                    // alignment: Alignment.bottomRight,
+                    // child: Text(calculate(post.registTime) + ' 전'),
+                    // ),
+                    Text(
+                      post.foods.name + '  ${post.foods.number} 개',
                     ),
                     Text(
-                      foodName + '  $foodNum 개',
+                      '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife.month}.${post.foods.shelfLife.day}',
                     ),
                     Text(
-                      '유통기한 ${shelfLife.year}.${shelfLife.month}.${shelfLife.day}',
-                    ),
-                    Text(
-                      subtitle,
+                      post.subtitle,
                     ),
                     Row(
                       children: [
                         Container(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: profileImageRef == '-1'
+                            child: post.owner.profileImageReference == '-1'
                                 ? Container(
                                     width: 30,
                                     height: 30,
@@ -122,7 +123,7 @@ class MangoPostCard extends StatelessWidget {
                                     ),
                                   )
                                 : Image.file(
-                                    File(profileImageRef),
+                                    File(post.owner.profileImageReference),
                                     fit: BoxFit.fitHeight,
                                     width: 30,
                                     height: 30,
@@ -155,25 +156,29 @@ class MangoPostCard extends StatelessWidget {
                             child: Icon(Icons.send_rounded),
                             onPressed: () {
                               // var chatID = Uuid().v4().toString();
-                              var chatID = postID.substring(0, 6) +
+                              var chatID = post.postID.substring(0, 6) +
                                   userViewModelController.userID
                                       .substring(0, 6);
                               createChatRoom(
                                   chatID,
                                   userViewModelController.userID,
                                   userViewModelController.user.value.userName);
-                              Get.to(ChatDetailPage(), arguments: [
-                                postID,
-                                state,
-                                ownerID,
-                                foodName,
-                                foodNum,
-                                subtitle,
-                                shelfLife,
-                                ownerName,
-                                profileImageRef,
-                                chatID,
-                              ]);
+                              Get.to(ChatRoom(
+                                chatID: chatID,
+                              )
+                                  // , arguments: [
+                                  // postID,
+                                  // state,
+                                  // ownerID,
+                                  // foodName,
+                                  // foodNum,
+                                  // subtitle,
+                                  // shelfLife,
+                                  // ownerName,
+                                  // profileImageRef,
+                                  // chatID,
+                                  // ]
+                                  );
                             },
                             style: ButtonStyle(
                                 shape: MaterialStateProperty.all<
@@ -197,14 +202,42 @@ class MangoPostCard extends StatelessWidget {
     });
   }
 
-  void createChatRoom(String chatID, String uid, String name) {
+  void createChatRoom(String chatID, String uid, String name) async {
     mango_dev.collection('chatRooms').doc(chatID).set({
       'chatID': chatID,
       'takerID': uid,
       'takerName': name,
-      'postID': postID,
-      'onwerID': ownerID,
-      'ownerName': ownerName,
+      'postID': post.postID,
+      'onwerID': post.ownerID,
+      'ownerName': post.owner.userName,
     });
+
+    var check = await mango_dev
+        .collection('user')
+        .doc(uid)
+        .collection('chatList')
+        .where('chatID', isEqualTo: chatID)
+        .limit(1)
+        .get();
+
+    List<DocumentSnapshot> documents = check.docs;
+
+    //이미 등록된 친구 일 경우 `snackbar` return
+    if (documents.length > 0) {
+      return;
+    } else {
+      mango_dev.collection('user').doc(uid).collection('chatList').doc().set({
+        'chatID': chatID,
+      });
+
+      mango_dev
+          .collection('user')
+          .doc(post.ownerID)
+          .collection('chatList')
+          .doc()
+          .set({
+        'chatID': chatID,
+      });
+    }
   }
 }

@@ -8,7 +8,8 @@ class postViewModel extends GetxController {
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  var postList = Post.init().obs;
+  var postList = [].obs;
+
   late List<Post> posts;
 
   postViewModel() {
@@ -19,37 +20,51 @@ class postViewModel extends GetxController {
     posts = [];
   }
 
-  getFriendPost(String currUid) async {
+  // getFriendPost(String currUid) async {
+  //   await mango_dev
+  //       .collection('post')
+  //       .where('ownerFriendList',
+  //           arrayContains: userViewModelController.user.value.userID)
+  //       .get()
+  //       .then((value) {
+  //     if (value.size > 0) {
+  //       List<Post> posts = [];
+  //
+  //       value.docs.forEach((element) {
+  //         Post temp = Post.fromSnapshot(element.data());
+  //         postList.update((val) {
+  //           posts.add(temp);
+  //         });
+  //       });
+  //     } else {
+  //       print('등록된 게시글이 없습니다!');
+  //     }
+  //   });
+  // }
+
+  loadPosts() async {
     await mango_dev
         .collection('post')
         .where('ownerFriendList',
             arrayContains: userViewModelController.user.value.userID)
         .get()
         .then((value) {
-      if (value.size > 0) {
-        List<Post> posts = [];
+      value.docs.forEach((element) {
+        // Post temp = Post.fromSnapshot(element.data());
 
-        value.docs.forEach((element) {
-          Post temp = Post.fromSnapshot(element.data());
-          postList.update((val) {
-            posts.add(temp);
-          });
-        });
-      } else {
-        print('등록된 게시글이 없습니다!');
-      }
+        print('PostID');
+        print(element.data()['postID']);
+        // this.postList.add(Post.fromSnapshot(element.data()));
+        posts.add(Post.fromSnapshot(element.data()));
+        print(posts[0].postID);
+        print('This is Post ||');
+        // postList.update((val) {
+        //   posts.add(temp);
+        // });
+      });
     });
-  }
 
-  loadPosts() async {
-    var data = await mango_dev
-        .collection('post')
-        .where('ownerFriendList',
-            arrayContains: userViewModelController.user.value.userID)
-        .get();
-
-    data.docs.forEach((element) {
-      this.posts.add(Post.fromSnapshot(element.data()));
-    });
+    return posts;
+    // update();
   }
 }

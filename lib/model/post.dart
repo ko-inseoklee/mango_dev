@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/user.dart';
 
-class PostList{
+class PostList {
   late List<Post> posts;
 }
 
@@ -27,15 +27,46 @@ class Post {
     this.foods = Food.init();
     this.ownerID = '';
     this.ownerFriendList = [];
+    this.owner = User.init(
+        userID: 'userID',
+        creationTime: Timestamp.now(),
+        refrigeratorID: 'refrigeratorID',
+        refrigerationAlarm: 1,
+        isRefShelf: true,
+        frozenAlarm: 1,
+        isFroShelf: true,
+        roomTempAlarm: 1,
+        isRTShelf: true,
+        lastSignIn: Timestamp.now(),
+        profileImageReference: '-1',
+        userName: 'userName',
+        tokens: 'tokens',
+        friendList: []);
   }
 
   Post.fromSnapshot(Map<String, dynamic> post)
       : postID = post['postID'],
         state = post['state'],
         registTime = post['registTime'],
+        foods = Food.init(),
         subtitle = post['subtitle'],
         ownerID = post['ownerID'],
-        ownerFriendList = post['ownerFriendList'];
+        owner = User.init(
+            userID: 'userID',
+            creationTime: Timestamp.now(),
+            refrigeratorID: 'refrigeratorID',
+            refrigerationAlarm: 1,
+            isRefShelf: true,
+            frozenAlarm: 1,
+            isFroShelf: true,
+            roomTempAlarm: 1,
+            isRTShelf: true,
+            lastSignIn: Timestamp.now(),
+            profileImageReference: '-1',
+            userName: 'userName',
+            tokens: 'tokens',
+            friendList: []),
+        ownerFriendList = post['ownerFriendList'].cast<String>();
 
 // Post.fromSnapshot(DocumentSnapshot snapshot)
 //     : postID = snapshot.get('postID'),
