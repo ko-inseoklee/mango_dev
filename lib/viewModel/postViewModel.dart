@@ -21,8 +21,6 @@ class postViewModel extends GetxController {
   }
 
   loadPosts() async {
-    print('start');
-
     await mango_dev
         .collection('post')
         .where('ownerFriendList',
@@ -30,25 +28,18 @@ class postViewModel extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) async {
-        var owner ;
+        posts.add(Post.fromSnapshot(element.data()));
 
-        // Post temp = Post.fromSnapshot(element.data());
-        await mango_dev
-            .collection('user')
-            .where('userID', isEqualTo: element.data()['ownerID'])
-            .get()
-            .then((value) {
-          owner = value.docs.first;
-          print('owner: ${value.docs.first.get('profileImageReference')}');
-        });
-
-        posts.add(Post.fromSnapshot(element.data(), owner));
-
-        // postList.update((val) {
-        //   posts.add(temp);
+        // mango_dev.collection('user').doc(element.data()['ownerID'])
+        // await mango_dev
+        //     .collection('user')
+        //     .where('userID', isEqualTo: element.data()['ownerID'])
+        //     .get()
+        //     .then((value) async {
+        //   print('user data ${value.docs.first.get('userName')}');
+        //   // print('owner: ${value.docs.first.get('userName')}${value.docs.first.get('profileImageReference')}');
         // });
       });
-      print('end');
     });
 
     return posts;

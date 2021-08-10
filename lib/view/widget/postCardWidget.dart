@@ -75,6 +75,7 @@ class MangoPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
+      print('HERE!! ${post.profileImageRef} / ${post.postID}');
       return Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -95,9 +96,9 @@ class MangoPostCard extends StatelessWidget {
                     // alignment: Alignment.bottomRight,
                     // child: Text(calculate(post.registTime) + ' 전'),
                     // ),
-                    Text(
-                      post.foods.name + '  ${post.foods.number} 개',
-                    ),
+                    Text(post.ownerName
+                        // post.foods.name + '  ${post.foods.number} 개',
+                        ),
                     Text(
                       '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife.month}.${post.foods.shelfLife.day}',
                     ),
@@ -109,7 +110,7 @@ class MangoPostCard extends StatelessWidget {
                         Container(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: post.owner.profileImageReference == '-1'
+                            child: post.profileImageRef == '-1'
                                 ? Container(
                                     width: 30,
                                     height: 30,
@@ -122,15 +123,15 @@ class MangoPostCard extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                                // Image.network(
+                                // : Image.network(
                                 //   userViewModelController
                                 //       .user.value.profileImageReference,
-                                //   width: 90 * deviceWidth / prototypeWidth,
-                                //   height: 90 * deviceWidth / prototypeWidth,
+                                //   // width: 90 * deviceWidth / prototypeWidth,
+                                //   // height: 90 * deviceWidth / prototypeWidth,
                                 //   fit: BoxFit.fitHeight,
                                 // )
                                 : Image.network(
-                                    post.owner.profileImageReference,
+                                    post.profileImageRef,
                                     fit: BoxFit.fitHeight,
                                     width: 30,
                                     height: 30,
@@ -216,7 +217,7 @@ class MangoPostCard extends StatelessWidget {
       'takerName': name,
       'postID': post.postID,
       'onwerID': post.ownerID,
-      'ownerName': post.owner.userName,
+      'ownerName': post.ownerName,
     });
 
     var check = await mango_dev

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/user.dart';
@@ -14,8 +15,12 @@ class Post {
   late Timestamp registTime;
   late String subtitle;
 
-  late User owner;
+  // late User owner;
+
   late String ownerID;
+  late String ownerName;
+  late String profileImageRef;
+
   late List<String> ownerFriendList;
 
   late Food foods;
@@ -27,27 +32,28 @@ class Post {
     this.subtitle = '나눔합니다';
     this.foods = Food.init();
     this.ownerID = '';
+    this.ownerName = '';
+    this.profileImageRef = '-1';
     this.ownerFriendList = [];
-    this.owner = User.init(
-        userID: '',
-        creationTime: Timestamp.now(),
-        refrigeratorID: '',
-        refrigerationAlarm: 0,
-        isRefShelf: true,
-        frozenAlarm: 0,
-        isFroShelf: true,
-        roomTempAlarm: 0,
-        isRTShelf: true,
-        lastSignIn: Timestamp.now(),
-        profileImageReference: '-1',
-        userName: '',
-        tokens: '',
-        friendList: []);
+    // this.owner = User.init(
+    //     userID: '',
+    //     creationTime: Timestamp.now(),
+    //     refrigeratorID: '',
+    //     refrigerationAlarm: 0,
+    //     isRefShelf: true,
+    //     frozenAlarm: 0,
+    //     isFroShelf: true,
+    //     roomTempAlarm: 0,
+    //     isRTShelf: true,
+    //     lastSignIn: Timestamp.now(),
+    //     profileImageReference: '-1',
+    //     userName: '',
+    //     tokens: '',
+    //     friendList: []);
   }
 
   Post.fromSnapshot(
     Map<String, dynamic> post,
-    DocumentSnapshot owner,
   )   : postID = post['postID'],
         state = post['state'],
         registTime = post['registTime'],
@@ -55,7 +61,9 @@ class Post {
         // foods = Food.fromSnapshot(food),
         subtitle = post['subtitle'],
         ownerID = post['ownerID'],
-        owner = User.fromSnapshot(owner),
+        ownerName = post['ownerName'],
+        profileImageRef = post['profileImageRef'],
+        // owner = User.fromSnapshot(),
         ownerFriendList = post['ownerFriendList'].cast<String>();
 
 // Post.fromSnapshot(DocumentSnapshot snapshot)

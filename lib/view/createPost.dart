@@ -19,14 +19,13 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
-
-  Food food = Get.arguments;
-
+  // Food food = Get.arguments;
+  Food food = Food.init();
 
   Future<void> createPost(String curr_uid) async {
     var temp = Post.init();
 
-    temp.postID = ' '; // random 생성 (uuid)
+    temp.postID = Uuid().v4().toString(); // random 생성 (uuid)
     temp.subtitle = '!!!'; // from text controller
     temp.ownerID = curr_uid; // curr_uid
     temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
@@ -38,6 +37,20 @@ class _CreatePostState extends State<CreatePost> {
         .obs;
 
     temp.foods = food;
+
+    FirebaseFirestore.instance.collection('post').doc(temp.postID).set({
+      'foodName': temp.foods.name,
+      'foodNum': temp.foods.number,
+      'ownerFriendList': temp.ownerFriendList,
+      'subtitle': temp.subtitle,
+      'ownerID': temp.ownerID,
+      'ownerNmae': temp.ownerName,
+      'postID': temp.postID,
+      'profileImageRef': temp.profileImageRef,
+      'registTime': temp.registTime,
+      'shelfLife': temp.foods.shelfLife,
+      'state': temp.state,
+    });
 
     print(
         'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.ownerID} / ownerFriendList: ${temp.ownerFriendList}');
