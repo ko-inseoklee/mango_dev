@@ -20,48 +20,35 @@ class postViewModel extends GetxController {
     posts = [];
   }
 
-  // getFriendPost(String currUid) async {
-  //   await mango_dev
-  //       .collection('post')
-  //       .where('ownerFriendList',
-  //           arrayContains: userViewModelController.user.value.userID)
-  //       .get()
-  //       .then((value) {
-  //     if (value.size > 0) {
-  //       List<Post> posts = [];
-  //
-  //       value.docs.forEach((element) {
-  //         Post temp = Post.fromSnapshot(element.data());
-  //         postList.update((val) {
-  //           posts.add(temp);
-  //         });
-  //       });
-  //     } else {
-  //       print('등록된 게시글이 없습니다!');
-  //     }
-  //   });
-  // }
-
   loadPosts() async {
+    print('start');
+
     await mango_dev
         .collection('post')
         .where('ownerFriendList',
             arrayContains: userViewModelController.user.value.userID)
         .get()
         .then((value) {
-      value.docs.forEach((element) {
-        // Post temp = Post.fromSnapshot(element.data());
+      value.docs.forEach((element) async {
+        var owner ;
 
-        print('PostID');
-        print(element.data()['postID']);
-        // this.postList.add(Post.fromSnapshot(element.data()));
-        posts.add(Post.fromSnapshot(element.data()));
-        print(posts[0].postID);
-        print('This is Post ||');
+        // Post temp = Post.fromSnapshot(element.data());
+        await mango_dev
+            .collection('user')
+            .where('userID', isEqualTo: element.data()['ownerID'])
+            .get()
+            .then((value) {
+          owner = value.docs.first;
+          print('owner: ${value.docs.first.get('profileImageReference')}');
+        });
+
+        posts.add(Post.fromSnapshot(element.data(), owner));
+
         // postList.update((val) {
         //   posts.add(temp);
         // });
       });
+      print('end');
     });
 
     return posts;

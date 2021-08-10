@@ -122,8 +122,15 @@ class MangoPostCard extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                                : Image.file(
-                                    File(post.owner.profileImageReference),
+                                // Image.network(
+                                //   userViewModelController
+                                //       .user.value.profileImageReference,
+                                //   width: 90 * deviceWidth / prototypeWidth,
+                                //   height: 90 * deviceWidth / prototypeWidth,
+                                //   fit: BoxFit.fitHeight,
+                                // )
+                                : Image.network(
+                                    post.owner.profileImageReference,
                                     fit: BoxFit.fitHeight,
                                     width: 30,
                                     height: 30,
