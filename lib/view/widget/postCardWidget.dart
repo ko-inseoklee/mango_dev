@@ -96,8 +96,9 @@ class MangoPostCard extends StatelessWidget {
                     // alignment: Alignment.bottomRight,
                     // child: Text(calculate(post.registTime) + ' 전'),
                     // ),
-                    Text(post.ownerName
-                        // post.foods.name + '  ${post.foods.number} 개',
+                    Text(post.profileImageRef),
+                    Text(
+                        post.foods.name + '  ${post.foods.number} 개',
                         ),
                     Text(
                       '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife.month}.${post.foods.shelfLife.day}',

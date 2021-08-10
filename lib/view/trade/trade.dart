@@ -129,8 +129,6 @@ class _TradePageState extends State<TradePage> {
 
   void loadPost() async {
     posts = await post.loadPosts();
-    print('Lenth');
-    print(posts.length);
   }
 
   // void getPost() {
