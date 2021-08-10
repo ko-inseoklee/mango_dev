@@ -30,16 +30,8 @@ class postViewModel extends GetxController {
       value.docs.forEach((element) async {
         posts.add(Post.fromSnapshot(element.data()));
 
-        // mango_dev.collection('user').doc(element.data()['ownerID'])
-        // await mango_dev
-        //     .collection('user')
-        //     .where('userID', isEqualTo: element.data()['ownerID'])
-        //     .get()
-        //     .then((value) async {
-        //   print('user data ${value.docs.first.get('userName')}');
-        //   // print('owner: ${value.docs.first.get('userName')}${value.docs.first.get('profileImageReference')}');
-        // });
       });
+      print('loading post.. ${posts[0].postID} / ${posts[1].postID} / ${posts[2].postID}');
     });
 
     return posts;

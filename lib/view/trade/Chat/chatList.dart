@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
+import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
@@ -39,19 +40,9 @@ class _ChatListState extends State<ChatList> {
               itemBuilder: (context, index) {
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
                 return InkWell(
-                  onTap: (){
-                    Get.to(ChatDetailPage(),arguments: [
-                      // postID,
-                      // state,
-                      // ownerID,
-                      // foodName,
-                      // foodNum,
-                      // subtitle,
-                      // shelfLife,
-                      // ownerName,
-                      // profileImageRef,
-                      // chatID,
-                    ]);
+                  onTap: () {
+                    Get.to(ChatRoom(
+                        chatID: documents.elementAt(index).get('chatID')));
                   },
                   child: ListTile(
                     title: Text(documents.elementAt(index).get('chatID')),

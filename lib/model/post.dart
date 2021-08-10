@@ -15,7 +15,7 @@ class Post {
   late Timestamp registTime;
   late String subtitle;
 
-  // late User owner;
+  late User owner;
 
   late String ownerID;
   late String ownerName;
@@ -35,21 +35,21 @@ class Post {
     this.ownerName = '';
     this.profileImageRef = '-1';
     this.ownerFriendList = [];
-    // this.owner = User.init(
-    //     userID: '',
-    //     creationTime: Timestamp.now(),
-    //     refrigeratorID: '',
-    //     refrigerationAlarm: 0,
-    //     isRefShelf: true,
-    //     frozenAlarm: 0,
-    //     isFroShelf: true,
-    //     roomTempAlarm: 0,
-    //     isRTShelf: true,
-    //     lastSignIn: Timestamp.now(),
-    //     profileImageReference: '-1',
-    //     userName: '',
-    //     tokens: '',
-    //     friendList: []);
+    this.owner = User.init(
+        userID: '',
+        creationTime: Timestamp.now(),
+        refrigeratorID: '',
+        refrigerationAlarm: 0,
+        isRefShelf: true,
+        frozenAlarm: 0,
+        isFroShelf: true,
+        roomTempAlarm: 0,
+        isRTShelf: true,
+        lastSignIn: Timestamp.now(),
+        profileImageReference: '-1',
+        userName: '',
+        tokens: '',
+        friendList: []);
   }
 
   Post.fromSnapshot(
@@ -63,15 +63,24 @@ class Post {
         ownerID = post['ownerID'],
         ownerName = post['ownerName'],
         profileImageRef = post['profileImageRef'],
-        // owner = User.fromSnapshot(),
-        ownerFriendList = post['ownerFriendList'].cast<String>();
+        ownerFriendList = post['ownerFriendList'].cast<String>(),
 
-// Post.fromSnapshot(DocumentSnapshot snapshot)
-//     : postID = snapshot.get('postID'),
-//       state = snapshot.get('state'),
-//       registTime = snapshot.get('registTime'),
-//       subtitle = snapshot.get('subtitle'),
-//       ownerID = snapshot.get('ownerID'),
-//       ownerFriendList = List.from(snapshot.get('ownerFriendList'));
+        //TODO: owner = User.fromSanpshot
+        owner = User.init(
+            userID: post['ownerID'],
+            creationTime: post['registTime'],
+            refrigeratorID: '',
+            refrigerationAlarm: 0,
+            isRefShelf: false,
+            frozenAlarm: 0,
+            isFroShelf: false,
+            roomTempAlarm: 0,
+            isRTShelf: false,
+            lastSignIn: Timestamp.now(),
+            profileImageReference: post['profileImageRef'],
+            userName: post['ownerName'],
+            tokens: '',
+            friendList: post['ownerFriendList'].cast<String>());
+
 
 }

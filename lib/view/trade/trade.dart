@@ -131,21 +131,6 @@ class _TradePageState extends State<TradePage> {
     posts = await post.loadPosts();
   }
 
-  // void getPost() {
-  //   for (int i = 0; i < _friendList.length; i++) {
-  //     mango_dev
-  //         .collection('post')
-  //         .where('ownerID', isEqualTo: _friendList[i])
-  //         .get()
-  //         .then((QuerySnapshot value) {
-  //       value.docs.forEach((element) {
-  //         print(element['subtitle']);
-  //         postIdList.add(element.id);
-  //       });
-  //     });
-  //   }
-  // }
-
   Future<int> countDocuments(String curr_uid) async {
     QuerySnapshot _myDoc = await mango_dev
         .collection('user')

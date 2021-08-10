@@ -25,9 +25,15 @@ class _CreatePostState extends State<CreatePost> {
   Future<void> createPost(String curr_uid) async {
     var temp = Post.init();
 
+    //실제 값 생성 및 할당
     temp.postID = Uuid().v4().toString(); // random 생성 (uuid)
     temp.subtitle = '!!!'; // from text controller
     temp.ownerID = curr_uid; // curr_uid
+    temp.owner = User.fromSnapshot(await FirebaseFirestore.instance
+        .collection('user')
+        .doc(curr_uid)
+        .snapshots()
+        .first);
     temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
             .collection('user')
             .doc(curr_uid)
@@ -37,6 +43,7 @@ class _CreatePostState extends State<CreatePost> {
         .obs;
 
     temp.foods = food;
+    ////
 
     FirebaseFirestore.instance.collection('post').doc(temp.postID).set({
       'foodName': temp.foods.name,
@@ -44,7 +51,7 @@ class _CreatePostState extends State<CreatePost> {
       'ownerFriendList': temp.ownerFriendList,
       'subtitle': temp.subtitle,
       'ownerID': temp.ownerID,
-      'ownerNmae': temp.ownerName,
+      'ownerName': temp.ownerName,
       'postID': temp.postID,
       'profileImageRef': temp.profileImageRef,
       'registTime': temp.registTime,

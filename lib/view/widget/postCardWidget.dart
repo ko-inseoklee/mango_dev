@@ -92,14 +92,13 @@ class MangoPostCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Align(
-                    // alignment: Alignment.bottomRight,
-                    // child: Text(calculate(post.registTime) + ' 전'),
-                    // ),
-                    Text(post.profileImageRef),
+                    Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(calculate(post.registTime.toDate()) + ' 전'),
+                    ),
                     Text(
-                        post.foods.name + '  ${post.foods.number} 개',
-                        ),
+                      post.foods.name + '  ${post.foods.number} 개',
+                    ),
                     Text(
                       '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife.month}.${post.foods.shelfLife.day}',
                     ),
@@ -164,14 +163,17 @@ class MangoPostCard extends StatelessWidget {
                             // color: Theme.of(context).accentColor,
                             child: Icon(Icons.send_rounded),
                             onPressed: () {
-                              // var chatID = Uuid().v4().toString();
+
                               var chatID = post.postID.substring(0, 6) +
                                   userViewModelController.userID
                                       .substring(0, 6);
+
+                              print('postID: ${post.postID}');
                               createChatRoom(
                                   chatID,
                                   userViewModelController.userID,
                                   userViewModelController.user.value.userName);
+
                               Get.to(ChatRoom(
                                 chatID: chatID,
                               )
@@ -212,6 +214,7 @@ class MangoPostCard extends StatelessWidget {
   }
 
   void createChatRoom(String chatID, String uid, String name) async {
+    print('chatID: $chatID');
     mango_dev.collection('chatRooms').doc(chatID).set({
       'chatID': chatID,
       'takerID': uid,
@@ -231,7 +234,7 @@ class MangoPostCard extends StatelessWidget {
 
     List<DocumentSnapshot> documents = check.docs;
 
-    //이미 등록된 친구 일 경우 `snackbar` return
+    // 이미 등록된 친구 일 경우 `snackbar` return
     if (documents.length > 0) {
       return;
     } else {
