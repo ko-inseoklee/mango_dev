@@ -66,55 +66,21 @@ class _TelTestPageState extends State<TelTestPage> {
                         .copyWith(color: MangoDisabledColorDark),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(
-                      0, 14 * (deviceWidth / prototypeWidth), 0, 0),
-                  width: _contentWidth * (deviceWidth * deviceHeight),
-                  child: TextField(
-                    maxLength: 11,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                    ],
-                    controller: _telController,
-                    decoration: InputDecoration(
-                      hintText: '5555215554',
-                      errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
-                    ),
-                  ),
-                ),
-                Visibility(
-                  visible: requestedAuth,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: _contentWidth * (deviceWidth * deviceHeight),
-                        child: Text(
-                          '인증번호 입력',
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2!
-                              .copyWith(color: MangoDisabledColorDark),
-                        ),
-                      ),
-                      Container(
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
                         padding: EdgeInsets.fromLTRB(
-                          0,
-                          14 * (deviceWidth / prototypeWidth),
-                          0,
-                          0,
-                        ),
-                        width: _contentWidth * (deviceWidth * deviceHeight),
+                            0, 14 * (deviceWidth / prototypeWidth), 0, 0),
+                        // width: _contentWidth * (deviceWidth * deviceHeight),
                         child: TextField(
-                          maxLength: 6,
+                          maxLength: 11,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp('[0-9]'))
                           ],
-                          controller: _optController,
+                          controller: _telController,
                           decoration: InputDecoration(
+                            hintText: '5555215554',
                             errorBorder: OutlineInputBorder(
                                 borderSide: BorderSide(width: 1.0)),
                             border: OutlineInputBorder(),
@@ -123,67 +89,114 @@ class _TelTestPageState extends State<TelTestPage> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ConstrainedBox(
+                        constraints: BoxConstraints.tightFor(
+                            width: 100, height: ScreenUtil().setHeight(60)),
+                        child: ElevatedButton(
+                            child: Text('인증요청'),
+                            onPressed: () async {
+                              // setState(() {
+                              //   requestedAuth = true;
+                              // });
+                              await _auth.verifyPhoneNumber(
+                                  timeout: const Duration(seconds: 120),
+                                  phoneNumber: "+1" + _telController.text,
+                                  verificationCompleted:
+                                      (phoneAuthCredential) async {
+                                    print('otp 문자옴');
+                                  },
+                                  verificationFailed: (verificationFailed) {
+                                    print(verificationFailed.code);
+                                    print('코드 발송 실패');
+                                  },
+                                  codeSent:
+                                      (verificationId, resendingToken) async {
+                                    print('코드 보냄');
+                                    Get.snackbar("MESSAGE",
+                                        "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
+                                    setState(() {
+                                      requestedAuth = true;
+                                      // FocusScope.of(context).requestFocus(otpFocusNode);
+                                      this.verificationId = verificationId;
+                                      print("verification id: $verificationId");
+                                    });
+                                  },
+                                  codeAutoRetrievalTimeout:
+                                      (String verificationId) {});
+                            }))
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(
-                          width: deviceWidth,
-                          height: 46.0 * (deviceWidth / prototypeWidth)),
-                      child: ElevatedButton(
-                          child: requestedAuth == false
-                              ? Text('인증요청')
-                              : Text('다음'),
-                          onPressed: () async {
-                            // setState(() {
-                            //   requestedAuth = true;
-                            // });
-                            //'인증요청'일 경우
-                            // if (requestedAuth == false) {
-                            //   await _auth.verifyPhoneNumber(
-                            //       timeout: const Duration(seconds: 120),
-                            //       phoneNumber: "+1" + _telController.text,
-                            //       verificationCompleted:
-                            //           (phoneAuthCredential) async {
-                            //         print('otp 문자옴');
-                            //       },
-                            //       verificationFailed: (verificationFailed) {
-                            //         print(verificationFailed.code);
-                            //         print('코드 발송 실패');
-                            //       },
-                            //       codeSent:
-                            //           (verificationId, resendingToken) async {
-                            //         print('코드 보냄');
-                            //         Get.snackbar("MESSAGE",
-                            //             "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
-                            //         setState(() {
-                            //           requestedAuth = true;
-                            //           // FocusScope.of(context).requestFocus(otpFocusNode);
-                            //           this.verificationId = verificationId;
-                            //           print("verification id: $verificationId");
-                            //         });
-                            //       },
-                            //       codeAutoRetrievalTimeout:
-                            //           (String verificationId) {});
-                            // }
-                            //'다음'일 경우
-                            // else {
-                            //   // if(authOk == true 일때)
-                            //   PhoneAuthCredential phoneAuthCredential =
-                            //       PhoneAuthProvider.credential(
-                            //           verificationId: verificationId,
-                            //           smsCode: _optController.text);
-                            //   signInWithPhoneAuthCredential(
-                            //       phoneAuthCredential);
-                            //   // if(authOk == false 일때)
-                            //   // case 1) 폰 번호를 다시 입력하게 해서, 인증코드를 다시 받을 수 있게 하거나
-                            //   // case 2) 인증번호를 다시 입력하능하게 하거나
-                            // }
-                          }
-                          //style: ButtonStyle(),
-                          )),
+                Column(
+                  children: [
+                    Container(
+                      width: _contentWidth * (deviceWidth * deviceHeight),
+                      child: Text(
+                        '인증번호 입력',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: MangoDisabledColorDark),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(
+                        0,
+                        14 * (deviceWidth / prototypeWidth),
+                        0,
+                        0,
+                      ),
+                      width: _contentWidth * (deviceWidth * deviceHeight),
+                      child: TextField(
+                        maxLength: 6,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                        ],
+                        controller: _optController,
+                        decoration: InputDecoration(
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 1.0)),
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(width: 1.0)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Visibility(
+                  visible: requestedAuth,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: ConstrainedBox(
+                        constraints: BoxConstraints.tightFor(
+                            width: deviceWidth,
+                            height: 46.0 * (deviceWidth / prototypeWidth)),
+                        child: ElevatedButton(
+                            child:
+                                authOk == true ? Text('다음') : Text('인증번호 확인'),
+                            onPressed: () async {
+                              //'인증번호 확인'일 경우
+                              if (authOk == false) {
+                                PhoneAuthCredential phoneAuthCredential =
+                                    PhoneAuthProvider.credential(
+                                        verificationId: verificationId,
+                                        smsCode: _optController.text);
+                                signInWithPhoneAuthCredential(
+                                    phoneAuthCredential);
+                              }
+                              //'다음'인경
+                              if (authOk == true) {
+                                //Get.off()우
+                                //TODO. DB에 phone정보도 넣어야 된다.
+                              }
+                            }
+                            //style: ButtonStyle(),
+                            )),
+                  ),
                 ),
               ])),
             ),
@@ -197,11 +210,6 @@ class _TelTestPageState extends State<TelTestPage> {
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
-        setState(() {
-          print('인증완료 및 로그인 성공');
-          authOk = true;
-          requestedAuth = false;
-        });
         await _auth.currentUser!.delete();
         print('auth 정보삭제');
         await _auth.signOut();
@@ -218,19 +226,60 @@ class _TelTestPageState extends State<TelTestPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 25, 8, 0),
                 child: ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(width: deviceWidth,height: 46.0 * (deviceWidth / prototypeWidth)),
-                    child: ElevatedButton(onPressed: () {}, child: Text('확인'))),
+                    constraints: BoxConstraints.tightFor(
+                        width: deviceWidth,
+                        height: 46.0 * (deviceWidth / prototypeWidth)),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        child: Text('확인'))),
               )
             ],
           ),
-        );
+        ).then((value) {
+          setState(() {
+            print('인증완료 및 로그인 성공');
+            authOk = true;
+          });
+        });
       }
     } on FirebaseAuthException catch (e) {
       print('인증실패..로그인실패');
-
-      await Get.dialog(
-        Text('e'),
-      );
+      Get.defaultDialog(
+        title: "",
+        content: Column(
+          children: [
+            Text(
+              "인증에 실패하셨습니다.",
+              style: Theme.of(context).textTheme.subtitle2,
+            ),
+            Text(
+              "인증번호 전송은 총 4회까지 무료입니다.",
+              style: Theme.of(context)
+                  .textTheme
+                  .caption!
+                  .copyWith(color: MangoErrorColor),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(8, 25, 8, 0),
+              child: ConstrainedBox(
+                  constraints: BoxConstraints.tightFor(
+                      width: deviceWidth,
+                      height: 46.0 * (deviceWidth / prototypeWidth)),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      child: Text('확인'))),
+            )
+          ],
+        ),
+      ).then((value){
+        setState(() {
+          authOk = false;
+        });
+      });
     }
   }
 }
