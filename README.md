@@ -79,4 +79,4 @@ A new Flutter project.
 - TODO (jhyun)
 	- 새로운 device로 로그인시 친구의 교환된 정보 목록에서도 수정필요
 	- profileImageRef 친구의 교환된 정보 목록에서도 수정필요
-	- Post.snapshot 에서 User.fromSnapshot 사용 필요
+	- Post.snapshot 에서 User.fromSnapshot 사용 필요 or User 정보 수정 시 Post db의 정보도 수정 필요
