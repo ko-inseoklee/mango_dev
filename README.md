@@ -34,6 +34,9 @@ A new Flutter project.
     - 직접입력 시 default 섹션 하나 / 수량 default 1 / focus 이동
 
     - 자체 pre-set 제작
+    
+    - 전화번호 인증시,
+        현재는 amulator에서 작동 (reCAPTCHA 인증만 사용), 실제 Phone으로 test 할 경우 (SafetyNet 인증 사용해야 된다. => 일정량 이상 추가 요금 발생)
 
 - Development plan
     1. Before Home
@@ -69,5 +72,14 @@ A new Flutter project.
             -> User 의 lastSignIn 정보를 받아서, 날짜 기준으로 음식의 state 업데이트하기 (CSR(Client Side Rendering)
 
 - Todo(Inseok)
+    - Food class의 CardStatus CSR로 변경.
+    - 디테일 페이지 / 수정기능
+
+    - 에러: 마지막 하나 남은 것 삭제하면 화면 업데이트 되지 않음.
     - 음식 상태별 카드 만들기.(완료) -> 카드 디자인 구성
     - Food class의 CardStatus CSR로 변경.
+  
+- TODO (jhyun)
+	- 새로운 device로 로그인시 친구의 교환된 정보 목록에서도 수정필요
+	- profileImageRef 친구의 교환된 정보 목록에서도 수정필요
+	- Post.snapshot 에서 User.fromSnapshot 사용 필요 or User 정보 수정 시 Post db의 정보도 수정 필요

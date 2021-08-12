@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/home.dart';
+import 'package:mangodevelopment/view/login/login.dart';
+import 'package:mangodevelopment/view/login/telTest.dart';
 
 import 'color.dart';
 import 'landing.dart';
@@ -23,7 +25,7 @@ var prototypeHeight = 812.0;
 var platform = true;
 
 Future<void> saveTokenToDatabase(String token) async {
-  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
+  String userId = FirebaseAuth.instance.currentUser!.uid.toString();
 
   await FirebaseFirestore.instance.collection('user').doc(userId).update({
     'tokens': token,
@@ -94,6 +96,7 @@ class _MangoAppState extends State<MangoApp> {
     return ScreenUtilInit(
       builder: () => GetMaterialApp(
         home: Landing(),
+        // home: TelTestPage(),
         theme: _mangoTheme,
         getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
       ),

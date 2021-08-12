@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/color.dart';
@@ -115,6 +116,39 @@ class LogInPage extends StatelessWidget {
               ),
               onPressed: () {
                 Get.find<Authentication>().googleLogin().then((value){
+                  authController.loadId();
+                  Get.off(Landing());
+                });
+              },
+            ),
+          ),
+          SizedBox(height: ScreenUtil().setHeight(20),),
+          ConstrainedBox(
+            constraints: BoxConstraints.tightFor(
+              width: loginWidth * (deviceWidth / prototypeWidth),
+              height:
+              logoSize * (deviceWidth / prototypeWidth) * buttonHeightRatio,
+            ),
+            child: TextButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Image(
+                    image: AssetImage('images/login/kakao_logo.png'),
+                    width: logoSize * (deviceWidth / prototypeWidth),
+                    height: logoSize * (deviceWidth / prototypeWidth),
+                  ),
+                  Text(
+                    '카카오 계정으로 시작하기',
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                ],
+              ),
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+              ),
+              onPressed: () {
+                Get.find<Authentication>().kakaoLogin().then((value){
                   authController.loadId();
                   Get.off(Landing());
                 });

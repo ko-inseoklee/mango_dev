@@ -25,7 +25,7 @@ import 'dart:math' as math;
 class HomePage extends StatefulWidget {
   final title;
 
-  const                                                                                                                                                                                                                                                                                                                                           HomePage({Key? key, required this.title}) : super(key: key);
+  const HomePage({Key? key, required this.title}) : super(key: key);
 
   @override
   HomePageState createState() => HomePageState();
@@ -41,21 +41,17 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // _userViewModelController
-    //     .setUserInfo(authController.user!.uid)
-    //     .then((value) {
-    //   _refrigeratorViewModel.loadRefID(
-    //       rID: _userViewModelController.user.value.refrigeratorID);
-    // });
     _userViewModelController.makeFriendList(authController.user!.uid);
-    // _refrigeratorViewModel = Get.put(TestRefViewModel());
 
     return FutureBuilder(
         future: _userViewModelController.setUserInfo(authController.user!.uid),
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
-            return Center(
-              child: CircularProgressIndicator(),
+            return Container(
+              color: MangoWhite,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           } else {
             _refrigeratorViewModel.loadRefID(
@@ -69,10 +65,6 @@ class HomePageState extends State<HomePage> {
                     child: IndexedStack(
                       index: _controller.tabIndex.value,
                       children: [
-                        // RefrigeratorPage(title: '나의 냉장고'),
-                        // SubRefrigeratorPage(
-                        //   title: '나의 냉장고',
-                        // ),
                         RefrigeratorPage(
                           title: '나의 냉장고',
                         ),

@@ -11,14 +11,15 @@ class settingMenu extends StatefulWidget {
   final int trailingWidth;
   final bool isActive;
 
-  const settingMenu(
-      {Key? key,
-      required this.menuName,
-      required this.onTap,
-      required this.trailing,
-      required this.trailingWidth,
-      this.isActive = true})
-      : super(key: key);
+  const settingMenu({
+    Key? key,
+    required this.menuName,
+    required this.onTap,
+    required this.trailing,
+    required this.trailingWidth,
+    required this.isActive,
+    // this.isActive = true
+  }) : super(key: key);
 
   @override
   _settingMenuState createState() => _settingMenuState();

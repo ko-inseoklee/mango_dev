@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/myAccount/myPageEdit.dart';
+import 'package:mangodevelopment/view/settings/alarmSettings.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -26,7 +27,6 @@ class _MyPageState extends State<MyPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
       return Scaffold(
         appBar: AppBar(
@@ -49,40 +49,40 @@ class _MyPageState extends State<MyPage> {
                           0,
                           5 * deviceWidth / prototypeWidth),
                       child: userViewModelController
-                          .user.value.profileImageReference ==
-                          '-1'
+                                  .user.value.profileImageReference ==
+                              '-1'
                           ? Container(
-                        width: 90 * deviceWidth / prototypeWidth,
-                        height: 90 * deviceWidth / prototypeWidth,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image:
-                            AssetImage('images/default_profile.png'),
-                          ),
-                        ),
-                      )
+                              width: 90 * deviceWidth / prototypeWidth,
+                              height: 90 * deviceWidth / prototypeWidth,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image:
+                                      AssetImage('images/default_profile.png'),
+                                ),
+                              ),
+                            )
                           : _fileStoarge.isNetworkImage.value == true
-                          ? ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            userViewModelController
-                                .user.value.profileImageReference,
-                            width: 90 * deviceWidth / prototypeWidth,
-                            height: 90 * deviceWidth / prototypeWidth,
-                            fit: BoxFit.fitHeight,
-                          ))
-                          : ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.file(
-                          File(userViewModelController
-                              .user.value.profileImageReference),
-                          width: 90 * deviceWidth / prototypeWidth,
-                          height: 90 * deviceWidth / prototypeWidth,
-                          fit: BoxFit.fitHeight,
-                        ),
-                      ),
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    userViewModelController
+                                        .user.value.profileImageReference,
+                                    width: 90 * deviceWidth / prototypeWidth,
+                                    height: 90 * deviceWidth / prototypeWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ))
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.file(
+                                    File(userViewModelController
+                                        .user.value.profileImageReference),
+                                    width: 90 * deviceWidth / prototypeWidth,
+                                    height: 90 * deviceWidth / prototypeWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                ),
                     ),
                     Expanded(
                       child: Container(
@@ -106,13 +106,13 @@ class _MyPageState extends State<MyPage> {
                     //TODO. 수정페이지로 이동
                     IconButton(
                         onPressed: () async {
-                          setState(() async{
-                            var result = await Get.to(MyPageEdit(),
-                                transition: Transition.topLevel);
-                            userViewModelController.profileImageReference = await result;
-                          });
-
-                          },
+                          Get.to(MyPageEdit());
+                          // setState(() async{
+                          //   var result = await Get.to(MyPageEdit(),
+                          //       transition: Transition.topLevel);
+                          //   userViewModelController.profileImageReference = await result;
+                          // });
+                        },
                         icon: Icon(Icons.arrow_forward_ios_sharp))
                   ],
                 ),
@@ -146,7 +146,7 @@ class _MyPageState extends State<MyPage> {
                         comingSoon(context);
                       },
                       trailingWidth: 10,
-                      trailing: SizedBox(),
+                      trailing: SizedBox(), isActive: true,
                     ),
                     settingMenu(
                       menuName: "공지사항",
@@ -154,7 +154,7 @@ class _MyPageState extends State<MyPage> {
                         comingSoon(context);
                       },
                       trailingWidth: 10,
-                      trailing: SizedBox(),
+                      trailing: SizedBox(), isActive: true,
                     ),
                   ],
                 ),
@@ -211,9 +211,6 @@ class _MyPageState extends State<MyPage> {
                   size: 28 * deviceWidth / prototypeWidth,
                   color: Theme.of(context).accentColor,
                 ),
-                onPressed: () {
-                  comingSoon(context);
-                },
                 //TODO: condition should be deleted after make certain contents.
                 // onPressed: () => menu.menuName == '앱 설정'
                 //     ? Navigator.of(context).push(MaterialPageRoute(
@@ -226,6 +223,9 @@ class _MyPageState extends State<MyPage> {
                 //       title: "알림 관리",
                 //     )))
                 //     : comingSoon(context),
+                onPressed: () => menu.menuName == '알림 관리'
+                    ? Get.to(SettingAlarmPage(title: "알림 관리"))
+                    : comingSoon(context),
               ),
             ),
             Container(

@@ -12,6 +12,7 @@ class User {
   String userID;
   Timestamp creationTime;
   String refrigeratorID;
+  bool isAlarmOn;
   int refrigerationAlarm;
   bool isRefShelf;
   int frozenAlarm;
@@ -30,6 +31,7 @@ class User {
     required String userID,
     required Timestamp creationTime,
     required String refrigeratorID,
+    required bool isAlarmOn,
     required int refrigerationAlarm,
     required bool isRefShelf,
     required int frozenAlarm,
@@ -46,6 +48,7 @@ class User {
   })  : this.userID = userID,
         this.creationTime = creationTime,
         this.refrigeratorID = refrigeratorID,
+        this.isAlarmOn = isAlarmOn,
         this.refrigerationAlarm = refrigerationAlarm,
         this.isRefShelf = isRefShelf,
         this.frozenAlarm = frozenAlarm,
@@ -64,6 +67,7 @@ class User {
       : userID = snapshot.get('userID'),
         creationTime = snapshot.get('creationTime'),
         refrigeratorID = snapshot.get('refrigeratorID'),
+        isAlarmOn = snapshot.get('isAlarmOn'),
         refrigerationAlarm = snapshot.get('refrigerationAlarm'),
         isRefShelf = snapshot.get('isRefShelf'),
         frozenAlarm = snapshot.get('frozenAlarm'),

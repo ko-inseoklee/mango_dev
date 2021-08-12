@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class Authentication extends GetxController{
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -56,6 +60,44 @@ class Authentication extends GetxController{
     } catch (e){
       print('Error reported: $e');
     }
+    update();
+  }
+
+  Future<void> kakaoLogin() async {
+    final clientState = Uuid().v4();
+    final url = Uri.https('kauth.kakao.com', '/oauth/authorize', {
+      'response_type': 'code',
+      'client_id': 'ae58524d5e3551dcc6608530c1e38422',
+      'response_mode': 'form_post',
+      'redirect_uri':
+      'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
+      'state': clientState,
+    });
+
+    final result = await FlutterWebAuth.authenticate(
+        url: url.toString(), callbackUrlScheme: "webauthcallback");
+
+    final body = Uri.parse(result).queryParameters;
+
+    final tokenUrl = Uri.https('kauth.kakao.com', '/oauth/token', {
+      'grant_type': 'authorization_code',
+      'client_id': 'ae58524d5e3551dcc6608530c1e38422',
+      'redirect_uri':
+      'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
+      'code': body['code'],
+    });
+
+    var response = await http.post(tokenUrl);
+    Map<String, dynamic> accessTokenResult = jsonDecode(response.body);
+    var tempUrl = Uri.parse('https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/token');
+    var responseCustomToken = await http.post(
+        tempUrl,
+        body: {"accessToken": accessTokenResult['access_token']});
+
+    final authResult =
+    await _auth.signInWithCustomToken(responseCustomToken.body);
+    // return authResult.user;
+    user = authResult.user!;
     update();
   }
 
