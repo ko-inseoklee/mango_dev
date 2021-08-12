@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
@@ -72,7 +73,7 @@ class _MyPageEditState extends State<MyPageEdit> {
         child: Column(
           children: [
             Container(
-              height: 310 * deviceHeight / prototypeHeight,
+              height: ScreenUtil().setHeight(350),
               padding: EdgeInsets.all(15),
               child: Column(
                 children: [
