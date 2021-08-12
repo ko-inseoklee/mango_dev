@@ -31,47 +31,9 @@ class MangoPostCard extends StatelessWidget {
 
   Post post;
 
-// //  게시글 관련 정보
-//   late String postID;
-//   late int state; // 0 - 나눔중, 1 - 거래중, 2 - 거래완료
-//   late DateTime registTime;
-//   late String subtitle;
-//
-//   // 게시글에 올린 음식 관련 정보
-//   late String foodName;
-//   late int foodNum;
-//   late DateTime shelfLife;
-//   late int shelfType; // 0 - 유통기한, 1 - 등록일
-//
-//   // 게시글 작성자 관련 정보
-//   late String ownerID;
-//   late String ownerName;
-//   late String profileImageRef;
 
   MangoPostCard({Key? key, required Post post}) : post = post;
 
-  // MangoPostCard(
-  //     {Key? key,
-  //     required String postID,
-  //     required int state,
-  //     required String foodName,
-  //     required String ownerID,
-  //     required String profileImageRef,
-  //     required Timestamp registTime,
-  //     required String subtitle,
-  //     required int foodNum,
-  //     required Timestamp shelfLife,
-  //     required ownerName})
-  //     : postID = postID,
-  //       state = state,
-  //       foodName = foodName,
-  //       ownerID = ownerID,
-  //       profileImageRef = profileImageRef,
-  //       registTime = registTime.toDate(),
-  //       subtitle = subtitle,
-  //       foodNum = foodNum,
-  //       shelfLife = shelfLife.toDate(),
-  //       ownerName = ownerName;
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +102,7 @@ class MangoPostCard extends StatelessWidget {
                           ),
                           margin: EdgeInsets.only(right: 25),
                         ),
+                        Text(post.ownerName),
 
                         Container(
                           decoration: BoxDecoration(
@@ -149,7 +112,7 @@ class MangoPostCard extends StatelessWidget {
                             width: 1,
                             color: Colors.grey.withOpacity(0.5),
                           ),),
-                          margin: EdgeInsets.only(left: 100),
+                          margin: EdgeInsets.only(left: 70),
                           child: post.ownerID ==
                               userViewModelController.user.value.userID
                               ? Container(
