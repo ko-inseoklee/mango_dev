@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
@@ -100,11 +101,13 @@ class MangoPostCard extends StatelessWidget {
                       post.foods.name + '  ${post.foods.number} 개',
                     ),
                     Text(
-                      '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife.month}.${post.foods.shelfLife.day}',
+                      '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife
+                          .month}.${post.foods.shelfLife.day}',
                     ),
                     InkWell(
-                      onTap: (){
-                        print('check == ${post.ownerID} / ${userViewModelController.userID}');
+                      onTap: () {
+                        print('check == ${post
+                            .ownerID} / ${userViewModelController.userID}');
                       },
                       child: Text(
                         post.subtitle,
@@ -117,101 +120,95 @@ class MangoPostCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(50),
                             child: post.profileImageRef == '-1'
                                 ? Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: AssetImage(
-                                            'images/default_profile.png'),
-                                      ),
-                                    ),
-                                  )
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: AssetImage(
+                                      'images/default_profile.png'),
+                                ),
+                              ),
+                            )
                                 : Image.network(
-                                    post.profileImageRef,
-                                    fit: BoxFit.fitHeight,
-                                    width: 30,
-                                    height: 30,
-                                  ),
+                              post.profileImageRef,
+                              fit: BoxFit.fitHeight,
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
                           margin: EdgeInsets.only(right: 25),
                         ),
+
                         Container(
-                          margin: EdgeInsets.all(5.0),
-                          child: post.ownerID == userViewModelController.user.value.userID
-                              ? ElevatedButton(
-                                  // color: Orange100,
-                                  child: Icon(Icons.edit),
-                                  onPressed: () {
-                                    print('edit');
-                                  },
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(18.0),
-                                              side: BorderSide(
-                                                  color: Colors.yellow)))),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(20.0)
+                            ), border: Border.all(
+                            width: 1,
+                            color: Colors.grey.withOpacity(0.5),
+                          ),),
+                          margin: EdgeInsets.only(left: 100),
+                          child: post.ownerID ==
+                              userViewModelController.user.value.userID
+                              ? Container(
+                            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+
+                            child: ElevatedButton(
+                              child: Icon(Icons.edit),
+                              onPressed: () {
+                                print('edit');
+                              },
+                              style: ButtonStyle(
+                                  shadowColor: MaterialStateProperty.all<Color>(
+                                      Colors.yellow.withOpacity(0.7)),
+                                  backgroundColor: MaterialStateProperty.all<
+                                      Color>(
+                                      Colors.orangeAccent.withOpacity(0.5)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(18.0),
+                                          side: BorderSide(
+                                              color: Colors.yellow)))),
+                            ),
+                          ) : Container(
+                            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: ElevatedButton(
+                              // color: Theme.of(context).accentColor,
+                              child: Icon(Icons.send_rounded),
+                              onPressed: () {
+                                var chatID = post.postID.substring(0, 6) +
+                                    userViewModelController.userID
+                                        .substring(0, 6);
+
+                                createChatRoom(
+                                    chatID,
+                                    userViewModelController.userID,
+                                    userViewModelController.user.value.userName);
+
+                                Get.to(ChatRoom(
+                                  chatID: chatID,
+                                  friendName: post.postID,
                                 )
-                              : ElevatedButton(
-                                  // color: Orange100,
-                                  child: Icon(Icons.call),
-                                  onPressed: () {
-                                    print('call');
-                                  },
-                                  style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(18.0),
-                                              side: BorderSide(
-                                                  color: Colors.yellow)))),
-                                ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(5.0),
-                          child: ElevatedButton(
-                            // color: Theme.of(context).accentColor,
-                            child: Icon(Icons.send_rounded),
-                            onPressed: () {
-                              var chatID = post.postID.substring(0, 6) +
-                                  userViewModelController.userID
-                                      .substring(0, 6);
-
-                              print('postID: ${post.postID}');
-                              createChatRoom(
-                                  chatID,
-                                  userViewModelController.userID,
-                                  userViewModelController.user.value.userName);
-
-                              Get.to(ChatRoom(
-                                chatID: chatID,
-                              )
-                                  // , arguments: [
-                                  // postID,
-                                  // state,
-                                  // ownerID,
-                                  // foodName,
-                                  // foodNum,
-                                  // subtitle,
-                                  // shelfLife,
-                                  // ownerName,
-                                  // profileImageRef,
-                                  // chatID,
-                                  // ]
-                                  );
-                            },
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(18.0),
-                                        side:
-                                            BorderSide(color: Colors.yellow)))),
+                                );
+                              },
+                              style: ButtonStyle(
+                                  shadowColor: MaterialStateProperty.all<Color>(
+                                      Colors.yellow.withOpacity(0.7)),
+                                  backgroundColor: MaterialStateProperty.all<
+                                      Color>(
+                                      Colors.orangeAccent.withOpacity(0.5)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(18.0),
+                                          side:
+                                          BorderSide(color: Colors.yellow)))),
+                            ),
                           ),
                         ),
                       ],
@@ -247,12 +244,12 @@ class MangoPostCard extends StatelessWidget {
 
     List<DocumentSnapshot> documents = check.docs;
 
-    // 이미 등록된 친구 일 경우 `snackbar` return
     if (documents.length > 0) {
       return;
     } else {
       mango_dev.collection('user').doc(uid).collection('chatList').doc().set({
         'chatID': chatID,
+        'friend': post.ownerName,
       });
 
       mango_dev
@@ -262,6 +259,7 @@ class MangoPostCard extends StatelessWidget {
           .doc()
           .set({
         'chatID': chatID,
+        'friend': name,
       });
     }
   }
