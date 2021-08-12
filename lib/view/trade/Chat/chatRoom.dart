@@ -98,7 +98,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('dd')
+        title: Text(widget.chatID)
         // title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
       ),
       body: SafeArea(

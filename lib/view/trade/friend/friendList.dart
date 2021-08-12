@@ -195,13 +195,7 @@ class _FriendListPageState extends State<FriendListPage> {
                             itemBuilder: (context, index) {
                               List<DocumentSnapshot> documents =
                                   snapshot.data!.docs;
-                              // documents
-                              //     .map((docs) => _buildListTile(
-                              //         context,
-                              //         docs,
-                              //         userViewModelController
-                              //             .user.value.userID))
-                              //     .toList();
+
                               return _buildListTile(
                                   context,
                                   documents.elementAt(index),

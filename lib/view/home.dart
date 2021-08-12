@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/trade/makePostInfo.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/view/analyze/nutrition.dart';
@@ -109,7 +110,8 @@ class HomePageState extends State<HomePage> {
     if (index == 0)
       Get.dialog(AddFoodSheet());
     else
-      Get.to(MakePostPage(title: '거래 품목 등록'));
+      Get.to(MakePostInfo(), arguments: Food.init());
+      // Get.to(MakePostPage(title: '거래 품목 등록'));
   }
 }
 

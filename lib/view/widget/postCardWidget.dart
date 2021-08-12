@@ -93,8 +93,8 @@ class MangoPostCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text(calculate(post.registTime.toDate()) + ' 전'),
+                      alignment: Alignment.bottomRight,
+                      child: Text(calculate(post.registTime.toDate()) + ' 전'),
                     ),
                     Text(
                       post.foods.name + '  ${post.foods.number} 개',
@@ -102,8 +102,13 @@ class MangoPostCard extends StatelessWidget {
                     Text(
                       '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife.month}.${post.foods.shelfLife.day}',
                     ),
-                    Text(
-                      post.subtitle,
+                    InkWell(
+                      onTap: (){
+                        print('check == ${post.ownerID} / ${userViewModelController.userID}');
+                      },
+                      child: Text(
+                        post.subtitle,
+                      ),
                     ),
                     Row(
                       children: [
@@ -123,13 +128,6 @@ class MangoPostCard extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                                // : Image.network(
-                                //   userViewModelController
-                                //       .user.value.profileImageReference,
-                                //   // width: 90 * deviceWidth / prototypeWidth,
-                                //   // height: 90 * deviceWidth / prototypeWidth,
-                                //   fit: BoxFit.fitHeight,
-                                // )
                                 : Image.network(
                                     post.profileImageRef,
                                     fit: BoxFit.fitHeight,
@@ -141,21 +139,37 @@ class MangoPostCard extends StatelessWidget {
                         ),
                         Container(
                           margin: EdgeInsets.all(5.0),
-                          child: ElevatedButton(
-                            // color: Orange100,
-                            child: Icon(Icons.call),
-                            onPressed: () {
-                              print('call');
-                            },
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(18.0),
-                                        side:
-                                            BorderSide(color: Colors.yellow)))),
-                          ),
+                          child: post.ownerID == userViewModelController.user.value.userID
+                              ? ElevatedButton(
+                                  // color: Orange100,
+                                  child: Icon(Icons.edit),
+                                  onPressed: () {
+                                    print('edit');
+                                  },
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(18.0),
+                                              side: BorderSide(
+                                                  color: Colors.yellow)))),
+                                )
+                              : ElevatedButton(
+                                  // color: Orange100,
+                                  child: Icon(Icons.call),
+                                  onPressed: () {
+                                    print('call');
+                                  },
+                                  style: ButtonStyle(
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(18.0),
+                                              side: BorderSide(
+                                                  color: Colors.yellow)))),
+                                ),
                         ),
                         Container(
                           margin: EdgeInsets.all(5.0),
@@ -163,7 +177,6 @@ class MangoPostCard extends StatelessWidget {
                             // color: Theme.of(context).accentColor,
                             child: Icon(Icons.send_rounded),
                             onPressed: () {
-
                               var chatID = post.postID.substring(0, 6) +
                                   userViewModelController.userID
                                       .substring(0, 6);
