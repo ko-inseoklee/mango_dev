@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class ChatList extends StatefulWidget {
@@ -41,6 +42,7 @@ class _ChatListState extends State<ChatList> {
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
                 return InkWell(
                   onTap: () {
+                    ChatRoomViewModel().AccessChatRoom(documents.elementAt(index).get('chatID'));
                     Get.to(ChatRoom(
                       chatID: documents.elementAt(index).get('chatID'),
                       friendName: documents.elementAt(index).get('friend'),

@@ -9,6 +9,7 @@ import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
+import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
@@ -150,7 +151,8 @@ class MangoPostCard extends StatelessWidget {
                                 createChatRoom(
                                     chatID,
                                     userViewModelController.userID,
-                                    userViewModelController.user.value.userName);
+                                    userViewModelController.user.value
+                                        .userName);
 
                                 Get.to(ChatRoom(
                                   chatID: chatID,
@@ -195,6 +197,7 @@ class MangoPostCard extends StatelessWidget {
       'postID': post.postID,
       'onwerID': post.ownerID,
       'ownerName': post.ownerName,
+      'lastAccess': Timestamp.now(),
     });
 
     var check = await mango_dev
