@@ -49,7 +49,8 @@ class Post {
         profileImageReference: '-1',
         userName: '',
         tokens: '',
-        friendList: []);
+        friendList: [],
+        isAlarmOn: true);
   }
 
   Post.fromSnapshot(
@@ -80,7 +81,6 @@ class Post {
             profileImageReference: post['profileImageRef'],
             userName: post['ownerName'],
             tokens: '',
-            friendList: post['ownerFriendList'].cast<String>());
-
-
+            friendList: post['ownerFriendList'].cast<String>(),
+            isAlarmOn: true);
 }

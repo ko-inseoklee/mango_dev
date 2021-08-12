@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/view/myAccount/myPageEdit.dart';
@@ -38,7 +39,7 @@ class _MyPageState extends State<MyPage> {
           child: Column(
             children: [
               Container(
-                height: 130 * deviceHeight / prototypeHeight,
+                height: ScreenUtil().setHeight(150),
                 child: Row(
                   children: [
                     //TODO: should change the case of false condition with get image from firebase storage. Should change Using Stack for modify image button.
@@ -123,7 +124,7 @@ class _MyPageState extends State<MyPage> {
               ),
               Container(
                 padding: EdgeInsets.all(5.0 * deviceWidth / prototypeWidth),
-                height: 250 * deviceHeight / prototypeHeight,
+                height: ScreenUtil().setHeight(250),
                 child: Center(
                   child: GridView.count(
                     crossAxisCount: 4,
