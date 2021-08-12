@@ -34,6 +34,9 @@ A new Flutter project.
     - 직접입력 시 default 섹션 하나 / 수량 default 1 / focus 이동
 
     - 자체 pre-set 제작
+    
+    - 전화번호 인증시,
+        현재는 amulator에서 작동 (reCAPTCHA 인증만 사용), 실제 Phone으로 test 할 경우 (SafetyNet 인증 사용해야 된다. => 일정량 이상 추가 요금 발생)
 
 - Development plan
     1. Before Home
