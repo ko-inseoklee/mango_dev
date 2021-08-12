@@ -42,10 +42,12 @@ class _ChatListState extends State<ChatList> {
                 return InkWell(
                   onTap: () {
                     Get.to(ChatRoom(
-                        chatID: documents.elementAt(index).get('chatID')));
+                      chatID: documents.elementAt(index).get('chatID'),
+                      friendName: documents.elementAt(index).get('friend'),
+                    ));
                   },
                   child: ListTile(
-                    title: Text(documents.elementAt(index).get('chatID')),
+                    title: Text(documents.elementAt(index).get('friend')),
                   ),
                 );
               },

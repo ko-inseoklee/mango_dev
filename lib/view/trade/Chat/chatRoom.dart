@@ -6,8 +6,11 @@ import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class ChatRoom extends StatefulWidget {
   late String chatID;
+  late String friendName;
 
-  ChatRoom({Key? key, required String chatID}) : chatID = chatID;
+  ChatRoom({Key? key, required String chatID, required String friendName})
+      : chatID = chatID,
+        friendName = friendName;
 
   @override
   _ChatRoomState createState() => _ChatRoomState();
@@ -15,7 +18,7 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   var _stream;
-  int state=0;
+  int state = 0;
 
   @override
   void initState() {
@@ -30,8 +33,6 @@ class _ChatRoomState extends State<ChatRoom> {
         _stream = element.reference.collection('messages').snapshots();
       });
     });
-    
-    
   }
 
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
@@ -96,11 +97,9 @@ class _ChatRoomState extends State<ChatRoom> {
       });
     }
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(widget.chatID)
-        // title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
-      ),
+      appBar: AppBar(centerTitle: true, title: Text(widget.chatID)
+          // title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
+          ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,7 +173,7 @@ class _ChatRoomState extends State<ChatRoom> {
                                 // ' ' +
                                 // foodNum.toString() +
                                 // '개'
-                            ),
+                                ),
                             subtitle: Text('subtitle'),
                           ),
                         ),
