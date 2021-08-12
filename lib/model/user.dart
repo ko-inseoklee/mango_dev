@@ -10,7 +10,7 @@ final rTAlarmTime = 'room_temp_shelf_life_alarm';
 
 class User {
   String userID;
-  DateTime creationTime;
+  Timestamp creationTime;
   String refrigeratorID;
   bool isAlarmOn;
   int refrigerationAlarm;
@@ -19,17 +19,17 @@ class User {
   bool isFroShelf;
   int roomTempAlarm;
   bool isRTShelf;
-  DateTime lastSignIn;
+  Timestamp lastSignIn;
   String profileImageReference;
   String userName;
   String tokens;
-  // Future<List<String>> friendList;
+  List<String> friendList;
 
   //final DocumentReference reference;
 
   User.init({
     required String userID,
-    required DateTime creationTime,
+    required Timestamp creationTime,
     required String refrigeratorID,
     required bool isAlarmOn,
     required int refrigerationAlarm,
@@ -38,11 +38,12 @@ class User {
     required bool isFroShelf,
     required int roomTempAlarm,
     required bool isRTShelf,
-    required DateTime lastSignIn,
+    required Timestamp lastSignIn,
     required String profileImageReference,
     required String userName,
     required String tokens,
-    // required Future<List<String>> friendList,
+    required List<String> friendList,
+
     //required DocumentReference reference
   })  : this.userID = userID,
         this.creationTime = creationTime,
@@ -57,8 +58,8 @@ class User {
         this.lastSignIn = lastSignIn,
         this.profileImageReference = profileImageReference,
         this.userName = userName,
-        this.tokens = tokens;
-        // this.friendList = friendList;
+        this.tokens = tokens,
+        this.friendList = friendList;
 
   //this.reference = reference;
 
@@ -76,17 +77,6 @@ class User {
         lastSignIn = snapshot.get('lastSignIn'),
         profileImageReference = snapshot.get('profileImageReference'),
         userName = snapshot.get('userName'),
-        tokens = snapshot.get('tokens');
-        // friendList = loadFriendList(snapshot);
-
-        // friendList =
-        //     snapshot.reference.collection('FriendList').get().then((value) {
-        //   List<String> _list = [];
-        //   value.docs.forEach((element) {
-        //     _list.add(element.get('userID'));
-        //   });
-        //   print('LIST = ' + _list.toList().toString() + '!!' );
-        //   return _list;
-        // });
-
+        tokens = snapshot.get('tokens'),
+        friendList = List.from(snapshot.get('friends'));
 }

@@ -4,26 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
-class ChatDetailPage extends StatefulWidget {
+class ChatRoom extends StatefulWidget {
+  late String chatID;
+  late String friendName;
+
+  ChatRoom({Key? key, required String chatID, required String friendName})
+      : chatID = chatID,
+        friendName = friendName;
+
   @override
-  _ChatDetailPageState createState() => _ChatDetailPageState();
+  _ChatRoomState createState() => _ChatRoomState();
 }
 
-// required info from POST
-
-class _ChatDetailPageState extends State<ChatDetailPage> {
-  String postID = Get.arguments[0];
-  int state = Get.arguments[1];
-  String friendId = Get.arguments[2];
-  String foodName = Get.arguments[3];
-  int foodNum = Get.arguments[4];
-  String subtitle = Get.arguments[5];
-  DateTime shelfLife = Get.arguments[6];
-  String ownerName = Get.arguments[7];
-  String profileImageRef = Get.arguments[8];
-  String chatID = Get.arguments[9];
-
+class _ChatRoomState extends State<ChatRoom> {
   var _stream;
+  int state = 0;
 
   @override
   void initState() {
@@ -31,7 +26,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
     mango_dev
         .collection('chatRooms')
-        .where('chatID', isEqualTo: chatID)
+        .where('chatID', isEqualTo: widget.chatID)
         .get()
         .then((value) {
       value.docs.forEach((element) {
@@ -40,11 +35,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     });
   }
 
-//TODO: 상대방, 내 프로필 이미지 사용하기
-
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   TextEditingController messageController = TextEditingController();
+
   ScrollController scrollController = ScrollController();
 
   UserViewModel userViewModelController = Get.find<UserViewModel>();
@@ -103,10 +97,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       });
     }
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
-      ),
+      appBar: AppBar(centerTitle: true, title: Text(widget.chatID)
+          // title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
+          ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,9 +108,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
               child: StreamBuilder<QuerySnapshot>(
                 stream: mango_dev
                     .collection('chatRooms')
-                    .doc(postID.substring(0, 6) +
-                        userViewModelController.user.value.userID
-                            .substring(0, 6))
+                    .doc(widget.chatID)
                     .collection('messages')
                     .orderBy('date')
                     .snapshots(),
@@ -175,13 +166,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               icon: Icon(Icons.camera),
                               onPressed: () => print('gg'),
                             ),
-                            title: Text(_state +
-                                ' ' +
-                                foodName +
-                                ' ' +
-                                foodNum.toString() +
-                                '개'),
-                            subtitle: Text(subtitle),
+                            title: Text('dd'
+                                // _state +
+                                // ' ' +
+                                // foodName +
+                                // ' ' +
+                                // foodNum.toString() +
+                                // '개'
+                                ),
+                            subtitle: Text('subtitle'),
                           ),
                         ),
                         decoration: BoxDecoration(
@@ -210,7 +203,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   Expanded(
                     child: TextField(
                       onSubmitted: (value) => send(
-                          chatID, //generate docID by Post
+                          widget.chatID, //generate docID by Post
                           userViewModelController.user.value.userName),
                       // from who ?
                       decoration: InputDecoration(
@@ -229,7 +222,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     ),
                     onPressed: () {
                       send(
-                          chatID, //generate docID by Post
+                          widget.chatID, //generate docID by Post
                           userViewModelController.user.value.userName);
                       messageController.clear();
                     },

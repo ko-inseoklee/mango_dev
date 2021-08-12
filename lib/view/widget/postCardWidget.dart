@@ -1,12 +1,17 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
+import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
+import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
+import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'package:uuid/uuid.dart';
 
 String calculate(DateTime registTime) {
   Duration diff = DateTime.now().difference(registTime);
@@ -25,58 +30,17 @@ String calculate(DateTime registTime) {
 class MangoPostCard extends StatelessWidget {
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
-  // 게시글 관련 정보
-  late String postID;
-  late int state; // 0 - 나눔중, 1 - 거래중, 2 - 거래완료
-  late DateTime registTime;
-  late String subtitle;
+  Post post;
 
-  // 게시글에 올린 음식 관련 정보
-  late String foodName;
-  late int foodNum;
-  late DateTime shelfLife;
-  late int shelfType; // 0 - 유통기한, 1 - 등록일
 
-  // 게시글 작성자 관련 정보
-  late String ownerID;
-  late String ownerName;
-  late String profileImageRef;
+  MangoPostCard({Key? key, required Post post}) : post = post;
 
-  MangoPostCard(
-      {Key? key,
-      required String postID,
-      required int state,
-      required String foodName,
-      required String ownerID,
-      required String profileImageRef,
-      required Timestamp registTime,
-      required String subtitle,
-      required int foodNum,
-      required Timestamp shelfLife,
-      required ownerName})
-      : postID = postID,
-        state = state,
-        foodName = foodName,
-        ownerID = ownerID,
-        profileImageRef = profileImageRef,
-        registTime = registTime.toDate(),
-        // DateTime.now().subtract(Duration(
-        //     days: createTime.day,
-        //     hours: createTime.hour,
-        //     minutes: createTime.minute)),
-        subtitle = subtitle,
-        foodNum = foodNum,
-        shelfLife = shelfLife.toDate(),
-        ownerName = ownerName;
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
+      print('HERE!! ${post.profileImageRef} / ${post.postID}');
       return Container(
-        // decoration: BoxDecoration(
-        //   border: Border.all(color: Colors.grey, width: 1),
-        // ),
-        // borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
@@ -94,99 +58,122 @@ class MangoPostCard extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: Text(calculate(registTime) + ' 전'),
+                      child: Text(calculate(post.registTime.toDate()) + ' 전'),
                     ),
                     Text(
-                      foodName + '  $foodNum개',
+                      post.foods.name + '  ${post.foods.number} 개',
                     ),
                     Text(
-                      '유통기한 ${shelfLife.year}.${shelfLife.month}.${shelfLife.day}',
+                      '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife
+                          .month}.${post.foods.shelfLife.day}',
                     ),
-                    Text(
-                      subtitle,
+                    InkWell(
+                      onTap: () {
+                        print('check == ${post
+                            .ownerID} / ${userViewModelController.userID}');
+                      },
+                      child: Text(
+                        post.subtitle,
+                      ),
                     ),
                     Row(
                       children: [
                         Container(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: profileImageRef == '-1'
+                            child: post.profileImageRef == '-1'
                                 ? Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: AssetImage(
-                                            'images/default_profile.png'),
-                                      ),
-                                    ),
-                                  )
-                                : Image.file(
-                                    File(profileImageRef),
-                                    fit: BoxFit.fitHeight,
-                                    width: 30,
-                                    height: 30,
-                                  ),
+                              width: 30,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: AssetImage(
+                                      'images/default_profile.png'),
+                                ),
+                              ),
+                            )
+                                : Image.network(
+                              post.profileImageRef,
+                              fit: BoxFit.fitHeight,
+                              width: 30,
+                              height: 30,
+                            ),
                           ),
                           margin: EdgeInsets.only(right: 25),
                         ),
+                        Text(post.ownerName),
+
                         Container(
-                          margin: EdgeInsets.all(5.0),
-                          child: ElevatedButton(
-                            // color: Orange100,
-                            child: Icon(Icons.call),
-                            onPressed: () {
-                              print('call');
-                            },
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(18.0),
-                                        side:
-                                            BorderSide(color: Colors.yellow)))),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.all(5.0),
-                          child: ElevatedButton(
-                            // color: Theme.of(context).accentColor,
-                            child: Icon(Icons.send_rounded),
-                            onPressed: () {
-                              mango_dev
-                                  .collection('chatRooms')
-                                  .doc(postID +
-                                      userViewModelController.user.value.userID)
-                                  .set({
-                                'chatID': postID +
-                                    userViewModelController.user.value.userID,
-                                'takerID':
-                                    userViewModelController.user.value.userID,
-                                'postID': postID,
-                                'ownerName': ownerName,
-                              });
-                              Get.to(ChatDetailPage(), arguments: [
-                                postID,
-                                state,
-                                ownerID,
-                                foodName,
-                                foodNum,
-                                subtitle,
-                                shelfLife,
-                                ownerName,
-                              ]);
-                            },
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(18.0),
-                                        side:
-                                            BorderSide(color: Colors.yellow)))),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                                Radius.circular(20.0)
+                            ), border: Border.all(
+                            width: 1,
+                            color: Colors.grey.withOpacity(0.5),
+                          ),),
+                          margin: EdgeInsets.only(left: 70),
+                          child: post.ownerID ==
+                              userViewModelController.user.value.userID
+                              ? Container(
+                            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+
+                            child: ElevatedButton(
+                              child: Icon(Icons.edit),
+                              onPressed: () {
+                                print('edit');
+                              },
+                              style: ButtonStyle(
+                                  shadowColor: MaterialStateProperty.all<Color>(
+                                      Colors.yellow.withOpacity(0.7)),
+                                  backgroundColor: MaterialStateProperty.all<
+                                      Color>(
+                                      Colors.orangeAccent.withOpacity(0.5)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(18.0),
+                                          side: BorderSide(
+                                              color: Colors.yellow)))),
+                            ),
+                          ) : Container(
+                            margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                            child: ElevatedButton(
+                              // color: Theme.of(context).accentColor,
+                              child: Icon(Icons.send_rounded),
+                              onPressed: () {
+                                var chatID = post.postID.substring(0, 6) +
+                                    userViewModelController.userID
+                                        .substring(0, 6);
+
+                                createChatRoom(
+                                    chatID,
+                                    userViewModelController.userID,
+                                    userViewModelController.user.value
+                                        .userName);
+
+                                Get.to(ChatRoom(
+                                  chatID: chatID,
+                                  friendName: post.postID,
+                                )
+                                );
+                              },
+                              style: ButtonStyle(
+                                  shadowColor: MaterialStateProperty.all<Color>(
+                                      Colors.yellow.withOpacity(0.7)),
+                                  backgroundColor: MaterialStateProperty.all<
+                                      Color>(
+                                      Colors.orangeAccent.withOpacity(0.5)),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.circular(18.0),
+                                          side:
+                                          BorderSide(color: Colors.yellow)))),
+                            ),
                           ),
                         ),
                       ],
@@ -199,5 +186,47 @@ class MangoPostCard extends StatelessWidget {
         ),
       );
     });
+  }
+
+  void createChatRoom(String chatID, String uid, String name) async {
+    print('chatID: $chatID');
+    mango_dev.collection('chatRooms').doc(chatID).set({
+      'chatID': chatID,
+      'takerID': uid,
+      'takerName': name,
+      'postID': post.postID,
+      'onwerID': post.ownerID,
+      'ownerName': post.ownerName,
+      'lastAccess': Timestamp.now(),
+    });
+
+    var check = await mango_dev
+        .collection('user')
+        .doc(uid)
+        .collection('chatList')
+        .where('chatID', isEqualTo: chatID)
+        .limit(1)
+        .get();
+
+    List<DocumentSnapshot> documents = check.docs;
+
+    if (documents.length > 0) {
+      return;
+    } else {
+      mango_dev.collection('user').doc(uid).collection('chatList').doc().set({
+        'chatID': chatID,
+        'friend': post.ownerName,
+      });
+
+      mango_dev
+          .collection('user')
+          .doc(post.ownerID)
+          .collection('chatList')
+          .doc()
+          .set({
+        'chatID': chatID,
+        'friend': name,
+      });
+    }
   }
 }

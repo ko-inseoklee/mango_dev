@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/model/food.dart';
+import 'package:mangodevelopment/model/post.dart';
+import 'package:mangodevelopment/model/user.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -60,11 +62,10 @@ class _MakePostInfoState extends State<MakePostInfo> {
           children: [
             Row(
               children: [
-                Container(
-                  padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-                  child: Image.asset(
-                      'images/category/${categoryImg[translateToKo(arg.category)]}'),
-                ),
+                // Container(
+                //   padding: EdgeInsets.all(ScreenUtil().setSp(16)),
+                //   child: Image.asset('images/default_profile.png'),
+                // ),
                 Spacer(),
                 Container(
                   padding: EdgeInsets.all(ScreenUtil().setSp(16)),
@@ -88,6 +89,7 @@ class _MakePostInfoState extends State<MakePostInfo> {
               margin: EdgeInsets.all(ScreenUtil().setSp(8)),
               padding: EdgeInsets.all(ScreenUtil().setSp(8)),
               child: TextFormField(
+                // initialValue: '망고 2개',
                 controller: _titleController,
                 decoration: new InputDecoration(hintText: '글 제목'),
               ),
@@ -113,10 +115,54 @@ class _MakePostInfoState extends State<MakePostInfo> {
                   content = value;
                 },
               ),
-            )
+            ),
+            TextButton(onPressed: (){
+              createPost(_user.userID, content);
+              Get.back();
+            }, child: Text('등록'))
           ],
         ),
       ),
     );
+  }
+  Future<void> createPost(String curr_uid, String subtitle) async {
+    var temp = Post.init();
+
+    //실제 값 생성 및 할당
+    temp.postID = Uuid().v4().toString(); // random 생성 (uuid)
+    temp.subtitle = subtitle; // from text controller
+    temp.ownerID = curr_uid; // curr_uid
+    temp.owner = User.fromSnapshot(await FirebaseFirestore.instance
+        .collection('user')
+        .doc(curr_uid)
+        .snapshots()
+        .first);
+    temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
+        .collection('user')
+        .doc(curr_uid)
+        .snapshots()
+        .first)
+        .friendList
+        .obs;
+
+    temp.foods = arg;
+    //////
+
+    FirebaseFirestore.instance.collection('post').doc(temp.postID).set({
+      'foodName': temp.foods.name,
+      'foodNum': temp.foods.number,
+      'ownerFriendList': temp.ownerFriendList,
+      'subtitle': temp.subtitle,
+      'ownerID': temp.ownerID,
+      'ownerName': temp.ownerName,
+      'postID': temp.postID,
+      'profileImageRef': temp.profileImageRef,
+      'registTime': temp.registTime,
+      'shelfLife': temp.foods.shelfLife,
+      'state': temp.state,
+    });
+
+    print(
+        'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.ownerID} / ownerFriendList: ${temp.ownerFriendList}');
   }
 }

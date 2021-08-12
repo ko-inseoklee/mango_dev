@@ -10,7 +10,7 @@ class UserViewModel extends GetxController {
   //isRefSelf == true => 유통기한기준, == false => 구매일 기준.
   var user = User.init(
     userID: '',
-    creationTime: DateTime.now(),
+    creationTime: Timestamp.now(),
     refrigeratorID: '1',
     isAlarmOn: true,
     refrigerationAlarm: 0,
@@ -19,10 +19,11 @@ class UserViewModel extends GetxController {
     isFroShelf: false,
     roomTempAlarm: 0,
     isRTShelf: false,
-    lastSignIn: DateTime.now(),
+    lastSignIn: Timestamp.now(),
     profileImageReference: '',
     userName: '',
     tokens: '',
+    friendList: [],
   ).obs;
 
   String get userID => this.user.value.userID;

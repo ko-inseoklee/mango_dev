@@ -1,31 +1,80 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:get/get.dart';
-// import 'package:mangodevelopment/model/post.dart';
-//
-// class postViewModel extends GetxController {
-//   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
-//
-//   var post = Post.init().obs;
-//
-//   getPostFromFirebase({required postID}) {
-//     mango_dev.collection('post').doc(postID);
-//   }
-//
-//   getFriendList({required uid}){
-//     mango_dev.collection('friendList').
-//   }
-//
-//   findPostFromOwner({required uid}){
-//     for(String uid in frindlist){
-//
-//     }
-//     mango_dev.collection('post').where('onwerID',isEqualTo: uid).get().then((value) => value);
-//
-// }
-// }
-//
-// // changeViewMode({required int viewMode}) {
-// //   foods.update((val) {
-// //     val!.currentTab = viewMode;
-// //   });
-// // }
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
+import 'package:mangodevelopment/model/post.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
+
+class postViewModel extends GetxController {
+  FirebaseFirestore mango_dev = FirebaseFirestore.instance;
+  UserViewModel userViewModelController = Get.find<UserViewModel>();
+
+  late List<Post> posts;
+  late List<Post> myPosts;
+
+  late List<Post> searchPosts;
+
+  postViewModel() {
+    posts = [];
+    myPosts = [];
+    searchPosts = [];
+  }
+
+  postViewModel.init() {
+    posts = [];
+    myPosts = [];
+    searchPosts = [];
+  }
+
+  loadPosts() async {
+    this.posts = [];
+    await mango_dev
+        .collection('post')
+        .where('ownerFriendList',
+            arrayContains: userViewModelController.user.value.userID)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) async {
+        posts.add(Post.fromSnapshot(element.data()));
+      });
+    });
+    // print('loading post.. ');
+    // for (int i = 0; i < posts.length; i++) {
+    //   print('${posts[i].postID}},');
+    // }
+    return posts;
+    // update();
+  }
+
+  loadMyPosts() async {
+    this.myPosts = [];
+    await mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) async {
+        myPosts.add(Post.fromSnapshot(element.data()));
+      });
+    });
+    // print('loading post.. ');
+    // for (int i = 0; i < posts.length; i++) {
+    //   print('${posts[i].postID}},');
+    // }
+
+    return myPosts;
+  }
+
+  loadSearchPosts(String _search) async {
+    this.searchPosts = [];
+    mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
+        .where('foodName', isEqualTo: _search)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) async {
+        myPosts.add(Post.fromSnapshot(element.data()));
+      });
+    });
+  }
+}
