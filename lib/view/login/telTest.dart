@@ -19,7 +19,7 @@ class _TelTestPageState extends State<TelTestPage> {
   bool requestedAuth = false; //폰인증 요청을 보냈는지 여부
   late String verificationId;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseAuth _authPhone = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class _TelTestPageState extends State<TelTestPage> {
                               // setState(() {
                               //   requestedAuth = true;
                               // });
-                              await _auth.verifyPhoneNumber(
+                              await _authPhone.verifyPhoneNumber(
                                   timeout: const Duration(seconds: 120),
                                   phoneNumber: "+1" + _telController.text,
                                   verificationCompleted:
@@ -208,11 +208,11 @@ class _TelTestPageState extends State<TelTestPage> {
       PhoneAuthCredential phoneAuthCredential) async {
     try {
       final authCredential =
-          await _auth.signInWithCredential(phoneAuthCredential);
+          await _authPhone.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
-        await _auth.currentUser!.delete();
+        await _authPhone.currentUser!.delete();
         print('auth 정보삭제');
-        await _auth.signOut();
+        await _authPhone.signOut();
         print('phone 로그인된 것 로그아웃');
 
         Get.defaultDialog(

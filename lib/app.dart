@@ -25,7 +25,7 @@ var prototypeHeight = 812.0;
 var platform = true;
 
 Future<void> saveTokenToDatabase(String token) async {
-  String userId = await FirebaseAuth.instance.currentUser!.uid.toString();
+  String userId = FirebaseAuth.instance.currentUser!.uid.toString();
 
   await FirebaseFirestore.instance.collection('user').doc(userId).update({
     'tokens': token,
@@ -95,9 +95,8 @@ class _MangoAppState extends State<MangoApp> {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: () => GetMaterialApp(
-        // home: Landing(),
-         home: TelTestPage(),
-        // home: LogInPage(title: '로그인 페이지',),
+        home: Landing(),
+        // home: TelTestPage(),
         theme: _mangoTheme,
         getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
       ),

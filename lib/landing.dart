@@ -28,8 +28,6 @@ class _LandingState extends State<Landing> {
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
-  // if (Platform.isIOS) iOS_Permission();
-
   bool isSecondPage = false;
 
   @override
