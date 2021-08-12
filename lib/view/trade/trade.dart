@@ -5,6 +5,7 @@ import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/tutorial/Home/tutorial.dart';
 import 'package:mangodevelopment/view/widget/postCardWidget.dart';
 import 'package:mangodevelopment/viewModel/postViewModel.dart';
 import 'package:mangodevelopment/viewModel/push_test.dart';
@@ -73,6 +74,7 @@ class _TradePageState extends State<TradePage> {
                 icon: Icon(Icons.chat_bubble_outline_outlined)),
             IconButton(
                 onPressed: () {
+                  Get.to(TutorialPage());
                   // Get.to(CreatePost());
                   // Get.to(MakePostInfo(), arguments: posts[0].foods);
                 },
