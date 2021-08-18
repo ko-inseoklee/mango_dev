@@ -25,8 +25,11 @@ class postViewModel extends GetxController {
     searchPosts = [];
   }
 
+  cleanPost() {
+    posts = [];
+  }
+
   loadPosts() async {
-    this.posts = [];
     await mango_dev
         .collection('post')
         .where('ownerFriendList',
@@ -34,7 +37,11 @@ class postViewModel extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) async {
-        posts.add(Post.fromSnapshot(element.data()));
+        var snap = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(element.get('ownerID'))
+            .get();
+        posts.add(Post.fromSnapshot(element.data(), snap));
       });
     });
     // print('loading post.. ');
@@ -42,10 +49,13 @@ class postViewModel extends GetxController {
     //   print('${posts[i].postID}},');
     // }
     return posts;
-    // update();
   }
 
   loadMyPosts() async {
+    var snap = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(userViewModelController.userID)
+        .get();
     this.myPosts = [];
     await mango_dev
         .collection('post')
@@ -53,7 +63,7 @@ class postViewModel extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) async {
-        myPosts.add(Post.fromSnapshot(element.data()));
+        myPosts.add(Post.fromSnapshot(element.data(),snap));
       });
     });
     // print('loading post.. ');
@@ -64,17 +74,17 @@ class postViewModel extends GetxController {
     return myPosts;
   }
 
-  loadSearchPosts(String _search) async {
-    this.searchPosts = [];
-    mango_dev
-        .collection('post')
-        .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
-        .where('foodName', isEqualTo: _search)
-        .get()
-        .then((value) {
-      value.docs.forEach((element) async {
-        myPosts.add(Post.fromSnapshot(element.data()));
-      });
-    });
-  }
+// loadSearchPosts(String _search) async {
+//   this.searchPosts = [];
+//   mango_dev
+//       .collection('post')
+//       .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
+//       .where('foodName', isEqualTo: _search)
+//       .get()
+//       .then((value) {
+//     value.docs.forEach((element) async {
+//       myPosts.add(Post.fromSnapshot(element.data()));
+//     });
+//   });
+// }
 }

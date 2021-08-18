@@ -98,7 +98,7 @@ class _MangoAppState extends State<MangoApp> {
         home: Landing(),
         // home: TelTestPage(),
         theme: _mangoTheme,
-        getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
+        // getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
       ),
       designSize: Size(375, 812),
     );

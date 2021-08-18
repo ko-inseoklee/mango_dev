@@ -16,11 +16,6 @@ class Post {
   late String subtitle;
 
   late User owner;
-
-  late String ownerID;
-  late String ownerName;
-  late String profileImageRef;
-
   late List<String> ownerFriendList;
 
   late Food foods;
@@ -31,9 +26,6 @@ class Post {
     this.registTime = Timestamp.now();
     this.subtitle = '나눔합니다';
     this.foods = Food.init();
-    this.ownerID = '';
-    this.ownerName = '';
-    this.profileImageRef = '-1';
     this.ownerFriendList = [];
     this.owner = User.init(
         userID: '',
@@ -53,34 +45,25 @@ class Post {
         isAlarmOn: true);
   }
 
-  Post.fromSnapshot(
-    Map<String, dynamic> post,
-  )   : postID = post['postID'],
+  Post.fromSnapshot(Map<String, dynamic> post, DocumentSnapshot snapshot)
+      : postID = post['postID'],
         state = post['state'],
         registTime = post['registTime'],
         foods = Food.init(),
         // foods = Food.fromSnapshot(food),
         subtitle = post['subtitle'],
-        ownerID = post['ownerID'],
-        ownerName = post['ownerName'],
-        profileImageRef = post['profileImageRef'],
-        ownerFriendList = post['ownerFriendList'].cast<String>(),
+        ownerFriendList = User.fromSnapshot(snapshot).friendList,
+        owner = User.fromSnapshot(snapshot);
 
-        //TODO: owner = User.fromSanpshot
-        owner = User.init(
-            userID: post['ownerID'],
-            creationTime: post['registTime'],
-            refrigeratorID: '',
-            refrigerationAlarm: 0,
-            isRefShelf: false,
-            frozenAlarm: 0,
-            isFroShelf: false,
-            roomTempAlarm: 0,
-            isRTShelf: false,
-            lastSignIn: Timestamp.now(),
-            profileImageReference: post['profileImageRef'],
-            userName: post['ownerName'],
-            tokens: '',
-            friendList: post['ownerFriendList'].cast<String>(),
-            isAlarmOn: true);
+// Post fromPostSnapshot(Map<String, dynamic> post) async {
+//   Post.fromSnapshot(post);
+//   var snap = await FirebaseFirestore.instance
+//       .collection('user')
+//       .doc(post['onwerID'])
+//       .get().then((value){
+//         this.owner = User.fromSnapshot(value);
+//   });
+//   return post;
+// }
+
 }

@@ -4,12 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:mangodevelopment/model/post.dart';
-import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
-import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
-import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
@@ -32,14 +28,13 @@ class MangoPostCard extends StatelessWidget {
 
   Post post;
 
-
   MangoPostCard({Key? key, required Post post}) : post = post;
 
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
-      print('HERE!! ${post.profileImageRef} / ${post.postID}');
+      print('HERE!! ${post.owner.profileImageReference} / ${post.postID}');
       return Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -70,7 +65,7 @@ class MangoPostCard extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         print('check == ${post
-                            .ownerID} / ${userViewModelController.userID}');
+                            .owner.userID} / ${userViewModelController.userID}');
                       },
                       child: Text(
                         post.subtitle,
@@ -81,7 +76,7 @@ class MangoPostCard extends StatelessWidget {
                         Container(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: post.profileImageRef == '-1'
+                            child: post.owner.profileImageReference == '-1'
                                 ? Container(
                               width: 30,
                               height: 30,
@@ -95,7 +90,7 @@ class MangoPostCard extends StatelessWidget {
                               ),
                             )
                                 : Image.network(
-                              post.profileImageRef,
+                              post.owner.profileImageReference,
                               fit: BoxFit.fitHeight,
                               width: 30,
                               height: 30,
@@ -103,7 +98,7 @@ class MangoPostCard extends StatelessWidget {
                           ),
                           margin: EdgeInsets.only(right: 25),
                         ),
-                        Text(post.ownerName),
+                        Expanded(child: Text(post.owner.userName)),
 
                         Container(
                           decoration: BoxDecoration(
@@ -113,8 +108,8 @@ class MangoPostCard extends StatelessWidget {
                             width: 1,
                             color: Colors.grey.withOpacity(0.5),
                           ),),
-                          margin: EdgeInsets.only(left: 70),
-                          child: post.ownerID ==
+                          margin: EdgeInsets.only(right: 10),
+                          child: post.owner.userID ==
                               userViewModelController.user.value.userID
                               ? Container(
                             margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
@@ -195,8 +190,8 @@ class MangoPostCard extends StatelessWidget {
       'takerID': uid,
       'takerName': name,
       'postID': post.postID,
-      'onwerID': post.ownerID,
-      'ownerName': post.ownerName,
+      'onwerID': post.owner.userID,
+      'ownerName': post.owner.userName,
       'lastAccess': Timestamp.now(),
     });
 
@@ -215,12 +210,12 @@ class MangoPostCard extends StatelessWidget {
     } else {
       mango_dev.collection('user').doc(uid).collection('chatList').doc().set({
         'chatID': chatID,
-        'friend': post.ownerName,
+        'friend': post.owner.userName,
       });
 
       mango_dev
           .collection('user')
-          .doc(post.ownerID)
+          .doc(post.owner.userID)
           .collection('chatList')
           .doc()
           .set({

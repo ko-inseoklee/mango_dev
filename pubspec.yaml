@@ -46,6 +46,8 @@ dependencies:
   flutter_screenutil: ^5.0.0+2
   firebase_storage: ^10.0.1
   flutter_web_auth: ^0.3.0
+  geolocator: ^7.4.0
+  geocoding: ^2.0.0
 
 dev_dependencies:
   flutter_test:
