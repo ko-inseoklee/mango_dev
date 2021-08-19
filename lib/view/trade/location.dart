@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart';
+import 'package:mangodevelopment/viewModel/postViewModel.dart';
 
 class Location extends StatefulWidget {
   @override
@@ -9,6 +12,9 @@ class Location extends StatefulWidget {
 }
 
 class _LocationState extends State<Location> {
+
+  postViewModel postView = Get.put(postViewModel());
+
   late List<Placemark> placemarks;
   late double distance;
 
@@ -61,6 +67,12 @@ class _LocationState extends State<Location> {
           child: Text('print distance from handong'),
           onTap: () {
             print('거리: $distance');
+          },
+        ),
+        InkWell(
+          child: Text('print distance from handong'),
+          onTap: () {
+            postView.loadLocalPosts(deviceLat);
           },
         ),
       ],),

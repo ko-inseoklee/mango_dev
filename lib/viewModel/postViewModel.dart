@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -12,17 +13,20 @@ class postViewModel extends GetxController {
   late List<Post> myPosts;
 
   late List<Post> searchPosts;
+  late List<Post> localPost;
 
   postViewModel() {
     posts = [];
     myPosts = [];
     searchPosts = [];
+    localPost = [];
   }
 
   postViewModel.init() {
     posts = [];
     myPosts = [];
     searchPosts = [];
+    localPost = [];
   }
 
   cleanPost() {
@@ -33,7 +37,7 @@ class postViewModel extends GetxController {
     await mango_dev
         .collection('post')
         .where('ownerFriendList',
-            arrayContains: userViewModelController.user.value.userID)
+        arrayContains: userViewModelController.user.value.userID)
         .get()
         .then((value) {
       value.docs.forEach((element) async {
@@ -63,7 +67,7 @@ class postViewModel extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) async {
-        myPosts.add(Post.fromSnapshot(element.data(),snap));
+        myPosts.add(Post.fromSnapshot(element.data(), snap));
       });
     });
     // print('loading post.. ');
@@ -72,6 +76,29 @@ class postViewModel extends GetxController {
     // }
 
     return myPosts;
+  }
+
+  loadLocalPosts(Position userLocation) async {
+    await mango_dev.collection('post').snapshots().forEach((element) {
+      element.docs.forEach((element) async {
+        // print(element.data()['location'].latitude);
+        // print(element.data()['location'].longitude);
+        var distance = await Geolocator.distanceBetween(
+            userLocation.latitude,
+            userLocation.longitude,
+            element.data()['location'].latitude,
+            element.data()['location'].longitude);
+        if (distance > 2500) {
+          print('($distance): too far');
+        } else {
+          print('($distance): is local');
+        }
+      });
+    });
+    // print('loading post.. ');
+    // for (int i = 0; i < posts.length; i++) {
+    //   print('${posts[i].postID}},');
+    // }
   }
 
 // loadSearchPosts(String _search) async {
