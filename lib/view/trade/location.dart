@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -9,8 +10,17 @@ class Location extends StatefulWidget {
 
 class _LocationState extends State<Location> {
   late List<Placemark> placemarks;
+  late double distance;
 
-  late Position lat;
+  late Position deviceLat;
+  Position hguLat = Position(longitude: 129.38969404197408,
+      latitude: 36.102863994751445,
+      timestamp: DateTime.now(),
+      accuracy: 50,
+      altitude: 0,
+      heading: 0,
+      speed: 0,
+      speedAccuracy: 0);
 
   @override
   void initState() {
@@ -24,18 +34,33 @@ class _LocationState extends State<Location> {
       appBar: AppBar(title: Text('Location')),
       body: Column(children: [
         InkWell(
-          child: Text('get loc'),
+          child: Text('get device position'),
           onTap: () async {
-            lat = await _determinePosition();
+            deviceLat = await _determinePosition();
           },
         ),
         InkWell(
           child: Text('print address'),
           onTap: () async {
-            placemarks = await placemarkFromCoordinates(lat.latitude, lat.longitude);
+            placemarks = await placemarkFromCoordinates(
+                deviceLat.latitude, deviceLat.longitude);
             print('adress: ');
             print(placemarks);
             print('------');
+          },
+        ),
+        InkWell(
+          child: Text('calculate distance from handong'),
+          onTap: () async {
+            distance = await Geolocator.distanceBetween(
+                deviceLat.latitude, deviceLat.longitude, hguLat.latitude,
+                hguLat.longitude);
+          },
+        ),
+        InkWell(
+          child: Text('print distance from handong'),
+          onTap: () {
+            print('거리: $distance');
           },
         ),
       ],),
