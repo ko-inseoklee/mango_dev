@@ -40,9 +40,15 @@ class _ChatListState extends State<ChatList> {
           return ListView.separated(
               itemBuilder: (context, index) {
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
+                // String prof = mango_dev
+                //     .collection('user')
+                //     .doc(documents.elementAt(index).get('friendID'))
+                //     .get('profileImageReference').toString();
+
                 return InkWell(
                   onTap: () {
-                    ChatRoomViewModel().AccessChatRoom(documents.elementAt(index).get('chatID'));
+                    ChatRoomViewModel().AccessChatRoom(
+                        documents.elementAt(index).get('chatID'));
                     Get.to(ChatRoom(
                       chatID: documents.elementAt(index).get('chatID'),
                       friendName: documents.elementAt(index).get('friend'),
@@ -50,6 +56,7 @@ class _ChatListState extends State<ChatList> {
                   },
                   child: ListTile(
                     title: Text(documents.elementAt(index).get('friend')),
+                    subtitle: Text(),
                   ),
                 );
               },

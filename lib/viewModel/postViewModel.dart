@@ -37,7 +37,7 @@ class postViewModel extends GetxController {
     await mango_dev
         .collection('post')
         .where('ownerFriendList',
-        arrayContains: userViewModelController.user.value.userID)
+            arrayContains: userViewModelController.user.value.userID)
         .get()
         .then((value) {
       value.docs.forEach((element) async {
@@ -70,11 +70,6 @@ class postViewModel extends GetxController {
         myPosts.add(Post.fromSnapshot(element.data(), snap));
       });
     });
-    // print('loading post.. ');
-    // for (int i = 0; i < posts.length; i++) {
-    //   print('${posts[i].postID}},');
-    // }
-
     return myPosts;
   }
 
@@ -88,17 +83,19 @@ class postViewModel extends GetxController {
             userLocation.longitude,
             element.data()['location'].latitude,
             element.data()['location'].longitude);
-        if (distance > 2500) {
-          print('($distance): too far');
-        } else {
+        if (distance < 2500) {
+          var snap = await FirebaseFirestore.instance
+              .collection('user')
+              .doc(element.get('ownerID'))
+              .get();
           print('($distance): is local');
+          localPost.add(Post.fromSnapshot(element.data(), snap));
+        } else {
+          print('($distance): too far');
         }
       });
     });
-    // print('loading post.. ');
-    // for (int i = 0; i < posts.length; i++) {
-    //   print('${posts[i].postID}},');
-    // }
+    return localPost;
   }
 
 // loadSearchPosts(String _search) async {

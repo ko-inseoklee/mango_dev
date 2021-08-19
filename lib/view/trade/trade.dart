@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
@@ -30,6 +31,7 @@ class _TradePageState extends State<TradePage> {
   late List<Post> myPosts = [];
 
   late List<Post> searchPosts = [];
+  late List<Post> localPosts = [];
 
   postViewModel post = Get.put(postViewModel());
 
@@ -43,6 +45,7 @@ class _TradePageState extends State<TradePage> {
     // posts = post.loadPosts();
     // getFriendList(userViewModelController.userID);
     loadPost();
+
     // loadMyPost();
   }
 
@@ -181,6 +184,10 @@ class _TradePageState extends State<TradePage> {
 
   void loadPost() async {
     posts = await post.loadPosts();
+  }
+
+  void loadLocalPost(Position userLocation) async {
+    localPosts = await post.loadLocalPosts(userLocation);
   }
 
   // void loadMyPost() async {
