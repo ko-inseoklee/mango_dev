@@ -18,6 +18,7 @@ class Post {
   late User owner;
   late List<String> ownerFriendList;
 
+
   late Food foods;
 
   Post.init() {

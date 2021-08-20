@@ -17,6 +17,34 @@ class _ChatListState extends State<ChatList> {
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
+  List<String> _text = [];
+
+  @override
+  void initState() {
+    _text = List.filled(100, '-');
+  }
+
+  Future<void> getMessage(String docID, int index) async {
+    mango_dev
+        .collection('chatRooms')
+        .doc(docID)
+        .collection('messages')
+        .orderBy('date', descending: true)
+        .limit(1)
+        .get()
+        .then((value) {
+      if (value.docs.length == 0) {
+        setState(() {
+          _text[index] = '대화 시작';
+        });
+      } else {
+        setState(() {
+          _text[index] = value.docs.first.get('text').toString();
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +53,7 @@ class _ChatListState extends State<ChatList> {
         title: Text('채팅 목록'),
       ),
       body: StreamBuilder<QuerySnapshot>(
+        // stream: mango_dev.collection('chatRooms').where('ownerID'),
         stream: mango_dev
             .collection('user')
             .doc(userViewModelController.userID)
@@ -40,10 +69,7 @@ class _ChatListState extends State<ChatList> {
           return ListView.separated(
               itemBuilder: (context, index) {
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
-                // String prof = mango_dev
-                //     .collection('user')
-                //     .doc(documents.elementAt(index).get('friendID'))
-                //     .get('profileImageReference').toString();
+                getMessage(documents.elementAt(index).get('chatID'), index);
 
                 return InkWell(
                   onTap: () {
@@ -56,7 +82,7 @@ class _ChatListState extends State<ChatList> {
                   },
                   child: ListTile(
                     title: Text(documents.elementAt(index).get('friend')),
-                    subtitle: Text(),
+                    subtitle: Text(_text[index]),
                   ),
                 );
               },
