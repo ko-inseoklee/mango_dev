@@ -26,6 +26,7 @@ class AddUserInfoPage2 extends StatefulWidget {
 
 class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
   Authentication _auth = Get.find<Authentication>();
+  FirebaseAuth _authPhone = FirebaseAuth.instance;
 
   List<String> _pageTitle = ['개인정보 설정', '본인인증', '알림 주기 설정'];
   var _contentWidth = 350.0;
@@ -39,7 +40,6 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
   bool requestedAuth = false; //폰인증 요청을 보냈는지 여부
   late String verificationId;
 
-  FirebaseAuth _authPhone = FirebaseAuth.instance;
 
   refrigerationAlarmType _refrigerationAlarmType =
       refrigerationAlarmType.shelfLife;
@@ -338,6 +338,10 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
         print('auth 정보삭제');
         await _authPhone.signOut();
         print('phone 로그인된 것 로그아웃');
+        if(_auth.authWay == 0){ // google login
+          await _auth.googleLogin();
+          print("google login again");
+        }
 
         Get.defaultDialog(
           title: "",

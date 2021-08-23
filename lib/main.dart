@@ -6,12 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'package:kakao_flutter_sdk/all.dart';
+
 import 'package:mangodevelopment/app.dart';
-import 'package:mangodevelopment/view/login/addUserInfo.dart';
-import 'package:mangodevelopment/view/splash.dart';
-import './view/home.dart';
-import './view/login/login.dart';
-import 'color.dart';
 
 late var cameras;
 
@@ -35,6 +32,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); //// Add this
   await Firebase.initializeApp();
   cameras = await availableCameras();
+  KakaoContext.clientId = "b6d297fef62ea93f6eab9450cf52dbcd";
+  KakaoContext.javascriptClientId = "fe140c483552df2bcb87dad629bf0464";
   // await getDeviceToken();
   runApp(MangoApp());
 }

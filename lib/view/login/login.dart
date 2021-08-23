@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -115,8 +116,8 @@ class LogInPage extends StatelessWidget {
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               onPressed: () {
-                Get.find<Authentication>().googleLogin().then((value){
-                  authController.loadId();
+                Get.find<Authentication>().googleLogin().then((value) async{
+                  await authController.loadId();
                   Get.off(Landing());
                 });
               },
