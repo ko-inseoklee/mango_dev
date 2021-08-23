@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 
+import '../../../color.dart';
+
 class MangoFloatingActionButton extends StatelessWidget {
-  const MangoFloatingActionButton({Key? key}) : super(key: key);
+  final int currentPage;
+  final VoidCallback onPressed;
+  const MangoFloatingActionButton(
+      {Key? key, required this.currentPage, required this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      onPressed: () {
-        print('work well.');
-      },
-      child: Icon(Icons.add),
+      onPressed: onPressed,
+      child: Icon(currentPage == 1 ? Icons.create : Icons.add),
+      backgroundColor: Orange400,
     );
   }
 }

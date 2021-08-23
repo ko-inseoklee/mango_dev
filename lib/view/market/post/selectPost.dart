@@ -8,15 +8,15 @@ import 'package:mangodevelopment/view/widget/refrigerator/foodSections.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
-class RefrigeratorPage extends StatefulWidget {
+class selectPostFoodPage extends StatefulWidget {
   String title;
-  RefrigeratorPage({Key? key, required String title}) : title = title;
+  selectPostFoodPage({Key? key, required String title}) : title = title;
 
   @override
-  _RefrigeratorPageState createState() => _RefrigeratorPageState();
+  _selectPostFoodPage createState() => _selectPostFoodPage();
 }
 
-class _RefrigeratorPageState extends State<RefrigeratorPage> {
+class _selectPostFoodPage extends State<selectPostFoodPage> {
   int currentTab = 0;
 
   late UserViewModel user;
@@ -45,7 +45,7 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
       child: Scaffold(
         backgroundColor: MangoWhite,
         appBar: MangoAppBar(
-          isLeading: false,
+          isLeading: true,
           title: widget.title,
         ),
         body: SingleChildScrollView(
@@ -68,24 +68,13 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
     );
   }
 
-  // Widget refrigeratorView({required int viewType}) {
-  //   switch (viewType) {
-  //     case 1:
-  //       return viewWithShelfLife();
-  //     case 2:
-  //       return viewWithCategories();
-  //     default:
-  //       return viewWithOnce();
-  //   }
-  // }
-
   Widget viewWithOnce({required int viewType}) {
     return viewType == 1
         ? Obx(() {
             return FoodsSection(
               foods: refrigerator.ref.value.frozenFoods,
               title: onceTitle[1],
-              isPost: false,
+              isPost: true,
             );
           })
         : viewType == 2
@@ -93,14 +82,14 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
                 return FoodsSection(
                   foods: refrigerator.ref.value.roomTempFoods,
                   title: onceTitle[2],
-                  isPost: false,
+                  isPost: true,
                 );
               })
             : Obx(() {
                 return FoodsSection(
                   foods: refrigerator.ref.value.refrigerationFoods,
                   title: onceTitle[0],
-                  isPost: false,
+                  isPost: true,
                 );
               });
   }
@@ -109,21 +98,24 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
     return Column(children: [
       Obx(() {
         return FoodsSection(
-            foods: refrigerator.ref.value.refrigerationFoods,
-            title: onceTitle[0],
-            isPost: false);
+          foods: refrigerator.ref.value.refrigerationFoods,
+          title: onceTitle[0],
+          isPost: true,
+        );
       }),
       Obx(() {
         return FoodsSection(
-            foods: refrigerator.ref.value.frozenFoods,
-            title: onceTitle[1],
-            isPost: false);
+          foods: refrigerator.ref.value.frozenFoods,
+          title: onceTitle[1],
+          isPost: true,
+        );
       }),
       Obx(() {
         return FoodsSection(
-            foods: refrigerator.ref.value.roomTempFoods,
-            title: onceTitle[2],
-            isPost: false);
+          foods: refrigerator.ref.value.roomTempFoods,
+          title: onceTitle[2],
+          isPost: true,
+        );
       }),
     ]);
   }
@@ -132,21 +124,24 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
     return Column(children: [
       Obx(() {
         return FoodsSection(
-            foods: refrigerator.ref.value.refrigerationFoods,
-            title: onceTitle[0],
-            isPost: false);
+          foods: refrigerator.ref.value.refrigerationFoods,
+          title: onceTitle[0],
+          isPost: true,
+        );
       }),
       Obx(() {
         return FoodsSection(
-            foods: refrigerator.ref.value.frozenFoods,
-            title: onceTitle[1],
-            isPost: false);
+          foods: refrigerator.ref.value.frozenFoods,
+          title: onceTitle[1],
+          isPost: true,
+        );
       }),
       Obx(() {
         return FoodsSection(
-            foods: refrigerator.ref.value.roomTempFoods,
-            title: onceTitle[2],
-            isPost: false);
+          foods: refrigerator.ref.value.roomTempFoods,
+          title: onceTitle[2],
+          isPost: true,
+        );
       }),
     ]);
   }

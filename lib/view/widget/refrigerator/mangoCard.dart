@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
+import 'package:mangodevelopment/view/market/post/addPost.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/deleteDialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/detailDialog.dart';
@@ -15,6 +16,7 @@ class MangoCard extends StatelessWidget {
   final Food food;
   VoidCallback longPressed;
   final bool isLongPressed;
+  final bool isPost;
 
   late RefrigeratorViewModel _refController;
 
@@ -22,7 +24,8 @@ class MangoCard extends StatelessWidget {
       {Key? key,
       required this.food,
       required this.longPressed,
-      required this.isLongPressed})
+      required this.isLongPressed,
+      required this.isPost})
       : super(key: key);
 
   @override
@@ -317,12 +320,21 @@ class MangoCard extends StatelessWidget {
   }
 
   VoidCallback onPressed({required Food food}) {
-    return () {
-      Get.dialog(DetailDialog(
-          food: food,
-          onPressed: () async {
-            _refController.updateFood(food: food).then((value) => Get.back());
-          }));
-    };
+    return isPost
+        ? () {
+            Get.to(AddPostPage(
+              title: '거래품목 등록',
+              food: food,
+            ));
+          }
+        : () {
+            Get.dialog(DetailDialog(
+                food: food,
+                onPressed: () async {
+                  _refController
+                      .updateFood(food: food)
+                      .then((value) => Get.back());
+                }));
+          };
   }
 }

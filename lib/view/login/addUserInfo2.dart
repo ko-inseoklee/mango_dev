@@ -27,7 +27,7 @@ class AddUserInfoPage2 extends StatefulWidget {
 class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
   Authentication _auth = Get.find<Authentication>();
 
-  List<String> _pageTitle = ['개인정보 설정','본인인증','알림 주기 설정'];
+  List<String> _pageTitle = ['개인정보 설정', '본인인증', '알림 주기 설정'];
   var _contentWidth = 350.0;
 
   int _pageIndex = 0;
@@ -74,12 +74,11 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
         body: _pageIndex == 0
             ? setPersonalDataPage(context)
             : _pageIndex == 1
-            ? setPhonePage(context)
-            : setAlarmPage(context));
+                ? setPhonePage(context)
+                : setAlarmPage(context));
   }
 
   Widget setPersonalDataPage(BuildContext context) {
-
     return Container(
       padding: EdgeInsets.all(20), //TODO. 20??
       color: MangoWhite,
@@ -120,10 +119,10 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                 controller: _nameController,
                 decoration: InputDecoration(
                   errorBorder:
-                  OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
+                      OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
                   border: OutlineInputBorder(),
                   focusedBorder:
-                  OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
+                      OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
                 ),
               ),
             ),
@@ -132,7 +131,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                     width: deviceWidth,
                     height: 46.0 * (deviceWidth / prototypeWidth)),
                 child: ElevatedButton(
-                  //TODO: It will be change '인증' after adding phone number authentication.
+                    //TODO: It will be change '인증' after adding phone number authentication.
                     child: Text('다음'),
                     onPressed: () async {
                       setState(() {
@@ -142,8 +141,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                       _userName = _nameController.text;
                       _tokens = (await FirebaseMessaging.instance.getToken())!;
                       //_pageIndex = 1;
-                    }
-                )),
+                    })),
           ],
         ),
       ),
@@ -156,179 +154,175 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
     return token;
   }
 
-  Widget setPhonePage(BuildContext context){
-
+  Widget setPhonePage(BuildContext context) {
     return ListView(
       children: [
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: Center(
               child: Column(children: [
-                Container(
-                  padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
-                  width: _contentWidth * (deviceWidth * deviceHeight),
-                  child: Text(
-                    '휴대폰 인증을 완료해주세요.',
-                    style: Theme.of(context).textTheme.headline6,
+            Container(
+              padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
+              width: _contentWidth * (deviceWidth * deviceHeight),
+              child: Text(
+                '휴대폰 인증을 완료해주세요.',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: ScreenUtil().setHeight(5)),
+              width: _contentWidth * (deviceWidth * deviceHeight),
+              child: Text(
+                '계정 도용을 막기 위한 본인 인증 절차입니다.',
+                style: Theme.of(context)
+                    .textTheme
+                    .caption!
+                    .copyWith(color: MangoDisabledColorDark),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: ScreenUtil().setHeight(30)),
+              width: _contentWidth * (deviceWidth * deviceHeight),
+              child: Text(
+                '휴대폰 번호',
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(color: MangoDisabledColorDark),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.fromLTRB(
+                        0, 14 * (deviceWidth / prototypeWidth), 0, 0),
+                    // width: _contentWidth * (deviceWidth * deviceHeight),
+                    child: TextField(
+                      maxLength: 11,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                      ],
+                      controller: _telController,
+                      decoration: InputDecoration(
+                        hintText: '5555215554',
+                        errorBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 1.0)),
+                        border: OutlineInputBorder(),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 1.0)),
+                      ),
+                    ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: ScreenUtil().setHeight(5)),
-                  width: _contentWidth * (deviceWidth * deviceHeight),
-                  child: Text(
-                    '계정 도용을 막기 위한 본인 인증 절차입니다.',
-                    style: Theme.of(context)
-                        .textTheme
-                        .caption!
-                        .copyWith(color: MangoDisabledColorDark),
-                  ),
+                SizedBox(
+                  width: 10,
                 ),
+                ConstrainedBox(
+                    constraints: BoxConstraints.tightFor(
+                        width: 100, height: ScreenUtil().setHeight(60)),
+                    child: ElevatedButton(
+                        child: Text('인증요청'),
+                        onPressed: () async {
+                          // setState(() {
+                          //   requestedAuth = true;
+                          // });
+                          await _authPhone.verifyPhoneNumber(
+                              timeout: const Duration(seconds: 120),
+                              phoneNumber: "+1" + _telController.text,
+                              verificationCompleted:
+                                  (phoneAuthCredential) async {
+                                print('otp 문자옴');
+                              },
+                              verificationFailed: (verificationFailed) {
+                                print(verificationFailed.code);
+                                print('코드 발송 실패');
+                              },
+                              codeSent: (verificationId, resendingToken) async {
+                                print('코드 보냄');
+                                Get.snackbar("MESSAGE",
+                                    "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
+                                setState(() {
+                                  requestedAuth = true;
+                                  // FocusScope.of(context).requestFocus(otpFocusNode);
+                                  this.verificationId = verificationId;
+                                  print("verification id: $verificationId");
+                                });
+                              },
+                              codeAutoRetrievalTimeout:
+                                  (String verificationId) {});
+                        }))
+              ],
+            ),
+            Column(
+              children: [
                 Container(
-                  padding: EdgeInsets.only(top: ScreenUtil().setHeight(30)),
                   width: _contentWidth * (deviceWidth * deviceHeight),
                   child: Text(
-                    '휴대폰 번호',
+                    '인증번호 입력',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle2!
                         .copyWith(color: MangoDisabledColorDark),
                   ),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(
-                            0, 14 * (deviceWidth / prototypeWidth), 0, 0),
-                        // width: _contentWidth * (deviceWidth * deviceHeight),
-                        child: TextField(
-                          maxLength: 11,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                          ],
-                          controller: _telController,
-                          decoration: InputDecoration(
-                            hintText: '5555215554',
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 1.0)),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 1.0)),
-                          ),
-                        ),
-                      ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(
+                    0,
+                    14 * (deviceWidth / prototypeWidth),
+                    0,
+                    0,
+                  ),
+                  width: _contentWidth * (deviceWidth * deviceHeight),
+                  child: TextField(
+                    maxLength: 6,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                    ],
+                    controller: _optController,
+                    decoration: InputDecoration(
+                      errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1.0)),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1.0)),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    ConstrainedBox(
-                        constraints: BoxConstraints.tightFor(
-                            width: 100, height: ScreenUtil().setHeight(60)),
-                        child: ElevatedButton(
-                            child: Text('인증요청'),
-                            onPressed: () async {
-                              // setState(() {
-                              //   requestedAuth = true;
-                              // });
-                              await _authPhone.verifyPhoneNumber(
-                                  timeout: const Duration(seconds: 120),
-                                  phoneNumber: "+1" + _telController.text,
-                                  verificationCompleted:
-                                      (phoneAuthCredential) async {
-                                    print('otp 문자옴');
-                                  },
-                                  verificationFailed: (verificationFailed) {
-                                    print(verificationFailed.code);
-                                    print('코드 발송 실패');
-                                  },
-                                  codeSent:
-                                      (verificationId, resendingToken) async {
-                                    print('코드 보냄');
-                                    Get.snackbar("MESSAGE",
-                                        "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
-                                    setState(() {
-                                      requestedAuth = true;
-                                      // FocusScope.of(context).requestFocus(otpFocusNode);
-                                      this.verificationId = verificationId;
-                                      print("verification id: $verificationId");
-                                    });
-                                  },
-                                  codeAutoRetrievalTimeout:
-                                      (String verificationId) {});
-                            }))
-                  ],
+                  ),
                 ),
-                Column(
-                  children: [
-                    Container(
-                      width: _contentWidth * (deviceWidth * deviceHeight),
-                      child: Text(
-                        '인증번호 입력',
-                        style: Theme.of(context)
-                            .textTheme
-                            .subtitle2!
-                            .copyWith(color: MangoDisabledColorDark),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(
-                        0,
-                        14 * (deviceWidth / prototypeWidth),
-                        0,
-                        0,
-                      ),
-                      width: _contentWidth * (deviceWidth * deviceHeight),
-                      child: TextField(
-                        maxLength: 6,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                        ],
-                        controller: _optController,
-                        decoration: InputDecoration(
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1.0)),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1.0)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Visibility(
-                  visible: requestedAuth,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: ConstrainedBox(
-                        constraints: BoxConstraints.tightFor(
-                            width: deviceWidth,
-                            height: 46.0 * (deviceWidth / prototypeWidth)),
-                        child: ElevatedButton(
-                            child:
-                            authOk == true ? Text('다음') : Text('인증번호 확인'),
-                            onPressed: () async {
-                              //'인증번호 확인'일 경우
-                              if (authOk == false) {
-                                PhoneAuthCredential phoneAuthCredential =
+              ],
+            ),
+            Visibility(
+              visible: requestedAuth,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: ConstrainedBox(
+                    constraints: BoxConstraints.tightFor(
+                        width: deviceWidth,
+                        height: 46.0 * (deviceWidth / prototypeWidth)),
+                    child: ElevatedButton(
+                        child: authOk == true ? Text('다음') : Text('인증번호 확인'),
+                        onPressed: () async {
+                          //'인증번호 확인'일 경우
+                          if (authOk == false) {
+                            PhoneAuthCredential phoneAuthCredential =
                                 PhoneAuthProvider.credential(
                                     verificationId: verificationId,
                                     smsCode: _optController.text);
-                                signInWithPhoneAuthCredential(
-                                    phoneAuthCredential);
-                              }
-                              //'다음'인경
-                              if (authOk == true) {
-                                setState(() {
-                                  _pageIndex = 2;
-                                });
-                                //TODO. DB에 phone정보도 넣어야 된다.
-                              }
-                            }
-                          //style: ButtonStyle(),
+                            signInWithPhoneAuthCredential(phoneAuthCredential);
+                          }
+                          //'다음'인경
+                          if (authOk == true) {
+                            setState(() {
+                              _pageIndex = 2;
+                            });
+                            //TODO. DB에 phone정보도 넣어야 된다.
+                          }
+                        }
+                        //style: ButtonStyle(),
                         )),
-                  ),
-                ),
-              ])),
+              ),
+            ),
+          ])),
         ),
       ],
     );
@@ -338,7 +332,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
       PhoneAuthCredential phoneAuthCredential) async {
     try {
       final authCredential =
-      await _authPhone.signInWithCredential(phoneAuthCredential);
+          await _authPhone.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
         await _authPhone.currentUser!.delete();
         print('auth 정보삭제');
@@ -405,14 +399,13 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
             )
           ],
         ),
-      ).then((value){
+      ).then((value) {
         setState(() {
           authOk = false;
         });
       });
     }
   }
-
 
   Widget setAlarmPage(BuildContext context) {
     var _buttonWidth = 156.0;
@@ -471,8 +464,8 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                             //TODO. 뭔가 이상?
                             alarmIdx == 0
                                 ? _auth
-                                .signOut()
-                                .then((value) => Get.off(Landing()))
+                                    .logOut()
+                                    .then((value) => Get.off(Landing()))
                                 : alarmIdx--;
                           });
                         })),
@@ -576,7 +569,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
               Text('알림일',
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
                       color:
-                      alarmIdx == type ? MangoBlack : MangoDisabledColor))
+                          alarmIdx == type ? MangoBlack : MangoDisabledColor))
             ],
           ),
           SizedBox(
@@ -600,28 +593,28 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                         value: type == 0
                             ? refrigerationAlarmType.shelfLife
                             : type == 1
-                            ? frozenAlarmType.shelfLife
-                            : roomTempAlarmType.shelfLife,
+                                ? frozenAlarmType.shelfLife
+                                : roomTempAlarmType.shelfLife,
                         groupValue: type == 0
                             ? _refrigerationAlarmType
                             : type == 1
-                            ? _frozenAlarmType
-                            : _roomTempAlarmType,
+                                ? _frozenAlarmType
+                                : _roomTempAlarmType,
                         onChanged: (value) {
                           alarmIdx == type
                               ? setState(() {
-                            if (type == 0) {
-                              _isRefShelf = true;
-                              _refrigerationAlarmType = value;
-                            } else if (type == 1) {
-                              _isFroShelf = true;
-                              _frozenAlarmType = value;
-                            } else {
-                              _isRTShelf = true;
-                              _roomTempAlarmType = value;
-                            }
-                            // ignore: unnecessary_statements
-                          })
+                                  if (type == 0) {
+                                    _isRefShelf = true;
+                                    _refrigerationAlarmType = value;
+                                  } else if (type == 1) {
+                                    _isFroShelf = true;
+                                    _frozenAlarmType = value;
+                                  } else {
+                                    _isRTShelf = true;
+                                    _roomTempAlarmType = value;
+                                  }
+                                  // ignore: unnecessary_statements
+                                })
                               : null;
                         },
                       ),
@@ -649,32 +642,32 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                               ? Theme.of(context).accentColor
                               : MangoDisabledColor,
                           materialTapTargetSize:
-                          MaterialTapTargetSize.shrinkWrap,
+                              MaterialTapTargetSize.shrinkWrap,
                           value: type == 0
                               ? refrigerationAlarmType.registerDate
                               : type == 1
-                              ? frozenAlarmType.registerDate
-                              : roomTempAlarmType.registerDate,
+                                  ? frozenAlarmType.registerDate
+                                  : roomTempAlarmType.registerDate,
                           groupValue: type == 0
                               ? _refrigerationAlarmType
                               : type == 1
-                              ? _frozenAlarmType
-                              : _roomTempAlarmType,
+                                  ? _frozenAlarmType
+                                  : _roomTempAlarmType,
                           onChanged: (value) {
                             alarmIdx == type
                                 ? setState(() {
-                              if (type == 0) {
-                                _isRefShelf = false;
-                                _refrigerationAlarmType = value;
-                              } else if (type == 1) {
-                                _isFroShelf = false;
-                                _frozenAlarmType = value;
-                              } else {
-                                _isRTShelf = false;
-                                _roomTempAlarmType = value;
-                              }
-                              // ignore: unnecessary_statements
-                            })
+                                    if (type == 0) {
+                                      _isRefShelf = false;
+                                      _refrigerationAlarmType = value;
+                                    } else if (type == 1) {
+                                      _isFroShelf = false;
+                                      _frozenAlarmType = value;
+                                    } else {
+                                      _isRTShelf = false;
+                                      _roomTempAlarmType = value;
+                                    }
+                                    // ignore: unnecessary_statements
+                                  })
                                 : null;
                           },
                         ),
@@ -684,9 +677,9 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                               .textTheme
                               .subtitle2!
                               .copyWith(
-                              color: alarmIdx == type
-                                  ? MangoBlack
-                                  : MangoDisabledColor),
+                                  color: alarmIdx == type
+                                      ? MangoBlack
+                                      : MangoDisabledColor),
                           textAlign: TextAlign.start,
                         ),
                       ],
@@ -714,8 +707,8 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                           child: type == 0
                               ? Text('$_refrigerationAlarm일 전')
                               : type == 1
-                              ? Text('$_frozenAlarm일 전')
-                              : Text('$_roomTempAlarm일 전')),
+                                  ? Text('$_frozenAlarm일 전')
+                                  : Text('$_roomTempAlarm일 전')),
                       Icon(Icons.arrow_drop_down)
                     ],
                   ),
@@ -732,9 +725,9 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
     return showModalBottomSheet(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: const Radius.circular(30.0),
-              topRight: const Radius.circular(30.0),
-            )),
+          topLeft: const Radius.circular(30.0),
+          topRight: const Radius.circular(30.0),
+        )),
         context: context,
         builder: (BuildContext builder) {
           return Container(
@@ -769,8 +762,8 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                           type == 0
                               ? _refrigerationAlarm = newValue + 1
                               : type == 1
-                              ? _frozenAlarm = newValue + 1
-                              : _roomTempAlarm = newValue + 1;
+                                  ? _frozenAlarm = newValue + 1
+                                  : _roomTempAlarm = newValue + 1;
                         });
                       },
                       children: List<Widget>.generate(60, (int index) {
@@ -780,7 +773,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                         );
                       }),
                       scrollController: FixedExtentScrollController(
-                        //initialItem: foods[index - 1].num - 1
+                          //initialItem: foods[index - 1].num - 1
                           initialItem: 1),
                     ),
                   ),

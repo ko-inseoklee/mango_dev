@@ -7,12 +7,13 @@ import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
 
-class Authentication extends GetxController{
+class Authentication extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
 
@@ -24,40 +25,41 @@ class Authentication extends GetxController{
       print('Authentication - FirebaseAuth - AuthStateChanged - $newUser');
       user = newUser;
       update();
-    }, onError: (e){
+    }, onError: (e) {
       print('Authentication - FirebaseAuth - AuthStateChanged - $e');
     });
   }
 
-  Future<String> loadId() async{
+  Future<String> loadId() async {
     final SharedPreferences prefss = await prefs;
     final String id = (prefss.getString('id') ?? user!.uid);
 
-    return prefss.setString('id', id).then((value) {return id;});
+    return prefss.setString('id', id).then((value) {
+      return id;
+    });
   }
 
-  Future<void> googleLogin() async{
-    try{
+  Future<void> googleLogin() async {
+    try {
       UserCredential userCredential;
-      if(kIsWeb){
+      if (kIsWeb) {
         GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
         userCredential = await _auth.signInWithPopup(googleAuthProvider);
-      }else{
+      } else {
         final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-        final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser!.authentication;
 
         final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken,
-            idToken: googleAuth.idToken
-        );
+            accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
         final authResult = await _auth.signInWithCredential(credential);
 
         user = authResult.user!;
         update();
       }
-    } catch (e){
+    } catch (e) {
       print('Error reported: $e');
     }
     update();
@@ -70,7 +72,7 @@ class Authentication extends GetxController{
       'client_id': 'ae58524d5e3551dcc6608530c1e38422',
       'response_mode': 'form_post',
       'redirect_uri':
-      'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
+          'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
       'state': clientState,
     });
 
@@ -83,41 +85,43 @@ class Authentication extends GetxController{
       'grant_type': 'authorization_code',
       'client_id': 'ae58524d5e3551dcc6608530c1e38422',
       'redirect_uri':
-      'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
+          'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
       'code': body['code'],
     });
 
     var response = await http.post(tokenUrl);
     Map<String, dynamic> accessTokenResult = jsonDecode(response.body);
-    var tempUrl = Uri.parse('https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/token');
-    var responseCustomToken = await http.post(
-        tempUrl,
+    var tempUrl = Uri.parse(
+        'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/token');
+    var responseCustomToken = await http.post(tempUrl,
         body: {"accessToken": accessTokenResult['access_token']});
 
     final authResult =
-    await _auth.signInWithCustomToken(responseCustomToken.body);
+        await _auth.signInWithCustomToken(responseCustomToken.body);
     // return authResult.user;
     user = authResult.user!;
     update();
   }
 
-  Future<void> logOut() async{
-    try{
+  Future<void> logOut() async {
+    try {
       _auth.signOut();
       prefs.then((SharedPreferences pref) => pref.remove('id'));
       update();
-    }catch (e){
+    } catch (e) {
       print('exception error: $e');
     }
   }
 
-  Future<void> signOut() async {
-    try{
-      deleteAll(user!.uid);
+  Future<void> signOut({required String uid, required String rID}) async {
+    try {
+      await RefrigeratorViewModel().deleteRefrigerator(rID: rID);
+      await UserViewModel().deleteUser(uid);
+
       _auth.signOut();
       prefs.then((SharedPreferences pref) => pref.remove('id'));
       update();
-    }catch (e){
+    } catch (e) {
       print('exception error: $e');
     }
   }
@@ -134,9 +138,7 @@ class Authentication extends GetxController{
     return result;
   }
 
-  Future<void> deleteAll(String uid) async{
+  Future<void> deleteAll(String uid) async {
     await UserViewModel().deleteUser(uid);
   }
-
-
 }
