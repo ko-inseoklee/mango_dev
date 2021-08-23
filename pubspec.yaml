@@ -47,6 +47,12 @@ dependencies:
   firebase_storage: ^10.0.1
   flutter_web_auth: ^0.3.0
 
+  kakao_flutter_sdk: ^0.7.1
+  dio: ^4.0.0
+  json_annotation: ^4.0.1
+  platform: ^3.0.0
+  package_info: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

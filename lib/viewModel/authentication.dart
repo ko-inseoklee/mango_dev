@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 
 class Authentication extends GetxController{
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  int authWay = 0; //0==google, 1==kakao
   User? user;
 
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
@@ -32,6 +33,7 @@ class Authentication extends GetxController{
   Future<String> loadId() async{
     final SharedPreferences prefss = await prefs;
     final String id = (prefss.getString('id') ?? user!.uid);
+    print("id = $id");
 
     return prefss.setString('id', id).then((value) {return id;});
   }
@@ -55,6 +57,7 @@ class Authentication extends GetxController{
         final authResult = await _auth.signInWithCredential(credential);
 
         user = authResult.user!;
+        authWay = 0;
         update();
       }
     } catch (e){

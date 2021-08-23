@@ -5,17 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/home.dart';
-import 'package:mangodevelopment/view/login/login.dart';
-import 'package:mangodevelopment/view/login/telTest.dart';
+import 'package:mangodevelopment/view/login/kakaoTest.dart';
 
 import 'color.dart';
 import 'landing.dart';
 import 'view/trade/friend/friendList.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 var deviceWidth = 411.0;
 var deviceHeight = 820.0;
@@ -95,7 +90,7 @@ class _MangoAppState extends State<MangoApp> {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: () => GetMaterialApp(
-        home: Landing(),
+         home: Landing(),
         // home: TelTestPage(),
         theme: _mangoTheme,
         getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],

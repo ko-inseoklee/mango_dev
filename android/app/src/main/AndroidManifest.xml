@@ -46,5 +46,13 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+       <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity">
+           <intent-filter android:label="flutter_web_auth">
+               <action android:name="android.intent.action.VIEW"/>
+               <category android:name="android.intent.category.DEFAULT"/>
+               <category android:name="android.intent.category.BROWSABLE"/>
+               <data android:scheme="kakaob6d297fef62ea93f6eab9450cf52dbcd" android:host="oauth"/>
+           </intent-filter>
+       </activity>
     </application>
 </manifest>
