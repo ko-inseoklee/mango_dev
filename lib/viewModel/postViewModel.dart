@@ -74,10 +74,10 @@ class postViewModel extends GetxController {
   }
 
   loadLocalPosts(Position userLocation) async {
-    await mango_dev.collection('post').snapshots().forEach((element) {
-      element.docs.forEach((element) async {
-        // print(element.data()['location'].latitude);
-        // print(element.data()['location'].longitude);
+    localPost = [];
+    mango_dev.collection('post').where('state', isEqualTo: 0).get().then((value){
+      value.docs.forEach((element) async{
+        print('data' + element.data()['subtitle']);
         var distance = await Geolocator.distanceBetween(
             userLocation.latitude,
             userLocation.longitude,
@@ -90,11 +90,37 @@ class postViewModel extends GetxController {
               .get();
           print('($distance): is local');
           localPost.add(Post.fromSnapshot(element.data(), snap));
+          print('post added');
         } else {
           print('($distance): too far');
         }
       });
+      return;
     });
+
+    // mango_dev.collection('post').snapshots().forEach((element) {
+    //   element.docs.forEach((element) async {
+    //     print('data' + element.data()['subtitle']);
+    //     var distance = await Geolocator.distanceBetween(
+    //         userLocation.latitude,
+    //         userLocation.longitude,
+    //         element.data()['location'].latitude,
+    //         element.data()['location'].longitude);
+    //     if (distance < 2500) {
+    //       var snap = await FirebaseFirestore.instance
+    //           .collection('user')
+    //           .doc(element.get('ownerID'))
+    //           .get();
+    //       print('($distance): is local');
+    //       localPost.add(Post.fromSnapshot(element.data(), snap));
+    //       print('post added');
+    //     } else {
+    //       print('($distance): too far');
+    //     }
+    //   });
+    // });
+    print('post' + localPost.length.toString());
+
     return localPost;
   }
 

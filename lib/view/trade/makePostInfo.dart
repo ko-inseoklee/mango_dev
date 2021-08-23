@@ -136,13 +136,13 @@ class _MakePostInfoState extends State<MakePostInfo> {
         .doc(curr_uid)
         .snapshots()
         .first);
-    temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
-        .collection('user')
-        .doc(curr_uid)
-        .snapshots()
-        .first)
-        .friendList
-        .obs;
+    // temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
+    //     .collection('user')
+    //     .doc(curr_uid)
+    //     .snapshots()
+    //     .first)
+    //     .friendList
+    //     .obs;
 
     temp.foods = arg;
     //////
@@ -150,7 +150,7 @@ class _MakePostInfoState extends State<MakePostInfo> {
     FirebaseFirestore.instance.collection('post').doc(temp.postID).set({
       'foodName': temp.foods.name,
       'foodNum': temp.foods.number,
-      'ownerFriendList': temp.ownerFriendList,
+      // 'ownerFriendList': temp.ownerFriendList,
       'subtitle': temp.subtitle,
       'postID': temp.postID,
       'registTime': temp.registTime,
@@ -158,7 +158,7 @@ class _MakePostInfoState extends State<MakePostInfo> {
       'state': temp.state,
     });
 
-    print(
-        'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.owner.userID} / ownerFriendList: ${temp.ownerFriendList}');
+    // print(
+        // 'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.owner.userID} / ownerFriendList: ${temp.ownerFriendList}');
   }
 }

@@ -31,12 +31,39 @@ class _TradePageState extends State<TradePage> {
   late List<Post> myPosts = [];
 
   late List<Post> searchPosts = [];
-  late List<Post> localPosts = [];
+  late List<Post> localPosts = [ Post.init(), Post.init(),];
+
+  late Position deviceLat;
 
   postViewModel post = Get.put(postViewModel());
 
   String _search = '';
   late TextEditingController _textController;
+
+  void _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    deviceLat = await Geolocator.getCurrentPosition();
+    // print('device Lat: ' + deviceLat.toString());
+  }
 
   @override
   void initState() {
@@ -44,8 +71,12 @@ class _TradePageState extends State<TradePage> {
     _textController = TextEditingController(text: '');
     // posts = post.loadPosts();
     // getFriendList(userViewModelController.userID);
-    loadPost();
-
+    // loadPost();
+    _determinePosition();
+    // loadLocalPost(deviceLat);
+    // _determinePosition().then((value) {
+    //   loadLocalPost(deviceLat);
+    // });
     // loadMyPost();
   }
 
@@ -57,6 +88,7 @@ class _TradePageState extends State<TradePage> {
 
   @override
   Widget build(BuildContext context) {
+    loadLocalPost(deviceLat);
     // getFriendList(userViewModelController.user.value.userID);
     return Scaffold(
       appBar: AppBar(
@@ -138,7 +170,8 @@ class _TradePageState extends State<TradePage> {
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       // _search == ''
                       //     ?
-                      loadPost();
+                      // loadPost(); //
+                      loadLocalPost(deviceLat);
                       // : loadSearchPost(_search);
                       // if(snapshot.connectionState == ConnectionState.active){
                       //   loadPost();
@@ -154,7 +187,7 @@ class _TradePageState extends State<TradePage> {
                             // List<DocumentSnapshot> documents =
                             //     snapshot.data!.docs;
                             return MangoPostCard(
-                              post: posts[index],
+                              post: localPosts[index],
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {

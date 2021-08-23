@@ -16,7 +16,7 @@ class Post {
   late String subtitle;
 
   late User owner;
-  late List<String> ownerFriendList;
+  // late List<String> ownerFriendList;
 
 
   late Food foods;
@@ -27,7 +27,7 @@ class Post {
     this.registTime = Timestamp.now();
     this.subtitle = '나눔합니다';
     this.foods = Food.init();
-    this.ownerFriendList = [];
+    // this.ownerFriendList = [];
     this.owner = User.init(
         userID: '',
         creationTime: Timestamp.now(),
@@ -42,7 +42,7 @@ class Post {
         profileImageReference: '-1',
         userName: '',
         tokens: '',
-        friendList: [],
+        // friendList: [],
         isAlarmOn: true);
   }
 
@@ -53,18 +53,8 @@ class Post {
         foods = Food.init(),
         // foods = Food.fromSnapshot(food),
         subtitle = post['subtitle'],
-        ownerFriendList = User.fromSnapshot(snapshot).friendList,
+        // ownerFriendList = User.fromSnapshot(snapshot).friendList,
         owner = User.fromSnapshot(snapshot);
 
-// Post fromPostSnapshot(Map<String, dynamic> post) async {
-//   Post.fromSnapshot(post);
-//   var snap = await FirebaseFirestore.instance
-//       .collection('user')
-//       .doc(post['onwerID'])
-//       .get().then((value){
-//         this.owner = User.fromSnapshot(value);
-//   });
-//   return post;
-// }
 
 }
