@@ -10,8 +10,13 @@ import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 class FoodsSection extends StatefulWidget {
   final List<Food> foods;
   final String title;
+  final bool isPost;
 
-  FoodsSection({Key? key, required this.foods, required this.title})
+  FoodsSection(
+      {Key? key,
+      required this.foods,
+      required this.title,
+      required this.isPost})
       : super(key: key);
 
   @override
@@ -51,100 +56,107 @@ class _FoodsSectionState extends State<FoodsSection> {
           children: [
             Container(
               height: ScreenUtil().setHeight(60),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        ScreenUtil().setWidth(14),
-                        ScreenUtil().setHeight(11),
-                        0,
-                        ScreenUtil().setHeight(11)),
-                    child: !_isLongPressed
-                        ? Text(
-                            '전체 ${showFoods.length}개',
-                            style: TextStyle(
-                                fontSize: ScreenUtil().setSp(16),
-                                color: MangoDisabledColorDark),
-                          )
-                        : Row(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        _isLongPressed = !_isLongPressed;
-                                      });
-                                    },
-                                    child: Text(
-                                      '취소',
-                                      style: TextStyle(
-                                          color: MangoDisabledColorDark,
-                                          fontSize: 14.0),
-                                    )),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: TextButton(
-                                    onPressed: () {
-                                      Get.dialog(DeleteDialog(
-                                        onPressed: () async {
-                                          await _refViewModel
-                                              .deleteFoods(foods: showFoods)
-                                              .then((value) => Get.back());
-                                        },
-                                        deleteAll: true,
-                                        foods: showFoods,
-                                      ));
-                                    },
-                                    child: Text(
-                                      '모두 삭제',
-                                      style: TextStyle(
-                                          color: MangoDisabledColorDark,
-                                          fontSize: 14.0),
-                                    )),
-                              ),
-                            ],
-                          ),
-                  ),
-                  Spacer(),
-                  Container(
-                    child: Icon(
-                      Icons.filter_alt_outlined,
-                    ),
-                  ),
-                  Container(
-                    width: selectedValue == '전체'
-                        ? ScreenUtil().setWidth(100)
-                        : ScreenUtil().setWidth(120),
-                    padding: EdgeInsets.fromLTRB(0, ScreenUtil().setHeight(11),
-                        ScreenUtil().setWidth(14), ScreenUtil().setHeight(11)),
-                    child: DropdownButton(
-                      isExpanded: true,
-                      value: selectedValue,
-                      items: dropDownItems
-                          .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Center(
-                                child: Text(
-                                  e,
-                                  textAlign: TextAlign.center,
+              child: widget.isPost
+                  ? Text('')
+                  : Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                              ScreenUtil().setWidth(14),
+                              ScreenUtil().setHeight(11),
+                              0,
+                              ScreenUtil().setHeight(11)),
+                          child: !_isLongPressed
+                              ? Text(
+                                  '전체 ${showFoods.length}개',
                                   style: TextStyle(
-                                      fontSize: ScreenUtil().setSp(16)),
+                                      fontSize: ScreenUtil().setSp(16),
+                                      color: MangoDisabledColorDark),
+                                )
+                              : Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _isLongPressed = !_isLongPressed;
+                                            });
+                                          },
+                                          child: Text(
+                                            '취소',
+                                            style: TextStyle(
+                                                color: MangoDisabledColorDark,
+                                                fontSize: 14.0),
+                                          )),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
+                                      child: TextButton(
+                                          onPressed: () {
+                                            Get.dialog(DeleteDialog(
+                                              onPressed: () async {
+                                                await _refViewModel
+                                                    .deleteFoods(
+                                                        foods: showFoods)
+                                                    .then(
+                                                        (value) => Get.back());
+                                              },
+                                              deleteAll: true,
+                                              foods: showFoods,
+                                            ));
+                                          },
+                                          child: Text(
+                                            '모두 삭제',
+                                            style: TextStyle(
+                                                color: MangoDisabledColorDark,
+                                                fontSize: 14.0),
+                                          )),
+                                    ),
+                                  ],
                                 ),
-                              )))
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          selectedValue = value.toString();
-                        });
-                      },
+                        ),
+                        Spacer(),
+                        Container(
+                          child: Icon(
+                            Icons.filter_alt_outlined,
+                          ),
+                        ),
+                        Container(
+                          width: selectedValue == '전체'
+                              ? ScreenUtil().setWidth(100)
+                              : ScreenUtil().setWidth(120),
+                          padding: EdgeInsets.fromLTRB(
+                              0,
+                              ScreenUtil().setHeight(11),
+                              ScreenUtil().setWidth(14),
+                              ScreenUtil().setHeight(11)),
+                          child: DropdownButton(
+                            isExpanded: true,
+                            value: selectedValue,
+                            items: dropDownItems
+                                .map((e) => DropdownMenuItem(
+                                    value: e,
+                                    child: Center(
+                                      child: Text(
+                                        e,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: ScreenUtil().setSp(16)),
+                                      ),
+                                    )))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedValue = value.toString();
+                              });
+                            },
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
             ),
             showFoods.length == 0
                 ? Container(
@@ -180,6 +192,7 @@ class _FoodsSectionState extends State<FoodsSection> {
         });
       },
       isLongPressed: _isLongPressed,
+      isPost: widget.isPost,
     );
   }
 

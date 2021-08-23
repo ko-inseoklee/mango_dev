@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/trade/makePostInfo.dart';
+import 'package:mangodevelopment/view/widget/bottomNavigationBar/floatingActionButton.dart';
+import 'package:mangodevelopment/view/widget/dialog/addPostDialog.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/view/analyze/nutrition.dart';
 import 'package:mangodevelopment/view/market/market.dart';
@@ -68,25 +70,22 @@ class HomePageState extends State<HomePage> {
                         RefrigeratorPage(
                           title: '나의 냉장고',
                         ),
-                        MarketPage(title: '마켓 페이지'),
+                        // MarketPage(title: '마켓 페이지'),
                         TradePage(title: '거래 광장 페이지'),
-                        NutritionPage(title: '영양 정보 페이지'),
+                        // NutritionPage(title: '영양 정보 페이지'),
                         MyPage(title: '마이 페이지'),
                       ],
                     ),
                   ),
-                  floatingActionButton: MangoFAB(
-                    distance: 55.0,
-                    children: [
-                      ActionButton(
-                        onPressed: () => _showAction(context, 0),
-                        icon: const Icon(Icons.kitchen_outlined),
-                      ),
-                      ActionButton(
-                        onPressed: () => _showAction(context, 1),
-                        icon: const Icon(Icons.local_mall_outlined),
-                      ),
-                    ],
+                  floatingActionButton: MangoFloatingActionButton(
+                    onPressed: () {
+                      if (_controller.tabIndex.value == 1) {
+                        Get.bottomSheet(AddPostDialog());
+                      } else {
+                        Get.dialog(AddFoodSheet());
+                      }
+                    },
+                    currentPage: _controller.tabIndex.value,
                   ),
                   bottomNavigationBar: MangoBottomNavigationBar(
                     controller: _controller,
@@ -103,7 +102,7 @@ class HomePageState extends State<HomePage> {
       Get.dialog(AddFoodSheet());
     else
       Get.to(MakePostInfo(), arguments: Food.init());
-      // Get.to(MakePostPage(title: '거래 품목 등록'));
+    // Get.to(MakePostPage(title: '거래 품목 등록'));
   }
 }
 

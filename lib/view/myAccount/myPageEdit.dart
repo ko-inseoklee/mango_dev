@@ -9,6 +9,7 @@ import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/fileStorage.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'dart:io';
 
@@ -25,11 +26,19 @@ class _MyPageEditState extends State<MyPageEdit> {
 
   Authentication _auth = Get.find<Authentication>();
   var userViewModelController = Get.find<UserViewModel>();
+  late RefrigeratorViewModel _refrigerator;
   FileStorage _fileStoarge = Get.put(FileStorage());
 
   final _nameController = TextEditingController();
   final _numberController = TextEditingController();
   bool isChangeImage = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _refrigerator = Get.find<RefrigeratorViewModel>();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,22 +57,31 @@ class _MyPageEditState extends State<MyPageEdit> {
             icon: Text('저장'),
             onPressed: () async {
               //Get.snackbar('저장 중', '수정사항을 저장 중입니다.');
-              if(_fileStoarge.isNetworkImage.value == false) {
+              if (_fileStoarge.isNetworkImage.value == false) {
                 print('isNetworkImage == false');
-                await _fileStoarge.uploadFile(userViewModelController.user.value.profileImageReference, 'profile/${_auth.user!.uid}')
-                    .then((value) async{
+                await _fileStoarge
+                    .uploadFile(
+                        userViewModelController
+                            .user.value.profileImageReference,
+                        'profile/${_auth.user!.uid}')
+                    .then((value) async {
                   _fileStoarge.isNetworkImage = true.obs;
                   userViewModelController.profileImageReference = value;
-                  await userViewModelController.updateUserProfileImage(_auth.user!.uid, value);
+                  await userViewModelController.updateUserProfileImage(
+                      _auth.user!.uid, value);
                 });
               }
-              if(_nameController.text != ''){
+              if (_nameController.text != '') {
                 print('_nameController.text != null');
-                userViewModelController.user.value.userName = _nameController.text;
-                await userViewModelController.updateUserName(_auth.user!.uid, _nameController.text);
+                userViewModelController.user.value.userName =
+                    _nameController.text;
+                await userViewModelController.updateUserName(
+                    _auth.user!.uid, _nameController.text);
               }
 
-              Get.back(result: userViewModelController.user.value.profileImageReference);
+              Get.back(
+                  result:
+                      userViewModelController.user.value.profileImageReference);
             },
           ),
         ],
@@ -81,40 +99,40 @@ class _MyPageEditState extends State<MyPageEdit> {
                   Stack(
                     children: [
                       userViewModelController
-                          .user.value.profileImageReference ==
-                          '-1'
+                                  .user.value.profileImageReference ==
+                              '-1'
                           ? Container(
-                        width: 90 * deviceWidth / prototypeWidth,
-                        height: 90 * deviceWidth / prototypeWidth,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image:
-                            AssetImage('images/default_profile.png'),
-                          ),
-                        ),
-                      )
+                              width: 90 * deviceWidth / prototypeWidth,
+                              height: 90 * deviceWidth / prototypeWidth,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image:
+                                      AssetImage('images/default_profile.png'),
+                                ),
+                              ),
+                            )
                           : _fileStoarge.isNetworkImage.value == true
-                          ? ClipRRect(
-                          borderRadius: BorderRadius.circular(50),
-                          child: Image.network(
-                            userViewModelController
-                                .user.value.profileImageReference,
-                            width: 90 * deviceWidth / prototypeWidth,
-                            height: 90 * deviceWidth / prototypeWidth,
-                            fit: BoxFit.fitHeight,
-                          ))
-                          : ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: Image.file(
-                          File(userViewModelController
-                              .user.value.profileImageReference),
-                          width: 90 * deviceWidth / prototypeWidth,
-                          height: 90 * deviceWidth / prototypeWidth,
-                          fit: BoxFit.fitHeight,
-                        ),
-                      ),
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.network(
+                                    userViewModelController
+                                        .user.value.profileImageReference,
+                                    width: 90 * deviceWidth / prototypeWidth,
+                                    height: 90 * deviceWidth / prototypeWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ))
+                              : ClipRRect(
+                                  borderRadius: BorderRadius.circular(50),
+                                  child: Image.file(
+                                    File(userViewModelController
+                                        .user.value.profileImageReference),
+                                    width: 90 * deviceWidth / prototypeWidth,
+                                    height: 90 * deviceWidth / prototypeWidth,
+                                    fit: BoxFit.fitHeight,
+                                  ),
+                                ),
                       Positioned(
                         left: 44 * deviceWidth / prototypeWidth,
                         top: 50 * deviceWidth / prototypeWidth,
@@ -123,7 +141,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                             var image = await Get.dialog(AlertDialog(
                               shape: RoundedRectangleBorder(
                                   borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0))),
+                                      BorderRadius.all(Radius.circular(20.0))),
                               title: Container(
                                   width: deviceWidth,
                                   child: Center(child: Text('프로필 사진 수정'))),
@@ -185,7 +203,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                         child: Text('이름'),
                       ),
                       prefixIconConstraints:
-                      BoxConstraints(minWidth: 0, minHeight: 0),
+                          BoxConstraints(minWidth: 0, minHeight: 0),
                       hintText: userViewModelController.user.value.userName,
                       errorBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 1.0)),
@@ -213,7 +231,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                         child: Text('전화번호'),
                       ),
                       prefixIconConstraints:
-                      BoxConstraints(minWidth: 0, minHeight: 0),
+                          BoxConstraints(minWidth: 0, minHeight: 0),
                       hintText: 'Coming soon...',
                       //TODO. after adding the function of phone number
                       errorBorder: OutlineInputBorder(
@@ -249,7 +267,8 @@ class _MyPageEditState extends State<MyPageEdit> {
                       ));
                     },
                     trailingWidth: 10,
-                    trailing: SizedBox(), isActive: true,
+                    trailing: SizedBox(),
+                    isActive: true,
                   ),
                   settingMenu(
                     menuName: "회원탈퇴",
@@ -258,13 +277,16 @@ class _MyPageEditState extends State<MyPageEdit> {
                           dialogTitle: '회원탈퇴',
                           contentText: '정말로 회원탈퇴 하시겠습니까?',
                           onTapOK: () async {
-                            await _auth.signOut();
+                            await _auth.signOut(
+                                uid: userViewModelController.userID,
+                                rID: _refrigerator.ref.value.rID);
                             await Get.offAll(LogInPage(title: ''));
                           },
                           hasOK: true));
                     },
                     trailingWidth: 10,
-                    trailing: SizedBox(), isActive: true,
+                    trailing: SizedBox(),
+                    isActive: true,
                   ),
                 ],
               ),

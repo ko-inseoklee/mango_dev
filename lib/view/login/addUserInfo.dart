@@ -203,7 +203,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                             //TODO. 뭔가 이상?
                             alarmIdx == 0
                                 ? _auth
-                                    .signOut()
+                                    .logOut()
                                     .then((value) => Get.off(Landing()))
                                 : alarmIdx--;
                           });

@@ -35,6 +35,25 @@ class RefrigeratorViewModel extends GetxController {
     });
   }
 
+  Future<void> deleteRefrigerator({required String rID}) async {
+    await FirebaseFirestore.instance
+        .collection('myFood')
+        .where('rId', isEqualTo: rID)
+        .get()
+        .then((value) async {
+      List<Food> foods = [];
+      value.docs.forEach((element) {
+        foods.add(Food.fromSnapshot(element.data()));
+      });
+      this.deleteFoods(foods: foods);
+      await FirebaseFirestore.instance
+          .collection('refrigerator')
+          .doc(rID)
+          .delete()
+          .then((value) => print('success to delete refrigerator'));
+    });
+  }
+
   loadFoods({required String rID}) async {
     await FirebaseFirestore.instance
         .collection('myFood')

@@ -23,10 +23,10 @@ class MangoBottomNavigationBar extends StatelessWidget {
             showUnselectedLabels: true,
             items: [
               _MangoBottomItem(icon: Icons.kitchen_outlined, label: '냉장고'),
-              _MangoBottomItem(icon: Icons.shopping_cart_outlined, label: '마켓'),
+              // _MangoBottomItem(icon: Icons.shopping_cart_outlined, label: '마켓'),
               _MangoBottomItem(icon: Icons.local_mall_outlined, label: '거래광장'),
-              _MangoBottomItem(
-                  icon: Icons.fact_check_outlined, label: '냉장고 분석'),
+              // _MangoBottomItem(
+              // icon: Icons.fact_check_outlined, label: '냉장고 분석'),
               _MangoBottomItem(
                   icon: Icons.account_box_outlined, label: '마이 페이지')
             ],
