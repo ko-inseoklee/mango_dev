@@ -131,19 +131,18 @@ class _MakePostInfoState extends State<MakePostInfo> {
     //실제 값 생성 및 할당
     temp.postID = Uuid().v4().toString(); // random 생성 (uuid)
     temp.subtitle = subtitle; // from text controller
-    temp.ownerID = curr_uid; // curr_uid
     temp.owner = User.fromSnapshot(await FirebaseFirestore.instance
         .collection('user')
         .doc(curr_uid)
         .snapshots()
         .first);
-    temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
-        .collection('user')
-        .doc(curr_uid)
-        .snapshots()
-        .first)
-        .friendList
-        .obs;
+    // temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
+    //     .collection('user')
+    //     .doc(curr_uid)
+    //     .snapshots()
+    //     .first)
+    //     .friendList
+    //     .obs;
 
     temp.foods = arg;
     //////
@@ -151,18 +150,15 @@ class _MakePostInfoState extends State<MakePostInfo> {
     FirebaseFirestore.instance.collection('post').doc(temp.postID).set({
       'foodName': temp.foods.name,
       'foodNum': temp.foods.number,
-      'ownerFriendList': temp.ownerFriendList,
+      // 'ownerFriendList': temp.ownerFriendList,
       'subtitle': temp.subtitle,
-      'ownerID': temp.ownerID,
-      'ownerName': temp.ownerName,
       'postID': temp.postID,
-      'profileImageRef': temp.profileImageRef,
       'registTime': temp.registTime,
       'shelfLife': temp.foods.shelfLife,
       'state': temp.state,
     });
 
-    print(
-        'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.ownerID} / ownerFriendList: ${temp.ownerFriendList}');
+    // print(
+        // 'postID: ${temp.postID}/ subtitle: ${temp.subtitle} / ownerID: ${temp.owner.userID} / ownerFriendList: ${temp.ownerFriendList}');
   }
 }

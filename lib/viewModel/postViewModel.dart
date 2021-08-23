@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -12,21 +13,27 @@ class postViewModel extends GetxController {
   late List<Post> myPosts;
 
   late List<Post> searchPosts;
+  late List<Post> localPost;
 
   postViewModel() {
     posts = [];
     myPosts = [];
     searchPosts = [];
+    localPost = [];
   }
 
   postViewModel.init() {
     posts = [];
     myPosts = [];
     searchPosts = [];
+    localPost = [];
+  }
+
+  cleanPost() {
+    posts = [];
   }
 
   loadPosts() async {
-    this.posts = [];
     await mango_dev
         .collection('post')
         .where('ownerFriendList',
@@ -34,7 +41,11 @@ class postViewModel extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) async {
-        posts.add(Post.fromSnapshot(element.data()));
+        var snap = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(element.get('ownerID'))
+            .get();
+        posts.add(Post.fromSnapshot(element.data(), snap));
       });
     });
     // print('loading post.. ');
@@ -42,10 +53,13 @@ class postViewModel extends GetxController {
     //   print('${posts[i].postID}},');
     // }
     return posts;
-    // update();
   }
 
   loadMyPosts() async {
+    var snap = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(userViewModelController.userID)
+        .get();
     this.myPosts = [];
     await mango_dev
         .collection('post')
@@ -53,28 +67,74 @@ class postViewModel extends GetxController {
         .get()
         .then((value) {
       value.docs.forEach((element) async {
-        myPosts.add(Post.fromSnapshot(element.data()));
+        myPosts.add(Post.fromSnapshot(element.data(), snap));
       });
     });
-    // print('loading post.. ');
-    // for (int i = 0; i < posts.length; i++) {
-    //   print('${posts[i].postID}},');
-    // }
-
     return myPosts;
   }
 
-  loadSearchPosts(String _search) async {
-    this.searchPosts = [];
-    mango_dev
-        .collection('post')
-        .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
-        .where('foodName', isEqualTo: _search)
-        .get()
-        .then((value) {
-      value.docs.forEach((element) async {
-        myPosts.add(Post.fromSnapshot(element.data()));
+  loadLocalPosts(Position userLocation) async {
+    localPost = [];
+    mango_dev.collection('post').where('state', isEqualTo: 0).get().then((value){
+      value.docs.forEach((element) async{
+        print('data' + element.data()['subtitle']);
+        var distance = await Geolocator.distanceBetween(
+            userLocation.latitude,
+            userLocation.longitude,
+            element.data()['location'].latitude,
+            element.data()['location'].longitude);
+        if (distance < 2500) {
+          var snap = await FirebaseFirestore.instance
+              .collection('user')
+              .doc(element.get('ownerID'))
+              .get();
+          print('($distance): is local');
+          localPost.add(Post.fromSnapshot(element.data(), snap));
+          print('post added');
+        } else {
+          print('($distance): too far');
+        }
       });
+      return;
     });
+
+    // mango_dev.collection('post').snapshots().forEach((element) {
+    //   element.docs.forEach((element) async {
+    //     print('data' + element.data()['subtitle']);
+    //     var distance = await Geolocator.distanceBetween(
+    //         userLocation.latitude,
+    //         userLocation.longitude,
+    //         element.data()['location'].latitude,
+    //         element.data()['location'].longitude);
+    //     if (distance < 2500) {
+    //       var snap = await FirebaseFirestore.instance
+    //           .collection('user')
+    //           .doc(element.get('ownerID'))
+    //           .get();
+    //       print('($distance): is local');
+    //       localPost.add(Post.fromSnapshot(element.data(), snap));
+    //       print('post added');
+    //     } else {
+    //       print('($distance): too far');
+    //     }
+    //   });
+    // });
+    print('post' + localPost.length.toString());
+
+    return localPost;
   }
+
+// loadSearchPosts(String _search) async {
+//   this.searchPosts = [];
+//   mango_dev
+//       .collection('post')
+//       .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
+//       .where('foodName', isEqualTo: _search)
+//       .get()
+//       .then((value) {
+//     value.docs.forEach((element) async {
+//       myPosts.add(Post.fromSnapshot(element.data()));
+//     });
+//   });
+// }
 }
