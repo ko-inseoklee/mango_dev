@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mangodevelopment/model/post.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
@@ -205,5 +207,7 @@ class UserViewModel extends GetxController {
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
   }
+
+  Future<void> addPost(@required Post post)async {}
 
 }

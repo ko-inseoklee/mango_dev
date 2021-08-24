@@ -16,8 +16,8 @@ class Post {
   late String subtitle;
 
   late User owner;
-  // late List<String> ownerFriendList;
 
+  // late List<String> ownerFriendList;
 
   late Food foods;
 
@@ -50,11 +50,22 @@ class Post {
       : postID = post['postID'],
         state = post['state'],
         registTime = post['registTime'],
-        foods = Food.init(),
+        foods = Food(
+            fId: '',
+            rId: '',
+            index: 0,
+            status: false,
+            name: post['foodName'],
+            num: post['foodNum'],
+            category: '',
+            method: 0,
+            displayType: false,
+            shelfLife: post['shelfLife'].toDate(),
+            registrationDay: post['shelfLife'].toDate(),
+            alarmDate: DateTime.now(),
+            cardStatus: 0),
         // foods = Food.fromSnapshot(food),
         subtitle = post['subtitle'],
-        // ownerFriendList = User.fromSnapshot(snapshot).friendList,
         owner = User.fromSnapshot(snapshot);
-
 
 }

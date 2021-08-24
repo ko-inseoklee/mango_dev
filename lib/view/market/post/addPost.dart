@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -5,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
+import 'package:mangodevelopment/view/trade/Chat/chatList.dart';
+import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:mangodevelopment/widgetController/categoryController.dart';
@@ -75,16 +78,17 @@ class AddPostPage extends StatelessWidget {
                 contentValue = value;
 
                 // TODO: This is for post class
-                // Post _post = new Post(
-                //   postID: Uuid().v4(),
-                //   state: 0,
-                //   registTime: DateTime.now(),
-                //   subtitle: contentValue,
-                //   foods: food,
-                //   owner: _userViewModel.user.value
-                // );
+                Post _post = Post.init();
+                _post.postID = Uuid().v4();
+                _post.state = 0;
+                _post.registTime = Timestamp.now();
+                _post.subtitle = contentValue;
+                _post.foods = food;
+                _post.owner = _userViewModel.user.value;
                 // TODO: Should be add post in the userViewModel
-                // _userViewModel.addPost(post: _post).then((){Get.to()});
+                _userViewModel.addPost(_post).then((_) {
+                  Get.to(TradePage(title: '거래 광장'));
+                });
               }
             },
             decoration: InputDecoration(
