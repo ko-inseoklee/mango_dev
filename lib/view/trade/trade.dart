@@ -66,7 +66,7 @@ class _TradePageState extends State<TradePage> {
   void initState() {
     super.initState();
     _textController = TextEditingController(text: '');
-
+    localPosts = [];
     _determinePosition().then((value) {
       loadLocalPost(value);
     });

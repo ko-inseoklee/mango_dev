@@ -17,7 +17,7 @@ class Post {
 
   late User owner;
 
-  // late List<String> ownerFriendList;
+  late List<String> chatList;
 
   late Food foods;
 
@@ -42,7 +42,7 @@ class Post {
         profileImageReference: '-1',
         userName: '',
         tokens: '',
-        // friendList: [],
+        chatList: [],
         isAlarmOn: true);
   }
 

@@ -25,7 +25,7 @@ class UserViewModel extends GetxController {
     profileImageReference: '',
     userName: '',
     tokens: '',
-    // friendList: [],
+    chatList: [],
   ).obs;
 
   String get userID => this.user.value.userID;
@@ -182,6 +182,7 @@ class UserViewModel extends GetxController {
       String profileImageReference,
       String userName,
       String tokens,
+      List<String> chatList,
       ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
@@ -198,6 +199,7 @@ class UserViewModel extends GetxController {
       'profileImageReference': profileImageReference,
       'userName': userName,
       'tokens': tokens,
+      'chat': [],
     });
 
     this.user.value.isAlarmOn = isAlarmOn;
@@ -206,6 +208,7 @@ class UserViewModel extends GetxController {
     this.user.value.roomTempAlarm = roomTempAlarm;
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
+    this.user.value.chatList = [];
   }
 
   Future<void> addPost(@required Post post)async {}

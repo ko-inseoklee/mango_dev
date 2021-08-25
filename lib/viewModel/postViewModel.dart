@@ -74,10 +74,10 @@ class postViewModel extends GetxController {
   }
 
   loadLocalPosts(Position userLocation) async {
-    localPost = [];
+    this.localPost = [];
     mango_dev
         .collection('post')
-        .orderBy('registTime',descending: true)
+        .orderBy('registTime', descending: true)
         .get()
         .then((value) {
       value.docs.forEach((element) async {
@@ -101,18 +101,17 @@ class postViewModel extends GetxController {
 
           localPost.add(Post.fromSnapshot(element.data(), snap));
           Post _post = Post.fromSnapshot(element.data(), snap);
-          mango_dev.collection('post').doc(element.id).update(
-            {
-              'ownerName': _post.owner.userName,
-              'ownerID' : _post.owner.userID,
-              'profileImageReference' : _post.owner.profileImageReference,
-            }
-          );
-        } else {
-          // print('($distance): too far');
-          // print('${element.data()['subtitle']} ($distance): too far');
-
+          mango_dev.collection('post').doc(element.id).update({
+            'ownerName': _post.owner.userName,
+            'ownerID': _post.owner.userID,
+            'profileImageReference': _post.owner.profileImageReference,
+          });
         }
+        // else {
+        // print('($distance): too far');
+        // print('${element.data()['subtitle']} ($distance): too far');
+
+        // }
       });
     });
 
