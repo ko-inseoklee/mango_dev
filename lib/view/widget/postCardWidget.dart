@@ -226,13 +226,13 @@ class MangoPostCard extends StatelessWidget {
       });
 
       // add to user field array 'chats'
-      mango_dev.collection('user').doc(uid).set({
+      mango_dev.collection('user').doc(uid).update({
         'chats': FieldValue.arrayUnion([chatID]),
       });
 
       mango_dev
           .collection('user')
-          .doc(post.owner.userID).set({
+          .doc(post.owner.userID).update({
         'chats': FieldValue.arrayUnion([chatID]),
       });
     }
