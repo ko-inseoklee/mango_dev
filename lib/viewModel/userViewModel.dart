@@ -199,7 +199,7 @@ class UserViewModel extends GetxController {
       'profileImageReference': profileImageReference,
       'userName': userName,
       'tokens': tokens,
-      'chat': [],
+      'chats': [],
     });
 
     this.user.value.isAlarmOn = isAlarmOn;

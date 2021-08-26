@@ -150,6 +150,14 @@ class MangoPostCard extends StatelessWidget {
                                     userViewModelController.user.value
                                         .userName);
 
+                                mango_dev.collection('post')
+                                    .doc(post.postID)
+                                    .update(
+                                    {
+                                      'chatList': FieldValue.arrayUnion(
+                                          [chatID]),
+                                    });
+
                                 Get.to(ChatRoom(
                                   chatID: chatID,
                                   friendName: post.postID,
@@ -193,7 +201,6 @@ class MangoPostCard extends StatelessWidget {
       'postID': post.postID,
       'onwerID': post.owner.userID,
       'ownerName': post.owner.userName,
-      'lastAccess': Timestamp.now(),
     });
 
     var check = await mango_dev

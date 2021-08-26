@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -19,6 +20,9 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   var _stream;
   int state = 0;
+  late String foodName;
+  late int foodNum;
+  late String subtitle;
 
   @override
   void initState() {
@@ -33,6 +37,22 @@ class _ChatRoomState extends State<ChatRoom> {
         _stream = element.reference.collection('messages').snapshots();
       });
     });
+
+    mango_dev
+        .collection('post')
+        .where('chatList', arrayContains: widget.chatID)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        foodName = element.get('foodName');
+        foodNum = element.get('foodNum');
+        subtitle = element.get('subtitle');
+        state = element.get('state');
+      });
+    });
+
+    ChatRoomViewModel()
+        .AccessChatRoom(widget.chatID, userViewModelController.userID);
   }
 
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
@@ -45,7 +65,6 @@ class _ChatRoomState extends State<ChatRoom> {
 
   Future<void> send(String chatID, String curr_uid) async {
     if (messageController.text.length > 0) {
-      print('chatID: $chatID !!');
       await mango_dev
           .collection('chatRooms')
           .where('chatID', isEqualTo: chatID)
@@ -62,7 +81,8 @@ class _ChatRoomState extends State<ChatRoom> {
             'to': element.get('takerName') == curr_uid
                 ? element.get('ownerName')
                 : element.get('takerName'),
-            'date': DateTime.now().toIso8601String().toString(),
+            'date': Timestamp.now(),
+            'read': false,
           });
         });
       });
@@ -113,6 +133,8 @@ class _ChatRoomState extends State<ChatRoom> {
                     .orderBy('date')
                     .snapshots(),
                 builder: (context, snapshot) {
+                  ChatRoomViewModel().AccessChatRoom(
+                      widget.chatID, userViewModelController.userID);
                   if (!snapshot.hasData)
                     return Center(
                       child: CircularProgressIndicator(),
@@ -133,8 +155,45 @@ class _ChatRoomState extends State<ChatRoom> {
                   // TODO: check if chat page is null
                   var empty = true;
                   if (messages.toList().length == 0)
-                    return Center(
-                      child: Text('채팅을 시작해 보세요'),
+                    return Stack(
+                      children: <Widget>[
+                        Center(
+                          child: Text('채팅을 시작해 보세요'),
+                        ),
+                        Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ListTile(
+                              //TODO: change to post foodIMG
+                              // leading: IconButton(
+                              //   icon: Icon(Icons.camera),
+                              //   onPressed: () => print('gg'),
+                              // ),
+                              title: Text(_state +
+                                  ' ' +
+                                  foodName +
+                                  ' ' +
+                                  foodNum.toString() +
+                                  '개'),
+                              subtitle: Text(subtitle),
+                            ),
+                          ),
+                          decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 0.5,
+                                  blurRadius: 5,
+                                  offset:
+                                  Offset(0, 1), // changes position of shadow
+                                ),
+                              ],
+                              // border: Border.all(
+                              //   color: Colors.grey, // red as border color
+                              // ),
+                              color: Colors.white),
+                        ),
+                      ],
                     );
 
                   if (docs.length != 0) empty = false;
@@ -162,19 +221,17 @@ class _ChatRoomState extends State<ChatRoom> {
                           padding: const EdgeInsets.all(10.0),
                           child: ListTile(
                             //TODO: change to post foodIMG
-                            leading: IconButton(
-                              icon: Icon(Icons.camera),
-                              onPressed: () => print('gg'),
-                            ),
-                            title: Text('dd'
-                                // _state +
-                                // ' ' +
-                                // foodName +
-                                // ' ' +
-                                // foodNum.toString() +
-                                // '개'
-                                ),
-                            subtitle: Text('subtitle'),
+                            // leading: IconButton(
+                            //   icon: Icon(Icons.camera),
+                            //   onPressed: () => print('gg'),
+                            // ),
+                            title: Text(_state +
+                                ' ' +
+                                foodName +
+                                ' ' +
+                                foodNum.toString() +
+                                '개'),
+                            subtitle: Text(subtitle),
                           ),
                         ),
                         decoration: BoxDecoration(
@@ -267,20 +324,20 @@ class Message extends StatelessWidget {
             ),
             Wrap(
               children: <Widget>[
-                me
-                    ? SizedBox(height: 0)
-                    : Container(
-                        margin: me
-                            ? EdgeInsets.only(right: 10)
-                            : EdgeInsets.only(left: 10),
-                        child: SizedBox(
-                          height: 35,
-                          width: 30,
-                          child: Container(
-                            color: Colors.amberAccent,
-                          ),
-                        ),
-                      ),
+                // me
+                //     ? SizedBox(height: 0)
+                //     : Container(
+                //         margin: me
+                //             ? EdgeInsets.only(right: 10)
+                //             : EdgeInsets.only(left: 10),
+                //         child: SizedBox(
+                //           height: 35,
+                //           width: 30,
+                //           child: Container(
+                //             color: Colors.amberAccent,
+                //           ),
+                //         ),
+                //       ),
                 Container(
                   margin: me
                       ? EdgeInsets.only(right: 10)
@@ -298,20 +355,20 @@ class Message extends StatelessWidget {
                     ),
                   ),
                 ),
-                me
-                    ? Container(
-                        margin: me
-                            ? EdgeInsets.only(right: 10)
-                            : EdgeInsets.only(left: 10),
-                        child: SizedBox(
-                          height: 35,
-                          width: 30,
-                          child: Container(
-                            color: Colors.amberAccent,
-                          ),
-                        ),
-                      )
-                    : SizedBox(height: 0)
+                // me
+                //     ? Container(
+                //         margin: me
+                //             ? EdgeInsets.only(right: 10)
+                //             : EdgeInsets.only(left: 10),
+                //         child: SizedBox(
+                //           height: 35,
+                //           width: 30,
+                //           child: Container(
+                //             color: Colors.amberAccent,
+                //           ),
+                //         ),
+                //       )
+                //     : SizedBox(height: 0)
               ],
             )
           ],
