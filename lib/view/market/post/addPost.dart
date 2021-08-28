@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
+import 'package:mangodevelopment/view/home.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatList.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
@@ -84,10 +85,11 @@ class AddPostPage extends StatelessWidget {
                 _post.registTime = Timestamp.now();
                 _post.subtitle = contentValue;
                 _post.foods = food;
-                _post.owner = _userViewModel.user.value;
+                _post.owner = _userViewModel.user.value; //location 포함
+                _post.chatList = [];
                 // TODO: Should be add post in the userViewModel
                 _userViewModel.addPost(_post).then((_) {
-                  Get.to(TradePage(title: '거래 광장'));
+                  Get.offAll(() => HomePage(title: 'hi'));
                 });
               }
             },

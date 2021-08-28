@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/model/post.dart';
@@ -30,7 +32,7 @@ class UserViewModel extends GetxController {
 
   String get userID => this.user.value.userID;
 
-  set isAlarmOn(bool value){
+  set isAlarmOn(bool value) {
     this.user.value.isAlarmOn = value;
     update();
   }
@@ -75,12 +77,12 @@ class UserViewModel extends GetxController {
     update();
   }
 
-  Future<void> setUserName(String name) async{
+  Future<void> setUserName(String name) async {
     this.user.value.userName = name;
     update();
   }
 
-  Future<void> setUserProfileImage(String value) async{
+  Future<void> setUserProfileImage(String value) async {
     this.user.value.profileImageReference = value;
     update();
   }
@@ -120,19 +122,17 @@ class UserViewModel extends GetxController {
     });
   }
 
-  Future<void> updateUserName(String uid, String value) async{
+  Future<void> updateUserName(String uid, String value) async {
     await FirebaseFirestore.instance.collection('user').doc(uid).update({
       'userName': value,
     });
   }
 
-  Future<void> updateUserProfileImage(String uid, String value) async{
+  Future<void> updateUserProfileImage(String uid, String value) async {
     await FirebaseFirestore.instance.collection('user').doc(uid).update({
       'profileImageReference': value,
     });
   }
-
-
 
   //Making 'User' class (local) from Firebase Data
   Future<void> setUserInfo(String uid) async {
@@ -168,22 +168,22 @@ class UserViewModel extends GetxController {
   }
 
   Future<void> makeUserInformation(
-      String userID,
-      DateTime creationTime,
-      String refrigeratorID,
-      bool isAlarmOn,
-      int refrigerationAlarm,
-      bool isRefShelf,
-      int frozenAlarm,
-      bool isFroShelf,
-      int roomTempAlarm,
-      bool isRTShelf,
-      DateTime lastSignIn,
-      String profileImageReference,
-      String userName,
-      String tokens,
-      List<String> chatList,
-      ) async {
+    String userID,
+    DateTime creationTime,
+    String refrigeratorID,
+    bool isAlarmOn,
+    int refrigerationAlarm,
+    bool isRefShelf,
+    int frozenAlarm,
+    bool isFroShelf,
+    int roomTempAlarm,
+    bool isRTShelf,
+    DateTime lastSignIn,
+    String profileImageReference,
+    String userName,
+    String tokens,
+    List<String> chatList,
+  ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,
@@ -211,6 +211,21 @@ class UserViewModel extends GetxController {
     this.user.value.chatList = [];
   }
 
-  Future<void> addPost(@required Post post)async {}
-
+  Future<void> addPost(@required Post post) async {
+    FirebaseFirestore.instance.collection('post').doc(post.postID).set({
+      'foodName': post.foods.name,
+      'foodNum': post.foods.number,
+      'location': GeoPoint(36.102863994751445, 129.38969404197408),
+      // 'location': GeoPoint(post.owner.location.latitude, post.owner.location.longitude),
+      'ownerID': post.owner.userID,
+      'ownerName': post.owner.userName,
+      'postID': post.postID,
+      'profileImageReference': post.owner.profileImageReference,
+      'registTime': post.registTime,
+      'shelfLife': post.foods.shelfLife,
+      'state': post.state,
+      'subtitle': post.subtitle,
+      'chatList': FieldValue.arrayUnion(post.chatList),
+    });
+  }
 }

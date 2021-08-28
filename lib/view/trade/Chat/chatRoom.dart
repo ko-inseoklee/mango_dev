@@ -19,10 +19,10 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   var _stream;
-  int state = 0;
-  late String foodName;
-  late int foodNum;
-  late String subtitle;
+  late int state = 0;
+  late String foodName = '-';
+  late int foodNum = 0;
+  late String subtitle = '-';
 
   @override
   void initState() {
@@ -98,6 +98,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
+
     UserViewModel userViewModelController = Get.find<UserViewModel>();
     // var chatList = mango_dev.collection('chatRooms').doc(postID);
 
@@ -149,6 +150,7 @@ class _ChatRoomState extends State<ChatRoom> {
                             to: doc['to'],
                             me: userViewModelController.user.value.userName ==
                                 doc['from'],
+                            read: doc['read'],
                           ))
                       .toList();
 
@@ -184,8 +186,8 @@ class _ChatRoomState extends State<ChatRoom> {
                                   color: Colors.grey.withOpacity(0.5),
                                   spreadRadius: 0.5,
                                   blurRadius: 5,
-                                  offset:
-                                  Offset(0, 1), // changes position of shadow
+                                  offset: Offset(
+                                      0, 1), // changes position of shadow
                                 ),
                               ],
                               // border: Border.all(
@@ -299,13 +301,20 @@ class Message extends StatelessWidget {
   final String text;
   final String to;
   final bool me;
+  bool read;
 
-  const Message(
-      {Key? key, required from, required text, required to, required me})
+  Message(
+      {Key? key,
+      required from,
+      required text,
+      required to,
+      required me,
+      required read})
       : from = from,
         text = text,
         to = to,
-        me = me;
+        me = me,
+        read = read;
 
   @override
   Widget build(BuildContext context) {
@@ -324,20 +333,11 @@ class Message extends StatelessWidget {
             ),
             Wrap(
               children: <Widget>[
-                // me
-                //     ? SizedBox(height: 0)
-                //     : Container(
-                //         margin: me
-                //             ? EdgeInsets.only(right: 10)
-                //             : EdgeInsets.only(left: 10),
-                //         child: SizedBox(
-                //           height: 35,
-                //           width: 30,
-                //           child: Container(
-                //             color: Colors.amberAccent,
-                //           ),
-                //         ),
-                //       ),
+                me
+                    ? Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: read ? Text('v') : Text(''))
+                    : SizedBox(height: 0),
                 Container(
                   margin: me
                       ? EdgeInsets.only(right: 10)
@@ -355,20 +355,11 @@ class Message extends StatelessWidget {
                     ),
                   ),
                 ),
-                // me
-                //     ? Container(
-                //         margin: me
-                //             ? EdgeInsets.only(right: 10)
-                //             : EdgeInsets.only(left: 10),
-                //         child: SizedBox(
-                //           height: 35,
-                //           width: 30,
-                //           child: Container(
-                //             color: Colors.amberAccent,
-                //           ),
-                //         ),
-                //       )
-                //     : SizedBox(height: 0)
+                me
+                    ? SizedBox(height: 0)
+                    : Container(
+                        margin: EdgeInsets.only(right: 10),
+                        child: read ? Text('v') : Text(''))
               ],
             )
           ],

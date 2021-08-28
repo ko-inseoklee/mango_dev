@@ -69,6 +69,9 @@ class _TradePageState extends State<TradePage> {
     localPosts = [];
     _determinePosition().then((value) {
       loadLocalPost(value);
+      // postView.update((val) {
+      //   val!.loadLocalPosts(value);
+      // });
     });
   }
 
@@ -161,6 +164,7 @@ class _TradePageState extends State<TradePage> {
                         );
                       }
                       if (localPosts.isEmpty) {
+                        // loadLocalPost(deviceLat);
                         return Center(
                           child: CircularProgressIndicator(),
                         );
@@ -168,9 +172,9 @@ class _TradePageState extends State<TradePage> {
 
                       return ListView.separated(
                           itemBuilder: (context, index) {
-                            return MangoPostCard(
-                              post: localPosts[index],
-                            );
+                              return MangoPostCard(
+                                post: localPosts[index],
+                              );
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return Divider();

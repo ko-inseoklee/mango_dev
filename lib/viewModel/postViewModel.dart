@@ -23,14 +23,7 @@ class postViewModel extends GetxController {
   }
 
   postViewModel.init() {
-    posts = [];
-    myPosts = [];
-    searchPosts = [];
     localPost = [];
-  }
-
-  cleanPost() {
-    posts = [];
   }
 
   loadPosts() async {
@@ -92,12 +85,6 @@ class postViewModel extends GetxController {
               .collection('user')
               .doc(element.get('ownerID'))
               .get();
-
-          // String fID = '';
-          // var aa = await FirebaseFirestore.instance
-          //     .collection('myFood')
-          //     .doc(fID)
-          //     .get().then((value) => value.data());
 
           localPost.add(Post.fromSnapshot(element.data(), snap));
           Post _post = Post.fromSnapshot(element.data(), snap);
