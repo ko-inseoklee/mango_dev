@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 
 class ChatRoomViewModel extends GetxController {
-  void AccessChatRoom(String chatID, String uid) {
+  void AccessChatRoom(String chatID, String uid, String userName) {
     FirebaseFirestore.instance
         .collection('user')
         .doc(uid)
@@ -23,6 +23,7 @@ class ChatRoomViewModel extends GetxController {
               .collection('chatRooms')
               .doc(chatID)
               .collection('messages')
+              .where('to', isEqualTo: userName)
               .get()
               .then((value) {
             value.docs.forEach((element) {
@@ -34,8 +35,5 @@ class ChatRoomViewModel extends GetxController {
         });
       });
     });
-    // FirebaseFirestore.instance.collection('chatRooms').doc(chatID).update({
-    //   'lastAccess': Timestamp.now(),
-    // });
   }
 }

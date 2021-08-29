@@ -199,7 +199,7 @@ class MangoPostCard extends StatelessWidget {
       'takerID': uid,
       'takerName': name,
       'postID': post.postID,
-      'onwerID': post.owner.userID,
+      'ownerID': post.owner.userID,
       'ownerName': post.owner.userName,
     });
 

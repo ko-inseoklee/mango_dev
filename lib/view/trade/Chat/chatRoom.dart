@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/viewModel/addFriendViewModel.dart';
 import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
@@ -51,8 +52,10 @@ class _ChatRoomState extends State<ChatRoom> {
       });
     });
 
-    ChatRoomViewModel()
-        .AccessChatRoom(widget.chatID, userViewModelController.userID);
+    ChatRoomViewModel().AccessChatRoom(
+        widget.chatID,
+        userViewModelController.userID,
+        userViewModelController.user.value.userName);
   }
 
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
@@ -63,26 +66,39 @@ class _ChatRoomState extends State<ChatRoom> {
 
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  Future<void> send(String chatID, String curr_uid) async {
+  Future<void> send(String chatID, String curr_uid, String currName) async {
     if (messageController.text.length > 0) {
       await mango_dev
           .collection('chatRooms')
           .where('chatID', isEqualTo: chatID)
           .get()
           .then((value) {
-        value.docs.forEach((element) {
+        value.docs.forEach((element) async {
           mango_dev
               .collection('chatRooms')
               .doc(element.id)
               .collection('messages')
               .add({
             'text': messageController.text,
-            'from': curr_uid,
-            'to': element.get('takerName') == curr_uid
+            'from': currName,
+            'to': element.get('takerName') == currName
                 ? element.get('ownerName')
                 : element.get('takerName'),
             'date': Timestamp.now(),
             'read': false,
+          });
+
+          var _id = element.get('takerID') == curr_uid
+              ? element.get('ownerID')
+              : element.get('takerID');
+
+          print('_id: $_id');
+          mango_dev.collection('user').doc(_id).get().then((value) {
+            print('token: ' + value.get('tokens'));
+            sendMessage(
+                value.get('tokens'),
+                userViewModelController.user.value.userName,
+                messageController.text);
           });
         });
       });
@@ -98,7 +114,6 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-
     UserViewModel userViewModelController = Get.find<UserViewModel>();
     // var chatList = mango_dev.collection('chatRooms').doc(postID);
 
@@ -135,7 +150,9 @@ class _ChatRoomState extends State<ChatRoom> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   ChatRoomViewModel().AccessChatRoom(
-                      widget.chatID, userViewModelController.userID);
+                      widget.chatID,
+                      userViewModelController.userID,
+                      userViewModelController.user.value.userName);
                   if (!snapshot.hasData)
                     return Center(
                       child: CircularProgressIndicator(),
@@ -262,7 +279,8 @@ class _ChatRoomState extends State<ChatRoom> {
                   Expanded(
                     child: TextField(
                       onSubmitted: (value) => send(
-                          widget.chatID, //generate docID by Post
+                          widget.chatID,
+                          userViewModelController.userID,
                           userViewModelController.user.value.userName),
                       // from who ?
                       decoration: InputDecoration(
@@ -282,6 +300,7 @@ class _ChatRoomState extends State<ChatRoom> {
                     onPressed: () {
                       send(
                           widget.chatID, //generate docID by Post
+                          userViewModelController.userID,
                           userViewModelController.user.value.userName);
                       messageController.clear();
                     },
