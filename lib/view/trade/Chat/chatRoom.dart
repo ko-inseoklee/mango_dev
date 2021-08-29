@@ -335,7 +335,7 @@ class Message extends StatelessWidget {
               children: <Widget>[
                 me
                     ? Container(
-                        margin: EdgeInsets.only(right: 10),
+                        margin: EdgeInsets.only(right: 5),
                         child: read ? Text('v') : Text(''))
                     : SizedBox(height: 0),
                 Container(
@@ -358,7 +358,7 @@ class Message extends StatelessWidget {
                 me
                     ? SizedBox(height: 0)
                     : Container(
-                        margin: EdgeInsets.only(right: 10),
+                        margin: EdgeInsets.only(left: 5),
                         child: read ? Text('v') : Text(''))
               ],
             )

@@ -3,12 +3,34 @@ import 'package:get/get.dart';
 
 class ChatRoomViewModel extends GetxController {
   void AccessChatRoom(String chatID, String uid) {
-    FirebaseFirestore.instance.collection('user').doc(uid).collection(
-        'chatList').where('chatID', isEqualTo: chatID).get().then((value) {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .collection('chatList')
+        .where('chatID', isEqualTo: chatID)
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
-        FirebaseFirestore.instance.collection('user').doc(uid).collection(
-            'chatList').doc(element.id).update({
+        FirebaseFirestore.instance
+            .collection('user')
+            .doc(uid)
+            .collection('chatList')
+            .doc(element.id)
+            .update({
           'lastAccess': Timestamp.now(),
+        }).then((_) {
+          FirebaseFirestore.instance
+              .collection('chatRooms')
+              .doc(chatID)
+              .collection('messages')
+              .get()
+              .then((value) {
+            value.docs.forEach((element) {
+              element.reference.update({
+                'read': true,
+              });
+            });
+          });
         });
       });
     });
