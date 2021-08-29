@@ -148,18 +148,18 @@ class _MyPageEditState extends State<MyPageEdit> {
                               content: Container(
                                 height: 150 * (deviceWidth / prototypeWidth),
                                 child: imageSelectCard(
-                                  onTapCamera: () {},
-                                  onTapGallery: () async {
-                                    await getGalleryImage().then((value) {
-                                      userViewModelController.user.value
-                                          .profileImageReference = value;
-                                      setState(() {
-                                        _fileStoarge.isNetworkImage = false.obs;
-                                      });
-                                      Get.back(result: value);
-                                    });
-                                  },
-                                ),
+                                    // onTapCamera: () {},
+                                    // onTapGallery: () async {
+                                    //   await getGalleryImage().then((value) {
+                                    //     userViewModelController.user.value
+                                    //         .profileImageReference = value;
+                                    //     setState(() {
+                                    //       _fileStoarge.isNetworkImage = false.obs;
+                                    //     });
+                                    //     Get.back(result: value);
+                                    //   });
+                                    // },
+                                    ),
                               ),
                             ));
                             setState(() {
