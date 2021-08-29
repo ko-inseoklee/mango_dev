@@ -168,8 +168,8 @@ class _FoodsSectionState extends State<FoodsSection> {
                     padding: EdgeInsets.all(ScreenUtil().setWidth(8)),
                     child: GridView.count(
                       crossAxisCount: 3,
-                      childAspectRatio: ScreenUtil().setWidth(120) /
-                          ScreenUtil().setHeight(185),
+                      childAspectRatio: ScreenUtil().setWidth(108) /
+                          ScreenUtil().setHeight(149),
                       children: buildCards(foods: showFoods),
                     ),
                   ),

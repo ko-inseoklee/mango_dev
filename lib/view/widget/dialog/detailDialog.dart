@@ -3,6 +3,7 @@ import 'package:flutter_material_pickers/helpers/show_date_picker.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/widget/dialog/deleteDialog.dart';
 import 'package:mangodevelopment/view/widget/mangoDivider.dart';
@@ -74,312 +75,307 @@ class _DetailDialogState extends State<DetailDialog> {
       titlePadding: EdgeInsets.fromLTRB(
           ScreenUtil().setWidth(20), ScreenUtil().setHeight(18), 0, 0),
       contentPadding: EdgeInsets.all(0),
-      content: SingleChildScrollView(
-        child: Container(
-            width: ScreenUtil().setWidth(400),
-            height: ScreenUtil().setHeight(700),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: ScreenUtil().setHeight(210),
-                  padding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20),
-                      ScreenUtil().setHeight(8), 0, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                            bottom: ScreenUtil().setHeight(8.0)),
-                        width: ScreenUtil().setWidth(53),
-                        height: ScreenUtil().setHeight(24),
-                        child: Text(
-                          '기본정보',
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2!
-                              .copyWith(color: MangoDisabledColorDark),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            width: ScreenUtil().setWidth(95),
-                            height: ScreenUtil().setHeight(105),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: MangoWhite,
-                                  borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(color: Orange400)),
-                              child: Image.asset(
-                                'images/category/${categoryImg[translateToKo(tempFood.category)]}',
-                                scale: 0.8,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: ScreenUtil().setWidth(160),
-                            alignment: Alignment.center,
-                            child: Column(
-                              children: [
-                                Container(
-                                    width: ScreenUtil().setWidth(140),
-                                    height: ScreenUtil().setHeight(45),
-                                    padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-                                    margin: EdgeInsets.only(bottom: 5.0),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: MangoDisabledColorLight),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.fromLTRB(
-                                              2.0, 0, 2.0, 0),
-                                          alignment: Alignment.center,
-                                          width: ScreenUtil().setWidth(40),
-                                          child: Text(
-                                            '품명',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2!
-                                                .copyWith(
-                                                    color: MangoDisabledColor,
-                                                    fontSize: 12),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: ScreenUtil().setWidth(67),
-                                          decoration: BoxDecoration(),
-                                          child: TextFormField(
-                                            controller: _textEditingController,
-                                            textAlign: TextAlign.center,
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle1!
-                                                .copyWith(fontSize: 14.0),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                tempFood.name = value;
-                                              });
-                                            },
-                                            onEditingComplete: () {
-                                              FocusScope.of(context).unfocus();
-                                            },
-                                          ),
-                                        ),
-                                        Container(
-                                          width: ScreenUtil().setWidth(23),
-                                          child: TextButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                tempFood.name = '-';
-                                                _textEditingController.text =
-                                                    tempFood.name;
-                                              });
-                                            },
-                                            child: Icon(
-                                              Icons.clear,
-                                              size: 16,
-                                              color: MangoDisabledColorDark,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                Container(
-                                    width: ScreenUtil().setWidth(140),
-                                    height: ScreenUtil().setHeight(45),
-                                    padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-                                    margin: EdgeInsets.only(bottom: 5.0),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: MangoDisabledColorLight),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.fromLTRB(
-                                              5.0, 0, 5.0, 0),
-                                          alignment: Alignment.center,
-                                          width: ScreenUtil().setWidth(40),
-                                          child: Text(
-                                            '수량',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2!
-                                                .copyWith(
-                                                    color: MangoDisabledColor,
-                                                    fontSize: 12.0),
-                                          ),
-                                        ),
-                                        Container(
-                                            alignment: Alignment.center,
-                                            width: ScreenUtil().setWidth(60),
-                                            decoration: BoxDecoration(),
-                                            child: Text(
-                                              tempFood.number.toString(),
-                                              style: TextStyle(fontSize: 12.0),
-                                            )),
-                                        Container(
-                                          width: 25,
-                                          child: TextButton(
-                                            onPressed: () {
-                                              showNumBSheet(idx: tempFood.idx);
-                                            },
-                                            child: Icon(
-                                              Icons.arrow_drop_down,
-                                              size: 16,
-                                              color: MangoDisabledColorDark,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    )),
-                                Container(
-                                    width: ScreenUtil().setWidth(140),
-                                    height: ScreenUtil().setHeight(40),
-                                    padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: MangoDisabledColorLight),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    alignment: Alignment.center,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.fromLTRB(
-                                              5.0, 0, 5.0, 0),
-                                          alignment: Alignment.center,
-                                          width: ScreenUtil().setWidth(50),
-                                          child: Text(
-                                            '카테고리',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .subtitle2!
-                                                .copyWith(
-                                                    color: MangoDisabledColor,
-                                                    fontSize:
-                                                        ScreenUtil().setSp(10)),
-                                          ),
-                                        ),
-                                        Container(
-                                            alignment: Alignment.center,
-                                            width: ScreenUtil().setWidth(55),
-                                            decoration: BoxDecoration(),
-                                            child: Text(
-                                              tempFood.category,
-                                              style: TextStyle(fontSize: 10.0),
-                                            )),
-                                        Container(
-                                          width: ScreenUtil().setWidth(25),
-                                          child: TextButton(
-                                            onPressed: () {
-                                              showCategoryBSheet(tempFood.idx);
-                                            },
-                                            child: Icon(
-                                              Icons.arrow_drop_down,
-                                              size: 16,
-                                              color: MangoDisabledColorDark,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ))
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      color: MangoDisabledColorLight.withOpacity(0.4),
-                      border: Border.all(color: MangoDisabledColorLight)),
-                  height: ScreenUtil().setHeight(16),
-                ),
-                Container(
-                  height: ScreenUtil().setHeight(396),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: ScreenUtil().setHeight(370),
-                        child: PageView(
-                          onPageChanged: (value) {
-                            setState(() {
-                              bottomPageIdx = value;
-                            });
-                          },
-                          controller: _pageController,
-                          scrollDirection: Axis.horizontal,
-                          children: [canModifyInfoPage(), additionalInfoPage()],
-                        ),
-                      ),
-                      Container(
-                          height: ScreenUtil().setHeight(20),
-                          child: slider(idx: bottomPageIdx))
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+      content: Container(
+          width: deviceWidth,
+          height: ScreenUtil().setHeight(700),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: ScreenUtil().setHeight(210),
+                padding: EdgeInsets.fromLTRB(
+                    ScreenUtil().setWidth(20), ScreenUtil().setHeight(8), 0, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        width: ScreenUtil().setWidth(130),
-                        height: ScreenUtil().setHeight(45),
-                        decoration: BoxDecoration(
-                            color: MangoDisabledColorLight,
-                            borderRadius: BorderRadius.circular(5.0)),
-                        child: TextButton(
-                            onPressed: () => Get.back(),
-                            child: Text(
-                              '취소',
-                              style: TextStyle(color: MangoBlack),
-                            ))),
-                    Container(
-                        width: ScreenUtil().setWidth(130),
-                        height: ScreenUtil().setHeight(45),
-                        decoration: BoxDecoration(
-                            color: Orange400,
-                            borderRadius: BorderRadius.circular(5.0)),
-                        child: TextButton(
-                            onPressed: () async {
-                              tempFood.cardStatus = setCardStatus(tempFood);
-                              await _refController
-                                  .updateFood(food: tempFood)
-                                  .then((value) => Get.back());
-                            },
-                            child: Text(
-                              '저장',
-                              style: TextStyle(color: MangoBlack),
-                            ))),
+                      margin:
+                          EdgeInsets.only(bottom: ScreenUtil().setHeight(8.0)),
+                      width: ScreenUtil().setWidth(53),
+                      height: ScreenUtil().setHeight(24),
+                      child: Text(
+                        '기본정보',
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle2!
+                            .copyWith(color: MangoDisabledColorDark),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          width: ScreenUtil().setWidth(95),
+                          height: ScreenUtil().setHeight(105),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: MangoWhite,
+                                borderRadius: BorderRadius.circular(100),
+                                border: Border.all(color: Orange400)),
+                            child: Image.asset(
+                              'images/category/${categoryImg[translateToKo(tempFood.category)]}',
+                              scale: 0.8,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: ScreenUtil().setWidth(160),
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              Container(
+                                  width: ScreenUtil().setWidth(140),
+                                  height: ScreenUtil().setHeight(45),
+                                  padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                                  margin: EdgeInsets.only(bottom: 5.0),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: MangoDisabledColorLight),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(2.0, 0, 2.0, 0),
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(40),
+                                        child: Text(
+                                          '품명',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!
+                                              .copyWith(
+                                                  color: MangoDisabledColor,
+                                                  fontSize: 12),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: ScreenUtil().setWidth(67),
+                                        decoration: BoxDecoration(),
+                                        child: TextFormField(
+                                          controller: _textEditingController,
+                                          textAlign: TextAlign.center,
+                                          textInputAction: TextInputAction.next,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle1!
+                                              .copyWith(fontSize: 14.0),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              tempFood.name = value;
+                                            });
+                                          },
+                                          onEditingComplete: () {
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                        ),
+                                      ),
+                                      Container(
+                                        width: ScreenUtil().setWidth(23),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              tempFood.name = '-';
+                                              _textEditingController.text =
+                                                  tempFood.name;
+                                            });
+                                          },
+                                          child: Icon(
+                                            Icons.clear,
+                                            size: 16,
+                                            color: MangoDisabledColorDark,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              Container(
+                                  width: ScreenUtil().setWidth(140),
+                                  height: ScreenUtil().setHeight(45),
+                                  padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                                  margin: EdgeInsets.only(bottom: 5.0),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: MangoDisabledColorLight),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(5.0, 0, 5.0, 0),
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(40),
+                                        child: Text(
+                                          '수량',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!
+                                              .copyWith(
+                                                  color: MangoDisabledColor,
+                                                  fontSize: 12.0),
+                                        ),
+                                      ),
+                                      Container(
+                                          alignment: Alignment.center,
+                                          width: ScreenUtil().setWidth(60),
+                                          decoration: BoxDecoration(),
+                                          child: Text(
+                                            tempFood.number.toString(),
+                                            style: TextStyle(fontSize: 12.0),
+                                          )),
+                                      Container(
+                                        width: 25,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            showNumBSheet(idx: tempFood.idx);
+                                          },
+                                          child: Icon(
+                                            Icons.arrow_drop_down,
+                                            size: 16,
+                                            color: MangoDisabledColorDark,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                              Container(
+                                  width: ScreenUtil().setWidth(140),
+                                  height: ScreenUtil().setHeight(40),
+                                  padding: EdgeInsets.fromLTRB(5, 5, 0, 5),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: MangoDisabledColorLight),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding:
+                                            EdgeInsets.fromLTRB(5.0, 0, 5.0, 0),
+                                        alignment: Alignment.center,
+                                        width: ScreenUtil().setWidth(50),
+                                        child: Text(
+                                          '카테고리',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .subtitle2!
+                                              .copyWith(
+                                                  color: MangoDisabledColor,
+                                                  fontSize:
+                                                      ScreenUtil().setSp(10)),
+                                        ),
+                                      ),
+                                      Container(
+                                          alignment: Alignment.center,
+                                          width: ScreenUtil().setWidth(55),
+                                          decoration: BoxDecoration(),
+                                          child: Text(
+                                            tempFood.category,
+                                            style: TextStyle(fontSize: 10.0),
+                                          )),
+                                      Container(
+                                        width: ScreenUtil().setWidth(25),
+                                        child: TextButton(
+                                          onPressed: () {
+                                            showCategoryBSheet(tempFood.idx);
+                                          },
+                                          child: Icon(
+                                            Icons.arrow_drop_down,
+                                            size: 16,
+                                            color: MangoDisabledColorDark,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                SizedBox(
-                  height: ScreenUtil().setHeight(12),
-                )
-              ],
-            )),
-      ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: MangoDisabledColorLight.withOpacity(0.4),
+                    border: Border.all(color: MangoDisabledColorLight)),
+                height: ScreenUtil().setHeight(16),
+              ),
+              Container(
+                height: ScreenUtil().setHeight(396),
+                child: Column(
+                  children: [
+                    Container(
+                      height: ScreenUtil().setHeight(370),
+                      child: PageView(
+                        onPageChanged: (value) {
+                          setState(() {
+                            bottomPageIdx = value;
+                          });
+                        },
+                        controller: _pageController,
+                        scrollDirection: Axis.horizontal,
+                        children: [canModifyInfoPage(), additionalInfoPage()],
+                      ),
+                    ),
+                    Container(
+                        height: ScreenUtil().setHeight(20),
+                        child: slider(idx: bottomPageIdx))
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                      width: ScreenUtil().setWidth(130),
+                      height: ScreenUtil().setHeight(45),
+                      decoration: BoxDecoration(
+                          color: MangoDisabledColorLight,
+                          borderRadius: BorderRadius.circular(5.0)),
+                      child: TextButton(
+                          onPressed: () => Get.back(),
+                          child: Text(
+                            '취소',
+                            style: TextStyle(color: MangoBlack),
+                          ))),
+                  Container(
+                      width: ScreenUtil().setWidth(130),
+                      height: ScreenUtil().setHeight(45),
+                      decoration: BoxDecoration(
+                          color: Orange400,
+                          borderRadius: BorderRadius.circular(5.0)),
+                      child: TextButton(
+                          onPressed: () async {
+                            tempFood.cardStatus = setCardStatus(tempFood);
+                            await _refController
+                                .updateFood(food: tempFood)
+                                .then((value) => Get.back());
+                          },
+                          child: Text(
+                            '저장',
+                            style: TextStyle(color: MangoBlack),
+                          ))),
+                ],
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(12),
+              )
+            ],
+          )),
     );
   }
 

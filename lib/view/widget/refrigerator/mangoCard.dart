@@ -117,38 +117,42 @@ class MangoCard extends StatelessWidget {
         onLongPress: longPressed,
         onPressed: onPressed(food: food),
         child: Container(
-          child: Card(
-            shape: RoundedRectangleBorder(
-                side: BorderSide(color: MangoDisabledColorLight),
-                borderRadius: BorderRadius.circular(10)),
-            color: Red50,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'images/category/${categoryImg[translateToKo(food.category)]}',
-                    scale: 1.2,
-                  ),
+          width: ScreenUtil().setWidth(108),
+          height: ScreenUtil().setHeight(129),
+          decoration: BoxDecoration(
+              color: Red50,
+              // border: Border(color: MangoDisabledColorLight),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                // padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'images/category/${categoryImg[translateToKo(food.category)]}',
+                  scale: 1.0,
                 ),
-                Container(
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
+                child: Text(
+                  food.name,
+                  style: TextStyle(
+                      fontSize: ScreenUtil().setSp(14),
+                      color: MangoBlack,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(8.0, 0, 0, 0),
                   child: Text(
-                    food.name,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ),
-                Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
-                    child: Text(
-                        '${DateTime.now().difference(food.alarmDay).inDays}일 지남',
-                        style: TextStyle(color: Red500, fontSize: 12.0))),
-              ],
-            ),
+                      '${DateTime.now().difference(food.alarmDay).inDays}일 지남',
+                      style: TextStyle(
+                          color: Red500, fontSize: ScreenUtil().setSp(12)))),
+            ],
           ),
         ),
       ),
@@ -165,8 +169,8 @@ class MangoCard extends StatelessWidget {
                 fontWeight: FontWeight.w700, color: Red500, fontSize: 18.0),
           ),
         ),
-        top: 20,
-        left: 20,
+        top: 13,
+        left: 13,
       ),
       deleteButton()
     ]);
