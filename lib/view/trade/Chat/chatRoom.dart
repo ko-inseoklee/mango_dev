@@ -92,9 +92,9 @@ class _ChatRoomState extends State<ChatRoom> {
               ? element.get('ownerID')
               : element.get('takerID');
 
-          print('_id: $_id');
+          // print('_id: $_id');
           mango_dev.collection('user').doc(_id).get().then((value) {
-            print('token: ' + value.get('tokens'));
+            // print('token: ' + value.get('tokens'));
             sendMessage(
                 value.get('tokens'),
                 userViewModelController.user.value.userName,
