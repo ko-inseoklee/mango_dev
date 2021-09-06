@@ -20,15 +20,24 @@ class _addFoodWithBarcodeState extends State<addFoodWithBarcode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TextButton(onPressed: () async{ test(); },
-      child: Text('click'),
+      body: Center(
+        child: TextButton(onPressed: () async{ test(); },
+        child: Text('click'),
 
+        ),
       ),
     );
   }
 
   Future<void> test() async{
-    var response = await Dio().get('http://openapi.foodsafetykorea.go.kr/api/1e16e12da473496cb31c/건강기능식품 영양DB/xml/1/5').then((value) => print(value == '$value'));
+    try{
+      print("실행 중..");
+      var response = await Dio().get('https://openapi.foodsafetykorea.go.kr/api/1e16e12da473496cb31c/C005/json/1/1/BAR_CD=8809360172165');
+      print(response);
+
+    }catch (e){
+
+    }
 
   }
 }

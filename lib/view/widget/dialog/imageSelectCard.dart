@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
+import 'package:mangodevelopment/view/refrigerator/addFoodWithBarcode.dart';
 import 'dart:io';
 
 import '../../../app.dart';
@@ -60,7 +61,9 @@ class _imageSelectCardState extends State<imageSelectCard> {
           width: ScreenUtil().setWidth(72),
           height: ScreenUtil().setHeight(96),
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(addFoodWithBarcode());
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
