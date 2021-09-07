@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 import '../../../app.dart';
 import 'imageSelectCard.dart';
 
 class ImageSelectDialog extends StatelessWidget {
-  UserViewModel _userViewModelController = Get.find<UserViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +15,13 @@ class ImageSelectDialog extends StatelessWidget {
       content: Container(
         height: 150 * (deviceWidth / prototypeWidth),
         child: imageSelectCard(
-          onTapCamera: () {},
-          onTapGallery: () async {
-            await getGalleryImage().then((value) {
-              _userViewModelController.user.value.profileImageReference = value;
-            });
-            Get.back();
-          },
+          // onTapCamera: () {},
+          // onTapGallery: () async {
+          //   await getGalleryImage().then((value) {
+          //     _userViewModelController.user.value.profileImageReference = value;
+          //   });
+          //   Get.back();
+          // },
         ),
       ),
     );

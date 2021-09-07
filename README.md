@@ -8,6 +8,9 @@ A new Flutter project.
     - 안드로이드 에뮬레이터 인터넷 연결 확인
     - AndroidManifest permission 넣어주기 (ACCESS NETWORK / INTERNET)
 
+- Google Platform Exception
+    - 파이어베이스 프로젝트에 SHA 인증서 등록이 되어 있는 지 확인.
+
 - small API
     - MangoAppBar
            String title,

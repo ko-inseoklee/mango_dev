@@ -70,22 +70,23 @@ class _DetailDialogState extends State<DetailDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      insetPadding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), ScreenUtil().setHeight(16), ScreenUtil().setWidth(20), ScreenUtil().setHeight(16)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Text('품목 상세 정보'),
       titlePadding: EdgeInsets.fromLTRB(
           ScreenUtil().setWidth(20), ScreenUtil().setHeight(18), 0, 0),
-      contentPadding: EdgeInsets.all(0),
+      contentPadding: EdgeInsets.zero,
       content: Container(
-          width: deviceWidth,
+          width: ScreenUtil().setWidth(500),
           height: ScreenUtil().setHeight(700),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: ScreenUtil().setHeight(210),
+                height: ScreenUtil().setHeight(185),
                 padding: EdgeInsets.fromLTRB(
-                    ScreenUtil().setWidth(20), ScreenUtil().setHeight(8), 0, 0),
+                    ScreenUtil().setWidth(15), ScreenUtil().setHeight(8), ScreenUtil().setWidth(5), 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -315,7 +316,7 @@ class _DetailDialogState extends State<DetailDialog> {
                 height: ScreenUtil().setHeight(16),
               ),
               Container(
-                height: ScreenUtil().setHeight(396),
+                height: ScreenUtil().setHeight(390),
                 child: Column(
                   children: [
                     Container(
@@ -523,7 +524,7 @@ class _DetailDialogState extends State<DetailDialog> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.all(ScreenUtil().setSp(8)),
+          padding: EdgeInsets.all(ScreenUtil().setSp(15)),
           child: Text(
             '보관방법',
             style: TextStyle(
@@ -634,7 +635,7 @@ class _DetailDialogState extends State<DetailDialog> {
         Row(
           children: [
             Container(
-              padding: EdgeInsets.all(ScreenUtil().setSp(8)),
+              padding: EdgeInsets.all(ScreenUtil().setSp(15)),
               decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(color: MangoDisabledColorLight))),
