@@ -1,0 +1,1 @@
+String scanBarcodeKey = "1e16e12da473496cb31c";
