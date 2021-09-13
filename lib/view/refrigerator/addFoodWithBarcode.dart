@@ -24,7 +24,6 @@ class _addFoodWithBarcodeState extends State<addFoodWithBarcode> {
       body: Center(
         child: TextButton(onPressed: () async{ test(); },
         child: Text('click'),
-
         ),
       ),
     );
@@ -35,10 +34,7 @@ class _addFoodWithBarcodeState extends State<addFoodWithBarcode> {
       print("실행 중..");
       var response = await Dio().get('https://openapi.foodsafetykorea.go.kr/api/$scanBarcodeKey/C005/json/1/1/BAR_CD=8809360172165');
       print(response);
-
     }catch (e){
-
     }
-
   }
 }
