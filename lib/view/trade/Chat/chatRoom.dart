@@ -168,6 +168,7 @@ class _ChatRoomState extends State<ChatRoom> {
                             me: userViewModelController.user.value.userName ==
                                 doc['from'],
                             read: doc['read'],
+                            time: doc['date'],
                           ))
                       .toList();
 
@@ -320,6 +321,7 @@ class Message extends StatelessWidget {
   final String text;
   final String to;
   final bool me;
+  final Timestamp time;
   bool read;
 
   Message(
@@ -328,12 +330,14 @@ class Message extends StatelessWidget {
       required text,
       required to,
       required me,
-      required read})
+      required read,
+      required time})
       : from = from,
         text = text,
         to = to,
         me = me,
-        read = read;
+        read = read,
+        time = time;
 
   @override
   Widget build(BuildContext context) {
@@ -355,7 +359,14 @@ class Message extends StatelessWidget {
                 me
                     ? Container(
                         margin: EdgeInsets.only(right: 5),
-                        child: read ? Text('v') : Text(''))
+                        child: read ? Text('읽음') : Text(''))
+                    : SizedBox(height: 0),
+                me
+                    ? Container(
+                        margin: EdgeInsets.only(right: 5),
+                        child: Text(time.toDate().hour.toString() +
+                            ':' +
+                            time.toDate().minute.toString()))
                     : SizedBox(height: 0),
                 Container(
                   margin: me
@@ -377,8 +388,10 @@ class Message extends StatelessWidget {
                 me
                     ? SizedBox(height: 0)
                     : Container(
-                        margin: EdgeInsets.only(left: 5),
-                        child: read ? Text('v') : Text(''))
+                        margin: EdgeInsets.only(right: 5),
+                        child: Text(time.toDate().hour.toString() +
+                            ':' +
+                            time.toDate().minute.toString()))
               ],
             )
           ],
