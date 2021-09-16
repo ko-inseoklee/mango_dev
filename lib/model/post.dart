@@ -16,8 +16,8 @@ class Post {
   late String subtitle;
 
   late User owner;
-  // late List<String> ownerFriendList;
 
+  late List<String> chatList;
 
   late Food foods;
 
@@ -42,7 +42,7 @@ class Post {
         profileImageReference: '-1',
         userName: '',
         tokens: '',
-        // friendList: [],
+        chatList: [],
         isAlarmOn: true);
   }
 
@@ -50,11 +50,22 @@ class Post {
       : postID = post['postID'],
         state = post['state'],
         registTime = post['registTime'],
-        foods = Food.init(),
+        foods = Food(
+            fId: '',
+            rId: '',
+            index: 0,
+            status: false,
+            name: post['foodName'],
+            num: post['foodNum'],
+            category: '',
+            method: 0,
+            displayType: false,
+            shelfLife: post['shelfLife'].toDate(),
+            registrationDay: post['shelfLife'].toDate(),
+            alarmDate: DateTime.now(),
+            cardStatus: 0),
         // foods = Food.fromSnapshot(food),
         subtitle = post['subtitle'],
-        // ownerFriendList = User.fromSnapshot(snapshot).friendList,
         owner = User.fromSnapshot(snapshot);
-
 
 }

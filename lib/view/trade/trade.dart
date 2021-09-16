@@ -12,10 +12,7 @@ import 'package:mangodevelopment/view/widget/postCardWidget.dart';
 import 'package:mangodevelopment/viewModel/postViewModel.dart';
 import 'package:mangodevelopment/viewModel/push_test.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
-
-import '../createPost.dart';
 import 'Chat/chatList.dart';
-import 'makePostInfo.dart';
 
 class TradePage extends StatefulWidget {
   final String title;
@@ -31,7 +28,7 @@ class _TradePageState extends State<TradePage> {
   late List<Post> myPosts = [];
 
   late List<Post> searchPosts = [];
-  late List<Post> localPosts = [ Post.init(), Post.init(),];
+  late List<Post> localPosts = [];
 
   late Position deviceLat;
 
@@ -40,7 +37,7 @@ class _TradePageState extends State<TradePage> {
   String _search = '';
   late TextEditingController _textController;
 
-  void _determinePosition() async {
+  Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -62,34 +59,28 @@ class _TradePageState extends State<TradePage> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     deviceLat = await Geolocator.getCurrentPosition();
-    // print('device Lat: ' + deviceLat.toString());
+    return await Geolocator.getCurrentPosition();
   }
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(text: '');
-    // posts = post.loadPosts();
-    // getFriendList(userViewModelController.userID);
-    // loadPost();
-    _determinePosition();
-    // loadLocalPost(deviceLat);
-    // _determinePosition().then((value) {
-    //   loadLocalPost(deviceLat);
-    // });
-    // loadMyPost();
+    localPosts = [];
+    _determinePosition().then((value) {
+      loadLocalPost(value);
+      // postView.update((val) {
+      //   val!.loadLocalPosts(value);
+      // });
+    });
   }
 
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  List<String> _friendList = [];
-
   @override
   Widget build(BuildContext context) {
-    loadLocalPost(deviceLat);
-    // getFriendList(userViewModelController.user.value.userID);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -109,9 +100,6 @@ class _TradePageState extends State<TradePage> {
           IconButton(
               onPressed: () {
                 Get.to(Location());
-                // Get.to(TutorialPage());
-                // Get.to(CreatePost());
-                // Get.to(MakePostInfo(), arguments: posts[0].foods);
               },
               icon: Icon(Icons.notifications_none))
         ],
@@ -156,9 +144,7 @@ class _TradePageState extends State<TradePage> {
                         // _search == ''?
                         mango_dev
                             .collection('post')
-                            .where('ownerFriendList',
-                                arrayContains:
-                                    userViewModelController.user.value.userID)
+                            .orderBy('registTime', descending: true)
                             .snapshots(),
                     // : mango_dev
                     //     .collection('post')
@@ -168,51 +154,38 @@ class _TradePageState extends State<TradePage> {
                     //     .where('foodName', isEqualTo: _search)
                     //     .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      // _search == ''
-                      //     ?
+                      // _search == '' ?
                       // loadPost(); //
-                      loadLocalPost(deviceLat);
                       // : loadSearchPost(_search);
-                      // if(snapshot.connectionState == ConnectionState.active){
-                      //   loadPost();
-                      // }
+
                       if (!snapshot.hasData) {
                         return Center(
                           child: CircularProgressIndicator(),
                         );
                       }
+                      if (localPosts.isEmpty) {
+                        // loadLocalPost(deviceLat);
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+
                       return ListView.separated(
                           itemBuilder: (context, index) {
-                            // loadPost();
-                            // List<DocumentSnapshot> documents =
-                            //     snapshot.data!.docs;
-                            return MangoPostCard(
-                              post: localPosts[index],
-                            );
+                              return MangoPostCard(
+                                post: localPosts[index],
+                              );
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             return Divider();
                           },
-                          itemCount: snapshot.data!.size);
+                          itemCount: localPosts.length);
                     },
                   ),
                 ),
               ],
             ),
     );
-  }
-
-  void getFriendList(String uid) async {
-    mango_dev
-        .collection('user')
-        .doc(uid)
-        .collection('FriendList')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        _friendList.add(doc['userID']);
-      });
-    });
   }
 
   void loadPost() async {

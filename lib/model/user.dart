@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mangodevelopment/view/trade/location.dart';
 
 //Field name for User document.
 final isFrozenAlarm = 'frozen_is_shelf';
@@ -23,7 +24,8 @@ class User {
   String profileImageReference;
   String userName;
   String tokens;
-  // List<String> friendList;
+  List<String> chatList;
+  // Location location;
 
   //final DocumentReference reference;
 
@@ -42,7 +44,8 @@ class User {
     required String profileImageReference,
     required String userName,
     required String tokens,
-    // required List<String> friendList,
+    required List<String> chatList,
+    // required Location location,
 
     //required DocumentReference reference
   })  : this.userID = userID,
@@ -58,8 +61,9 @@ class User {
         this.lastSignIn = lastSignIn,
         this.profileImageReference = profileImageReference,
         this.userName = userName,
-        this.tokens = tokens;
-        // this.friendList = friendList;
+        this.tokens = tokens,
+        this.chatList = chatList;
+        // this.location = location;
 
   //this.reference = reference;
 
@@ -77,6 +81,7 @@ class User {
         lastSignIn = snapshot.get('lastSignIn'),
         profileImageReference = snapshot.get('profileImageReference'),
         userName = snapshot.get('userName'),
-        tokens = snapshot.get('tokens');
-        // friendList = List.from(snapshot.get('friends'));
+        tokens = snapshot.get('tokens'),
+        chatList = List.from(snapshot.get('chats'));
+        // location = snapshot.get('location');
 }
