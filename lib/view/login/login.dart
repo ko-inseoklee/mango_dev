@@ -156,6 +156,36 @@ class LogInPage extends StatelessWidget {
               },
             ),
           ),
+          SizedBox(height: ScreenUtil().setHeight(20),),
+          ConstrainedBox(
+            constraints: BoxConstraints.tightFor(
+              width: loginWidth * (deviceWidth / prototypeWidth),
+              height:
+              logoSize * (deviceWidth / prototypeWidth) * buttonHeightRatio,
+            ),
+            child: TextButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    '전화번호로 시작하기',
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
+                ],
+              ),
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).primaryColor,
+              ),
+              onPressed: () {
+                // Get.find<Authentication>().kakaoLogin().then((value){
+                //   authController.loadId();
+                //   Get.off(Landing());
+                // });
+                authController.loadId();
+                Get.off(Landing());
+              },
+            ),
+          ),
         ],
       ),
     );

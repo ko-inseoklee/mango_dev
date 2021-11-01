@@ -55,6 +55,9 @@ dependencies:
   platform: ^3.0.0
   package_info: ^2.0.0
 
+  flutter_naver_login: ^1.2.2
+  #firebase_auth_simplify: ^3.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

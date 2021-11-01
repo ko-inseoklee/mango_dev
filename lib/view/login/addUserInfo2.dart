@@ -302,6 +302,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                     child: ElevatedButton(
                         child: authOk == true ? Text('다음') : Text('인증번호 확인'),
                         onPressed: () async {
+                          print(authOk);
                           //'인증번호 확인'일 경우
                           if (authOk == false) {
                             PhoneAuthCredential phoneAuthCredential =
@@ -312,6 +313,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                           }
                           //'다음'인경
                           if (authOk == true) {
+                            print(authOk);
                             setState(() {
                               _pageIndex = 2;
                             });
@@ -338,10 +340,6 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
         print('auth 정보삭제');
         await _authPhone.signOut();
         print('phone 로그인된 것 로그아웃');
-        if(_auth.authWay == 0){ // google login
-          await _auth.googleLogin();
-          print("google login again");
-        }
 
         Get.defaultDialog(
           title: "",
@@ -349,7 +347,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
             children: [
               Text(
                 "인증이 성공적으로 완료되었습니다.",
-                style: Theme.of(context).textTheme.subtitle2,
+                //style: Theme.of(context).textTheme.subtitle2,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(8, 25, 8, 0),
@@ -359,18 +357,17 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                         height: 46.0 * (deviceWidth / prototypeWidth)),
                     child: ElevatedButton(
                         onPressed: () {
+                          setState(() {
+                            print('인증완료 및 로그인 성공');
+                            authOk = true;
+                          });
                           Get.back();
                         },
                         child: Text('확인'))),
               )
             ],
           ),
-        ).then((value) {
-          setState(() {
-            print('인증완료 및 로그인 성공');
-            authOk = true;
-          });
-        });
+        );
       }
     } on FirebaseAuthException catch (e) {
       print('인증실패..로그인실패');
@@ -486,6 +483,11 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                     onPressed: () async {
+                      if(_auth.authWay == 0){ // google login
+                        await _auth.googleLogin();
+                        print("google login again");
+                      }
+
                       if (alarmIdx == 2) {
                         uuid = Uuid().v4().toString();
                         String defaultImage = '-1';

@@ -23,6 +23,7 @@ class User {
   String profileImageReference;
   String userName;
   String tokens;
+  String phoneNumber;
   // List<String> friendList;
 
   //final DocumentReference reference;
@@ -42,6 +43,7 @@ class User {
     required String profileImageReference,
     required String userName,
     required String tokens,
+    required String phoneNumber,
     // required List<String> friendList,
 
     //required DocumentReference reference
@@ -58,7 +60,8 @@ class User {
         this.lastSignIn = lastSignIn,
         this.profileImageReference = profileImageReference,
         this.userName = userName,
-        this.tokens = tokens;
+        this.tokens = tokens,
+        this.phoneNumber =phoneNumber;
         // this.friendList = friendList;
 
   //this.reference = reference;
@@ -77,6 +80,7 @@ class User {
         lastSignIn = snapshot.get('lastSignIn'),
         profileImageReference = snapshot.get('profileImageReference'),
         userName = snapshot.get('userName'),
-        tokens = snapshot.get('tokens');
+        tokens = snapshot.get('tokens'),
+        phoneNumber = snapshot.get('phoneNumber');
         // friendList = List.from(snapshot.get('friends'));
 }

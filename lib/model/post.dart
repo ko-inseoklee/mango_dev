@@ -43,7 +43,8 @@ class Post {
         userName: '',
         tokens: '',
         // friendList: [],
-        isAlarmOn: true);
+        isAlarmOn: true,
+        phoneNumber: '');
   }
 
   Post.fromSnapshot(Map<String, dynamic> post, DocumentSnapshot snapshot)

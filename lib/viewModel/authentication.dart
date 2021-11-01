@@ -7,6 +7,7 @@ import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kakao_flutter_sdk/all.dart' as kakao;
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,46 +69,63 @@ class Authentication extends GetxController {
     update();
   }
 
+
+  _issueAccessToken(String authCode) async {
+    try {
+      // print("accessToken");
+      var token = await kakao.AuthApi.instance.issueAccessToken(authCode);
+      print('token == ${token}');
+      await kakao.AccessTokenStore.instance.toStore(token);
+
+      final authResult =
+      await _auth.signInWithCustomToken(token.tokenType);
+      // print(authResult);
+      // String resultToken = await kakao.AccessTokenStore.instance.fromStore().toString();
+      // FirebaseAuth.instance.signInWithCustomToken(resultToken);
+      // print(token);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<void> kakaoLogin() async {
-    final clientState = Uuid().v4();
-    final url = Uri.https('kauth.kakao.com', '/oauth/authorize', {
-      'response_type': 'code',
-      'client_id': 'ae58524d5e3551dcc6608530c1e38422',
-      'response_mode': 'form_post',
-      'redirect_uri':
-          'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
-      'state': clientState,
-    });
 
-    final result = await FlutterWebAuth.authenticate(
-        url: url.toString(), callbackUrlScheme: "webauthcallback");
-
-    final body = Uri.parse(result).queryParameters;
-
-    final tokenUrl = Uri.https('kauth.kakao.com', '/oauth/token', {
-      'grant_type': 'authorization_code',
-      'client_id': 'ae58524d5e3551dcc6608530c1e38422',
-      'redirect_uri':
-          'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
-      'code': body['code'],
-    });
-
-    var response = await http.post(tokenUrl);
-    Map<String, dynamic> accessTokenResult = jsonDecode(response.body);
-    var tempUrl = Uri.parse(
-        'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/token');
-    var responseCustomToken = await http.post(tempUrl,
-        body: {"accessToken": accessTokenResult['access_token']});
-
+    final installed = await kakao.isKakaoTalkInstalled();
+    // print('kako installed: ' + installed.toString());
+    bool _isKakaoInstalled = installed;
+    if(_isKakaoInstalled == true){
+      try {
+        var code = await kakao.AuthCodeClient.instance.requestWithTalk();
+        await _issueAccessToken(code);
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+    else{
+      try {
+        var code = await kakao.AuthCodeClient.instance.request();
+        await _issueAccessToken(code);
     final authResult =
-        await _auth.signInWithCustomToken(responseCustomToken.body);
+        await _auth.signInWithCustomToken(code);
     // return authResult.user;
     user = authResult.user!;
+
+      } catch (e) {
+        print("error");
+        print(e.toString());
+      }
+    }
+    final user2 = await kakao.UserApi.instance.me();
+    user = user2.kakaoAccount as User?;
+    authWay = 1;
     update();
   }
 
   Future<void> logOut() async {
     try {
+      if(authWay == 1){ //kakao login
+        await kakao.UserApi.instance.logout();
+      }
       _auth.signOut();
       prefs.then((SharedPreferences pref) => pref.remove('id'));
       update();
@@ -120,6 +138,10 @@ class Authentication extends GetxController {
     try {
       await RefrigeratorViewModel().deleteRefrigerator(rID: rID);
       await UserViewModel().deleteUser(uid);
+
+      if(authWay == 1){ //kakao login
+        await kakao.UserApi.instance.logout();
+      }
 
       _auth.signOut();
       prefs.then((SharedPreferences pref) => pref.remove('id'));

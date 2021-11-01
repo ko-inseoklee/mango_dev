@@ -23,6 +23,7 @@ class UserViewModel extends GetxController {
     profileImageReference: '',
     userName: '',
     tokens: '',
+    phoneNumber: '',
     // friendList: [],
   ).obs;
 
@@ -114,7 +115,8 @@ class UserViewModel extends GetxController {
       'frozenAlarm': this.user.value.frozenAlarm,
       'isRTShelf': this.user.value.isRTShelf,
       'roomTempAlarm': this.user.value.roomTempAlarm,
-      'tokens': this.user.value.tokens
+      'tokens': this.user.value.tokens,
+      'phoneNumber': this.user.value.phoneNumber,
     });
   }
 
@@ -152,6 +154,7 @@ class UserViewModel extends GetxController {
         this.user.value.userName = data['userName'];
         this.user.value.userID = data['userID'];
         this.user.value.refrigeratorID = data['refrigeratorID'];
+        this.user.value.phoneNumber = data['phoneNumber'];
       } else {
         print('fail to load..');
       }
@@ -180,6 +183,7 @@ class UserViewModel extends GetxController {
       String profileImageReference,
       String userName,
       String tokens,
+      String phoneNumber,
       ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
@@ -196,6 +200,7 @@ class UserViewModel extends GetxController {
       'profileImageReference': profileImageReference,
       'userName': userName,
       'tokens': tokens,
+      'phoneNumber': phoneNumber,
     });
 
     this.user.value.isAlarmOn = isAlarmOn;
@@ -204,6 +209,7 @@ class UserViewModel extends GetxController {
     this.user.value.roomTempAlarm = roomTempAlarm;
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
+    this.user.value.phoneNumber = phoneNumber;
   }
 
 }
