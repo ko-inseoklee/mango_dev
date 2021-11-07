@@ -52,7 +52,6 @@ class _LandingState extends State<Landing> {
                       if (snapshot.hasData == false) {
                         return MangoCircularIndicator();
                       } else if (snapshot.data == false) {
-                        //_prefs!.setString('id', authController.user!.uid);
                         return AddUserInfoPage2();
                       } else {
                         //_prefs!.setString('id', authController.user!.uid);

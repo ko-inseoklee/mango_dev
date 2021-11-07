@@ -3,21 +3,23 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/all.dart' as kakao;
+import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
+
+import '../color.dart';
 
 class Authentication extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  int authWay = 0; //0==google, 1==kakao
   User? user;
+  int authWay = 0;
 
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   late Future<String> id;
@@ -40,6 +42,45 @@ class Authentication extends GetxController {
     return prefss.setString('id', id).then((value) {
       return id;
     });
+  }
+
+  Future<String> emailLogin(
+      {required String email, required String password}) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      user = userCredential.user!;
+      authWay = 1;
+      update();
+      return "success";
+    } on FirebaseAuthException catch (e) {
+      return "fail";
+    }
+  }
+
+  Future<void> emailSignUp(
+      {required String email, required String password}) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      user = userCredential.user!;
+      authWay = 1;
+      update();
+
+      print("Signed Up");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print("The password provided is too weak.");
+      } else if (e.code == 'email-already-in-use') {
+        print("The account already exists for that email.");
+      } else {
+        print("Something Went Wrong.");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> googleLogin() async {
@@ -69,63 +110,8 @@ class Authentication extends GetxController {
     update();
   }
 
-
-  _issueAccessToken(String authCode) async {
-    try {
-      // print("accessToken");
-      var token = await kakao.AuthApi.instance.issueAccessToken(authCode);
-      print('token == ${token}');
-      await kakao.AccessTokenStore.instance.toStore(token);
-
-      final authResult =
-      await _auth.signInWithCustomToken(token.tokenType);
-      // print(authResult);
-      // String resultToken = await kakao.AccessTokenStore.instance.fromStore().toString();
-      // FirebaseAuth.instance.signInWithCustomToken(resultToken);
-      // print(token);
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  Future<void> kakaoLogin() async {
-
-    final installed = await kakao.isKakaoTalkInstalled();
-    // print('kako installed: ' + installed.toString());
-    bool _isKakaoInstalled = installed;
-    if(_isKakaoInstalled == true){
-      try {
-        var code = await kakao.AuthCodeClient.instance.requestWithTalk();
-        await _issueAccessToken(code);
-      } catch (e) {
-        print(e.toString());
-      }
-    }
-    else{
-      try {
-        var code = await kakao.AuthCodeClient.instance.request();
-        await _issueAccessToken(code);
-    final authResult =
-        await _auth.signInWithCustomToken(code);
-    // return authResult.user;
-    user = authResult.user!;
-
-      } catch (e) {
-        print("error");
-        print(e.toString());
-      }
-    }
-    final user2 = await kakao.UserApi.instance.me();
-    user = user2.kakaoAccount as User?;
-    authWay = 1;
-    update();
-  }
-
   Future<void> logOut() async {
     try {
-      if(authWay == 1){ //kakao login
-        await kakao.UserApi.instance.logout();
-      }
       _auth.signOut();
       prefs.then((SharedPreferences pref) => pref.remove('id'));
       update();
@@ -138,10 +124,6 @@ class Authentication extends GetxController {
     try {
       await RefrigeratorViewModel().deleteRefrigerator(rID: rID);
       await UserViewModel().deleteUser(uid);
-
-      if(authWay == 1){ //kakao login
-        await kakao.UserApi.instance.logout();
-      }
 
       _auth.signOut();
       prefs.then((SharedPreferences pref) => pref.remove('id'));
