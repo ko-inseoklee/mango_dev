@@ -11,6 +11,8 @@ import 'package:kakao_flutter_sdk/all.dart';
 import 'package:mangodevelopment/app.dart';
 
 late var cameras;
+const kGoogleApiKey = "AIzaSyA4LnvO4gdIv0-zj1vUbk3cSIkZTuX3WtE";
+
 
 Future<void> saveTokenToDatabase(String token) async {
   String userId = await FirebaseAuth.instance.currentUser!.uid.toString();

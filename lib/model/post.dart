@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/user.dart';
@@ -43,6 +44,7 @@ class Post {
         userName: '',
         tokens: '',
         chatList: [],
+        location: GeoPoint(0,0),
         isAlarmOn: true);
   }
 
@@ -57,7 +59,7 @@ class Post {
             status: false,
             name: post['foodName'],
             num: post['foodNum'],
-            category: '',
+            category: post['category'],
             method: 0,
             displayType: false,
             shelfLife: post['shelfLife'].toDate(),

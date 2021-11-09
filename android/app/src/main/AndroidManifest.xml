@@ -10,6 +10,10 @@
         android:label="mangodevelopment"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
+
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyA4LnvO4gdIv0-zj1vUbk3cSIkZTuX3WtE"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
