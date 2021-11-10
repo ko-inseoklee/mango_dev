@@ -133,7 +133,7 @@ packages:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.2.0"
+    version: "3.0.4"
   firebase_auth:
     dependency: "direct main"
     description:
@@ -229,7 +229,7 @@ packages:
       name: flutter_colorpicker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.0"
+    version: "0.4.0"
   flutter_local_notifications:
     dependency: "direct main"
     description:
