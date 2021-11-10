@@ -72,8 +72,8 @@ class _addFoodWithBarcodeState extends State<addFoodWithBarcode> {
       return result;
     }
   }
+  /*Food makeFoodFromBarcode({required String data}){
 
-  Food makeFoodFromBarcode({required String data}) { 
     Map<String, dynamic> parsedData = jsonDecode(data);
     String shelfLife = parsedData['C005']['row'][0]['POG_DAYCNT'];
     int shelf = 0;
@@ -99,6 +99,6 @@ class _addFoodWithBarcodeState extends State<addFoodWithBarcode> {
         alarmDate: DateTime.now(),
         cardStatus: 1);
 
-    return result;
-  }
+    return result;*/
+  //}
 }
