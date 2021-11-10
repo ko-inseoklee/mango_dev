@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mangodevelopment/model/post.dart';
 import '../model/user.dart';
 
 class UserViewModel extends GetxController {
@@ -23,12 +27,14 @@ class UserViewModel extends GetxController {
     profileImageReference: '',
     userName: '',
     tokens: '',
-    // friendList: [],
+    phoneNumber: '',
+    chatList: [],
+    location: GeoPoint(0,0),
   ).obs;
 
   String get userID => this.user.value.userID;
 
-  set isAlarmOn(bool value){
+  set isAlarmOn(bool value) {
     this.user.value.isAlarmOn = value;
     update();
   }
@@ -73,12 +79,12 @@ class UserViewModel extends GetxController {
     update();
   }
 
-  Future<void> setUserName(String name) async{
+  Future<void> setUserName(String name) async {
     this.user.value.userName = name;
     update();
   }
 
-  Future<void> setUserProfileImage(String value) async{
+  Future<void> setUserProfileImage(String value) async {
     this.user.value.profileImageReference = value;
     update();
   }
@@ -114,24 +120,30 @@ class UserViewModel extends GetxController {
       'frozenAlarm': this.user.value.frozenAlarm,
       'isRTShelf': this.user.value.isRTShelf,
       'roomTempAlarm': this.user.value.roomTempAlarm,
-      'tokens': this.user.value.tokens
+      'tokens': this.user.value.tokens,
+      'phoneNumber': this.user.value.phoneNumber,
+      'location': this.user.value.location,
     });
   }
 
-  Future<void> updateUserName(String uid, String value) async{
+  Future<void> updateUserName(String uid, String value) async {
     await FirebaseFirestore.instance.collection('user').doc(uid).update({
       'userName': value,
     }).then((val) => this.user.value.userName = value);
   }
 
-  Future<void> updateUserProfileImage(String uid, String value) async{
+  Future<void> updateUserProfileImage(String uid, String value) async {
     await FirebaseFirestore.instance.collection('user').doc(uid).update({
       'profileImageReference': value,
     });
   }
 
+  Future<void> updateUserLocation(String uid, GeoPoint location)async{
+    await FirebaseFirestore.instance.collection('user').doc(uid).update({
+      'location': location,
+    });
 
-
+  }
   //Making 'User' class (local) from Firebase Data
   Future<void> setUserInfo(String uid) async {
     await FirebaseFirestore.instance
@@ -152,6 +164,8 @@ class UserViewModel extends GetxController {
         this.user.value.userName = data['userName'];
         this.user.value.userID = data['userID'];
         this.user.value.refrigeratorID = data['refrigeratorID'];
+        this.user.value.phoneNumber = data['phoneNumber'];
+        this.user.value.location = data['location'];
       } else {
         print('fail to load..');
       }
@@ -180,6 +194,8 @@ class UserViewModel extends GetxController {
       String profileImageReference,
       String userName,
       String tokens,
+      List<String> chatList,
+      String phoneNumber,
       ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
@@ -196,6 +212,10 @@ class UserViewModel extends GetxController {
       'profileImageReference': profileImageReference,
       'userName': userName,
       'tokens': tokens,
+      'phoneNumber': phoneNumber,
+      'chats': [],
+      'location': GeoPoint(0,0),
+      // TODO: check if the chats beeing created
     });
 
     this.user.value.isAlarmOn = isAlarmOn;
@@ -204,6 +224,26 @@ class UserViewModel extends GetxController {
     this.user.value.roomTempAlarm = roomTempAlarm;
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
+    this.user.value.phoneNumber = phoneNumber;
+    this.user.value.chatList = [];
+    this.user.value.location = GeoPoint(0, 0);
   }
 
+  Future<void> addPost(@required Post post) async {
+    FirebaseFirestore.instance.collection('post').doc(post.postID).set({
+      'foodName': post.foods.name,
+      'foodNum': post.foods.number,
+      'location': post.owner.location,
+      // 'location': GeoPoint(post.owner.location.latitude, post.owner.location.longitude),
+      'ownerID': post.owner.userID,
+      'ownerName': post.owner.userName,
+      'postID': post.postID,
+      'profileImageReference': post.owner.profileImageReference,
+      'registTime': post.registTime,
+      'shelfLife': post.foods.shelfLife,
+      'state': post.state,
+      'subtitle': post.subtitle,
+      'chats': FieldValue.arrayUnion(post.chatList),
+    });
+  }
 }

@@ -10,6 +10,10 @@
         android:label="mangodevelopment"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
+
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyBevqq8MSWWLGQHfoNblYAFpBZ6VWY0T2I"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -17,6 +21,17 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+
+            <meta-data
+                android:name="com.naver.sdk.clientId"
+                android:value="@string/client_id" />
+            <meta-data
+                android:name="com.naver.sdk.clientSecret"
+                android:value="@string/client_secret" />
+            <meta-data
+                android:name="com.naver.sdk.clientName"
+                android:value="@string/client_name" />
+
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues

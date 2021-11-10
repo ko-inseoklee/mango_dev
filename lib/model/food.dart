@@ -1,22 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 class Food {
   final String fId;
   final String rId;
   int idx;
+
   // 삭제 or not
   bool status;
   String name;
   int number;
   String category;
+
   // 냉장, 냉동, 실온
   int method;
+
   // 유통기한, 표시기준
   bool displayType;
   DateTime shelfLife;
   DateTime registrationDay;
 
   DateTime alarmDay;
+
   // IS - for card status / 0: Normal, 1: Over, 2: D-Day, 3: Stale
   int cardStatus;
 
@@ -45,7 +50,9 @@ class Food {
         registrationDay = registrationDay,
         alarmDay = alarmDate,
         cardStatus = cardStatus;
+
   String get getName => name;
+
 
   Food.init()
       : rId = Uuid().v4(),
@@ -62,7 +69,6 @@ class Food {
         alarmDay = DateTime.now(),
         cardStatus = -1;
 
-
   Food.fromSnapshot(Map<String, dynamic> food)
       : rId = food['rId'],
         fId = food['fId'],
@@ -77,4 +83,15 @@ class Food {
         displayType = food['displayType'],
         alarmDay = food['alarmDay'].toDate(),
         cardStatus = food['cardStatus'];
+
+  Future<Food> postFood(String docID) async {
+    Food food;
+    var snap = await FirebaseFirestore.instance
+        .collection('myFood')
+        .doc(docID)
+        .get()
+        .then((value) => value.data());
+    food = Food.fromSnapshot(snap!);
+    return food;
+  }
 }

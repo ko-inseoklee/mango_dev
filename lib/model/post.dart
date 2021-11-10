@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/user.dart';
@@ -16,8 +17,8 @@ class Post {
   late String subtitle;
 
   late User owner;
-  // late List<String> ownerFriendList;
 
+  late List<String> chatList;
 
   late Food foods;
 
@@ -42,19 +43,33 @@ class Post {
         profileImageReference: '-1',
         userName: '',
         tokens: '',
-        // friendList: [],
-        isAlarmOn: true);
+        isAlarmOn: true,
+        phoneNumber: '',
+        chatList: [],
+        location: GeoPoint(0,0),
+    );
   }
 
   Post.fromSnapshot(Map<String, dynamic> post, DocumentSnapshot snapshot)
       : postID = post['postID'],
         state = post['state'],
         registTime = post['registTime'],
-        foods = Food.init(),
+        foods = Food(
+            fId: '',
+            rId: '',
+            index: 0,
+            status: false,
+            name: post['foodName'],
+            num: post['foodNum'],
+            category: post['category'],
+            method: 0,
+            displayType: false,
+            shelfLife: post['shelfLife'].toDate(),
+            registrationDay: post['shelfLife'].toDate(),
+            alarmDate: DateTime.now(),
+            cardStatus: 0),
         // foods = Food.fromSnapshot(food),
         subtitle = post['subtitle'],
-        // ownerFriendList = User.fromSnapshot(snapshot).friendList,
         owner = User.fromSnapshot(snapshot);
-
 
 }

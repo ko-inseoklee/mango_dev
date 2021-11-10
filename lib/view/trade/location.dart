@@ -70,11 +70,21 @@ class _LocationState extends State<Location> {
           },
         ),
         InkWell(
-          child: Text('print distance from handong'),
+          child: Text('update db location'),
           onTap: () {
-            postView.loadLocalPosts(deviceLat);
+            FirebaseFirestore.instance.collection('post').doc(
+                '1fa72f47-baa4-46d4-b9cc-1879e1b3cfd9').update(
+            {
+            'location': GeoPoint(hguLat.latitude, hguLat.longitude),
+            });
           },
-        ),
+        )
+        // InkWell(
+        //   child: Text('print distance from handong'),
+        //   onTap: () {
+        //     postView.loadLocalPosts(deviceLat);
+        //   },
+        // ),
       ],),
     );
   }

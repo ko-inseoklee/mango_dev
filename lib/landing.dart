@@ -44,17 +44,14 @@ class _LandingState extends State<Landing> {
               return MangoCircularIndicator();
             default:
               if (snapshot.data == '') {
-                print("id check= ${snapshot.data}");
                 return LogInPage(title: 'hi');
               } else {
-                print("here!!");
                 return FutureBuilder(
                     future: authController.hasData(authController.user!.uid),
                     builder: (context, snapshot) {
                       if (snapshot.hasData == false) {
                         return MangoCircularIndicator();
                       } else if (snapshot.data == false) {
-                        //_prefs!.setString('id', authController.user!.uid);
                         return AddUserInfoPage2();
                       } else {
                         //_prefs!.setString('id', authController.user!.uid);

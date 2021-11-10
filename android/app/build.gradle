@@ -60,4 +60,5 @@ dependencies{
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-auth'
     implementation "androidx.browser:browser:1.3.0"
+    implementation "com.naver.nid:naveridlogin-android-sdk:4.2.6"
 }

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/trade/Chat/chatDetail.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
 import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
@@ -73,8 +72,6 @@ class _ChatListState extends State<ChatList> {
 
                 return InkWell(
                   onTap: () {
-                    ChatRoomViewModel().AccessChatRoom(
-                        documents.elementAt(index).get('chatID'));
                     Get.to(ChatRoom(
                       chatID: documents.elementAt(index).get('chatID'),
                       friendName: documents.elementAt(index).get('friend'),
