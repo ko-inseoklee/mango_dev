@@ -85,7 +85,7 @@ A new Flutter project.
 	- Post.snapshot 에서 User.fromSnapshot 사용 필요 or User 정보 수정 시 Post db의 정보도 수정 필요
 
 - Ref 
-    - branch 관련: 
+    - branch 관련: .
         mj branch - kakao+naver+google 로그인로 (googleLogin -> AddUserInfo(회원정보) -> Home)
         mjV2 brnach - email + password로 로그인 (emailLogin -> Home / emailSignUp(회원정보입력) -> Home)
         (다음과 같이 진행한 이유는, google login 같은 경우 SignIn + SignUp동시에 존재 => 회원정보를 경우에 따라서 받아야 될 때와 아닐때 따로 있음
