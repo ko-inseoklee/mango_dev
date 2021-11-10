@@ -65,7 +65,7 @@ class User {
         this.profileImageReference = profileImageReference,
         this.userName = userName,
         this.tokens = tokens,
-        this.phoneNumber =phoneNumber;
+        this.phoneNumber =phoneNumber,
         this.chatList = chatList,
         this.location = location;
 
@@ -86,7 +86,7 @@ class User {
         profileImageReference = snapshot.get('profileImageReference'),
         userName = snapshot.get('userName'),
         tokens = snapshot.get('tokens'),
-        phoneNumber = snapshot.get('phoneNumber');
+        phoneNumber = snapshot.get('phoneNumber'),
         chatList = List.from(snapshot.get('chats')),
         location = snapshot.get('location');
 }
