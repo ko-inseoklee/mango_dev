@@ -27,6 +27,7 @@ class UserViewModel extends GetxController {
     profileImageReference: '',
     userName: '',
     tokens: '',
+    phoneNumber: '',
     chatList: [],
     location: GeoPoint(0,0),
   ).obs;
@@ -120,6 +121,7 @@ class UserViewModel extends GetxController {
       'isRTShelf': this.user.value.isRTShelf,
       'roomTempAlarm': this.user.value.roomTempAlarm,
       'tokens': this.user.value.tokens,
+      'phoneNumber': this.user.value.phoneNumber,
       'location': this.user.value.location,
     });
   }
@@ -162,6 +164,7 @@ class UserViewModel extends GetxController {
         this.user.value.userName = data['userName'];
         this.user.value.userID = data['userID'];
         this.user.value.refrigeratorID = data['refrigeratorID'];
+        this.user.value.phoneNumber = data['phoneNumber'];
         this.user.value.location = data['location'];
       } else {
         print('fail to load..');
@@ -177,22 +180,23 @@ class UserViewModel extends GetxController {
   }
 
   Future<void> makeUserInformation(
-    String userID,
-    DateTime creationTime,
-    String refrigeratorID,
-    bool isAlarmOn,
-    int refrigerationAlarm,
-    bool isRefShelf,
-    int frozenAlarm,
-    bool isFroShelf,
-    int roomTempAlarm,
-    bool isRTShelf,
-    DateTime lastSignIn,
-    String profileImageReference,
-    String userName,
-    String tokens,
-    List<String> chatList,
-  ) async {
+      String userID,
+      DateTime creationTime,
+      String refrigeratorID,
+      bool isAlarmOn,
+      int refrigerationAlarm,
+      bool isRefShelf,
+      int frozenAlarm,
+      bool isFroShelf,
+      int roomTempAlarm,
+      bool isRTShelf,
+      DateTime lastSignIn,
+      String profileImageReference,
+      String userName,
+      String tokens,
+      List<String> chatList,
+      String phoneNumber,
+      ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,
@@ -208,6 +212,7 @@ class UserViewModel extends GetxController {
       'profileImageReference': profileImageReference,
       'userName': userName,
       'tokens': tokens,
+      'phoneNumber': phoneNumber,
       'chats': [],
       'location': GeoPoint(0,0),
       // TODO: check if the chats beeing created
@@ -219,6 +224,7 @@ class UserViewModel extends GetxController {
     this.user.value.roomTempAlarm = roomTempAlarm;
     this.user.value.profileImageReference = profileImageReference;
     this.user.value.userName = userName;
+    this.user.value.phoneNumber = phoneNumber;
     this.user.value.chatList = [];
     this.user.value.location = GeoPoint(0, 0);
   }

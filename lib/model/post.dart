@@ -43,9 +43,11 @@ class Post {
         profileImageReference: '-1',
         userName: '',
         tokens: '',
+        isAlarmOn: true,
+        phoneNumber: '',
         chatList: [],
         location: GeoPoint(0,0),
-        isAlarmOn: true);
+    );
   }
 
   Post.fromSnapshot(Map<String, dynamic> post, DocumentSnapshot snapshot)

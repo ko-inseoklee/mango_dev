@@ -3,20 +3,23 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kakao_flutter_sdk/all.dart' as kakao;
+import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
+
+import '../color.dart';
 
 class Authentication extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  int authWay = 0; //0==google, 1==kakao
   User? user;
+  int authWay = 0;
 
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   late Future<String> id;
@@ -38,6 +41,45 @@ class Authentication extends GetxController {
     return prefss.setString('id', id).then((value) {
       return id;
     });
+  }
+
+  Future<String> emailLogin(
+      {required String email, required String password}) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      user = userCredential.user!;
+      authWay = 1;
+      update();
+      return "success";
+    } on FirebaseAuthException catch (e) {
+      return "fail";
+    }
+  }
+
+  Future<void> emailSignUp(
+      {required String email, required String password}) async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      user = userCredential.user!;
+      authWay = 1;
+      update();
+
+      print("Signed Up");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print("The password provided is too weak.");
+      } else if (e.code == 'email-already-in-use') {
+        print("The account already exists for that email.");
+      } else {
+        print("Something Went Wrong.");
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> googleLogin() async {
@@ -64,44 +106,6 @@ class Authentication extends GetxController {
     } catch (e) {
       print('Error reported: $e');
     }
-    update();
-  }
-
-  Future<void> kakaoLogin() async {
-    final clientState = Uuid().v4();
-    final url = Uri.https('kauth.kakao.com', '/oauth/authorize', {
-      'response_type': 'code',
-      'client_id': 'ae58524d5e3551dcc6608530c1e38422',
-      'response_mode': 'form_post',
-      'redirect_uri':
-          'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
-      'state': clientState,
-    });
-
-    final result = await FlutterWebAuth.authenticate(
-        url: url.toString(), callbackUrlScheme: "webauthcallback");
-
-    final body = Uri.parse(result).queryParameters;
-
-    final tokenUrl = Uri.https('kauth.kakao.com', '/oauth/token', {
-      'grant_type': 'authorization_code',
-      'client_id': 'ae58524d5e3551dcc6608530c1e38422',
-      'redirect_uri':
-          'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/sign_in',
-      'code': body['code'],
-    });
-
-    var response = await http.post(tokenUrl);
-    Map<String, dynamic> accessTokenResult = jsonDecode(response.body);
-    var tempUrl = Uri.parse(
-        'https://woolly-nosy-titanoceratops.glitch.me/callbacks/kakao/token');
-    var responseCustomToken = await http.post(tempUrl,
-        body: {"accessToken": accessTokenResult['access_token']});
-
-    final authResult =
-        await _auth.signInWithCustomToken(responseCustomToken.body);
-    // return authResult.user;
-    user = authResult.user!;
     update();
   }
 

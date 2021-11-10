@@ -25,6 +25,7 @@ class User {
   String profileImageReference;
   String userName;
   String tokens;
+  String phoneNumber;
   List<String> chatList;
   GeoPoint location;
 
@@ -45,6 +46,7 @@ class User {
     required String profileImageReference,
     required String userName,
     required String tokens,
+    required String phoneNumber,
     required List<String> chatList,
     required GeoPoint location,
 
@@ -63,6 +65,7 @@ class User {
         this.profileImageReference = profileImageReference,
         this.userName = userName,
         this.tokens = tokens,
+        this.phoneNumber =phoneNumber;
         this.chatList = chatList,
         this.location = location;
 
@@ -83,6 +86,7 @@ class User {
         profileImageReference = snapshot.get('profileImageReference'),
         userName = snapshot.get('userName'),
         tokens = snapshot.get('tokens'),
+        phoneNumber = snapshot.get('phoneNumber');
         chatList = List.from(snapshot.get('chats')),
         location = snapshot.get('location');
 }

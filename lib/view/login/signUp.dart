@@ -6,40 +6,48 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/color.dart';
-import 'package:mangodevelopment/app.dart';
-import 'package:mangodevelopment/landing.dart';
-import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
-import 'package:mangodevelopment/view/login/guide.dart';
+import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../app.dart';
+import '../../color.dart';
+import '../../landing.dart';
+import 'guide.dart';
 
 enum refrigerationAlarmType { shelfLife, registerDate }
 enum frozenAlarmType { shelfLife, registerDate }
 enum roomTempAlarmType { shelfLife, registerDate }
 
-class AddUserInfoPage2 extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
-  _AddUserInfoPage2State createState() => _AddUserInfoPage2State();
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
+class _SignUpPageState extends State<SignUpPage> {
   Authentication _auth = Get.find<Authentication>();
   FirebaseAuth _authPhone = FirebaseAuth.instance;
 
-  List<String> _pageTitle = ['개인정보 설정', '본인인증', '알림 주기 설정'];
-  var _contentWidth = 350.0;
-
+  List<String> _pageTitle = ['개인정보 설정', '알림 주기 설정'];
   int _pageIndex = 0;
-  final _nameController = TextEditingController();
 
+  final _sizeOfText = 3;
+  final _sizeOfBox = 10;
+
+  final _formKey = GlobalKey<FormState>();
+  final _formPhoneKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _nameController = TextEditingController();
   final _telController = TextEditingController();
   final _optController = TextEditingController();
+
   bool authOk = false; // 가입완료 변수
   bool requestedAuth = false; //폰인증 요청을 보냈는지 여부
+  bool phoneReadOnly = false; //전화번호 수정 가능 변수
   late String verificationId;
-
 
   refrigerationAlarmType _refrigerationAlarmType =
       refrigerationAlarmType.shelfLife;
@@ -58,275 +66,292 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
   bool _isRTShelf = true;
   String uuid = '';
   String _tokens = '';
+  String _phoenNumber = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: MangoBehindColor,
-        appBar: AppBar(
-          title: Text(
-            _pageTitle[_pageIndex],
-            style: TextStyle(color: Colors.black),
-          ),
-          centerTitle: true,
-          backgroundColor: MangoWhite,
+      appBar: AppBar(
+        title: Text(
+          _pageTitle[_pageIndex],
+          style: TextStyle(color: Colors.black),
         ),
-        body: _pageIndex == 0
-            ? setPersonalDataPage(context)
-            : _pageIndex == 1
-                ? setPhonePage(context)
-                : setAlarmPage(context));
-  }
-
-  Widget setPersonalDataPage(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20), //TODO. 20??
-      color: MangoWhite,
-      child: Center(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: Text(
-                '망고에서 사용하실 이름을 입력해주세요.',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(5)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: Text(
-                '본인 인증을 위해 필요합니다.',
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(color: MangoDisabledColorDark),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                  0,
-                  14 * (deviceWidth / prototypeWidth),
-                  0,
-                  33 * (deviceWidth / prototypeWidth)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: TextField(
-                maxLength: 12,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[A-z]'))
-                ],
-                controller: _nameController,
-                decoration: InputDecoration(
-                  errorBorder:
-                      OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
-                  border: OutlineInputBorder(),
-                  focusedBorder:
-                      OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
-                ),
-              ),
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints.tightFor(
-                    width: deviceWidth,
-                    height: 46.0 * (deviceWidth / prototypeWidth)),
-                child: ElevatedButton(
-                    //TODO: It will be change '인증' after adding phone number authentication.
-                    child: Text('다음'),
-                    onPressed: () async {
-                      setState(() {
-                        // 나중에 사용할 것. 두번째 페이지 변경
-                        _pageIndex = 1;
-                      });
-                      _userName = _nameController.text;
-                      _tokens = (await FirebaseMessaging.instance.getToken())!;
-                      //_pageIndex = 1;
-                    })),
-          ],
-        ),
+        centerTitle: true,
+        backgroundColor: MangoWhite,
       ),
+      body: _pageIndex == 0
+          ? setPersonalDataPage(context)
+          : setAlarmPage(context),
     );
   }
 
-  Future<String?> getDeviceToken() async {
-    //save device token
-    String? token = await FirebaseMessaging.instance.getToken();
-    return token;
-  }
-
-  Widget setPhonePage(BuildContext context) {
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Center(
-              child: Column(children: [
-            Container(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: Text(
-                '휴대폰 인증을 완료해주세요.',
-                style: Theme.of(context).textTheme.headline6,
+  Widget setPersonalDataPage(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: EdgeInsets.all(ScreenUtil().setWidth(24)),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              ConstrainedBox(
+                constraints: BoxConstraints(minWidth: double.infinity),
+                child: Text(
+                  '환영합니다! \n회원정보를 입력해주세요',
+                  style: Theme.of(context).textTheme.headline6,
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(5)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: Text(
-                '계정 도용을 막기 위한 본인 인증 절차입니다.',
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(color: MangoDisabledColorDark),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfBox),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(30)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: Text(
-                '휴대폰 번호',
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle2!
-                    .copyWith(color: MangoDisabledColorDark),
+              ConstrainedBox(
+                constraints: BoxConstraints(minWidth: double.infinity),
+                child: Text(
+                  '이메일',
+                ),
               ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(
-                        0, 14 * (deviceWidth / prototypeWidth), 0, 0),
-                    // width: _contentWidth * (deviceWidth * deviceHeight),
-                    child: TextField(
-                      maxLength: 11,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                      ],
-                      controller: _telController,
-                      decoration: InputDecoration(
-                        hintText: '5555215554',
-                        errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 1.0)),
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 1.0)),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfText),
+              ),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (val) {
+                  if (val!.isEmpty) {
+                    return "이메일을 입력해주세요";
+                  }
+                  if (!RegExp(
+                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                      .hasMatch(val)) {
+                    return '잘못된 이메일 형식입니다.';
+                  }
+                },
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfBox),
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(minWidth: double.infinity),
+                child: Text(
+                  '비밀번호',
+                ),
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfText),
+              ),
+              TextFormField(
+                controller: _passwordController,
+                keyboardType: TextInputType.text,
+                obscureText: true,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (val) {
+                  if (val!.isEmpty) {
+                    return "비밀번호를 입력해주세요";
+                  }
+                  if (!RegExp(r'^[A-Za-z0-9+]*$').hasMatch(val)) {
+                    return "영문,숫자 모두 포함해주세요";
+                  }
+                  if (val.length < 8) {
+                    return "8자 이상 입력해주세요";
+                  }
+                },
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfBox),
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(minWidth: double.infinity),
+                child: Text(
+                  '닉네임',
+                ),
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfText),
+              ),
+              TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                  border: OutlineInputBorder(),
+                ),
+                validator: (val) {
+                  if (val!.isEmpty) {
+                    return "닉네임을 입력해주세요";
+                  }
+                },
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfBox),
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(minWidth: double.infinity),
+                child: Text(
+                  '전화번호',
+                ),
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfText),
+              ),
+              Form(
+                key: _formPhoneKey,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        readOnly: phoneReadOnly,
+                        controller: _telController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                            border: OutlineInputBorder(),
+                            hintText: '5555215554'),
+                        validator: (val) {
+                          if (val!.isEmpty) {
+                            return "전화번호를 입력해주세요";
+                          }
+                        },
                       ),
                     ),
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(
-                        width: 100, height: ScreenUtil().setHeight(60)),
-                    child: ElevatedButton(
-                        child: Text('인증요청'),
-                        onPressed: () async {
-                          // setState(() {
-                          //   requestedAuth = true;
-                          // });
-                          await _authPhone.verifyPhoneNumber(
-                              timeout: const Duration(seconds: 120),
-                              phoneNumber: "+1" + _telController.text,
-                              verificationCompleted:
-                                  (phoneAuthCredential) async {
-                                print('otp 문자옴');
-                              },
-                              verificationFailed: (verificationFailed) {
-                                print(verificationFailed.code);
-                                print('코드 발송 실패');
-                              },
-                              codeSent: (verificationId, resendingToken) async {
-                                print('코드 보냄');
-                                Get.snackbar("MESSAGE",
-                                    "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
+                    SizedBox(
+                      width: ScreenUtil().setWidth(10),
+                    ),
+                    ConstrainedBox(
+                        constraints: BoxConstraints.tightFor(
+                            width: 100, height: ScreenUtil().setHeight(50)),
+                        child: ElevatedButton(
+                            child: Text('인증요청'),
+                            onPressed: () async {
+                              if (_formPhoneKey.currentState!.validate()) {
+                                //all validation pass
                                 setState(() {
                                   requestedAuth = true;
-                                  // FocusScope.of(context).requestFocus(otpFocusNode);
-                                  this.verificationId = verificationId;
-                                  print("verification id: $verificationId");
+                                  phoneReadOnly = true;
                                 });
-                              },
-                              codeAutoRetrievalTimeout:
-                                  (String verificationId) {});
-                        }))
-              ],
-            ),
-            Column(
-              children: [
-                Container(
-                  width: _contentWidth * (deviceWidth * deviceHeight),
-                  child: Text(
-                    '인증번호 입력',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle2!
-                        .copyWith(color: MangoDisabledColorDark),
-                  ),
+                                await _authPhone.verifyPhoneNumber(
+                                    timeout: const Duration(seconds: 120),
+                                    phoneNumber: "+1" + _telController.text,
+                                    verificationCompleted:
+                                        (phoneAuthCredential) async {
+                                      print('otp 문자옴');
+                                    },
+                                    verificationFailed: (verificationFailed) {
+                                      print(verificationFailed.code);
+                                      print('코드 발송 실패');
+                                    },
+                                    codeSent:
+                                        (verificationId, resendingToken) async {
+                                      print('코드 보냄');
+                                      Get.snackbar("MESSAGE",
+                                          "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
+                                      setState(() {
+                                        requestedAuth = true;
+                                        // FocusScope.of(context).requestFocus(otpFocusNode);
+                                        this.verificationId = verificationId;
+                                        print(
+                                            "verification id: $verificationId");
+                                      });
+                                    },
+                                    codeAutoRetrievalTimeout:
+                                        (String verificationId) {});
+                              }
+                            }))
+                  ],
                 ),
-                Container(
-                  padding: EdgeInsets.fromLTRB(
-                    0,
-                    14 * (deviceWidth / prototypeWidth),
-                    0,
-                    0,
-                  ),
-                  width: _contentWidth * (deviceWidth * deviceHeight),
-                  child: TextField(
-                    maxLength: 6,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                    ],
-                    controller: _optController,
-                    decoration: InputDecoration(
-                      errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfBox),
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(minWidth: double.infinity),
+                child: Text(
+                  '인증번호 입력',
+                ),
+              ),
+              SizedBox(
+                height: ScreenUtil().setHeight(_sizeOfText),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _optController,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (val) {},
                     ),
                   ),
-                ),
-              ],
-            ),
-            Visibility(
-              visible: requestedAuth,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(
-                        width: deviceWidth,
-                        height: 46.0 * (deviceWidth / prototypeWidth)),
-                    child: ElevatedButton(
-                        child: authOk == true ? Text('다음') : Text('인증번호 확인'),
-                        onPressed: () async {
-                          print(authOk);
-                          //'인증번호 확인'일 경우
-                          if (authOk == false) {
-                            PhoneAuthCredential phoneAuthCredential =
-                                PhoneAuthProvider.credential(
-                                    verificationId: verificationId,
-                                    smsCode: _optController.text);
-                            signInWithPhoneAuthCredential(phoneAuthCredential);
-                          }
-                          //'다음'인경우
-                          if (authOk == true) {
-                            print(authOk);
-                            setState(() {
-                              _pageIndex = 2;
-                            });
-                            //TODO. DB에 phone정보도 넣어야 된다.
-                          }
-                        }
-                        //style: ButtonStyle(),
-                        )),
+                  SizedBox(
+                    width: ScreenUtil().setWidth(10),
+                  ),
+                  Visibility(
+                    visible: requestedAuth,
+                    child: ConstrainedBox(
+                        constraints: BoxConstraints.tightFor(
+                            width: 100, height: ScreenUtil().setHeight(50)),
+                        child: ElevatedButton(
+                            child: Text('확인'),
+                            onPressed: () async {
+                              //'인증번호 확인'일 경우
+                              if (authOk == false) {
+                                PhoneAuthCredential phoneAuthCredential =
+                                    PhoneAuthProvider.credential(
+                                        verificationId: verificationId,
+                                        smsCode: _optController.text);
+                                signInWithPhoneAuthCredential(
+                                    phoneAuthCredential);
+                              }
+                              //'다음'인경우
+                              if (authOk == true) {}
+                            }
+                            //style: ButtonStyle(),
+                            )),
+                  ),
+                ],
               ),
-            ),
-          ])),
+              SizedBox(
+                height: ScreenUtil().setHeight(40),
+              ),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                    minWidth: double.infinity,
+                    minHeight: ScreenUtil().setHeight(60)),
+                child: ElevatedButton(
+                  child: const Text('다음'),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate() && authOk == true) {
+                      //validation pass + 전화번호 인증 완료
+                      setState(() {
+                        _pageIndex = 1;
+                      });
+                      _userName = _nameController.text;
+                      _phoenNumber = _telController.text;
+                      _tokens = (await FirebaseMessaging.instance.getToken())!;
+                    }
+                    if (authOk == false) {
+                      Get.dialog(ConfirmDialog(
+                          contentText: "전화번호 인증을 완료해주세요",
+                          onTapOK: () {
+                            Get.back();
+                          }));
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 
@@ -337,70 +362,30 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
           await _authPhone.signInWithCredential(phoneAuthCredential);
       if (authCredential.user != null) {
         await _authPhone.currentUser!.delete();
-        print('auth 정보삭제');
+        // print('auth 정보삭제');
         await _authPhone.signOut();
-        print('phone 로그인된 것 로그아웃');
+        // print('phone 로그인된 것 로그아웃');
 
-        Get.defaultDialog(
-          title: "",
-          content: Column(
-            children: [
-              Text(
-                "인증이 성공적으로 완료되었습니다.",
-                //style: Theme.of(context).textTheme.subtitle2,
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 25, 8, 0),
-                child: ConstrainedBox(
-                    constraints: BoxConstraints.tightFor(
-                        width: deviceWidth,
-                        height: 46.0 * (deviceWidth / prototypeWidth)),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            print('인증완료 및 로그인 성공');
-                            authOk = true;
-                          });
-                          Get.back();
-                        },
-                        child: Text('확인'))),
-              )
-            ],
-          ),
-        );
+        Get.dialog(ConfirmDialog(
+            contentText: "인증이 성공적으로 완료되었습니다",
+            onTapOK: () {
+              setState(() {
+                // print('인증완료 및 로그인 성공');
+                phoneReadOnly = true;
+                authOk = true;
+              });
+              Get.back();
+            }));
       }
     } on FirebaseAuthException catch (e) {
-      print('인증실패..로그인실패');
-      Get.defaultDialog(
-        title: "",
-        content: Column(
-          children: [
-            Text(
-              "인증에 실패하셨습니다.",
-              style: Theme.of(context).textTheme.subtitle2,
-            ),
-            Text(
-              "인증번호 전송은 총 4회까지 무료입니다.",
-              style: Theme.of(context)
-                  .textTheme
-                  .caption!
-                  .copyWith(color: MangoErrorColor),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 25, 8, 0),
-              child: ConstrainedBox(
-                  constraints: BoxConstraints.tightFor(
-                      width: deviceWidth,
-                      height: 46.0 * (deviceWidth / prototypeWidth)),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      child: Text('확인'))),
-            )
-          ],
-        ),
-      ).then((value) {
+      Get.dialog(ConfirmDialog(
+          contentText: "인증에 실패하셨습니다\n인증번호 전송은 총 4회까지 무료입니다",
+          onTapOK: () {
+            setState(() {
+              phoneReadOnly = false;
+            });
+            Get.back();
+          })).then((value) {
         setState(() {
           authOk = false;
         });
@@ -483,18 +468,9 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                     onPressed: () async {
-
                       if (alarmIdx == 2) {
 
-                        print("알람주기 설젇 전, _authWay? = ${_auth.authWay}");
-
-                        if(_auth.authWay == 0){ // google login
-                          await _auth.googleLogin();
-                          print("google login again");
-                        } else if(_auth.authWay == 1){ // email login
-                          await _auth.emailLogin(email: 'handong217@naver.com', password: 'roqkfwk217');
-                          print("google login again");
-                        }
+                        _auth.emailSignUp(email: _emailController.text, password: _passwordController.text); //로그인
 
                         uuid = Uuid().v4().toString();
                         String defaultImage = '-1';
@@ -516,6 +492,7 @@ class _AddUserInfoPage2State extends State<AddUserInfoPage2> {
                           'lastSignIn': _auth.user!.metadata.lastSignInTime!,
                           'profileImageReference': defaultImage,
                           'userName': _userName,
+                          'phoneNumber': _phoenNumber,
                           'tokens': _tokens,
                         });
 
