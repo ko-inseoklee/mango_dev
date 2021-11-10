@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
+import 'package:mangodevelopment/view/refrigerator/scanFoodwithBarcode.dart';
 import 'dart:io';
 
 import '../../../app.dart';
 import '../../../color.dart';
 
 class imageSelectCard extends StatefulWidget {
+  // final VoidCallback onTapCamera;
+  // final VoidCallback onTapGallery;
 
-  final VoidCallback onTapCamera;
-  final VoidCallback onTapGallery;
-
-  const imageSelectCard(
-      { required this.onTapCamera,
-        required this.onTapGallery});
+  const imageSelectCard();
 
   @override
   _imageSelectCardState createState() => _imageSelectCardState();
@@ -25,23 +26,27 @@ class _imageSelectCardState extends State<imageSelectCard> {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         SizedBox(
-          width: 120 * (deviceWidth / prototypeWidth),
-          height: 120 * (deviceWidth / prototypeWidth),
+          width: ScreenUtil().setWidth(72),
+          height: ScreenUtil().setHeight(96),
           child: TextButton(
-            onPressed: widget.onTapCamera,
+            onPressed: () {},
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.photo_camera,
-                  size: 60,
+                  Icons.flash_on,
+                  size: ScreenUtil().setSp(30),
                   color: MangoDisabledColor,
                 ),
-                Padding(
+                Container(
+                  alignment: Alignment.center,
                   padding: EdgeInsets.only(
                     top: 10.0 * deviceWidth / prototypeWidth,
                   ),
-                  child: Text('촬영', style: TextStyle(color: MangoBlack)),
+                  child: Text('Quick         채우기',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
                 )
               ],
             ),
@@ -53,23 +58,63 @@ class _imageSelectCardState extends State<imageSelectCard> {
           ),
         ),
         SizedBox(
-          width: 120 * (deviceWidth / prototypeWidth),
-          height: 120 * (deviceWidth / prototypeWidth),
+          width: ScreenUtil().setWidth(72),
+          height: ScreenUtil().setHeight(96),
           child: TextButton(
-            onPressed: widget.onTapGallery,
+            onPressed: () {
+              Get.to(addFoodWithBarcode(scanedBarcode :["8801056038700","8801056038663","8801043003100"]));
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(
-                  Icons.collections,
-                  size: 60,
+                  Icons.photo_camera,
+                  size: ScreenUtil().setSp(30),
                   color: MangoDisabledColor,
                 ),
-                Padding(
+                Container(
+                  alignment: Alignment.center,
                   padding: EdgeInsets.only(
                     top: 10.0 * deviceWidth / prototypeWidth,
                   ),
-                  child: Text('앨범에서 선택', style: TextStyle(color: MangoBlack)),
+                  child: Text('자동 인식    채우기',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
+                )
+              ],
+            ),
+            style: TextButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  side: BorderSide(color: MangoDisabledColor),
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: ScreenUtil().setWidth(72),
+          height: ScreenUtil().setHeight(96),
+          child: TextButton(
+            onPressed: () {
+              Get.off(() => AddFoodDirectPage(title: '냉장고 품목 등록'));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.mode_edit,
+                  size: ScreenUtil().setSp(30),
+                  color: MangoDisabledColor,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(
+                    top: 10.0 * deviceWidth / prototypeWidth,
+                  ),
+                  child: Text('직접 채우기',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
                 )
               ],
             ),
@@ -90,5 +135,4 @@ Future<String> getGalleryImage() async {
   var pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
 
   return pickedFile!.path;
-
 }

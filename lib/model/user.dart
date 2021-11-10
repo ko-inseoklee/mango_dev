@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geolocator/geolocator.dart';
+// import 'package:location/location.dart';
 
 //Field name for User document.
 final isFrozenAlarm = 'frozen_is_shelf';
@@ -24,7 +26,8 @@ class User {
   String userName;
   String tokens;
   String phoneNumber;
-  // List<String> friendList;
+  List<String> chatList;
+  GeoPoint location;
 
   //final DocumentReference reference;
 
@@ -44,7 +47,8 @@ class User {
     required String userName,
     required String tokens,
     required String phoneNumber,
-    // required List<String> friendList,
+    required List<String> chatList,
+    required GeoPoint location,
 
     //required DocumentReference reference
   })  : this.userID = userID,
@@ -62,7 +66,8 @@ class User {
         this.userName = userName,
         this.tokens = tokens,
         this.phoneNumber =phoneNumber;
-        // this.friendList = friendList;
+        this.chatList = chatList,
+        this.location = location;
 
   //this.reference = reference;
 
@@ -82,5 +87,6 @@ class User {
         userName = snapshot.get('userName'),
         tokens = snapshot.get('tokens'),
         phoneNumber = snapshot.get('phoneNumber');
-        // friendList = List.from(snapshot.get('friends'));
+        chatList = List.from(snapshot.get('chats')),
+        location = snapshot.get('location');
 }

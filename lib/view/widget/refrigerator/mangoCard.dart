@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/market/post/addPost.dart';
-import 'package:mangodevelopment/view/widget/comingSoon.dart';
 import 'package:mangodevelopment/view/widget/dialog/deleteDialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/detailDialog.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
@@ -54,6 +54,8 @@ class MangoCard extends StatelessWidget {
         onLongPress: longPressed,
         onPressed: onPressed(food: food),
         child: Container(
+          width: ScreenUtil().setWidth(108),
+          height: ScreenUtil().setHeight(129),
           child: Card(
             shape: RoundedRectangleBorder(
                 side: BorderSide(color: MangoDisabledColorLight),
@@ -63,16 +65,16 @@ class MangoCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Container(
+                  // padding: const EdgeInsets.all(8.0),
                   child: Image.asset(
                     'images/category/${categoryImg[translateToKo(food.category)]}',
-                    scale: 1.2,
+                    scale: 1.0,
                   ),
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(8.0, 0.0, 0, 0),
                   child: Text(
                     food.name,
                     style: TextStyle(fontSize: 16.0),
@@ -80,7 +82,7 @@ class MangoCard extends StatelessWidget {
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
+                  padding: EdgeInsets.only(left:8),
                   child: Text(
                       '${DateFormat.yMd().format(food.registrationDay)}일 등록',
                       style: TextStyle(
@@ -117,38 +119,42 @@ class MangoCard extends StatelessWidget {
         onLongPress: longPressed,
         onPressed: onPressed(food: food),
         child: Container(
-          child: Card(
-            shape: RoundedRectangleBorder(
-                side: BorderSide(color: MangoDisabledColorLight),
-                borderRadius: BorderRadius.circular(10)),
-            color: Red50,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(
-                    'images/category/${categoryImg[translateToKo(food.category)]}',
-                    scale: 1.2,
-                  ),
+          width: ScreenUtil().setWidth(108),
+          height: ScreenUtil().setHeight(129),
+          decoration: BoxDecoration(
+              color: Red50,
+              // border: Border(color: MangoDisabledColorLight),
+              borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                // padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'images/category/${categoryImg[translateToKo(food.category)]}',
+                  scale: 1.0,
                 ),
-                Container(
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(left:8),
+                child: Text(
+                  food.name,
+                  style: TextStyle(
+                      fontSize: ScreenUtil().setSp(14),
+                      color: MangoBlack,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+              Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                  padding: EdgeInsets.only(left:8),
                   child: Text(
-                    food.name,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ),
-                Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
-                    child: Text(
-                        '${DateTime.now().difference(food.alarmDay).inDays}일 지남',
-                        style: TextStyle(color: Red500, fontSize: 12.0))),
-              ],
-            ),
+                      '${DateTime.now().difference(food.alarmDay).inDays}일 지남',
+                      style: TextStyle(
+                          color: Red500, fontSize: ScreenUtil().setSp(12)))),
+            ],
           ),
         ),
       ),
@@ -165,8 +171,8 @@ class MangoCard extends StatelessWidget {
                 fontWeight: FontWeight.w700, color: Red500, fontSize: 18.0),
           ),
         ),
-        top: 20,
-        left: 20,
+        top: 13,
+        left: 13,
       ),
       deleteButton()
     ]);
@@ -178,6 +184,8 @@ class MangoCard extends StatelessWidget {
         onLongPress: longPressed,
         onPressed: onPressed(food: food),
         child: Container(
+          width: ScreenUtil().setWidth(108),
+          height: ScreenUtil().setHeight(129),
           child: Card(
             shape: RoundedRectangleBorder(
                 side: BorderSide(color: MangoDisabledColorLight),
@@ -187,16 +195,16 @@ class MangoCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                Container(
+                  // padding: const EdgeInsets.all(8.0),
                   child: Image.asset(
                     'images/category/${categoryImg[translateToKo(food.category)]}',
-                    scale: 1.2,
+                    scale: 1.0,
                   ),
                 ),
                 Container(
                   alignment: Alignment.centerLeft,
-                  padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                  padding: EdgeInsets.only(left:8),
                   child: Text(
                     food.name,
                     style: TextStyle(fontSize: 16.0),
@@ -204,7 +212,7 @@ class MangoCard extends StatelessWidget {
                 ),
                 Container(
                     alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
+                    padding: EdgeInsets.only(left:8),
                     child: Text(
                         '${food.shelfLife.difference(DateTime.now()).inDays}일 전',
                         style: TextStyle(color: Red500, fontSize: 12.0))),
@@ -247,7 +255,7 @@ class MangoCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Padding(
+              Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
                   'images/category/${categoryImg[translateToKo(food.category)]}',
@@ -256,7 +264,7 @@ class MangoCard extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.fromLTRB(8.0, 8.0, 0, 0),
+                padding: EdgeInsets.only(left:8),
                 child: Text(
                   food.name,
                   style: TextStyle(fontSize: 16.0),
@@ -264,7 +272,7 @@ class MangoCard extends StatelessWidget {
               ),
               Container(
                 alignment: Alignment.centerLeft,
-                padding: EdgeInsets.fromLTRB(8.0, 4.0, 0, 8.0),
+                padding: EdgeInsets.only(left:8),
                 child: food.displayType
                     ? Text(
                         '${food.shelfLife.difference(DateTime.now()).inDays}일 전',
@@ -286,14 +294,15 @@ class MangoCard extends StatelessWidget {
   Widget deleteButton() {
     return isLongPressed
         ? Positioned(
-            top: 2,
-            right: 2,
+            top: 0,
+            right: 0,
             child: Container(
-              width: ScreenUtil().setWidth(35),
-              height: ScreenUtil().setHeight(35),
+              width: ScreenUtil().setWidth(25),
+              height: ScreenUtil().setHeight(25),
               decoration: BoxDecoration(
                   color: Orange700, borderRadius: BorderRadius.circular(25)),
               child: TextButton(
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 onPressed: () {
                   Get.dialog(DeleteDialog(
                       deleteAll: false,
@@ -304,13 +313,10 @@ class MangoCard extends StatelessWidget {
                         });
                       }));
                 },
-                child: Container(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    '-',
-                    style: TextStyle(
-                        color: MangoWhite, fontSize: ScreenUtil().setSp(18)),
-                  ),
+                child:  Text(
+                  '-',
+                  style: TextStyle(
+                      color: MangoWhite, fontSize: ScreenUtil().setSp(20)),
                 ),
               ),
             ))

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:uuid/uuid.dart';
 
 String calculate(DateTime registTime) {
@@ -34,7 +35,6 @@ class MangoPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
-      print('HERE!! ${post.owner.profileImageReference} / ${post.postID}');
       return Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -42,11 +42,16 @@ class MangoPostCard extends StatelessWidget {
             children: [
               Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: CircleAvatar(
-                    radius: 45,
-                    // backgroundImage:
-                    backgroundColor: Colors.grey[200],
-                  )),
+                  child: Image.asset(
+                    'images/category/${categoryImg[translateToKo(
+                        post.foods.category)]}',
+                    scale: 1.0,
+                  ),
+                // child: CircleAvatar(
+                //   radius: 45,
+                //   backgroundColor: Colors.grey[200],
+                // )
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +70,8 @@ class MangoPostCard extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         print('check == ${post
-                            .owner.userID} / ${userViewModelController.userID}');
+                            .owner.userID} / ${userViewModelController
+                            .userID}');
                       },
                       child: Text(
                         post.subtitle,
@@ -149,6 +155,14 @@ class MangoPostCard extends StatelessWidget {
                                     userViewModelController.user.value
                                         .userName);
 
+                                mango_dev.collection('post')
+                                    .doc(post.postID)
+                                    .update(
+                                    {
+                                      'chatList': FieldValue.arrayUnion(
+                                          [chatID]),
+                                    });
+
                                 Get.to(ChatRoom(
                                   chatID: chatID,
                                   friendName: post.postID,
@@ -184,15 +198,14 @@ class MangoPostCard extends StatelessWidget {
   }
 
   void createChatRoom(String chatID, String uid, String name) async {
-    print('chatID: $chatID');
+    // print('chatID: $chatID');
     mango_dev.collection('chatRooms').doc(chatID).set({
       'chatID': chatID,
       'takerID': uid,
       'takerName': name,
       'postID': post.postID,
-      'onwerID': post.owner.userID,
+      'ownerID': post.owner.userID,
       'ownerName': post.owner.userName,
-      'lastAccess': Timestamp.now(),
     });
 
     var check = await mango_dev
@@ -208,6 +221,7 @@ class MangoPostCard extends StatelessWidget {
     if (documents.length > 0) {
       return;
     } else {
+      // create docs
       mango_dev.collection('user').doc(uid).collection('chatList').doc().set({
         'chatID': chatID,
         'friend': post.owner.userName,
@@ -221,6 +235,17 @@ class MangoPostCard extends StatelessWidget {
           .set({
         'chatID': chatID,
         'friend': name,
+      });
+
+      // add to user field array 'chats'
+      mango_dev.collection('user').doc(uid).update({
+        'chats': FieldValue.arrayUnion([chatID]),
+      });
+
+      mango_dev
+          .collection('user')
+          .doc(post.owner.userID).update({
+        'chats': FieldValue.arrayUnion([chatID]),
       });
     }
   }

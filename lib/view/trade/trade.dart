@@ -4,18 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
+import 'package:mangodevelopment/view/trade/addLocation.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/trade/googleMap.dart';
 import 'package:mangodevelopment/view/trade/location.dart';
 import 'package:mangodevelopment/view/tutorial/Home/tutorial.dart';
 import 'package:mangodevelopment/view/widget/postCardWidget.dart';
 import 'package:mangodevelopment/viewModel/postViewModel.dart';
 import 'package:mangodevelopment/viewModel/push_test.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
-
-import '../createPost.dart';
 import 'Chat/chatList.dart';
-import 'makePostInfo.dart';
 
 class TradePage extends StatefulWidget {
   final String title;
@@ -27,12 +26,6 @@ class TradePage extends StatefulWidget {
 }
 
 class _TradePageState extends State<TradePage> {
-  late List<Post> posts = [];
-  late List<Post> myPosts = [];
-
-  late List<Post> searchPosts = [];
-  late List<Post> localPosts = [ Post.init(), Post.init(),];
-
   late Position deviceLat;
 
   postViewModel post = Get.put(postViewModel());
@@ -40,7 +33,7 @@ class _TradePageState extends State<TradePage> {
   String _search = '';
   late TextEditingController _textController;
 
-  void _determinePosition() async {
+  Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -62,34 +55,29 @@ class _TradePageState extends State<TradePage> {
           'Location permissions are permanently denied, we cannot request permissions.');
     }
     deviceLat = await Geolocator.getCurrentPosition();
-    // print('device Lat: ' + deviceLat.toString());
+    return await Geolocator.getCurrentPosition();
   }
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController(text: '');
-    // posts = post.loadPosts();
-    // getFriendList(userViewModelController.userID);
-    // loadPost();
-    _determinePosition();
-    // loadLocalPost(deviceLat);
-    // _determinePosition().then((value) {
-    //   loadLocalPost(deviceLat);
-    // });
-    // loadMyPost();
+    Get.find<postViewModel>().clearPost();
+    _determinePosition().then((value) {
+      Get.find<postViewModel>().loadLocalPosts(deviceLat);
+    });
   }
 
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   UserViewModel userViewModelController = Get.find<UserViewModel>();
-
-  List<String> _friendList = [];
+  postViewModel postViewModelController = Get.find<postViewModel>();
 
   @override
   Widget build(BuildContext context) {
-    loadLocalPost(deviceLat);
-    // getFriendList(userViewModelController.user.value.userID);
+    // if (postViewModelController.localPost.length == 0) initState();
+    // Get.find<postViewModel>().loadLocalPosts(deviceLat);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -108,131 +96,182 @@ class _TradePageState extends State<TradePage> {
               icon: Icon(Icons.chat_bubble_outline_outlined)),
           IconButton(
               onPressed: () {
-                Get.to(Location());
-                // Get.to(TutorialPage());
-                // Get.to(CreatePost());
-                // Get.to(MakePostInfo(), arguments: posts[0].foods);
+                // Get.to(Location());
+                Get.to(addLocationPage());
+                // Get.to(googleMap());
               },
+
               icon: Icon(Icons.notifications_none))
         ],
       ),
       // ignore: unrelated_type_equality_checks
-      body: countDocuments(userViewModelController.userID) == 0
+      body: userViewModelController.user.value.location == GeoPoint(0, 0)
           ? Center(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
                       onTap: () {
-                        Get.to(Test());
+                        print('location:' +
+                            userViewModelController
+                                .user.value.location.longitude
+                                .toString());
+                        // Get.to(Test());
                       },
                       child: Image(
                         image: AssetImage('images/login/logo.png'),
                       ),
                     ),
-                    Text(
-                      '친구를 추가해서 \n거래를 시작해보세요',
-                      textAlign: TextAlign.center,
+                    InkWell(
+                      onTap: () {
+                        Get.to(addLocationPage());
+                      },
+                      child: Text(
+                        '장소정보를 등록하고 \n거래를 시작해보세요',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ]),
             )
-          : Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CupertinoSearchTextField(
-                    controller: _textController,
-                    onSubmitted: (String value) {
-                      setState(() {
-                        _search = value;
-                      });
-                    },
-                    placeholder: '게시글  검색',
+          : Obx(() {
+              return Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CupertinoSearchTextField(
+                      controller: _textController,
+                      onSubmitted: (String value) {
+                        setState(() {
+                          _search = value;
+                        });
+                      },
+                      placeholder: '게시글  검색',
+                    ),
                   ),
-                ),
-                Flexible(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream:
-                        // _search == ''?
-                        mango_dev
-                            .collection('post')
-                            .where('ownerFriendList',
-                                arrayContains:
-                                    userViewModelController.user.value.userID)
-                            .snapshots(),
-                    // : mango_dev
-                    //     .collection('post')
-                    //     .where('ownerID',
-                    //         isEqualTo: userViewModelController
-                    //             .user.value.userID)
-                    //     .where('foodName', isEqualTo: _search)
-                    //     .snapshots(),
-                    builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      // _search == ''
-                      //     ?
-                      // loadPost(); //
-                      loadLocalPost(deviceLat);
-                      // : loadSearchPost(_search);
-                      // if(snapshot.connectionState == ConnectionState.active){
-                      //   loadPost();
-                      // }
-                      if (!snapshot.hasData) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      return ListView.separated(
-                          itemBuilder: (context, index) {
-                            // loadPost();
-                            // List<DocumentSnapshot> documents =
-                            //     snapshot.data!.docs;
-                            return MangoPostCard(
-                              post: localPosts[index],
-                            );
-                          },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return Divider();
-                          },
-                          itemCount: snapshot.data!.size);
-                    },
+                  Flexible(
+                    child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          // print('length:' + _.localPost.length.toString());
+                          return MangoPostCard(
+                              post: postViewModelController.localPost[index]);
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Divider();
+                        },
+                        itemCount: postViewModelController.localPost.length),
                   ),
-                ),
-              ],
-            ),
+                  // Flexible(
+                  //   child: StreamBuilder<QuerySnapshot>(
+                  //     stream:
+                  //         // _search == ''?
+                  //         mango_dev
+                  //             .collection('post')
+                  //             .orderBy('registTime', descending: true)
+                  //             .snapshots(),
+                  //     // : mango_dev
+                  //     //     .collection('post')
+                  //     //     .where('ownerID',
+                  //     //         isEqualTo: userViewModelController
+                  //     //             .user.value.userID)
+                  //     //     .where('foodName', isEqualTo: _search)
+                  //     //     .snapshots(),
+                  //     builder:
+                  //         (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  //       // _search == '' ?
+                  //       // loadPost(); //
+                  //       // : loadSearchPost(_search);
+                  //
+                  //       if (!snapshot.hasData) {
+                  //         return Center(
+                  //           child: CircularProgressIndicator(),
+                  //         );
+                  //       }
+                  //
+                  //       return ListView.separated(
+                  //           itemBuilder: (context, index) {
+                  //             return GetBuilder<postViewModel>(
+                  //               init: postViewModel(),
+                  //               builder: (_) {
+                  //                 return MangoPostCard(
+                  //                     post: _.localPost[index]);
+                  //               },
+                  //             );
+                  //           },
+                  //           separatorBuilder:
+                  //               (BuildContext context, int index) {
+                  //             return Divider();
+                  //           },
+                  //           itemCount:
+                  //               postViewModelController.localPost.length);
+                  //     },
+                  //   ),
+                  // ),
+                ],
+              );
+            }),
+      // Column(
+      //   children: <Widget>[
+      //     Padding(
+      //       padding: const EdgeInsets.all(8.0),
+      //       child: CupertinoSearchTextField(
+      //         controller: _textController,
+      //         onSubmitted: (String value) {
+      //           setState(() {
+      //             _search = value;
+      //           });
+      //         },
+      //         placeholder: '게시글  검색',
+      //       ),
+      //     ),
+      //     Flexible(
+      //       child: StreamBuilder<QuerySnapshot>(
+      //         stream:
+      //         // _search == ''?
+      //         mango_dev
+      //             .collection('post')
+      //             .orderBy('registTime', descending: true)
+      //             .snapshots(),
+      //         // : mango_dev
+      //         //     .collection('post')
+      //         //     .where('ownerID',
+      //         //         isEqualTo: userViewModelController
+      //         //             .user.value.userID)
+      //         //     .where('foodName', isEqualTo: _search)
+      //         //     .snapshots(),
+      //         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      //           // _search == '' ?
+      //           // loadPost(); //
+      //           // : loadSearchPost(_search);
+      //
+      //           if (!snapshot.hasData) {
+      //             return Center(
+      //               child: CircularProgressIndicator(),
+      //             );
+      //           }
+      //
+      //           return ListView.separated(
+      //               itemBuilder: (context, index) {
+      //                 return GetBuilder<postViewModel>(
+      //                   init: postViewModel(),
+      //                   builder: (_) {
+      //                     return MangoPostCard(post: _.localPost[index]);
+      //                   },
+      //                 );
+      //               },
+      //               separatorBuilder: (BuildContext context, int index) {
+      //                 return Divider();
+      //               },
+      //               itemCount: postViewModelController.localPost.length);
+      //         },
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 
-  void getFriendList(String uid) async {
-    mango_dev
-        .collection('user')
-        .doc(uid)
-        .collection('FriendList')
-        .get()
-        .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
-        _friendList.add(doc['userID']);
-      });
-    });
-  }
-
-  void loadPost() async {
-    posts = await post.loadPosts();
-  }
-
-  void loadLocalPost(Position userLocation) async {
-    localPosts = await post.loadLocalPosts(userLocation);
-  }
-
-  // void loadMyPost() async {
-  //   myPosts = await post.loadMyPosts();
-  // }
-
-  // void loadSearchPost(String _search) async {
-  //   searchPosts = await post.loadSearchPosts(_search);
-  // }
-
   Future<int> countDocuments(String curr_uid) async {
-    print('curr: $curr_uid');
+    // print('curr: $curr_uid');
     QuerySnapshot _myDoc = await mango_dev
         .collection('user')
         .doc(curr_uid)
@@ -240,7 +279,7 @@ class _TradePageState extends State<TradePage> {
         .get();
 
     List<DocumentSnapshot> _myDocCount = _myDoc.docs;
-    print('count = ' + _myDocCount.length.toString());
+    // print('count = ' + _myDocCount.length.toString());
     return _myDocCount.length; // Count of Documents in Collection
   }
 }
