@@ -237,7 +237,7 @@ class UserViewModel extends GetxController {
       'shelfLife': post.foods.shelfLife,
       'state': post.state,
       'subtitle': post.subtitle,
-      'chatList': FieldValue.arrayUnion(post.chatList),
+      'chats': FieldValue.arrayUnion(post.chatList),
     });
   }
 }
