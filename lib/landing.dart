@@ -47,7 +47,7 @@ class _LandingState extends State<Landing> {
                 print("id check= ${snapshot.data}");
                 return LogInPage(title: 'hi');
               } else {
-                print("here!!");
+
                 return FutureBuilder(
                     future: authController.hasData(authController.user!.uid),
                     builder: (context, snapshot) {

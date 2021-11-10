@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
+import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:uuid/uuid.dart';
 
 String calculate(DateTime registTime) {
@@ -34,7 +35,6 @@ class MangoPostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<UserViewModel>(builder: (userViewModelController) {
-      print('HERE!! ${post.owner.profileImageReference} / ${post.postID}');
       return Container(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -42,11 +42,16 @@ class MangoPostCard extends StatelessWidget {
             children: [
               Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: CircleAvatar(
-                    radius: 45,
-                    // backgroundImage:
-                    backgroundColor: Colors.grey[200],
-                  )),
+                  child: Image.asset(
+                    'images/category/${categoryImg[translateToKo(
+                        post.foods.category)]}',
+                    scale: 1.0,
+                  ),
+                // child: CircleAvatar(
+                //   radius: 45,
+                //   backgroundColor: Colors.grey[200],
+                // )
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

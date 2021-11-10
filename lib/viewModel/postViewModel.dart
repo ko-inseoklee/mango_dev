@@ -9,65 +9,32 @@ class postViewModel extends GetxController {
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  late List<Post> posts;
-  late List<Post> myPosts;
+  List localPost = <Post>[].obs;
+  int count = 0;
 
-  late List<Post> searchPosts;
-  late List<Post> localPost;
+  // loadMyPosts() async {
+  //   var snap = await FirebaseFirestore.instance
+  //       .collection('user')
+  //       .doc(userViewModelController.userID)
+  //       .get();
+  //   this.myPosts = [];
+  //   await mango_dev
+  //       .collection('post')
+  //       .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
+  //       .get()
+  //       .then((value) {
+  //     value.docs.forEach((element) async {
+  //       // myPosts.add(Post.fromSnapshot(element.data(), snap));
+  //     });
+  //   });
+  //   return myPosts;
+  // }
 
-  postViewModel() {
-    posts = [];
-    myPosts = [];
-    searchPosts = [];
-    localPost = [];
-  }
+   Future clearPost() async {
+     return localPost.clear();
+   }
 
-  postViewModel.init() {
-    localPost = [];
-  }
-
-  loadPosts() async {
-    await mango_dev
-        .collection('post')
-        .where('ownerFriendList',
-            arrayContains: userViewModelController.user.value.userID)
-        .get()
-        .then((value) {
-      value.docs.forEach((element) async {
-        var snap = await FirebaseFirestore.instance
-            .collection('user')
-            .doc(element.get('ownerID'))
-            .get();
-        // posts.add(Post.fromSnapshot(element.data(), snap));
-      });
-    });
-    // print('loading post.. ');
-    // for (int i = 0; i < posts.length; i++) {
-    //   print('${posts[i].postID}},');
-    // }
-    return posts;
-  }
-
-  loadMyPosts() async {
-    var snap = await FirebaseFirestore.instance
-        .collection('user')
-        .doc(userViewModelController.userID)
-        .get();
-    this.myPosts = [];
-    await mango_dev
-        .collection('post')
-        .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
-        .get()
-        .then((value) {
-      value.docs.forEach((element) async {
-        // myPosts.add(Post.fromSnapshot(element.data(), snap));
-      });
-    });
-    return myPosts;
-  }
-
-  loadLocalPosts(Position userLocation) async {
-    this.localPost = [];
+  Future<void>loadLocalPosts(Position userLocation) async {
     mango_dev
         .collection('post')
         .orderBy('registTime', descending: true)
@@ -86,24 +53,19 @@ class postViewModel extends GetxController {
               .doc(element.get('ownerID'))
               .get();
 
-          localPost.add(Post.fromSnapshot(element.data(), snap));
           Post _post = Post.fromSnapshot(element.data(), snap);
+          localPost.add(_post);
           mango_dev.collection('post').doc(element.id).update({
             'ownerName': _post.owner.userName,
             'ownerID': _post.owner.userID,
             'profileImageReference': _post.owner.profileImageReference,
           });
         }
-        // else {
-        // print('($distance): too far');
-        // print('${element.data()['subtitle']} ($distance): too far');
-
-        // }
       });
     });
-
-    return localPost;
+    update();
   }
+
 
 // loadSearchPosts(String _search) async {
 //   this.searchPosts = [];
@@ -118,4 +80,6 @@ class postViewModel extends GetxController {
 //     });
 //   });
 // }
+
+
 }

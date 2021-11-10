@@ -34,7 +34,6 @@ class Authentication extends GetxController {
   Future<String> loadId() async {
     final SharedPreferences prefss = await prefs;
     final String id = (prefss.getString('id') ?? user!.uid);
-    print("id = $id");
 
     return prefss.setString('id', id).then((value) {
       return id;
