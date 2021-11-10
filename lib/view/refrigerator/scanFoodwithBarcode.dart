@@ -78,7 +78,7 @@ class _addFoodWithBarcodeState extends State<addFoodWithBarcode> {
     }
   }
 
-  Food makeFoodFromBarcode({required String data}){
+  /*Food makeFoodFromBarcode({required String data}){
     Map<String, dynamic> parsedData = jsonDecode(data);
     String shelfLife = parsedData['C005']['row'][0]['POG_DAYCNT'];
     int shelf = 0;
@@ -94,6 +94,6 @@ class _addFoodWithBarcodeState extends State<addFoodWithBarcode> {
     }
     Food result = new Food(fId: Uuid().v4(), rId: _refrigerator.ref.value.rID, index: 0, status: false, name: parsedData['C005']['row'][0]['PRDLST_NM'], num: 1, category: '-1', method: 0, displayType: true, shelfLife: shelfL, registrationDay: DateTime.now(), alarmDate: alarmDate, cardStatus: 1)
 
-    return result;
-  }
+    return result;*/
+  //}
 }

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
+import 'package:mangodevelopment/view/widget/dialog/editProfileImageDialog.dart' as edit;
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -66,6 +67,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                         'profile/${_auth.user!.uid}')
                     .then((value) async {
                   _fileStoarge.isNetworkImage = true.obs;
+                  userViewModelController.profileImageReference = value;
                   userViewModelController.profileImageReference = value;
                   await userViewModelController.updateUserProfileImage(
                       _auth.user!.uid, value);
@@ -138,6 +140,8 @@ class _MyPageEditState extends State<MyPageEdit> {
                         top: 50 * deviceWidth / prototypeWidth,
                         child: ElevatedButton(
                           onPressed: () async {
+                            String temp = _nameController.text;
+
                             var image = await Get.dialog(AlertDialog(
                               shape: RoundedRectangleBorder(
                                   borderRadius:
@@ -147,22 +151,25 @@ class _MyPageEditState extends State<MyPageEdit> {
                                   child: Center(child: Text('프로필 사진 수정'))),
                               content: Container(
                                 height: 150 * (deviceWidth / prototypeWidth),
-                                child: imageSelectCard(
-                                    // onTapCamera: () {},
-                                    // onTapGallery: () async {
-                                    //   await getGalleryImage().then((value) {
-                                    //     userViewModelController.user.value
-                                    //         .profileImageReference = value;
-                                    //     setState(() {
-                                    //       _fileStoarge.isNetworkImage = false.obs;
-                                    //     });
-                                    //     Get.back(result: value);
-                                    //   });
-                                    // },
+                                child: edit.editProfileImageDialog(
+                                    onTapCamera: () {},
+                                    onTapGallery: () async {
+                                      await getGalleryImage().then((value) {
+                                        print("async value == $value");
+                                        userViewModelController.user.value
+                                            .profileImageReference = value;
+                                        setState(() {
+                                          _fileStoarge.isNetworkImage = false.obs;
+                                        });
+                                        Get.back(result: value);
+                                      });
+                                    },
                                     ),
                               ),
                             ));
                             setState(() {
+                              _nameController.text = temp;
+                              print("result image == $image");
                               userViewModelController
                                   .user.value.profileImageReference = image;
                             });

@@ -121,7 +121,7 @@ class UserViewModel extends GetxController {
   Future<void> updateUserName(String uid, String value) async{
     await FirebaseFirestore.instance.collection('user').doc(uid).update({
       'userName': value,
-    });
+    }).then((val) => this.user.value.userName = value);
   }
 
   Future<void> updateUserProfileImage(String uid, String value) async{
