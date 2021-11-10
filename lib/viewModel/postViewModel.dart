@@ -9,11 +9,6 @@ class postViewModel extends GetxController {
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  // late List<Post> myPosts;
-  //
-  // late List<Post> searchPosts;
-  // RxList<Post> localPost = [Post.init()].obs;
-
   List localPost = <Post>[].obs;
   int count = 0;
 
@@ -60,7 +55,6 @@ class postViewModel extends GetxController {
 
           Post _post = Post.fromSnapshot(element.data(), snap);
           localPost.add(_post);
-          print(localPost);
           mango_dev.collection('post').doc(element.id).update({
             'ownerName': _post.owner.userName,
             'ownerID': _post.owner.userID,

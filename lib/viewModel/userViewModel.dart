@@ -136,6 +136,12 @@ class UserViewModel extends GetxController {
     });
   }
 
+  Future<void> updateUserLocation(String uid, GeoPoint location)async{
+    await FirebaseFirestore.instance.collection('user').doc(uid).update({
+      'location': location,
+    });
+
+  }
   //Making 'User' class (local) from Firebase Data
   Future<void> setUserInfo(String uid) async {
     await FirebaseFirestore.instance
