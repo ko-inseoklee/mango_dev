@@ -16,7 +16,7 @@ class addLocationPage extends StatefulWidget {
 class _addLocationPageState extends State<addLocationPage> {
   UserViewModel userViewModelController = Get.find<UserViewModel>();
   late List<Placemark> placemarks;
-  GeoPoint location = GeoPoint(0, 0);
+  late GeoPoint location;
   late Position deviceLat;
   late LatLng _lastMapPosition =
       LatLng(deviceLat.latitude, deviceLat.longitude);
@@ -32,10 +32,13 @@ class _addLocationPageState extends State<addLocationPage> {
   @override
   void initState() {
     super.initState();
-    getCurrentLocation().then((value) {
-      setState(() async {
-        placemarks = await placemarkFromCoordinates(
-            deviceLat.latitude, deviceLat.longitude);
+    getCurrentLocation().then((value) async {
+      placemarks = await placemarkFromCoordinates(
+          deviceLat.latitude, deviceLat.longitude);
+      setState(() {
+        location = GeoPoint(deviceLat.latitude, deviceLat.longitude);
+        placemarks = placemarks;
+
         // _marker.add(Marker(
         //   markerId: MarkerId('marker'),
         //   position: LatLng(deviceLat.latitude, deviceLat.longitude),
@@ -121,18 +124,19 @@ class _addLocationPageState extends State<addLocationPage> {
                   alignment: Alignment.center,
                   width: double.infinity,
                   // height: 50,
-                  color: Colors.yellow,
+                  //TODO: accent color
+                  color: Theme.of(context).accentColor.withOpacity(0.3),
                   child: Text(
                       '${placemarks.first.street.toString()} ( ${location.longitude.toString().substring(0, 5)}, ${location.latitude.toString().substring(0, 4)} )'),
                 ),
               ),
-              Expanded(flex: 15, child: SizedBox()),
+              Expanded(flex: 10, child: SizedBox()),
               Expanded(
                 flex: 2,
                 child: Container(
                   color: Colors.white,
                   width: double.infinity,
-                  margin: EdgeInsets.all(15),
+                  margin: EdgeInsets.all(25),
                   child: ElevatedButton(
                       onPressed: () async {
                         userViewModelController.user.value.location =
