@@ -3,6 +3,12 @@ import 'package:get/get.dart';
 
 class ChatRoomViewModel extends GetxController {
   void AccessChatRoom(String chatID, String uid, String userName) {
+    // FirebaseFirestore.instance.collection('chatRooms').doc(chatID).update({
+    //   'ownerName': _post.owner.userName,
+    //   'ownerID': _post.owner.userID,
+    //   'profileImageReference': _post.owner.profileImageReference,
+    // });
+
     FirebaseFirestore.instance
         .collection('user')
         .doc(uid)

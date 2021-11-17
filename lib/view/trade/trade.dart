@@ -100,7 +100,6 @@ class _TradePageState extends State<TradePage> {
                 Get.to(addLocationPage());
                 // Get.to(googleMap());
               },
-
               icon: Icon(Icons.notifications_none))
         ],
       ),
@@ -134,80 +133,87 @@ class _TradePageState extends State<TradePage> {
                   ]),
             )
           : Obx(() {
-              return Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CupertinoSearchTextField(
-                      controller: _textController,
-                      onSubmitted: (String value) {
-                        setState(() {
-                          _search = value;
-                        });
-                      },
-                      placeholder: '게시글  검색',
-                    ),
-                  ),
-                  Flexible(
-                    child: ListView.separated(
-                        itemBuilder: (context, index) {
-                          // print('length:' + _.localPost.length.toString());
-                          return MangoPostCard(
-                              post: postViewModelController.localPost[index]);
-                        },
-                        separatorBuilder: (BuildContext context, int index) {
-                          return Divider();
-                        },
-                        itemCount: postViewModelController.localPost.length),
-                  ),
-                  // Flexible(
-                  //   child: StreamBuilder<QuerySnapshot>(
-                  //     stream:
-                  //         // _search == ''?
-                  //         mango_dev
-                  //             .collection('post')
-                  //             .orderBy('registTime', descending: true)
-                  //             .snapshots(),
-                  //     // : mango_dev
-                  //     //     .collection('post')
-                  //     //     .where('ownerID',
-                  //     //         isEqualTo: userViewModelController
-                  //     //             .user.value.userID)
-                  //     //     .where('foodName', isEqualTo: _search)
-                  //     //     .snapshots(),
-                  //     builder:
-                  //         (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  //       // _search == '' ?
-                  //       // loadPost(); //
-                  //       // : loadSearchPost(_search);
-                  //
-                  //       if (!snapshot.hasData) {
-                  //         return Center(
-                  //           child: CircularProgressIndicator(),
-                  //         );
-                  //       }
-                  //
-                  //       return ListView.separated(
-                  //           itemBuilder: (context, index) {
-                  //             return GetBuilder<postViewModel>(
-                  //               init: postViewModel(),
-                  //               builder: (_) {
-                  //                 return MangoPostCard(
-                  //                     post: _.localPost[index]);
-                  //               },
-                  //             );
-                  //           },
-                  //           separatorBuilder:
-                  //               (BuildContext context, int index) {
-                  //             return Divider();
-                  //           },
-                  //           itemCount:
-                  //               postViewModelController.localPost.length);
-                  //     },
-                  //   ),
-                  // ),
-                ],
-              );
+              return postViewModelController.localPost.length == 0
+                  ? Center(
+                      child: Text('주변에 등록된 게시글이 없습니다.'),
+                    )
+                  : Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CupertinoSearchTextField(
+                            controller: _textController,
+                            onSubmitted: (String value) {
+                              setState(() {
+                                _search = value;
+                              });
+                            },
+                            placeholder: '게시글  검색',
+                          ),
+                        ),
+                        Flexible(
+                          child: ListView.separated(
+                              itemBuilder: (context, index) {
+                                // print('length:' + _.localPost.length.toString());
+                                return MangoPostCard(
+                                    post: postViewModelController
+                                        .localPost[index]);
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return Divider();
+                              },
+                              itemCount:
+                                  postViewModelController.localPost.length),
+                        ),
+                        // Flexible(
+                        //   child: StreamBuilder<QuerySnapshot>(
+                        //     stream:
+                        //         // _search == ''?
+                        //         mango_dev
+                        //             .collection('post')
+                        //             .orderBy('registTime', descending: true)
+                        //             .snapshots(),
+                        //     // : mango_dev
+                        //     //     .collection('post')
+                        //     //     .where('ownerID',
+                        //     //         isEqualTo: userViewModelController
+                        //     //             .user.value.userID)
+                        //     //     .where('foodName', isEqualTo: _search)
+                        //     //     .snapshots(),
+                        //     builder:
+                        //         (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                        //       // _search == '' ?
+                        //       // loadPost(); //
+                        //       // : loadSearchPost(_search);
+                        //
+                        //       if (!snapshot.hasData) {
+                        //         return Center(
+                        //           child: CircularProgressIndicator(),
+                        //         );
+                        //       }
+                        //
+                        //       return ListView.separated(
+                        //           itemBuilder: (context, index) {
+                        //             return GetBuilder<postViewModel>(
+                        //               init: postViewModel(),
+                        //               builder: (_) {
+                        //                 return MangoPostCard(
+                        //                     post: _.localPost[index]);
+                        //               },
+                        //             );
+                        //           },
+                        //           separatorBuilder:
+                        //               (BuildContext context, int index) {
+                        //             return Divider();
+                        //           },
+                        //           itemCount:
+                        //               postViewModelController.localPost.length);
+                        //     },
+                        //   ),
+                        // ),
+                      ],
+                    );
             }),
       // Column(
       //   children: <Widget>[

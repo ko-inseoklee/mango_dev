@@ -233,6 +233,7 @@ class UserViewModel extends GetxController {
     FirebaseFirestore.instance.collection('post').doc(post.postID).set({
       'foodName': post.foods.name,
       'foodNum': post.foods.number,
+      'category': post.foods.category,
       'location': post.owner.location,
       // 'location': GeoPoint(post.owner.location.latitude, post.owner.location.longitude),
       'ownerID': post.owner.userID,

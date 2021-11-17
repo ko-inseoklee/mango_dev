@@ -80,10 +80,26 @@ class _ChatRoomState extends State<ChatRoom> {
               .collection('messages')
               .add({
             'text': messageController.text,
-            'from': currName,
-            'to': element.get('takerName') == currName
-                ? element.get('ownerName')
-                : element.get('takerName'),
+            'from': curr_uid,
+            'to': element.get('takerID') == curr_uid
+                // ? mango_dev
+                //     .collection('user')
+                //     .doc(element.get('ownerID'))
+                //     .get()
+                //     .then((value) {
+                //     print('user:' + value.get('userName'));
+                //     return value.get('userName');
+                //   })
+                ? element.get('ownerID')
+                : element.get('takerID'),
+            // : mango_dev
+            //     .collection('user')
+            //     .doc(element.get('takerID'))
+            //     .get()
+            //     .then((value) {
+            //     print('user:' + value.get('userName'));
+            //     return value.get('userName');
+            //   }),
             'date': Timestamp.now(),
             'read': false,
           });
@@ -110,6 +126,7 @@ class _ChatRoomState extends State<ChatRoom> {
         duration: const Duration(milliseconds: 200),
       );
     }
+    // TODO: send FCM
   }
 
   @override
@@ -163,10 +180,11 @@ class _ChatRoomState extends State<ChatRoom> {
                   List messages = docs
                       .map((doc) => Message(
                             from: doc['from'],
+                            // id to name
                             text: doc['text'],
                             to: doc['to'],
-                            me: userViewModelController.user.value.userName ==
-                                doc['from'],
+                            // id to name
+                            me: userViewModelController.userID == doc['from'],
                             read: doc['read'],
                             time: doc['date'],
                           ))
@@ -300,10 +318,12 @@ class _ChatRoomState extends State<ChatRoom> {
                     ),
                     onPressed: () {
                       send(
-                          widget.chatID, //generate docID by Post
-                          userViewModelController.userID,
-                          userViewModelController.user.value.userName);
-                      messageController.clear();
+                              widget.chatID, //generate docID by Post
+                              userViewModelController.userID,
+                              userViewModelController.user.value.userName)
+                          .then((value) {
+                        messageController.clear();
+                      });
                     },
                   )
                 ],
@@ -316,7 +336,7 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 }
 
-class Message extends StatelessWidget {
+class Message extends StatefulWidget {
   final String from;
   final String text;
   final String to;
@@ -340,58 +360,90 @@ class Message extends StatelessWidget {
         time = time;
 
   @override
+  _MessageState createState() => _MessageState();
+}
+
+class _MessageState extends State<Message> {
+  String _to = '', _from = '';
+
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(widget.to)
+        .get()
+        .then((value) {
+      setState(() {
+        _to = value.get('userName');
+      });
+    });
+
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(widget.from)
+        .get()
+        .then((value) {
+      setState(() {
+        _from = value.get('userName');
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Container(
         child: Column(
           crossAxisAlignment:
-              me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+              widget.me ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(4.0),
               child: Text(
-                from,
+                _from
+                // widget.from,
               ),
             ),
             Wrap(
               children: <Widget>[
-                me
+                widget.me
                     ? Container(
                         margin: EdgeInsets.only(right: 5),
-                        child: read ? Text('읽음') : Text(''))
+                        child: widget.read ? Text('읽음') : Text(''))
                     : SizedBox(height: 0),
-                me
+                widget.me
                     ? Container(
                         margin: EdgeInsets.only(right: 5),
-                        child: Text(time.toDate().hour.toString() +
+                        child: Text(widget.time.toDate().hour.toString() +
                             ':' +
-                            time.toDate().minute.toString()))
+                            widget.time.toDate().minute.toString()))
                     : SizedBox(height: 0),
                 Container(
-                  margin: me
+                  margin: widget.me
                       ? EdgeInsets.only(right: 10)
                       : EdgeInsets.only(left: 10),
                   child: Material(
-                    color: me ? Colors.orangeAccent[100] : Colors.grey[300],
+                    color:
+                        widget.me ? Colors.orangeAccent[100] : Colors.grey[300],
                     borderRadius: BorderRadius.circular(10.0),
                     elevation: 6.0,
                     child: Container(
                       padding: EdgeInsets.symmetric(
                           vertical: 10.0, horizontal: 15.0),
                       child: Text(
-                        text,
+                        widget.text,
                       ),
                     ),
                   ),
                 ),
-                me
+                widget.me
                     ? SizedBox(height: 0)
                     : Container(
                         margin: EdgeInsets.only(right: 5),
-                        child: Text(time.toDate().hour.toString() +
+                        child: Text(widget.time.toDate().hour.toString() +
                             ':' +
-                            time.toDate().minute.toString()))
+                            widget.time.toDate().minute.toString()))
               ],
             )
           ],

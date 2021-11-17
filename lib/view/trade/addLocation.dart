@@ -130,25 +130,31 @@ class _addLocationPageState extends State<addLocationPage> {
                       '${placemarks.first.street.toString()} ( ${location.longitude.toString().substring(0, 5)}, ${location.latitude.toString().substring(0, 4)} )'),
                 ),
               ),
-              Expanded(flex: 10, child: SizedBox()),
+              Expanded(flex: 12, child: SizedBox()),
               Expanded(
                 flex: 2,
                 child: Container(
                   color: Colors.white,
                   width: double.infinity,
-                  margin: EdgeInsets.all(25),
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        userViewModelController.user.value.location =
-                            GeoPoint(location.latitude, location.longitude);
-                        await userViewModelController
-                            .updateUserLocation(userViewModelController.userID,
-                                userViewModelController.user.value.location)
-                            .then((value) {
-                          Get.to(saveLocation());
-                        });
-                      },
-                      child: Text('동네 설정하기')),
+                  // margin: EdgeInsets.all(25),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            userViewModelController.user.value.location =
+                                GeoPoint(location.latitude, location.longitude);
+                            await userViewModelController
+                                .updateUserLocation(userViewModelController.userID,
+                                    userViewModelController.user.value.location)
+                                .then((value) {
+                              Get.to(saveLocation());
+                            });
+                          },
+                          child: Text('동네 설정하기')),
+                    ),
+                  ),
                 ),
               )
             ],
