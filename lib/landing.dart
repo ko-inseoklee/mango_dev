@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/login/addUserInfo2.dart';
 import 'package:mangodevelopment/view/widget/mangoIndicator.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:shared_preferences/shared_preferences.dart';

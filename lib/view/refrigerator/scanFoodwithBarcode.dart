@@ -4,9 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/ignore.dart';
-import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
-import 'package:uuid/uuid.dart';
 
 class addFoodWithBarcode extends StatefulWidget {
   final List<String> scanedBarcode;
