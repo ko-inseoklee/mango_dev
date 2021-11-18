@@ -8,6 +8,16 @@ class ChatRoomViewModel extends GetxController {
     //   'ownerID': _post.owner.userID,
     //   'profileImageReference': _post.owner.profileImageReference,
     // });
+    // print("ACCESS CHAT ROOM");
+
+    // FirebaseFirestore.instance.collection('chatRooms').doc(chatID).collection(
+    //     'messages').get().then((value){
+    //       value.docs.forEach((element) {
+    //
+    //         // print(element.get('from'));
+    //         // print(element.get('to'));
+    //       });
+    // });
 
     FirebaseFirestore.instance
         .collection('user')
@@ -29,7 +39,7 @@ class ChatRoomViewModel extends GetxController {
               .collection('chatRooms')
               .doc(chatID)
               .collection('messages')
-              .where('to', isEqualTo: userName)
+              .where('to', isEqualTo: uid)
               .get()
               .then((value) {
             value.docs.forEach((element) {

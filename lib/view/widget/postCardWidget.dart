@@ -165,7 +165,7 @@ class MangoPostCard extends StatelessWidget {
 
                                 Get.to(ChatRoom(
                                   chatID: chatID,
-                                  friendName: post.postID,
+                                  friendName: post.owner.userID,
                                 )
                                 );
                               },
@@ -202,10 +202,10 @@ class MangoPostCard extends StatelessWidget {
     mango_dev.collection('chatRooms').doc(chatID).set({
       'chatID': chatID,
       'takerID': uid,
-      'takerName': name,
+      // 'takerName': name,
       'postID': post.postID,
       'ownerID': post.owner.userID,
-      'ownerName': post.owner.userName,
+      // 'ownerName': post.owner.userName,
     });
 
     var check = await mango_dev
@@ -224,7 +224,8 @@ class MangoPostCard extends StatelessWidget {
       // create docs
       mango_dev.collection('user').doc(uid).collection('chatList').doc().set({
         'chatID': chatID,
-        'friend': post.owner.userName,
+        'friend': post.owner.userID,
+        // 'friend': post.owner.userName,
       });
 
       mango_dev
@@ -234,7 +235,7 @@ class MangoPostCard extends StatelessWidget {
           .doc()
           .set({
         'chatID': chatID,
-        'friend': name,
+        'friend': uid,
       });
 
       // add to user field array 'chats'

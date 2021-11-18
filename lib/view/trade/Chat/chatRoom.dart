@@ -25,9 +25,13 @@ class _ChatRoomState extends State<ChatRoom> {
   late int foodNum = 0;
   late String subtitle = '-';
 
+  String friend = '';
+
   @override
   void initState() {
     super.initState();
+
+    getName(widget.friendName);
 
     mango_dev
         .collection('chatRooms')
@@ -58,6 +62,18 @@ class _ChatRoomState extends State<ChatRoom> {
         userViewModelController.user.value.userName);
   }
 
+  Future<void> getName(String friendID) async {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(friendID)
+        .get()
+        .then((value) {
+      setState(() {
+        friend = value.get('userName');
+      });
+    });
+  }
+
   final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   TextEditingController messageController = TextEditingController();
@@ -82,24 +98,8 @@ class _ChatRoomState extends State<ChatRoom> {
             'text': messageController.text,
             'from': curr_uid,
             'to': element.get('takerID') == curr_uid
-                // ? mango_dev
-                //     .collection('user')
-                //     .doc(element.get('ownerID'))
-                //     .get()
-                //     .then((value) {
-                //     print('user:' + value.get('userName'));
-                //     return value.get('userName');
-                //   })
                 ? element.get('ownerID')
                 : element.get('takerID'),
-            // : mango_dev
-            //     .collection('user')
-            //     .doc(element.get('takerID'))
-            //     .get()
-            //     .then((value) {
-            //     print('user:' + value.get('userName'));
-            //     return value.get('userName');
-            //   }),
             'date': Timestamp.now(),
             'read': false,
           });
@@ -150,7 +150,7 @@ class _ChatRoomState extends State<ChatRoom> {
       });
     }
     return Scaffold(
-      appBar: AppBar(centerTitle: true, title: Text(widget.chatID)
+      appBar: AppBar(centerTitle: true, title: Text(friend)
           // title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
           ),
       body: SafeArea(
@@ -177,18 +177,18 @@ class _ChatRoomState extends State<ChatRoom> {
 
                   List<DocumentSnapshot> docs = snapshot.data!.docs;
 
-                  List messages = docs
-                      .map((doc) => Message(
-                            from: doc['from'],
-                            // id to name
-                            text: doc['text'],
-                            to: doc['to'],
-                            // id to name
-                            me: userViewModelController.userID == doc['from'],
-                            read: doc['read'],
-                            time: doc['date'],
-                          ))
-                      .toList();
+                  List messages = docs.map((doc) {
+                    return Message(
+                      from: doc['from'],
+                      // id to name
+                      text: doc['text'],
+                      to: doc['to'],
+                      // id to name
+                      me: userViewModelController.userID == doc['from'],
+                      read: doc['read'],
+                      time: doc['date'],
+                    );
+                  }).toList();
 
                   // TODO: check if chat page is null
                   var empty = true;
@@ -364,33 +364,33 @@ class Message extends StatefulWidget {
 }
 
 class _MessageState extends State<Message> {
-  String _to = '', _from = '';
+  UserViewModel userViewModelController = Get.find<UserViewModel>();
+  String friend = '';
 
-  void initState() {
-    super.initState();
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(widget.to)
-        .get()
-        .then((value) {
-      setState(() {
-        _to = value.get('userName');
-      });
-    });
-
+  Future<void> getName() async {
     FirebaseFirestore.instance
         .collection('user')
         .doc(widget.from)
         .get()
         .then((value) {
       setState(() {
-        _from = value.get('userName');
+        friend = value.get('userName');
       });
     });
   }
 
+  void initState() {
+    super.initState();
+    if (!widget.me) getName();
+    // else friend = '2';
+  }
+
   @override
   Widget build(BuildContext context) {
+    String _me = userViewModelController.user.value.userName;
+    String _friend = widget.from;
+    // late String friend;
+
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Container(
@@ -400,10 +400,13 @@ class _MessageState extends State<Message> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(4.0),
-              child: Text(
-                _from
-                // widget.from,
-              ),
+              child: widget.me
+                  ? Text(
+                      _me,
+                    )
+                  : Text(
+                      friend,
+                    ),
             ),
             Wrap(
               children: <Widget>[

@@ -48,7 +48,7 @@ class postViewModel extends GetxController {
             element.data()['location'].longitude);
 
         if (distance < 2500) {
-          print("ELEMET: ${element.get('ownerID')}");
+          // print("ELEMET: ${element.get('ownerID')}");
           var snap = await FirebaseFirestore.instance
               .collection('user')
               .doc(element.get('ownerID'))
