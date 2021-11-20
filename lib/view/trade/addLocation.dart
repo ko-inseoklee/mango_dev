@@ -21,13 +21,6 @@ class _addLocationPageState extends State<addLocationPage> {
   late LatLng _lastMapPosition =
       LatLng(deviceLat.latitude, deviceLat.longitude);
 
-  // late Set<Marker> _marker = {
-  //   Marker(
-  //     markerId: MarkerId('marker'),
-  //     position: LatLng(36, 127),
-  //     icon: BitmapDescriptor.defaultMarker,
-  //   )
-  // };
 
   @override
   void initState() {

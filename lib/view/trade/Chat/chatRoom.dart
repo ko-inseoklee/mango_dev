@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/viewModel/addFriendViewModel.dart';
 import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
+import 'package:mangodevelopment/viewModel/sendFCM.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -82,8 +82,9 @@ class _ChatRoomState extends State<ChatRoom> {
 
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  Future<void> send(String chatID, String curr_uid, String currName) async {
-    if (messageController.text.length > 0) {
+  Future<void> send(
+      String chatID, String curr_uid, String currName, String text) async {
+    if (text.length > 0) {
       await mango_dev
           .collection('chatRooms')
           .where('chatID', isEqualTo: chatID)
@@ -95,7 +96,7 @@ class _ChatRoomState extends State<ChatRoom> {
               .doc(element.id)
               .collection('messages')
               .add({
-            'text': messageController.text,
+            'text': text,
             'from': curr_uid,
             'to': element.get('takerID') == curr_uid
                 ? element.get('ownerID')
@@ -108,13 +109,8 @@ class _ChatRoomState extends State<ChatRoom> {
               ? element.get('ownerID')
               : element.get('takerID');
 
-          // print('_id: $_id');
           mango_dev.collection('user').doc(_id).get().then((value) {
-            // print('token: ' + value.get('tokens'));
-            sendMessage(
-                value.get('tokens'),
-                userViewModelController.user.value.userName,
-                messageController.text);
+            sendMessage(value.get('tokens'), currName, text);
           });
         });
       });
@@ -126,7 +122,6 @@ class _ChatRoomState extends State<ChatRoom> {
         duration: const Duration(milliseconds: 200),
       );
     }
-    // TODO: send FCM
   }
 
   @override
@@ -300,7 +295,8 @@ class _ChatRoomState extends State<ChatRoom> {
                       onSubmitted: (value) => send(
                           widget.chatID,
                           userViewModelController.userID,
-                          userViewModelController.user.value.userName),
+                          userViewModelController.user.value.userName,
+                          messageController.text),
                       // from who ?
                       decoration: InputDecoration(
                         hintText: 'Enter a Message...',
@@ -320,7 +316,8 @@ class _ChatRoomState extends State<ChatRoom> {
                       send(
                               widget.chatID, //generate docID by Post
                               userViewModelController.userID,
-                              userViewModelController.user.value.userName)
+                              userViewModelController.user.value.userName,
+                              messageController.text)
                           .then((value) {
                         messageController.clear();
                       });

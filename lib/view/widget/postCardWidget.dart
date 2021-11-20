@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
+import 'package:mangodevelopment/view/trade/editPost.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:uuid/uuid.dart';
@@ -41,12 +42,12 @@ class MangoPostCard extends StatelessWidget {
           child: Row(
             children: [
               Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Image.asset(
-                    'images/category/${categoryImg[translateToKo(
-                        post.foods.category)]}',
-                    scale: 1.0,
-                  ),
+                padding: const EdgeInsets.all(16.0),
+                child: Image.asset(
+                  'images/category/${categoryImg[translateToKo(
+                      post.foods.category)]}',
+                  scale: 1.0,
+                ),
                 // child: CircleAvatar(
                 //   radius: 45,
                 //   backgroundColor: Colors.grey[200],
@@ -123,7 +124,9 @@ class MangoPostCard extends StatelessWidget {
                             child: ElevatedButton(
                               child: Icon(Icons.edit),
                               onPressed: () {
-                                print('edit');
+                                Get.to(EditPost(
+                                    title: '게시글 수정', food: post.foods));
+                                // Get.dialog(EditPostDialog());
                               },
                               style: ButtonStyle(
                                   shadowColor: MaterialStateProperty.all<Color>(
