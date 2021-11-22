@@ -22,7 +22,6 @@ class _ChatListState extends State<ChatList> {
   @override
   void initState() {
     _text = List.filled(100, '-');
-
   }
 
   Future<void> getMessage(String docID, int index) async {
@@ -60,7 +59,6 @@ class _ChatListState extends State<ChatList> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -82,7 +80,6 @@ class _ChatListState extends State<ChatList> {
 
           return ListView.separated(
               itemBuilder: (context, index) {
-
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
                 getMessage(documents.elementAt(index).get('chatID'), index);
                 getName(documents.elementAt(index).get('friend'));

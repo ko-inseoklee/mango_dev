@@ -125,7 +125,7 @@ class MangoPostCard extends StatelessWidget {
                               child: Icon(Icons.edit),
                               onPressed: () {
                                 Get.to(EditPost(
-                                    title: '게시글 수정', food: post.foods));
+                                    title: '게시글 수정', post: post));
                                 // Get.dialog(EditPostDialog());
                               },
                               style: ButtonStyle(
@@ -225,7 +225,7 @@ class MangoPostCard extends StatelessWidget {
       return;
     } else {
       // create docs
-      mango_dev.collection('user').doc(uid).collection('chatList').doc().set({
+      mango_dev.collection('user').doc(uid).collection('chatList').doc(chatID).set({
         'chatID': chatID,
         'friend': post.owner.userID,
         // 'friend': post.owner.userName,
@@ -235,7 +235,7 @@ class MangoPostCard extends StatelessWidget {
           .collection('user')
           .doc(post.owner.userID)
           .collection('chatList')
-          .doc()
+          .doc(chatID)
           .set({
         'chatID': chatID,
         'friend': uid,

@@ -82,6 +82,7 @@ class AddPostPage extends StatelessWidget {
                 contentValue = value;
 
                 Post _post = Post.init();
+                _post.fid = food.fId;
                 _post.postID = Uuid().v4();
                 _post.state = 0;
                 _post.registTime = Timestamp.now();

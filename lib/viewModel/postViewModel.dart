@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
@@ -54,7 +55,22 @@ class postViewModel extends GetxController {
               .doc(element.get('ownerID'))
               .get();
 
+          //
+          // var _snap = await FirebaseFirestore.instance
+          //     .collection('myFood')
+          //     .doc(element.data()['fid'])
+          //     .get()
+          //     .then((value) => value.data());
+
+
+          // Post _post = Post.fromSnapshot(element.data(), snap, _snap!);
           Post _post = Post.fromSnapshot(element.data(), snap);
+          var _snap = await FirebaseFirestore.instance
+              .collection('myFood')
+              .doc(_post.foods.fId)
+              .get()
+              .then((value) => value.data());
+          _post.foods = Food.fromSnapshot(_snap!);
           localPost.add(_post);
           mango_dev.collection('post').doc(element.id).update({
             'ownerName': _post.owner.userName,

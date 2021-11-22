@@ -234,11 +234,11 @@ class UserViewModel extends GetxController {
 
   Future<void> addPost(@required Post post) async {
     FirebaseFirestore.instance.collection('post').doc(post.postID).set({
+      'fid': post.fid,
       'foodName': post.foods.name,
       'foodNum': post.foods.number,
       'category': post.foods.category,
       'location': post.owner.location,
-      // 'location': GeoPoint(post.owner.location.latitude, post.owner.location.longitude),
       'ownerID': post.owner.userID,
       'ownerName': post.owner.userName,
       'postID': post.postID,

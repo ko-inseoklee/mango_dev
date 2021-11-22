@@ -11,6 +11,7 @@ class PostList {
 }
 
 class Post {
+  late String fid;
   late String postID;
   late int state; // 0: 나눔중, 1: 거래중, 2: 거래완료
   late Timestamp registTime;
@@ -23,39 +24,40 @@ class Post {
   late Food foods;
 
   Post.init() {
+    this.fid = '';
     this.postID = '';
     this.state = 0;
     this.registTime = Timestamp.now();
     this.subtitle = '나눔합니다';
     this.foods = Food.init();
-    // this.ownerFriendList = [];
     this.owner = User.init(
-        userID: '',
-        creationTime: Timestamp.now(),
-        refrigeratorID: '',
-        refrigerationAlarm: 0,
-        isRefShelf: true,
-        frozenAlarm: 0,
-        isFroShelf: true,
-        roomTempAlarm: 0,
-        isRTShelf: true,
-        lastSignIn: Timestamp.now(),
-        profileImageReference: '-1',
-        userName: '',
-        tokens: '',
-        isAlarmOn: true,
-        phoneNumber: '',
-        chatList: [],
-        location: GeoPoint(0,0),
+      userID: '',
+      creationTime: Timestamp.now(),
+      refrigeratorID: '',
+      refrigerationAlarm: 0,
+      isRefShelf: true,
+      frozenAlarm: 0,
+      isFroShelf: true,
+      roomTempAlarm: 0,
+      isRTShelf: true,
+      lastSignIn: Timestamp.now(),
+      profileImageReference: '-1',
+      userName: '',
+      tokens: '',
+      isAlarmOn: true,
+      phoneNumber: '',
+      chatList: [],
+      location: GeoPoint(0, 0),
     );
   }
 
   Post.fromSnapshot(Map<String, dynamic> post, DocumentSnapshot snapshot)
-      : postID = post['postID'],
+      : fid = post['fid'],
+        postID = post['postID'],
         state = post['state'],
         registTime = post['registTime'],
         foods = Food(
-            fId: '',
+            fId: post['fid'],
             rId: '',
             index: 0,
             status: false,
@@ -68,8 +70,9 @@ class Post {
             registrationDay: post['shelfLife'].toDate(),
             alarmDate: DateTime.now(),
             cardStatus: 0),
+
         // foods = Food.fromSnapshot(food),
         subtitle = post['subtitle'],
+        chatList = List.from(post['chats']),
         owner = User.fromSnapshot(snapshot);
-
 }

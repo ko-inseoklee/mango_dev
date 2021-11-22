@@ -15,12 +15,12 @@ import '../../color.dart';
 
 class EditPost extends StatelessWidget {
   final String title;
-  final Food food;
+  final Post post;
   final formKey = GlobalKey<FormState>();
 
   String contentValue = '';
 
-  EditPost({Key? key, required this.title, required this.food})
+  EditPost({Key? key, required this.title, required this.post})
       : super(key: key);
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
@@ -42,16 +42,31 @@ class EditPost extends StatelessWidget {
             height: ScreenUtil().setHeight(50),
             margin: EdgeInsets.symmetric(horizontal: ScreenUtil().setSp(16.0)),
             decoration: BoxDecoration(
-                color: Colors.grey.shade200, borderRadius: BorderRadius.circular(10.0)),
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(10.0)),
             child: TextButton(
               onPressed: () {
 
-                // formKey.currentState!.validate();
+                // delete chatRooms -> doc
+                // for (int i = 0; i < post.chatList.length; i++)
+                //   FirebaseFirestore.instance.collection('chatRooms').doc(
+                //       post.chatList[i]).delete();
+
+                // delete user -> chatList
+                // for (int i = 0; i < post.chatList.length; i++) {
+                //   FirebaseFirestore.instance.collection('user').doc()
+                // }
+
+                Get.back();
               },
               child: Text(
                 '게시글 삭제',
-                style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                  color: Colors.red
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .subtitle2!
+                    .copyWith(
+                    color: Colors.red
                 ),
               ),
             ),
@@ -68,7 +83,10 @@ class EditPost extends StatelessWidget {
               },
               child: Text(
                 '저장',
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .subtitle2,
               ),
             ),
           )
@@ -92,7 +110,8 @@ class EditPost extends StatelessWidget {
             margin: EdgeInsets.fromLTRB(
                 ScreenUtil().setWidth(10), 0, ScreenUtil().setWidth(10), 0),
             child: Image.asset(
-              'images/category/${categoryImg[translateToKo(food.category)]}',
+              'images/category/${categoryImg[translateToKo(
+                  post.foods.category)]}',
               scale: 1,
             ),
           ),
@@ -104,17 +123,20 @@ class EditPost extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  food.name,
+                  post.foods.name,
                 ),
-                food.displayType
+                post.foods.displayType
                     ? Text(
-                        '${food.shelfLife.difference(DateTime.now()).inDays}일 전',
-                        style: TextStyle(color: Red500, fontSize: 12.0))
+                    '${post.foods.shelfLife
+                        .difference(DateTime.now())
+                        .inDays}일 전',
+                    style: TextStyle(color: Red500, fontSize: 12.0))
                     : Text(
-                        '${DateFormat.yMd().format(food.registrationDay)}일 등록',
-                        style: TextStyle(
-                            color: Purple500,
-                            fontSize: ScreenUtil().setSp(12))),
+                    '${DateFormat.yMd().format(
+                        post.foods.registrationDay)}일 등록',
+                    style: TextStyle(
+                        color: Purple500,
+                        fontSize: ScreenUtil().setSp(12))),
               ],
             ),
           ),
@@ -122,7 +144,7 @@ class EditPost extends StatelessWidget {
           Container(
               margin: EdgeInsets.fromLTRB(
                   ScreenUtil().setWidth(10), 0, ScreenUtil().setWidth(10), 0),
-              child: Text(food.number.toString()))
+              child: Text(post.foods.number.toString()))
         ],
       ),
     );
@@ -151,7 +173,7 @@ class EditPost extends StatelessWidget {
                 _post.state = 0;
                 _post.registTime = Timestamp.now();
                 _post.subtitle = contentValue;
-                _post.foods = food;
+                _post.foods = post.foods;
                 _post.owner = _userViewModel.user.value; //location 포함
                 _post.chatList = [];
                 _userViewModel.addPost(_post).then((_) {
@@ -166,7 +188,7 @@ class EditPost extends StatelessWidget {
         ));
   }
 
-  // Widget delteContent(){
-  //
-  // }
+// Widget delteContent(){
+//
+// }
 }

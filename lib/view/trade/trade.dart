@@ -12,7 +12,6 @@ import 'package:mangodevelopment/view/trade/location.dart';
 import 'package:mangodevelopment/view/tutorial/Home/tutorial.dart';
 import 'package:mangodevelopment/view/widget/postCardWidget.dart';
 import 'package:mangodevelopment/viewModel/postViewModel.dart';
-import 'package:mangodevelopment/viewModel/push_test.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'Chat/chatList.dart';
 
