@@ -1,20 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:get/get.dart';
-
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kakao_flutter_sdk/all.dart' as kakao;
-import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../color.dart';
 
 class Authentication extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -58,7 +49,7 @@ class Authentication extends GetxController {
     }
   }
 
-  Future<void> emailSignUp(
+  Future<String> emailSignUp(
       {required String email, required String password}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
@@ -68,45 +59,15 @@ class Authentication extends GetxController {
       authWay = 1;
       update();
 
-      print("Signed Up");
+      return "success";
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        print("The password provided is too weak.");
-      } else if (e.code == 'email-already-in-use') {
+      if (e.code == 'email-already-in-use') {
         print("The account already exists for that email.");
+        return "already";
       } else {
-        print("Something Went Wrong.");
+        return "fail";
       }
-    } catch (e) {
-      print(e);
     }
-  }
-
-  Future<void> googleLogin() async {
-    try {
-      UserCredential userCredential;
-      if (kIsWeb) {
-        GoogleAuthProvider googleAuthProvider = GoogleAuthProvider();
-        userCredential = await _auth.signInWithPopup(googleAuthProvider);
-      } else {
-        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-        final GoogleSignInAuthentication googleAuth =
-            await googleUser!.authentication;
-
-        final credential = GoogleAuthProvider.credential(
-            accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
-
-        final authResult = await _auth.signInWithCredential(credential);
-
-        user = authResult.user!;
-        authWay = 0;
-        update();
-      }
-    } catch (e) {
-      print('Error reported: $e');
-    }
-    update();
   }
 
   Future<void> logOut() async {
@@ -121,10 +82,11 @@ class Authentication extends GetxController {
 
   Future<void> signOut({required String uid, required String rID}) async {
     try {
-      await RefrigeratorViewModel().deleteRefrigerator(rID: rID);
+      // deleteAll(uid);
       await UserViewModel().deleteUser(uid);
+      await RefrigeratorViewModel().deleteRefrigerator(rID: rID);
 
-      _auth.signOut();
+      _auth.currentUser!.delete();
       prefs.then((SharedPreferences pref) => pref.remove('id'));
       update();
     } catch (e) {
@@ -144,7 +106,25 @@ class Authentication extends GetxController {
     return result;
   }
 
+  Future<bool> hasAlarmData(String uid) async {
+    bool result = false;
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .get()
+    .then((value){
+      // print(value);
+      // print(value.data());
+      // print(value.data()!.containsKey("isAlarmOn"));
+      result = value.data()!.containsKey("isAlarmOn");
+    });
+
+    return result;
+  }
+
   Future<void> deleteAll(String uid) async {
     await UserViewModel().deleteUser(uid);
+    // await RefrigeratorViewModel().deleteRefrigerator(rID: rID);
   }
 }

@@ -1,18 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/landing.dart';
-import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
 import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
-import 'package:uuid/uuid.dart';
 
 enum refrigerationAlarmType { shelfLife, registerDate }
 enum frozenAlarmType { shelfLife, registerDate }
@@ -26,11 +22,6 @@ class AddUserInfoPage extends StatefulWidget {
 class _AddUserInfoPageState extends State<AddUserInfoPage> {
   Authentication _auth = Get.find<Authentication>();
 
-  List<String> _pageTitle = ['개인정보 설정', '알림 주기 설정'];
-
-  bool _isFirstPage = true;
-  final _nameController = TextEditingController();
-
   refrigerationAlarmType _refrigerationAlarmType =
       refrigerationAlarmType.shelfLife;
   frozenAlarmType _frozenAlarmType = frozenAlarmType.shelfLife;
@@ -39,15 +30,12 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
   int alarmIdx = 0;
 
   //For Upload data on Firebase
-  String _userName = 'testName';
   int _refrigerationAlarm = 1;
   bool _isRefShelf = true;
   int _frozenAlarm = 1;
   bool _isFroShelf = true;
   int _roomTempAlarm = 1;
   bool _isRTShelf = true;
-  String uuid = '';
-  String _tokens = '';
 
   @override
   Widget build(BuildContext context) {
@@ -55,95 +43,14 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
         backgroundColor: MangoBehindColor,
         appBar: AppBar(
           title: Text(
-            _pageTitle[0],
+            '알림 주기 설정',
             style: TextStyle(color: Colors.black),
           ),
           centerTitle: true,
           backgroundColor: MangoWhite,
+          automaticallyImplyLeading: false,
         ),
-        body: _isFirstPage
-            ? setPersonalDataPage(context)
-            : setAlarmPage(context));
-  }
-
-  Widget setPersonalDataPage(BuildContext context) {
-    var _contentWidth = 350.0;
-
-    return Container(
-      padding: EdgeInsets.all(20), //TODO. 20??
-      color: MangoWhite,
-      child: Center(
-        child: Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(20)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: Text(
-                '망고에서 사용하실 이름을 입력해주세요.',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.only(top: ScreenUtil().setHeight(5)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: Text(
-                '본인 인증을 위해 필요합니다.',
-                style: Theme.of(context)
-                    .textTheme
-                    .caption!
-                    .copyWith(color: MangoDisabledColorDark),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(
-                  0,
-                  14 * (deviceWidth / prototypeWidth),
-                  0,
-                  33 * (deviceWidth / prototypeWidth)),
-              width: _contentWidth * (deviceWidth * deviceHeight),
-              child: TextField(
-                maxLength: 12,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[A-z]'))
-                ],
-                controller: _nameController,
-                decoration: InputDecoration(
-                  errorBorder:
-                      OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
-                  border: OutlineInputBorder(),
-                  focusedBorder:
-                      OutlineInputBorder(borderSide: BorderSide(width: 1.0)),
-                ),
-              ),
-            ),
-            ConstrainedBox(
-                constraints: BoxConstraints.tightFor(
-                    width: deviceWidth,
-                    height: 46.0 * (deviceWidth / prototypeWidth)),
-                child: ElevatedButton(
-                    //TODO: It will be change '인증' after adding phone number authentication.
-                    child: Text('다음'),
-                    onPressed: () async {
-                      setState(() {
-                        // 나중에 사용할 것. 두번째 페이지 변경
-                        _isFirstPage = false;
-                      });
-                      _userName = _nameController.text;
-                      _tokens = (await FirebaseMessaging.instance.getToken())!;
-                      _isFirstPage = false;
-                    }
-                    //style: ButtonStyle(),
-                    )),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<String?> getDeviceToken() async {
-    //save device token
-    String? token = await FirebaseMessaging.instance.getToken();
-    return token;
+        body: setAlarmPage(context));
   }
 
   Widget setAlarmPage(BuildContext context) {
@@ -160,7 +67,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
           Container(
             color: MangoWhite,
             width: deviceWidth,
-            height: 60 * (deviceHeight / prototypeHeight),
+            height: ScreenUtil().setHeight(60),
             alignment: Alignment.center,
             child: Text(
               '제품 별 본인이 원하는 유통기한 알림기준과 일자를 설정해주세요. 알림 기준은 유통기한별 / 구매일자로부터 경과한 일수 두 가지가 있습니다.',
@@ -171,14 +78,18 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
               textAlign: TextAlign.center,
             ),
           ),
-          SizedBox(height: 7.0 * (deviceWidth / prototypeWidth)),
+          SizedBox(
+            height: ScreenUtil().setHeight(7.0),
+          ),
           Expanded(
               child: ListView.separated(
                   itemBuilder: (BuildContext context, int index) {
                     return alarmCard(_storeType[index], index);
                   },
                   separatorBuilder: (BuildContext context, int index) =>
-                      SizedBox(height: 7.0 * (deviceWidth / prototypeWidth)),
+                      SizedBox(
+                        height: ScreenUtil().setHeight(7.0),
+                      ),
                   itemCount: _storeType.length)),
           ColoredBox(
             color: MangoBehindColor,
@@ -209,7 +120,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           });
                         })),
                 SizedBox(
-                  width: deviceWidth * 0.03,
+                  width: ScreenUtil().setWidth(10),
                 ),
                 ConstrainedBox(
                   constraints: BoxConstraints.tightFor(
@@ -222,16 +133,12 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                     ),
                     onPressed: () async {
                       if (alarmIdx == 2) {
-                        uuid = Uuid().v4().toString();
-                        String defaultImage = '-1';
+                        //회원가입 (emailSignUp)
 
                         await FirebaseFirestore.instance
                             .collection('user')
                             .doc(_auth.user!.uid)
-                            .set({
-                          'userID': _auth.user!.uid,
-                          'creationTime': _auth.user!.metadata.creationTime!,
-                          'refrigeratorID': uuid,
+                            .update({
                           'isAlarmOn': true,
                           'refrigerationAlarm': _refrigerationAlarm,
                           'isRefShelf': _isRefShelf,
@@ -239,17 +146,8 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                           'isFroShelf': _isFroShelf,
                           'roomTempAlarm': _roomTempAlarm,
                           'isRTShelf': _isRTShelf,
-                          'lastSignIn': _auth.user!.metadata.lastSignInTime!,
-                          'profileImageReference': defaultImage,
-                          'userName': _userName,
-                          'tokens': _tokens,
                         });
 
-                        await RefrigeratorViewModel()
-                            .createRefrigeratorID(_auth.user!.uid, uuid);
-                        //TODO. refirgeratorController()
-                        // await refrigeratorController()
-                        //     .makeRefInfoDocument(refID: uuid);
                         Get.off(GuidePage());
                       } else {
                         setState(() {
@@ -263,7 +161,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
             ),
           ),
           SizedBox(
-            height: 120 * (deviceHeight / prototypeHeight),
+            height: ScreenUtil().setHeight(120),
           )
         ],
       ),
@@ -280,7 +178,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(
-            height: 15.0 * (deviceWidth / prototypeWidth),
+            height: ScreenUtil().setHeight(15),
           ),
           Row(
             children: [
@@ -293,7 +191,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
             ],
           ),
           SizedBox(
-            height: 15.0 * (deviceWidth / prototypeWidth),
+            height: ScreenUtil().setHeight(15),
           ),
           Row(
             children: [
@@ -303,7 +201,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                     color: alarmIdx == type ? MangoBlack : MangoDisabledColor),
               ),
               SizedBox(
-                width: 150 * (deviceWidth / prototypeWidth),
+                width: ScreenUtil().setWidth(150),
               ),
               Text('알림일',
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
@@ -312,12 +210,12 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
             ],
           ),
           SizedBox(
-            height: 10.0 * (deviceWidth / prototypeWidth),
+            height: ScreenUtil().setHeight(10),
           ),
           Row(
             children: [
               Container(
-                width: 85.0 * (deviceWidth / prototypeWidth),
+                width: ScreenUtil().setWidth(85),
                 constraints: BoxConstraints(maxWidth: 120),
                 alignment: Alignment.bottomCenter,
                 child: ListTile(
@@ -369,7 +267,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                 ),
               ),
               Container(
-                width: 85.0 * (deviceWidth / prototypeWidth),
+                width: ScreenUtil().setWidth(85),
                 constraints: BoxConstraints(maxWidth: 100),
                 alignment: Alignment.bottomCenter,
                 child: ListTile(
@@ -425,11 +323,11 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                     )),
               ),
               SizedBox(
-                width: 30 * (deviceWidth / prototypeWidth),
+                width: ScreenUtil().setWidth(30),
               ),
               ConstrainedBox(
                 constraints: BoxConstraints.tightFor(
-                  width: 120 * (deviceWidth / prototypeWidth),
+                  width: ScreenUtil().setWidth(120),
                 ),
                 child: OutlinedButton(
                   onPressed: () {
@@ -444,10 +342,19 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
                     children: [
                       Expanded(
                           child: type == 0
-                              ? Text('$_refrigerationAlarm일 전')
+                              ? _refrigerationAlarmType ==
+                                      refrigerationAlarmType.shelfLife
+                                  ? Text('$_refrigerationAlarm일 전')
+                                  : Text('$_refrigerationAlarm일 후')
                               : type == 1
-                                  ? Text('$_frozenAlarm일 전')
-                                  : Text('$_roomTempAlarm일 전')),
+                                  ? _frozenAlarmType ==
+                                          frozenAlarmType.shelfLife
+                                      ? Text('$_frozenAlarm일 전')
+                                      : Text('$_frozenAlarm일 후')
+                                  : _roomTempAlarmType ==
+                                          roomTempAlarmType.shelfLife
+                                      ? Text('$_roomTempAlarm일 전')
+                                      : Text('$_roomTempAlarm일 후')),
                       Icon(Icons.arrow_drop_down)
                     ],
                   ),
@@ -470,7 +377,7 @@ class _AddUserInfoPageState extends State<AddUserInfoPage> {
         context: context,
         builder: (BuildContext builder) {
           return Container(
-            height: 284 * (deviceHeight / prototypeHeight),
+            height: ScreenUtil().setHeight(284),
             child: Column(
               children: [
                 dialogTopBar(),

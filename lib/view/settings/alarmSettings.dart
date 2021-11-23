@@ -174,7 +174,15 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
           )),
       settingMenu(
         menuName: '유통기한 기준',
-        onTap: () {},
+        onTap: () {
+          // setState(() {
+          //   type == 0
+          //       ? _refrigerationAlarmType = refrigerationAlarmType.shelfLife
+          //       : type == 1
+          //           ? _frozenAlarmType = frozenAlarmType.shelfLife
+          //           : _roomTempAlarmType = roomTempAlarmType.shelfLife;
+          // });
+        },
         trailing: alarmTextButton(type, true),
         trailingWidth: 100,
         isActive: type == 0
@@ -185,7 +193,15 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
       ),
       settingMenu(
         menuName: '구매일 기준',
-        onTap: () {},
+        onTap: () {
+          // setState(() {
+          //   type == 0
+          //       ? _refrigerationAlarmType = refrigerationAlarmType.registerDate
+          //       : type == 1
+          //           ? _frozenAlarmType = frozenAlarmType.registerDate
+          //           : _roomTempAlarmType = roomTempAlarmType.registerDate;
+          // });
+        },
         trailing: alarmTextButton(type, false),
         trailingWidth: 100,
         isActive: type == 0
@@ -197,15 +213,15 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
     ]);
   }
 
-  Widget alarmTextButton(int type, bool value){
+  Widget alarmTextButton(int type, bool value) {
     return TextButton(
         onPressed: () {
           setState(() {
             type == 0
                 ? _userViewModel.isRefShelf = value
                 : type == 1
-                ? _userViewModel.isFroShelf = value
-                : _userViewModel.isRTShelf = value;
+                    ? _userViewModel.isFroShelf = value
+                    : _userViewModel.isRTShelf = value;
           });
           showCupertinoPicker(2, type);
         },
@@ -216,44 +232,65 @@ class _SettingAlarmPageState extends State<SettingAlarmPage> {
               width: 50,
               child: type == 0
                   ? _userViewModel.user.value.isRefShelf == value
-                  ? Text(
-                _userViewModel.user.value.refrigerationAlarm
-                    .toString() +
-                    "일 전",
-                style: Theme.of(context).textTheme.subtitle2,
-              )
-                  : Text('-')
+                      ? _userViewModel.user.value.isRefShelf == true
+                          ? Text(
+                              _userViewModel.user.value.refrigerationAlarm
+                                      .toString() +
+                                  "일 전",
+                              style: Theme.of(context).textTheme.subtitle2,
+                            )
+                          : Text(
+                              _userViewModel.user.value.refrigerationAlarm
+                                      .toString() +
+                                  "일 후",
+                              style: Theme.of(context).textTheme.subtitle2,
+                            )
+                      : Text('-')
                   : type == 1
-                  ? _userViewModel.user.value.isFroShelf == value
-                  ? Text(
-                _userViewModel.user.value.frozenAlarm
-                    .toString() +
-                    "일 전",
-                style: Theme.of(context).textTheme.subtitle2,
-              )
-                  : Text('-')
-                  : _userViewModel.user.value.isRTShelf == value
-                  ? Text(
-                _userViewModel.user.value.roomTempAlarm
-                    .toString() +
-                    "일 전",
-                style: Theme.of(context).textTheme.subtitle2,
-              )
-                  : Text('-'),
+                      ? _userViewModel.user.value.isFroShelf == value
+                          ? _userViewModel.user.value.isFroShelf == true
+                              ? Text(
+                                  _userViewModel.user.value.frozenAlarm
+                                          .toString() +
+                                      "일 전",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                              : Text(
+                                  _userViewModel.user.value.frozenAlarm
+                                          .toString() +
+                                      "일 후",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                          : Text('-')
+                      : _userViewModel.user.value.isRTShelf == value
+                          ? _userViewModel.user.value.isRTShelf == true
+                              ? Text(
+                                  _userViewModel.user.value.roomTempAlarm
+                                          .toString() +
+                                      "일 전",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                              : Text(
+                                  _userViewModel.user.value.roomTempAlarm
+                                          .toString() +
+                                      "일 후",
+                                  style: Theme.of(context).textTheme.subtitle2,
+                                )
+                          : Text('-'),
             ),
             Icon(
               Icons.keyboard_arrow_down,
               color: type == 0
                   ? _userViewModel.user.value.isRefShelf == value
-                  ? MangoBlack
-                  : MangoDisabledColor
+                      ? MangoBlack
+                      : MangoDisabledColor
                   : type == 1
-                  ? _userViewModel.user.value.isFroShelf == value
-                  ? MangoBlack
-                  : MangoDisabledColor
-                  : _userViewModel.user.value.isRTShelf == value
-                  ? MangoBlack
-                  : MangoDisabledColor,
+                      ? _userViewModel.user.value.isFroShelf == value
+                          ? MangoBlack
+                          : MangoDisabledColor
+                      : _userViewModel.user.value.isRTShelf == value
+                          ? MangoBlack
+                          : MangoDisabledColor,
               size: 18.0,
             )
           ],
