@@ -7,6 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/login/addUserInfo.dart';
 import 'package:mangodevelopment/view/login/guide.dart';
+import 'package:mangodevelopment/view/login/signUp.dart';
+import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 
 import 'color.dart';
 import 'landing.dart';
@@ -58,8 +60,14 @@ class _MangoAppState extends State<MangoApp> {
         print(message.notification!.body);
         print(message.notification!.title);
 
-        // final route2 = message.data['route'];
-        // Get.to(route2);
+        if(message.data['type'] == 'message'){ // sendMessaege
+          final chatID = message.data['chatID'];
+          final friendName = message.data['chatID'];
+          Get.to(ChatRoom(
+            chatID: chatID,
+            friendName: friendName,
+          ));
+        }
       }
     });
 
@@ -71,6 +79,7 @@ class _MangoAppState extends State<MangoApp> {
         // flutterLocalNoification
         print(message.notification!.body);
         print(message.notification!.title);
+
       }
     });
 

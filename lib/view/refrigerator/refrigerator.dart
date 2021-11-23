@@ -8,6 +8,9 @@ import 'package:mangodevelopment/view/widget/refrigerator/foodSections.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
+
+//remerge
+
 class RefrigeratorPage extends StatefulWidget {
   String title;
   RefrigeratorPage({Key? key, required String title}) : title = title;

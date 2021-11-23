@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/viewModel/addFriendViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
 class FriendListViewModel extends GetxController {
@@ -124,7 +123,7 @@ class FriendListViewModel extends GetxController {
       });
     });
 
-    sendFriendRequest(friendToken, curr_name);
+    // sendFriendRequest(friendToken, curr_name);
 
     return Get.snackbar('친구 추가 완료', name + '님이 친구로 추가되었습니다');
   }

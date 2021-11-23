@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/model/user.dart';
-import 'package:mangodevelopment/viewModel/addFriendViewModel.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/view/trade/friend/addEmail.dart';
 import 'package:mangodevelopment/view/trade/friend/addID.dart';

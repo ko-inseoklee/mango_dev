@@ -65,7 +65,7 @@ class User {
         this.profileImageReference = profileImageReference,
         this.userName = userName,
         this.tokens = tokens,
-        this.phoneNumber =phoneNumber,
+        this.phoneNumber = phoneNumber,
         this.chatList = chatList,
         this.location = location;
 

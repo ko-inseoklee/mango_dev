@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../color.dart';
@@ -499,46 +501,6 @@ final List<Food> quickFoods = [
       cardStatus: -1),
 ];
 
-//TODO. How to change color of clicked items
-// when you clicked an 'item', the item has to be changed orange color
-final List<bool> isClicked = [
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false,
-  false
-];
-
 //Quick Data 설문 조사 결과를 바탕으로 카테고리 순서를 정함
 //카테고리 순서는 다음과 같이 보여주면 된다.
 final List<String> categories = [
@@ -553,21 +515,44 @@ final List<String> categories = [
   "즉석식품",
 ];
 
+List<List<Food>> foodWithCategories = [[],[],[],[],[],[],[],[],[],[],[],[]];
+List<Food> addFoodLists = [];
+
 class AddFoodQuickPage extends StatefulWidget {
   @override
   _AddFoodQuickPageState createState() => _AddFoodQuickPageState();
 }
 
 class _AddFoodQuickPageState extends State<AddFoodQuickPage> {
+
+  late RefrigeratorViewModel refrigerator;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(foodWithCategories[0].length == 0) {
+      categoriesFoods();
+    }
+    addFoodLists.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
+    refrigerator = Get.find<RefrigeratorViewModel>();
     return Scaffold(
         appBar: MangoAppBar(
           title: 'Quick 채우기',
           isLeading: true,
-          actions: [TextButton(onPressed: () {
-            //TODO. ADD some fucntion when you clicked 'add' button
-          }, child: Text("추가"))],
+          actions: [TextButton(onPressed: () async {
+            if(addFoodLists.length != 0) {
+              for(int i = 0; i < addFoodLists.length; i++){
+                addFoodLists[i].fId = Uuid().v4();
+              }
+              await refrigerator.addFoods(addFoodLists).then((value) => Get.back());
+            }
+            else print("추가할 놈이 없다. 비어있다.");
+            }, child: Text("추가"))],
         ),
         body: ListView.builder( // For Categories
           itemCount: categories.length,
@@ -596,20 +581,9 @@ class _AddFoodQuickPageState extends State<AddFoodQuickPage> {
                         mainAxisSpacing: 15,
                         crossAxisSpacing: 15,
                       ),
-                      itemCount: 7, // TODO. Change This
-                      itemBuilder: (BuildContext context, int index) {
-                        return Container(
-                          height: ScreenUtil().setHeight(100),
-                          width: ScreenUtil().setHeight(100),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1,
-                                color: Color(0xFFBFBFBF),
-                              ),
-                              borderRadius: BorderRadius.circular(50),
-                              ),
-                          child: Center(child: Text(quickFoods[index].name)), //TODO. Change this
-                        );
+                      itemCount: foodWithCategories[index].length, // TODO. Change This
+                      itemBuilder: (BuildContext context, int foodIdx) {
+                        return quickFoodCard( idx: index, fIdx: foodIdx,);
                       }),
                 ),
               ],
@@ -617,77 +591,60 @@ class _AddFoodQuickPageState extends State<AddFoodQuickPage> {
           },
         ));
   }
+  void categoriesFoods(){
+    for(int i = 0; i < quickFoods.length; i++){
+      int idx = categories.indexOf(quickFoods[i].category);
+      foodWithCategories[idx].add(quickFoods[i]);
+    }
+  }
 }
 
-// Padding(
-// padding: const EdgeInsets.all(8.0),
-// child: GridView.builder(
-// gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-// crossAxisCount: 4,
-// mainAxisSpacing: 15,
-// crossAxisSpacing: 15,
-// ),
-// itemCount: quickFoods.length,
-// itemBuilder: (BuildContext context, int index) {
-// return Column(
-// mainAxisSize: MainAxisSize.min,
-// children: [
-// Expanded(
-// child: GestureDetector(
-// onTap: () {
-// setState(() {
-// isClicked[index] = !isClicked[index];
-// });
-// },
-// child: Container(
-// decoration: BoxDecoration(
-// shape: BoxShape.circle,
-// image: DecorationImage(
-// fit: BoxFit.fill,
-// image: AssetImage('images/default_profile.png'),
-// ),
-// ),
-// )),
-// ),
-// Text(
-// quickFoods[index].name,
-// style: TextStyle(color: isClicked[index] ? Orange700 : Colors.black),
-// ),
-// ],
-// );
-// }),
-// ),
+class quickFoodCard extends StatefulWidget {
+  int index;
+  int foodIdx;
+  quickFoodCard({Key? key, required int idx, required int fIdx}) : index = idx, foodIdx = fIdx;
 
-// ListView(
-// children: [
-// Column(
-// children: [
-// Container(
-// height: ScreenUtil().setHeight(40),
-// width: ScreenUtil().screenWidth,
-// decoration: BoxDecoration(
-// border: Border.all(
-// width: 1,
-// ),
-// color: MangoDisabledContainerColor),
-// child: Align(
-// alignment: Alignment.centerLeft, child: Text("    우유/유제품")),
-// ),
-// Container(
-// child: Column(
-// children: [
-// Container(
-// height: ScreenUtil().setHeight(100),
-// width: ScreenUtil().setHeight(100),
-// decoration: BoxDecoration(
-// borderRadius: BorderRadius.circular(10),
-// color: MangoDisabledContainerColor),
-// ),
-// Text("게란"),
-// ],
-// ),
-// ),
-// ],
-// )
-// ],
-// ),
+  @override
+  _quickFoodCardState createState() => _quickFoodCardState();
+}
+
+class _quickFoodCardState extends State<quickFoodCard> {
+  late bool _isClicked;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _isClicked = false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        setState(() {
+        _isClicked = !_isClicked;
+        });
+        if(_isClicked){
+          addFoodLists.add(foodWithCategories[widget.index][widget.foodIdx]);
+        }
+        else{
+          addFoodLists.remove(foodWithCategories[widget.index][widget.foodIdx]);
+        }
+      },
+      child: Container(
+        height: ScreenUtil().setHeight(100),
+        width: ScreenUtil().setHeight(100),
+        decoration: BoxDecoration(
+          color: _isClicked? Orange50 : MangoWhite,
+          border: Border.all(
+            width: 1,
+            color: _isClicked? MangoDisabledColorLight : MangoDisabledColor,
+          ),
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: Center(child: Text(foodWithCategories[widget.index][widget.foodIdx].name,style: Theme.of(context).textTheme.subtitle2!.copyWith(color: _isClicked? Orange700 : MangoBlack ),)), //TODO. Change this
+      ),
+    );
+  }
+}

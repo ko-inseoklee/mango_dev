@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
@@ -30,11 +31,12 @@ class postViewModel extends GetxController {
   //   return myPosts;
   // }
 
-   Future clearPost() async {
-     return localPost.clear();
-   }
+  Future clearPost() async {
+    return localPost.clear();
+  }
 
-  Future<void>loadLocalPosts(Position userLocation) async {
+  Future<void> loadLocalPosts(Position userLocation) async {
+    clearPost();
     mango_dev
         .collection('post')
         .orderBy('registTime', descending: true)
@@ -48,12 +50,19 @@ class postViewModel extends GetxController {
             element.data()['location'].longitude);
 
         if (distance < 2500) {
+          // print("ELEMET: ${element.get('ownerID')}");
           var snap = await FirebaseFirestore.instance
               .collection('user')
               .doc(element.get('ownerID'))
               .get();
 
           Post _post = Post.fromSnapshot(element.data(), snap);
+          var _snap = await FirebaseFirestore.instance
+              .collection('myFood')
+              .doc(_post.foods.fId)
+              .get()
+              .then((value) => value.data());
+          _post.foods = Food.fromSnapshot(_snap!);
           localPost.add(_post);
           mango_dev.collection('post').doc(element.id).update({
             'ownerName': _post.owner.userName,
@@ -65,7 +74,6 @@ class postViewModel extends GetxController {
     });
     update();
   }
-
 
 // loadSearchPosts(String _search) async {
 //   this.searchPosts = [];
@@ -80,6 +88,5 @@ class postViewModel extends GetxController {
 //     });
 //   });
 // }
-
 
 }
