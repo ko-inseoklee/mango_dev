@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 class Food {
-  final String fId;
+  // 임시로 final  제거.
+  String fId;
   final String rId;
   int idx;
 

@@ -7,7 +7,7 @@ import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/addLocation.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/trade/googleMap.dart';
+// import 'package:mangodevelopment/view/trade/googleMap.dart';
 import 'package:mangodevelopment/view/trade/location.dart';
 import 'package:mangodevelopment/view/tutorial/Home/tutorial.dart';
 import 'package:mangodevelopment/view/widget/postCardWidget.dart';
