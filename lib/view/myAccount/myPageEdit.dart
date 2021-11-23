@@ -239,7 +239,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                       ),
                       prefixIconConstraints:
                           BoxConstraints(minWidth: 0, minHeight: 0),
-                      hintText: 'Coming soon...',
+                      hintText: userViewModelController.user.value.phoneNumber,
                       //TODO. after adding the function of phone number
                       errorBorder: OutlineInputBorder(
                           borderSide: BorderSide(width: 1.0)),

@@ -5,12 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/login/addUserInfo.dart';
+import 'package:mangodevelopment/view/login/guide.dart';
 import 'package:mangodevelopment/view/login/signUp.dart';
 import 'package:mangodevelopment/view/trade/Chat/chatRoom.dart';
 
 import 'color.dart';
 import 'landing.dart';
-import 'view/trade/friend/friendList.dart';
 import 'dart:async';
 
 var deviceWidth = 411.0;
@@ -99,7 +100,6 @@ class _MangoAppState extends State<MangoApp> {
     return ScreenUtilInit(
       builder: () => GetMaterialApp(
         home: Landing(),
-        // home: SignUpPage(),
         theme: _mangoTheme,
         // getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
       ),

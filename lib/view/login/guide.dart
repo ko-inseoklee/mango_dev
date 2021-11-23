@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/home.dart';
 
@@ -14,7 +15,7 @@ class _GuidePageState extends State<GuidePage> {
   final imgHeight = 485.0;
 
   final prototypeDotSize = 12.0;
-  final prototypeDotPadding = 7.5 * (deviceWidth / prototypeWidth);
+  final prototypeDotPadding = ScreenUtil().setWidth(7.5);
 
   int index = 0;
 
@@ -54,8 +55,8 @@ class _GuidePageState extends State<GuidePage> {
                       children: [
                         Image.asset(
                           imgList[index],
-                          width: imgWidth * (deviceWidth / prototypeWidth),
-                          height: imgHeight * (deviceWidth / prototypeWidth),
+                          width: ScreenUtil().setWidth(imgWidth),
+                          height: ScreenUtil().setHeight(imgHeight),
                         ),
                       ],
                     ),

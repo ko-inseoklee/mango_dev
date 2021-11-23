@@ -524,6 +524,7 @@ class AddFoodQuickPage extends StatefulWidget {
 }
 
 class _AddFoodQuickPageState extends State<AddFoodQuickPage> {
+
   late RefrigeratorViewModel refrigerator;
 
   @override
@@ -590,7 +591,6 @@ class _AddFoodQuickPageState extends State<AddFoodQuickPage> {
           },
         ));
   }
-
   void categoriesFoods(){
     for(int i = 0; i < quickFoods.length; i++){
       int idx = categories.indexOf(quickFoods[i].category);
