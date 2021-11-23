@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mangodevelopment/view/recognize/barcodeFromGallery.dart';
-import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
-import 'package:mangodevelopment/view/refrigerator/addFoodQuick.dart';
-import 'package:mangodevelopment/view/refrigerator/scanFoodwithBarcode.dart';
 import 'dart:io';
 
 import '../../../app.dart';
 import '../../../color.dart';
 
 class imageSelectCard extends StatefulWidget {
-  // final VoidCallback onTapCamera;
-  // final VoidCallback onTapGallery;
+  @required
+  final IconData icon;
+  @required
+  final String title;
+  @required
+  final VoidCallback onTapOK;
 
-  const imageSelectCard();
+  const imageSelectCard(
+      {required this.icon, required this.title, required this.onTapOK});
 
   @override
   _imageSelectCardState createState() => _imageSelectCardState();
@@ -24,113 +25,37 @@ class imageSelectCard extends StatefulWidget {
 class _imageSelectCardState extends State<imageSelectCard> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        SizedBox(
-          width: ScreenUtil().setWidth(72),
-          height: ScreenUtil().setHeight(96),
-          child: TextButton(
-            onPressed: () {
-              Get.back();
-              Get.dialog(AddFoodQuickPage());
-              },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.flash_on,
-                  size: ScreenUtil().setSp(35),
-                  color: MangoDisabledColor,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(
-                    top: 5.0 * deviceWidth / prototypeWidth,
-                  ),
-                  child: Text('Quick\n채우기',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
-                )
-              ],
+    return SizedBox(
+      width: ScreenUtil().setWidth(98),
+      height: ScreenUtil().setHeight(114),
+      child: TextButton(
+        onPressed: widget.onTapOK,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              widget.icon,
+              size: ScreenUtil().setSp(40),
+              color: MangoDisabledColor,
             ),
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(color: MangoDisabledColor),
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(
+                top: 5.0 * deviceWidth / prototypeWidth,
+              ),
+              child: Text(widget.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: MangoBlack, fontSize: ScreenUtil().setSp(14))),
+            )
+          ],
         ),
-        SizedBox(
-          width: ScreenUtil().setWidth(72),
-          height: ScreenUtil().setHeight(96),
-          child: TextButton(
-            onPressed: () {
-              Get.to(BarcodeFromGallery());
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.photo_camera,
-                  size: ScreenUtil().setSp(35),
-                  color: MangoDisabledColor,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(
-                    top: 5.0 * deviceWidth / prototypeWidth,
-                  ),
-                  child: Text('자동 인식\n채우기',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
-                )
-              ],
-            ),
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(color: MangoDisabledColor),
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
+        style: TextButton.styleFrom(
+          shape: RoundedRectangleBorder(
+              side: BorderSide(color: MangoDisabledColor),
+              borderRadius: BorderRadius.circular(10)),
         ),
-        SizedBox(
-          width: ScreenUtil().setWidth(72),
-          height: ScreenUtil().setHeight(96),
-          child: TextButton(
-            onPressed: () {
-              Get.off(() => AddFoodDirectPage(title: '냉장고 품목 등록'));
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.mode_edit,
-                  size: ScreenUtil().setSp(35),
-                  color: MangoDisabledColor,
-                ),
-                Container(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.only(
-                    top: 5.0 * deviceWidth / prototypeWidth,
-                  ),
-                  child: Text('직접\n채우기',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
-                )
-              ],
-            ),
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(color: MangoDisabledColor),
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
