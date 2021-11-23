@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/analyze/textAI.dart';
 import 'package:mangodevelopment/view/market/post/selectPost.dart';
-
-import 'package:mangodevelopment/view/refrigerator/addFoodDirect.dart';
-import 'package:mangodevelopment/view/testObject/testObject1.dart';
-import 'package:mangodevelopment/view/testObjectGallery/testObjectGallery1.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
-import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 
-import '../../../app.dart';
 import '../../../color.dart';
 
 class AddPostDialog extends StatefulWidget {
