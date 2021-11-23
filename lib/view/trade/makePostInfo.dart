@@ -136,20 +136,13 @@ class _MakePostInfoState extends State<MakePostInfo> {
         .doc(curr_uid)
         .snapshots()
         .first);
-    // temp.ownerFriendList = User.fromSnapshot(await FirebaseFirestore.instance
-    //     .collection('user')
-    //     .doc(curr_uid)
-    //     .snapshots()
-    //     .first)
-    //     .friendList
-    //     .obs;
 
     temp.foods = arg;
-    //////
 
     FirebaseFirestore.instance.collection('post').doc(temp.postID).set({
       'foodName': temp.foods.name,
       'foodNum': temp.foods.number,
+      'category': temp.foods.category,
       // 'ownerFriendList': temp.ownerFriendList,
       'subtitle': temp.subtitle,
       'postID': temp.postID,

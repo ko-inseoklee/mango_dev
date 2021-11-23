@@ -44,7 +44,7 @@ class AddPostPage extends StatelessWidget {
           Spacer(),
           Container(
             alignment: Alignment.center,
-            height: ScreenUtil().setHeight(45),
+            height: ScreenUtil().setHeight(50),
             margin: EdgeInsets.all(ScreenUtil().setSp(16.0)),
             decoration: BoxDecoration(
                 color: Orange400, borderRadius: BorderRadius.circular(10.0)),
@@ -81,8 +81,8 @@ class AddPostPage extends StatelessWidget {
               } else {
                 contentValue = value;
 
-                // TODO: This is for post class
                 Post _post = Post.init();
+                _post.fid = food.fId;
                 _post.postID = Uuid().v4();
                 _post.state = 0;
                 _post.registTime = Timestamp.now();
@@ -90,19 +90,7 @@ class AddPostPage extends StatelessWidget {
                 _post.foods = food;
                 _post.owner = _userViewModel.user.value; //location 포함
                 _post.chatList = [];
-                // TODO: Should be add post in the userViewModel
                 _userViewModel.addPost(_post).then((_) {
-                  // _postViewModel
-                  //     .loadLocalPosts(Position(
-                  //         longitude: 129.38969404197408,
-                  //         latitude: 36.102863994751445,
-                  //         timestamp: DateTime.now(),
-                  //         accuracy: 50,
-                  //         altitude: 0,
-                  //         heading: 0,
-                  //         speed: 0,
-                  //         speedAccuracy: 0))
-                  //     .then((_) {
                     Get.back();
                     Get.back();
                     Get.back();

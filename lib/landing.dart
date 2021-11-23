@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/login/addUserInfo.dart';
 import 'package:mangodevelopment/view/login/addUserInfo2.dart';
 import 'package:mangodevelopment/view/widget/mangoIndicator.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -51,8 +50,6 @@ class _LandingState extends State<Landing> {
                     builder: (context, snapshot) {
                       if (snapshot.hasData == false) {
                         return MangoCircularIndicator();
-                      } else if (snapshot.data == false) {
-                        return AddUserInfoPage2();
                       } else {
                         //_prefs!.setString('id', authController.user!.uid);
                         return HomePage(title: 'hi');
