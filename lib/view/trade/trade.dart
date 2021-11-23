@@ -7,7 +7,6 @@ import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/addLocation.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/trade/googleMap.dart';
 import 'package:mangodevelopment/view/trade/location.dart';
 import 'package:mangodevelopment/view/tutorial/Home/tutorial.dart';
 import 'package:mangodevelopment/view/widget/postCardWidget.dart';
@@ -65,6 +64,10 @@ class _TradePageState extends State<TradePage> {
     _determinePosition().then((value) {
       Get.find<postViewModel>().loadLocalPosts(deviceLat);
     });
+  }
+
+  Future<void> refresh() async {
+    Get.find<postViewModel>().loadLocalPosts(deviceLat);
   }
 
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
@@ -151,19 +154,23 @@ class _TradePageState extends State<TradePage> {
                           ),
                         ),
                         Flexible(
-                          child: ListView.separated(
-                              itemBuilder: (context, index) {
-                                // print('length:' + _.localPost.length.toString());
-                                return MangoPostCard(
-                                    post: postViewModelController
-                                        .localPost[index]);
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return Divider();
-                              },
-                              itemCount:
-                                  postViewModelController.localPost.length),
+                          child: RefreshIndicator(
+                            onRefresh: () => Get.find<postViewModel>()
+                                .loadLocalPosts(deviceLat),
+                            child: ListView.separated(
+                                itemBuilder: (context, index) {
+                                  // print('length:' + _.localPost.length.toString());
+                                  return MangoPostCard(
+                                      post: postViewModelController
+                                          .localPost[index]);
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return Divider();
+                                },
+                                itemCount:
+                                    postViewModelController.localPost.length),
+                          ),
                         ),
                         // Flexible(
                         //   child: StreamBuilder<QuerySnapshot>(

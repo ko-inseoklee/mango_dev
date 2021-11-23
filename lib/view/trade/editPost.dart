@@ -13,15 +13,21 @@ import 'package:uuid/uuid.dart';
 
 import '../../color.dart';
 
-class EditPost extends StatelessWidget {
+class EditPost extends StatefulWidget {
   final String title;
   final Post post;
-  final formKey = GlobalKey<FormState>();
-
-  String contentValue = '';
 
   EditPost({Key? key, required this.title, required this.post})
       : super(key: key);
+
+  @override
+  _EditPostState createState() => _EditPostState();
+}
+
+class _EditPostState extends State<EditPost> {
+  final formKey = GlobalKey<FormState>();
+
+  late String contentValue = widget.post.subtitle;
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -29,7 +35,7 @@ class EditPost extends StatelessWidget {
     return Scaffold(
       backgroundColor: MangoWhite,
       appBar: MangoAppBar(
-        title: title,
+        title: widget.title,
         isLeading: true,
       ),
       body: Column(
@@ -46,7 +52,6 @@ class EditPost extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0)),
             child: TextButton(
               onPressed: () {
-
                 // delete chatRooms -> doc
                 // for (int i = 0; i < post.chatList.length; i++)
                 //   FirebaseFirestore.instance.collection('chatRooms').doc(
@@ -61,13 +66,10 @@ class EditPost extends StatelessWidget {
               },
               child: Text(
                 '게시글 삭제',
-                style: Theme
-                    .of(context)
+                style: Theme.of(context)
                     .textTheme
                     .subtitle2!
-                    .copyWith(
-                    color: Colors.red
-                ),
+                    .copyWith(color: Colors.red),
               ),
             ),
           ),
@@ -79,14 +81,17 @@ class EditPost extends StatelessWidget {
                 color: Orange400, borderRadius: BorderRadius.circular(10.0)),
             child: TextButton(
               onPressed: () {
+                // print('content: $');
+                _userViewModel
+                    .updatePost(widget.post, contentValue)
+                    .then((value) {
+                  Get.back();
+                });
                 // formKey.currentState!.validate();
               },
               child: Text(
                 '저장',
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .subtitle2,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
             ),
           )
@@ -110,8 +115,7 @@ class EditPost extends StatelessWidget {
             margin: EdgeInsets.fromLTRB(
                 ScreenUtil().setWidth(10), 0, ScreenUtil().setWidth(10), 0),
             child: Image.asset(
-              'images/category/${categoryImg[translateToKo(
-                  post.foods.category)]}',
+              'images/category/${categoryImg[translateToKo(widget.post.foods.category)]}',
               scale: 1,
             ),
           ),
@@ -123,20 +127,17 @@ class EditPost extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  post.foods.name,
+                  widget.post.foods.name,
                 ),
-                post.foods.displayType
+                widget.post.foods.displayType
                     ? Text(
-                    '${post.foods.shelfLife
-                        .difference(DateTime.now())
-                        .inDays}일 전',
-                    style: TextStyle(color: Red500, fontSize: 12.0))
+                        '${widget.post.foods.shelfLife.difference(DateTime.now()).inDays}일 전',
+                        style: TextStyle(color: Red500, fontSize: 12.0))
                     : Text(
-                    '${DateFormat.yMd().format(
-                        post.foods.registrationDay)}일 등록',
-                    style: TextStyle(
-                        color: Purple500,
-                        fontSize: ScreenUtil().setSp(12))),
+                        '${DateFormat.yMd().format(widget.post.foods.registrationDay)}일 등록',
+                        style: TextStyle(
+                            color: Purple500,
+                            fontSize: ScreenUtil().setSp(12))),
               ],
             ),
           ),
@@ -144,7 +145,7 @@ class EditPost extends StatelessWidget {
           Container(
               margin: EdgeInsets.fromLTRB(
                   ScreenUtil().setWidth(10), 0, ScreenUtil().setWidth(10), 0),
-              child: Text(post.foods.number.toString()))
+              child: Text(widget.post.foods.number.toString()))
         ],
       ),
     );
@@ -161,34 +162,22 @@ class EditPost extends StatelessWidget {
         child: Form(
           key: formKey,
           child: TextFormField(
+            initialValue: contentValue,
             maxLength: 20,
             validator: (value) {
               if (value!.isEmpty) {
                 Get.snackbar('등록 오류', '메세지가 입력되지 않았습니다.');
               } else {
-                contentValue = value;
-
-                Post _post = Post.init();
-                _post.postID = Uuid().v4();
-                _post.state = 0;
-                _post.registTime = Timestamp.now();
-                _post.subtitle = contentValue;
-                _post.foods = post.foods;
-                _post.owner = _userViewModel.user.value; //location 포함
-                _post.chatList = [];
-                _userViewModel.addPost(_post).then((_) {
-                  Get.back();
+                setState(() {
+                  contentValue = value;
                 });
               }
             },
             decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: '남기고 싶은 메세지를 작성해주세요.(최대 20자)'),
+              border: InputBorder.none,
+              // hintText: '남기고 싶은 메세지를 작성해주세요.(최대 20자)'
+            ),
           ),
         ));
   }
-
-// Widget delteContent(){
-//
-// }
 }

@@ -5,6 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/trade/saveLocation.dart';
+import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -20,7 +21,6 @@ class _addLocationPageState extends State<addLocationPage> {
   late Position deviceLat;
   late LatLng _lastMapPosition =
       LatLng(deviceLat.latitude, deviceLat.longitude);
-
 
   @override
   void initState() {
@@ -139,10 +139,16 @@ class _addLocationPageState extends State<addLocationPage> {
                             userViewModelController.user.value.location =
                                 GeoPoint(location.latitude, location.longitude);
                             await userViewModelController
-                                .updateUserLocation(userViewModelController.userID,
+                                .updateUserLocation(
+                                    userViewModelController.userID,
                                     userViewModelController.user.value.location)
                                 .then((value) {
-                              Get.to(saveLocation());
+                              Get.back();
+                              Get.dialog(ConfirmDialog(
+                                  contentText: "동네 설정이 완료되었습니다.",
+                                  onTapOK: () {
+                                    Get.back();
+                                  }));
                             });
                           },
                           child: Text('동네 설정하기')),

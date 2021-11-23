@@ -6,6 +6,8 @@ import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/sendFCM.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 
+import '../../../color.dart';
+
 class ChatRoom extends StatefulWidget {
   late String chatID;
   late String friendName;
@@ -110,7 +112,7 @@ class _ChatRoomState extends State<ChatRoom> {
               : element.get('takerID');
 
           mango_dev.collection('user').doc(_id).get().then((value) {
-            sendMessage(value.get('tokens'), currName, text);
+            sendMessage(value.get('tokens'), currName, text, chatID);
           });
         });
       });
@@ -149,49 +151,109 @@ class _ChatRoomState extends State<ChatRoom> {
           // title: Text(ownerName + ' ( ' + foodName + foodNum.toString() + '개 )'),
           ),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: StreamBuilder<QuerySnapshot>(
-                stream: mango_dev
-                    .collection('chatRooms')
-                    .doc(widget.chatID)
-                    .collection('messages')
-                    .orderBy('date')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  ChatRoomViewModel().AccessChatRoom(
-                      widget.chatID,
-                      userViewModelController.userID,
-                      userViewModelController.user.value.userName);
-                  if (!snapshot.hasData)
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
+        child: Container(
+          margin: EdgeInsets.all(5),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: mango_dev
+                      .collection('chatRooms')
+                      .doc(widget.chatID)
+                      .collection('messages')
+                      .orderBy('date')
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    ChatRoomViewModel().AccessChatRoom(
+                        widget.chatID,
+                        userViewModelController.userID,
+                        userViewModelController.user.value.userName);
+                    if (!snapshot.hasData)
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
 
-                  List<DocumentSnapshot> docs = snapshot.data!.docs;
+                    List<DocumentSnapshot> docs = snapshot.data!.docs;
 
-                  List messages = docs.map((doc) {
-                    return Message(
-                      from: doc['from'],
-                      // id to name
-                      text: doc['text'],
-                      to: doc['to'],
-                      // id to name
-                      me: userViewModelController.userID == doc['from'],
-                      read: doc['read'],
-                      time: doc['date'],
-                    );
-                  }).toList();
+                    List messages = docs.map((doc) {
+                      return Message(
+                        from: doc['from'],
+                        // id to name
+                        text: doc['text'],
+                        to: doc['to'],
+                        // id to name
+                        me: userViewModelController.userID == doc['from'],
+                        read: doc['read'],
+                        time: doc['date'],
+                      );
+                    }).toList();
 
-                  // TODO: check if chat page is null
-                  var empty = true;
-                  if (messages.toList().length == 0)
+                    // TODO: check if chat page is null
+                    var empty = true;
+                    if (messages.toList().length == 0)
+                      return Stack(
+                        children: <Widget>[
+                          Center(
+                            child: Text('채팅을 시작해 보세요'),
+                          ),
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: ListTile(
+                                //TODO: change to post foodIMG
+                                // leading: IconButton(
+                                //   icon: Icon(Icons.camera),
+                                //   onPressed: () => print('gg'),
+                                // ),
+                                title: Text(_state +
+                                    ' ' +
+                                    foodName +
+                                    ' ' +
+                                    foodNum.toString() +
+                                    '개'),
+                                subtitle: Text(subtitle),
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 0.5,
+                                    blurRadius: 5,
+                                    offset: Offset(
+                                        0, 1), // changes position of shadow
+                                  ),
+                                ],
+                                // border: Border.all(
+                                //   color: Colors.grey, // red as border color
+                                // ),
+                                color: Colors.white),
+                          ),
+                        ],
+                      );
+
+                    if (docs.length != 0) empty = false;
+
                     return Stack(
                       children: <Widget>[
-                        Center(
-                          child: Text('채팅을 시작해 보세요'),
+                        Container(
+                          child: empty
+                              ? Center(
+                                  child: Text('채팅을 시작해 보세요'),
+                                )
+                              : ListView(
+                                  controller: scrollController,
+                                  children: <Widget>[
+                                    SizedBox(
+                                      height: 100,
+                                      child:
+                                          Image.asset('images/login/logo.png'),
+                                    ),
+                                    ...messages,
+                                    SizedBox(height: 15)
+                                  ],
+                                ),
                         ),
                         Container(
                           child: Padding(
@@ -228,105 +290,55 @@ class _ChatRoomState extends State<ChatRoom> {
                         ),
                       ],
                     );
-
-                  if (docs.length != 0) empty = false;
-
-                  return Stack(
-                    children: <Widget>[
-                      Container(
-                        child: empty
-                            ? Center(
-                                child: Text('채팅을 시작해 보세요'),
-                              )
-                            : ListView(
-                                controller: scrollController,
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 100,
-                                    child: Image.asset('images/login/logo.png'),
-                                  ),
-                                  ...messages,
-                                ],
-                              ),
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: ListTile(
-                            //TODO: change to post foodIMG
-                            // leading: IconButton(
-                            //   icon: Icon(Icons.camera),
-                            //   onPressed: () => print('gg'),
-                            // ),
-                            title: Text(_state +
-                                ' ' +
-                                foodName +
-                                ' ' +
-                                foodNum.toString() +
-                                '개'),
-                            subtitle: Text(subtitle),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 0.5,
-                                blurRadius: 5,
-                                offset:
-                                    Offset(0, 1), // changes position of shadow
-                              ),
-                            ],
-                            // border: Border.all(
-                            //   color: Colors.grey, // red as border color
-                            // ),
-                            color: Colors.white),
-                      ),
-                    ],
-                  );
-                },
+                  },
+                ),
               ),
-            ),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      onSubmitted: (value) => send(
-                          widget.chatID,
-                          userViewModelController.userID,
-                          userViewModelController.user.value.userName,
-                          messageController.text),
-                      // from who ?
-                      decoration: InputDecoration(
-                        hintText: 'Enter a Message...',
-                        border: const OutlineInputBorder(),
-                      ),
-                      controller: messageController,
-                    ),
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.send,
-                      color: messageController.text.isEmpty
-                          ? Colors.grey
-                          : Colors.orangeAccent,
-                    ),
-                    onPressed: () {
-                      send(
-                              widget.chatID, //generate docID by Post
+              Container(
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        height: 60,
+                        child: TextField(
+                          onSubmitted: (value) => send(
+                              widget.chatID,
                               userViewModelController.userID,
                               userViewModelController.user.value.userName,
-                              messageController.text)
-                          .then((value) {
-                        messageController.clear();
-                      });
-                    },
-                  )
-                ],
+                              messageController.text),
+                          // from who ?
+                          decoration: InputDecoration(
+                            hintText: 'Enter a Message...',
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                            ),
+                          ),
+                          controller: messageController,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.send,
+                        color: messageController.text.isEmpty
+                            ? Colors.grey
+                            : Colors.orangeAccent,
+                      ),
+                      onPressed: () {
+                        send(
+                                widget.chatID, //generate docID by Post
+                                userViewModelController.userID,
+                                userViewModelController.user.value.userName,
+                                messageController.text)
+                            .then((value) {
+                          messageController.clear();
+                        });
+                      },
+                    )
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -389,7 +401,7 @@ class _MessageState extends State<Message> {
     // late String friend;
 
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.all(8),
       child: Container(
         child: Column(
           crossAxisAlignment:
@@ -409,12 +421,17 @@ class _MessageState extends State<Message> {
               children: <Widget>[
                 widget.me
                     ? Container(
-                        margin: EdgeInsets.only(right: 5),
-                        child: widget.read ? Text('읽음') : Text(''))
+                        margin: EdgeInsets.only(right: 5, top: 20),
+                        child: widget.read
+                            ? Text(
+                                'V',
+                                style: TextStyle(color: Orange400),
+                              )
+                            : Text(''))
                     : SizedBox(height: 0),
                 widget.me
                     ? Container(
-                        margin: EdgeInsets.only(right: 5),
+                        margin: EdgeInsets.only(right: 5, top: 20),
                         child: Text(widget.time.toDate().hour.toString() +
                             ':' +
                             widget.time.toDate().minute.toString()))
@@ -440,10 +457,20 @@ class _MessageState extends State<Message> {
                 widget.me
                     ? SizedBox(height: 0)
                     : Container(
-                        margin: EdgeInsets.only(right: 5),
+                        margin: EdgeInsets.only(left: 5, top: 20),
                         child: Text(widget.time.toDate().hour.toString() +
                             ':' +
-                            widget.time.toDate().minute.toString()))
+                            widget.time.toDate().minute.toString())),
+                widget.me
+                    ? SizedBox(height: 0)
+                    : Container(
+                        margin: EdgeInsets.only(left: 5, top: 20),
+                        child: widget.read
+                            ? Text(
+                                'V',
+                                style: TextStyle(color: Orange400),
+                              )
+                            : Text(''))
               ],
             )
           ],

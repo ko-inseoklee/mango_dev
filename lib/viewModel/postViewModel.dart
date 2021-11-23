@@ -31,11 +31,12 @@ class postViewModel extends GetxController {
   //   return myPosts;
   // }
 
-   Future clearPost() async {
-     return localPost.clear();
-   }
+  Future clearPost() async {
+    return localPost.clear();
+  }
 
-  Future<void>loadLocalPosts(Position userLocation) async {
+  Future<void> loadLocalPosts(Position userLocation) async {
+    clearPost();
     mango_dev
         .collection('post')
         .orderBy('registTime', descending: true)
@@ -55,15 +56,6 @@ class postViewModel extends GetxController {
               .doc(element.get('ownerID'))
               .get();
 
-          //
-          // var _snap = await FirebaseFirestore.instance
-          //     .collection('myFood')
-          //     .doc(element.data()['fid'])
-          //     .get()
-          //     .then((value) => value.data());
-
-
-          // Post _post = Post.fromSnapshot(element.data(), snap, _snap!);
           Post _post = Post.fromSnapshot(element.data(), snap);
           var _snap = await FirebaseFirestore.instance
               .collection('myFood')
@@ -83,7 +75,6 @@ class postViewModel extends GetxController {
     update();
   }
 
-
 // loadSearchPosts(String _search) async {
 //   this.searchPosts = [];
 //   mango_dev
@@ -97,6 +88,5 @@ class postViewModel extends GetxController {
 //     });
 //   });
 // }
-
 
 }

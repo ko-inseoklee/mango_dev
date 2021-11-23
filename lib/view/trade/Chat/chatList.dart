@@ -46,6 +46,7 @@ class _ChatListState extends State<ChatList> {
   }
 
   Future<void> getName(String friend) async {
+
     FirebaseFirestore.instance
         .collection('user')
         .doc(friend)

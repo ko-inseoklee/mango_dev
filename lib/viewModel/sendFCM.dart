@@ -7,7 +7,7 @@ var serverToken =
     'AAAAA2rmKow:APA91bE0C2NC74vPLJfyyUrwBKsodxH--X4G30WqduS_DN0uAYM8J4c9k0FWNkSSd6aG8TUsZzihoFv-8cy75ydfaR-XeHPKoOIMFjlgkp1yLgXv-X0qpruo5-6uPRPsdnPf1CjdKkWR';
 
 // send FCM when send message
-void sendMessage(String token,String name, String message) async{
+void sendMessage(String token,String name, String message, String chatID) async{
   // print('$token $name $message!!');
 
   await http.post(
@@ -24,7 +24,10 @@ void sendMessage(String token,String name, String message) async{
       'data': <String, dynamic>{
         'click_action': 'FLUTTER_NOTIFICATION_CLICK',
         'id': '1',
-        'status': 'done'
+        'status': 'done',
+        'type': 'message',
+        'chatID': chatID,
+        'friendName': name
       },
       'to': token
     }),

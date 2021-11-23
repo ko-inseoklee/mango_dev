@@ -250,4 +250,10 @@ class UserViewModel extends GetxController {
       'chats': FieldValue.arrayUnion(post.chatList),
     });
   }
+
+  Future<void> updatePost(@required Post post, String subtitle) async {
+    FirebaseFirestore.instance.collection('post').doc(post.postID).update({
+      'subtitle': subtitle,
+    });
+  }
 }
