@@ -17,6 +17,7 @@ class _ChatListState extends State<ChatList> {
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
   List<String> _text = [];
+  String friendName = '';
 
   @override
   void initState() {
@@ -41,6 +42,19 @@ class _ChatListState extends State<ChatList> {
           _text[index] = value.docs.first.get('text').toString();
         });
       }
+    });
+  }
+
+  Future<void> getName(String friend) async {
+
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(friend)
+        .get()
+        .then((value) {
+      setState(() {
+        friendName = value.get('userName');
+      });
     });
   }
 
@@ -69,6 +83,7 @@ class _ChatListState extends State<ChatList> {
               itemBuilder: (context, index) {
                 List<DocumentSnapshot> documents = snapshot.data!.docs;
                 getMessage(documents.elementAt(index).get('chatID'), index);
+                getName(documents.elementAt(index).get('friend'));
 
                 return InkWell(
                   onTap: () {
@@ -78,7 +93,7 @@ class _ChatListState extends State<ChatList> {
                     ));
                   },
                   child: ListTile(
-                    title: Text(documents.elementAt(index).get('friend')),
+                    title: Text(friendName),
                     subtitle: Text(_text[index]),
                   ),
                 );

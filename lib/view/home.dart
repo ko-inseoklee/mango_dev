@@ -12,7 +12,6 @@ import 'package:mangodevelopment/view/myAccount/myPage.dart';
 import 'package:mangodevelopment/view/refrigerator/addFoodSheet.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
 import 'package:mangodevelopment/view/refrigerator/refrigerator.dart';
-import 'package:mangodevelopment/view/trade/makePost.dart';
 import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/postViewModel.dart';

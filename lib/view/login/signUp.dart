@@ -67,6 +67,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String uuid = '';
   String _tokens = '';
   String _phoenNumber = '';
+  List<String> chats = [];
+  GeoPoint location = GeoPoint(0,0);
 
   @override
   Widget build(BuildContext context) {
@@ -494,6 +496,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           'userName': _userName,
                           'phoneNumber': _phoenNumber,
                           'tokens': _tokens,
+                          'location': location,
+                          'chats': chats,
                         });
 
                         await RefrigeratorViewModel()

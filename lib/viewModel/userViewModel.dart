@@ -12,7 +12,8 @@ class UserViewModel extends GetxController {
   var imageURL = '';
 
   //isRefSelf == true => 유통기한기준, == false => 구매일 기준.
-  var user = User.init(
+  var user = User
+      .init(
     userID: '',
     creationTime: Timestamp.now(),
     refrigeratorID: '1',
@@ -29,8 +30,9 @@ class UserViewModel extends GetxController {
     tokens: '',
     phoneNumber: '',
     chatList: [],
-    location: GeoPoint(0,0),
-  ).obs;
+    location: GeoPoint(0, 0),
+  )
+      .obs;
 
   String get userID => this.user.value.userID;
 
@@ -94,7 +96,10 @@ class UserViewModel extends GetxController {
         .collection('user')
         .doc(uid)
         .get()
-        .then((value) => this.user = User.fromSnapshot(value).obs);
+        .then((value) =>
+    this.user = User
+        .fromSnapshot(value)
+        .obs);
     update();
   }
 
@@ -138,12 +143,12 @@ class UserViewModel extends GetxController {
     });
   }
 
-  Future<void> updateUserLocation(String uid, GeoPoint location)async{
+  Future<void> updateUserLocation(String uid, GeoPoint location) async {
     await FirebaseFirestore.instance.collection('user').doc(uid).update({
       'location': location,
     });
-
   }
+
   //Making 'User' class (local) from Firebase Data
   Future<void> setUserInfo(String uid) async {
     await FirebaseFirestore.instance
@@ -179,8 +184,7 @@ class UserViewModel extends GetxController {
         .collection('FriendList');
   }
 
-  Future<void> makeUserInformation(
-      String userID,
+  Future<void> makeUserInformation(String userID,
       DateTime creationTime,
       String refrigeratorID,
       bool isAlarmOn,
@@ -195,8 +199,7 @@ class UserViewModel extends GetxController {
       String userName,
       String tokens,
       List<String> chatList,
-      String phoneNumber,
-      ) async {
+      String phoneNumber,) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,
@@ -214,7 +217,7 @@ class UserViewModel extends GetxController {
       'tokens': tokens,
       'phoneNumber': phoneNumber,
       'chats': [],
-      'location': GeoPoint(0,0),
+      'location': GeoPoint(0, 0),
       // TODO: check if the chats beeing created
     });
 
@@ -231,10 +234,11 @@ class UserViewModel extends GetxController {
 
   Future<void> addPost(@required Post post) async {
     FirebaseFirestore.instance.collection('post').doc(post.postID).set({
+      'fid': post.fid,
       'foodName': post.foods.name,
       'foodNum': post.foods.number,
+      'category': post.foods.category,
       'location': post.owner.location,
-      // 'location': GeoPoint(post.owner.location.latitude, post.owner.location.longitude),
       'ownerID': post.owner.userID,
       'ownerName': post.owner.userName,
       'postID': post.postID,
@@ -244,6 +248,12 @@ class UserViewModel extends GetxController {
       'state': post.state,
       'subtitle': post.subtitle,
       'chats': FieldValue.arrayUnion(post.chatList),
+    });
+  }
+
+  Future<void> updatePost(@required Post post, String subtitle) async {
+    FirebaseFirestore.instance.collection('post').doc(post.postID).update({
+      'subtitle': subtitle,
     });
   }
 }
