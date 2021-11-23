@@ -35,15 +35,15 @@ class _imageSelectCardState extends State<imageSelectCard> {
               children: [
                 Icon(
                   Icons.flash_on,
-                  size: ScreenUtil().setSp(30),
+                  size: ScreenUtil().setSp(35),
                   color: MangoDisabledColor,
                 ),
                 Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.only(
-                    top: 10.0 * deviceWidth / prototypeWidth,
+                    top: 5.0 * deviceWidth / prototypeWidth,
                   ),
-                  child: Text('Quick         채우기',
+                  child: Text('Quick\n채우기',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
@@ -69,15 +69,15 @@ class _imageSelectCardState extends State<imageSelectCard> {
               children: [
                 Icon(
                   Icons.photo_camera,
-                  size: ScreenUtil().setSp(30),
+                  size: ScreenUtil().setSp(35),
                   color: MangoDisabledColor,
                 ),
                 Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.only(
-                    top: 10.0 * deviceWidth / prototypeWidth,
+                    top: 5.0 * deviceWidth / prototypeWidth,
                   ),
-                  child: Text('자동 인식    채우기',
+                  child: Text('자동 인식\n채우기',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: MangoBlack, fontSize: ScreenUtil().setSp(12))),
@@ -103,15 +103,15 @@ class _imageSelectCardState extends State<imageSelectCard> {
               children: [
                 Icon(
                   Icons.mode_edit,
-                  size: ScreenUtil().setSp(30),
+                  size: ScreenUtil().setSp(35),
                   color: MangoDisabledColor,
                 ),
                 Container(
                   alignment: Alignment.center,
                   padding: EdgeInsets.only(
-                    top: 10.0 * deviceWidth / prototypeWidth,
+                    top: 5.0 * deviceWidth / prototypeWidth,
                   ),
-                  child: Text('직접 채우기',
+                  child: Text('직접\n채우기',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: MangoBlack, fontSize: ScreenUtil().setSp(12))),

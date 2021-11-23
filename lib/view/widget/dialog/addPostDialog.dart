@@ -130,18 +130,17 @@ class _AddPostDialogState extends State<AddPostDialog> {
               ),
             ],
           ),
-          ButtonTheme(
-            // colorScheme: Theme.of(context).colorScheme,
-            buttonColor: MangoBehindColor,
-            minWidth: deviceWidth,
-            child: FlatButton(
-              color: MangoBehindColor,
-              child: Text('취소', style: TextStyle(color: MangoBlack)),
-              onPressed: () {
-                Get.back();
-              },
-            ),
-          )
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: MangoBehindColor,
+                ),
+                child: Text('취소', style: TextStyle(color: MangoBlack))),
+          ),
         ],
       ),
     );
