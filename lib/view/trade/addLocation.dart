@@ -10,6 +10,10 @@ import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class addLocationPage extends StatefulWidget {
+  GeoPoint deviceLat;
+
+  addLocationPage({Key? key, required this.deviceLat}) : super(key: key);
+
   @override
   _addLocationPageState createState() => _addLocationPageState();
 }
@@ -18,26 +22,25 @@ class _addLocationPageState extends State<addLocationPage> {
   UserViewModel userViewModelController = Get.find<UserViewModel>();
   late List<Placemark> placemarks;
   late GeoPoint location;
-  late Position deviceLat;
+
+  // late GeoPoint deviceLat;
   late LatLng _lastMapPosition =
-      LatLng(deviceLat.latitude, deviceLat.longitude);
+  LatLng(widget.deviceLat.latitude, widget.deviceLat.longitude);
 
   @override
   void initState() {
     super.initState();
-    getCurrentLocation().then((value) async {
+    H().then((value) async {
       placemarks = await placemarkFromCoordinates(
-          deviceLat.latitude, deviceLat.longitude);
+          widget.deviceLat.latitude, widget.deviceLat.longitude);
       setState(() {
-        location = GeoPoint(deviceLat.latitude, deviceLat.longitude);
-        placemarks = placemarks;
-
-        // _marker.add(Marker(
-        //   markerId: MarkerId('marker'),
-        //   position: LatLng(deviceLat.latitude, deviceLat.longitude),
-        //   icon: BitmapDescriptor.defaultMarker,
-        //   draggable: true,
-        // ));
+        if (userViewModelController.user.value.location == GeoPoint(0, 0))
+          location =
+              GeoPoint(widget.deviceLat.latitude, widget.deviceLat.longitude);
+        else
+          location = GeoPoint(
+              userViewModelController.user.value.location.latitude,
+              userViewModelController.user.value.location.longitude);
       });
     });
   }
@@ -56,7 +59,7 @@ class _addLocationPageState extends State<addLocationPage> {
     // _lastMapPosition = position.target;
 
     LatLng newMarkerPosition =
-        LatLng(_position.target.latitude, _position.target.longitude);
+    LatLng(_position.target.latitude, _position.target.longitude);
     //   Marker marker = markers["marker"];
     //
     // setState(() {
@@ -78,97 +81,108 @@ class _addLocationPageState extends State<addLocationPage> {
       ),
       body: Center(
           child: Stack(
-        children: [
-          GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: LatLng(deviceLat.latitude, deviceLat.longitude),
-              zoom: 16.0,
-            ),
-            mapType: MapType.normal,
-            // markers: _marker,
-            markers: Set<Marker>.of(<Marker>[
-              Marker(
-                  onTap: () {
-                    print('Tap');
-                  },
-                  draggable: true,
-                  markerId: MarkerId("marker"),
-                  position: LatLng(deviceLat.latitude, deviceLat.longitude),
-                  onDragEnd: ((newPosition) async {
-                    placemarks = await placemarkFromCoordinates(
-                        newPosition.latitude, newPosition.longitude);
-                    setState(() {
-                      location =
-                          GeoPoint(newPosition.latitude, newPosition.longitude);
-                      placemarks = placemarks;
-                    });
-                    // print(newPosition.latitude);
-                    // print(newPosition.longitude);
-                  }))
-            ]),
-            onCameraMove: ((_position) => _updatePosition(_position)),
-          ),
-          Column(
             children: [
-              Expanded(
-                flex: 1,
-                child: Container(
-                  alignment: Alignment.center,
-                  width: double.infinity,
-                  // height: 50,
-                  //TODO: accent color
-                  color: Theme.of(context).accentColor.withOpacity(0.3),
-                  child: Text(
-                      '${placemarks.first.street.toString()} ( ${location.longitude.toString().substring(0, 5)}, ${location.latitude.toString().substring(0, 4)} )'),
+              GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(
+                  target: LatLng(
+                      location.latitude, location.longitude),
+                  zoom: 16.0,
                 ),
+                mapType: MapType.normal,
+                // markers: _marker,
+                markers: Set<Marker>.of(<Marker>[
+                  Marker(
+                      onTap: () {
+                        print('Tap');
+                      },
+                      draggable: true,
+                      markerId: MarkerId("marker"),
+                      position: LatLng(location.latitude,
+                          location.longitude),
+                      onDragEnd: ((newPosition) async {
+                        placemarks = await placemarkFromCoordinates(
+                            newPosition.latitude, newPosition.longitude);
+                        setState(() {
+                          location =
+                              GeoPoint(newPosition.latitude,
+                                  newPosition.longitude);
+                          placemarks = placemarks;
+                        });
+                        // print(newPosition.latitude);
+                        // print(newPosition.longitude);
+                      }))
+                ]),
+                onCameraMove: ((_position) => _updatePosition(_position)),
               ),
-              Expanded(flex: 12, child: SizedBox()),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  color: Colors.white,
-                  width: double.infinity,
-                  // margin: EdgeInsets.all(25),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+              Column(
+                children: [
+                  Expanded(
+                    flex: 1,
                     child: Container(
-                      color: Colors.white,
-                      child: ElevatedButton(
-                          onPressed: () async {
-                            userViewModelController.user.value.location =
-                                GeoPoint(location.latitude, location.longitude);
-                            await userViewModelController
-                                .updateUserLocation(
-                                    userViewModelController.userID,
-                                    userViewModelController.user.value.location)
-                                .then((value) {
-                              Get.back();
-                              Get.dialog(ConfirmDialog(
-                                  contentText: "동네 설정이 완료되었습니다.",
-                                  onTapOK: () {
-                                    Get.back();
-                                  }));
-                            });
-                          },
-                          child: Text('동네 설정하기')),
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      // height: 50,
+                      //TODO: accent color
+                      color: Theme
+                          .of(context)
+                          .accentColor
+                          .withOpacity(0.3),
+                      child: Text(
+                          '${placemarks.first.street.toString()} ( ${location
+                              .longitude.toString().substring(0, 5)}, ${location
+                              .latitude.toString().substring(0, 4)} )'),
                     ),
                   ),
-                ),
-              )
+                  Expanded(flex: 12, child: SizedBox()),
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      color: Colors.white,
+                      width: double.infinity,
+                      // margin: EdgeInsets.all(25),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Container(
+                          color: Colors.white,
+                          child: ElevatedButton(
+                              onPressed: () async {
+                                userViewModelController.user.value.location =
+                                    GeoPoint(
+                                        location.latitude, location.longitude);
+                                await userViewModelController
+                                    .updateUserLocation(
+                                    userViewModelController.userID,
+                                    userViewModelController.user.value.location)
+                                    .then((value) {
+                                  Get.back();
+                                  Get.dialog(ConfirmDialog(
+                                      contentText: "동네 설정이 완료되었습니다.",
+                                      onTapOK: () {
+                                        Get.back();
+                                      }));
+                                });
+                              },
+                              child: Text('동네 설정하기')),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ],
-          ),
-        ],
-      )),
+          )),
     );
   }
 
-  Future<void> getCurrentLocation() async {
-    var res = await Geolocator.getCurrentPosition();
-    setState(() {
-      deviceLat = res;
-    });
-  }
+  Future<void> H() async {}
+
+  // Future<void> getCurrentLocation() async {
+  //   var res = await Geolocator.getCurrentPosition();
+  //   setState(() {
+  //     widget.deviceLat = GeoPoint(res.latitude, res.longitude);
+  //   });
+  // }
 
   Future<Position> _determinePosition() async {
     bool serviceEnabled;

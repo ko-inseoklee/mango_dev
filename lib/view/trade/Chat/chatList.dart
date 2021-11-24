@@ -87,6 +87,7 @@ class _ChatListState extends State<ChatList> {
 
                 return InkWell(
                   onTap: () {
+                    // TODO: post가 삭제된 chatRoom 들어갈때 넘겨주는 post 정보 확인하기
                     Get.to(ChatRoom(
                       chatID: documents.elementAt(index).get('chatID'),
                       friendName: documents.elementAt(index).get('friend'),

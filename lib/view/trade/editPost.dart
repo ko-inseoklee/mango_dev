@@ -2,11 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
+import 'package:mangodevelopment/view/home.dart';
+import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/viewModel/postViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:mangodevelopment/widgetController/categoryController.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +31,7 @@ class EditPost extends StatefulWidget {
 class _EditPostState extends State<EditPost> {
   final formKey = GlobalKey<FormState>();
 
-  late String contentValue = widget.post.subtitle;
+  late String contentValue = '';
 
   UserViewModel _userViewModel = Get.find<UserViewModel>();
 
@@ -62,6 +66,12 @@ class _EditPostState extends State<EditPost> {
                 //   FirebaseFirestore.instance.collection('user').doc()
                 // }
 
+                // 유저정보, 게시글이 삭제되면 채팅방은 알 수 없음 으로만 바꾸고 삭제할 필요는 없음
+                // post id 접근 하는 곳 전부 찾아서 처리해주기
+                FirebaseFirestore.instance
+                    .collection('post')
+                    .doc(widget.post.postID)
+                    .delete();
                 Get.back();
               },
               child: Text(
@@ -81,12 +91,18 @@ class _EditPostState extends State<EditPost> {
                 color: Orange400, borderRadius: BorderRadius.circular(10.0)),
             child: TextButton(
               onPressed: () {
-                // print('content: $');
-                _userViewModel
-                    .updatePost(widget.post, contentValue)
-                    .then((value) {
-                  Get.back();
-                });
+                formKey.currentState!.validate();
+                Get.back();
+                // setState(() {
+                //   contentValue = contentValue;
+                // });
+                // print('content: $contentValue');
+                // _userViewModel
+                //     .updatePost(widget.post, contentValue)
+                //     .then((value) {
+                //   Get.back();
+                //
+                // });
                 // formKey.currentState!.validate();
               },
               child: Text(
@@ -162,15 +178,14 @@ class _EditPostState extends State<EditPost> {
         child: Form(
           key: formKey,
           child: TextFormField(
-            initialValue: contentValue,
+            initialValue: widget.post.subtitle,
             maxLength: 20,
             validator: (value) {
               if (value!.isEmpty) {
                 Get.snackbar('등록 오류', '메세지가 입력되지 않았습니다.');
               } else {
-                setState(() {
-                  contentValue = value;
-                });
+                contentValue = value;
+                _userViewModel.updatePost(widget.post, contentValue);
               }
             },
             decoration: InputDecoration(

@@ -25,13 +25,17 @@ String calculate(DateTime registTime) {
   }
 }
 
-class MangoPostCard extends StatelessWidget {
-  final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
-
+class MangoPostCard extends StatefulWidget {
   Post post;
 
   MangoPostCard({Key? key, required Post post}) : post = post;
 
+  @override
+  _MangoPostCardState createState() => _MangoPostCardState();
+}
+
+class _MangoPostCardState extends State<MangoPostCard> {
+  final FirebaseFirestore mango_dev = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +49,7 @@ class MangoPostCard extends StatelessWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: Image.asset(
                   'images/category/${categoryImg[translateToKo(
-                      post.foods.category)]}',
+                      widget.post.foods.category)]}',
                   scale: 1.0,
                 ),
                 // child: CircleAvatar(
@@ -59,23 +63,26 @@ class MangoPostCard extends StatelessWidget {
                   children: [
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: Text(calculate(post.registTime.toDate()) + ' 전'),
+                      child: Text(calculate(widget.post.registTime.toDate()) +
+                          ' 전'),
                     ),
                     Text(
-                      post.foods.name + '  ${post.foods.number} 개',
+                      widget.post.foods.name +
+                          '  ${widget.post.foods.number} 개',
                     ),
                     Text(
-                      '유통기한 ${post.foods.shelfLife.year}.${post.foods.shelfLife
-                          .month}.${post.foods.shelfLife.day}',
+                      '유통기한 ${widget.post.foods.shelfLife.year}.${widget.post
+                          .foods.shelfLife
+                          .month}.${widget.post.foods.shelfLife.day}',
                     ),
                     InkWell(
                       onTap: () {
-                        print('check == ${post
+                        print('check == ${widget.post
                             .owner.userID} / ${userViewModelController
                             .userID}');
                       },
                       child: Text(
-                        post.subtitle,
+                        widget.post.subtitle,
                       ),
                     ),
                     Row(
@@ -83,7 +90,8 @@ class MangoPostCard extends StatelessWidget {
                         Container(
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
-                            child: post.owner.profileImageReference == '-1'
+                            child: widget.post.owner.profileImageReference ==
+                                '-1'
                                 ? Container(
                               width: 30,
                               height: 30,
@@ -97,7 +105,7 @@ class MangoPostCard extends StatelessWidget {
                               ),
                             )
                                 : Image.network(
-                              post.owner.profileImageReference,
+                              widget.post.owner.profileImageReference,
                               fit: BoxFit.fitHeight,
                               width: 30,
                               height: 30,
@@ -105,7 +113,7 @@ class MangoPostCard extends StatelessWidget {
                           ),
                           margin: EdgeInsets.only(right: 25),
                         ),
-                        Expanded(child: Text(post.owner.userName)),
+                        Expanded(child: Text(widget.post.owner.userName)),
 
                         Container(
                           decoration: BoxDecoration(
@@ -116,17 +124,16 @@ class MangoPostCard extends StatelessWidget {
                             color: Colors.grey.withOpacity(0.5),
                           ),),
                           margin: EdgeInsets.only(right: 10),
-                          child: post.owner.userID ==
+                          child: widget.post.owner.userID ==
                               userViewModelController.user.value.userID
                               ? Container(
                             margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
 
                             child: ElevatedButton(
                               child: Icon(Icons.edit),
-                              onPressed: () {
+                              onPressed: () async {
                                 Get.to(EditPost(
-                                    title: '게시글 수정', post: post));
-                                // Get.dialog(EditPostDialog());
+                                    title: '게시글 수정', post: widget.post));
                               },
                               style: ButtonStyle(
                                   shadowColor: MaterialStateProperty.all<Color>(
@@ -148,7 +155,8 @@ class MangoPostCard extends StatelessWidget {
                               // color: Theme.of(context).accentColor,
                               child: Icon(Icons.send_rounded),
                               onPressed: () {
-                                var chatID = post.postID.substring(0, 6) +
+                                var chatID = widget.post.postID.substring(
+                                    0, 6) +
                                     userViewModelController.userID
                                         .substring(0, 6);
 
@@ -159,7 +167,7 @@ class MangoPostCard extends StatelessWidget {
                                         .userName);
 
                                 mango_dev.collection('post')
-                                    .doc(post.postID)
+                                    .doc(widget.post.postID)
                                     .update(
                                     {
                                       'chatList': FieldValue.arrayUnion(
@@ -168,7 +176,7 @@ class MangoPostCard extends StatelessWidget {
 
                                 Get.to(ChatRoom(
                                   chatID: chatID,
-                                  friendName: post.owner.userID,
+                                  friendName: widget.post.owner.userID,
                                 )
                                 );
                               },
@@ -206,8 +214,8 @@ class MangoPostCard extends StatelessWidget {
       'chatID': chatID,
       'takerID': uid,
       // 'takerName': name,
-      'postID': post.postID,
-      'ownerID': post.owner.userID,
+      'postID': widget.post.postID,
+      'ownerID': widget.post.owner.userID,
       // 'ownerName': post.owner.userName,
     });
 
@@ -225,15 +233,17 @@ class MangoPostCard extends StatelessWidget {
       return;
     } else {
       // create docs
-      mango_dev.collection('user').doc(uid).collection('chatList').doc(chatID).set({
+      mango_dev.collection('user').doc(uid).collection('chatList')
+          .doc(chatID)
+          .set({
         'chatID': chatID,
-        'friend': post.owner.userID,
+        'friend': widget.post.owner.userID,
         // 'friend': post.owner.userName,
       });
 
       mango_dev
           .collection('user')
-          .doc(post.owner.userID)
+          .doc(widget.post.owner.userID)
           .collection('chatList')
           .doc(chatID)
           .set({
@@ -248,7 +258,7 @@ class MangoPostCard extends StatelessWidget {
 
       mango_dev
           .collection('user')
-          .doc(post.owner.userID).update({
+          .doc(widget.post.owner.userID).update({
         'chats': FieldValue.arrayUnion([chatID]),
       });
     }
