@@ -67,7 +67,8 @@ class _imageSelectCardState extends State<imageSelectCard> {
           height: ScreenUtil().setHeight(96),
           child: TextButton(
             onPressed: () {
-              Get.to(BarcodeFromGallery());
+              Get.back();
+              Get.dialog(BarcodeFromGallery());
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

@@ -2,9 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 class Food {
-  // 임시로 final  제거.
+  // 임시로 final 제거.
   String fId;
-  final String rId;
+  // 임시로 final 제거.
+  String rId;
   int idx;
 
   // 삭제 or not

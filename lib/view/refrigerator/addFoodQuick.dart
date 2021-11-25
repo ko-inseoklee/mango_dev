@@ -548,6 +548,7 @@ class _AddFoodQuickPageState extends State<AddFoodQuickPage> {
             if(addFoodLists.length != 0) {
               for(int i = 0; i < addFoodLists.length; i++){
                 addFoodLists[i].fId = Uuid().v4();
+                addFoodLists[i].rId = refrigerator.ref.value.rID;
               }
               await refrigerator.addFoods(addFoodLists).then((value) => Get.back());
             }
