@@ -10,8 +10,8 @@ class postViewModel extends GetxController {
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
-  List localPost = <Post>[].obs;
-  int count = 0;
+  var localPost = [].obs;
+  var count = 0.obs;
 
   // loadMyPosts() async {
   //   var snap = await FirebaseFirestore.instance
@@ -35,7 +35,8 @@ class postViewModel extends GetxController {
     return localPost.clear();
   }
 
-  Future<void> loadLocalPosts(Position userLocation) async {
+  Future<void> loadLocalPosts(GeoPoint userLocation) async {
+    // count = 0 as RxInt;
     clearPost();
     mango_dev
         .collection('post')
@@ -63,7 +64,9 @@ class postViewModel extends GetxController {
               .get()
               .then((value) => value.data());
           _post.foods = Food.fromSnapshot(_snap!);
+
           localPost.add(_post);
+          count ++;
           mango_dev.collection('post').doc(element.id).update({
             'ownerName': _post.owner.userName,
             'ownerID': _post.owner.userID,
@@ -72,7 +75,9 @@ class postViewModel extends GetxController {
         }
       });
     });
+    // localPost.value = localPost;
     update();
+    refresh();
   }
 
 // loadSearchPosts(String _search) async {

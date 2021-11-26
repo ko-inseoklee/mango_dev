@@ -24,7 +24,7 @@ class TradePage extends StatefulWidget {
 }
 
 class _TradePageState extends State<TradePage> {
-  late Position deviceLat;
+  late GeoPoint deviceLat;
 
   postViewModel post = Get.put(postViewModel());
 
@@ -52,22 +52,24 @@ class _TradePageState extends State<TradePage> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
-    deviceLat = await Geolocator.getCurrentPosition();
+    // deviceLat = await Geolocator.getCurrentPosition();
     return await Geolocator.getCurrentPosition();
   }
 
   @override
   void initState() {
+    print('init state!');
     super.initState();
     _textController = TextEditingController(text: '');
     Get.find<postViewModel>().clearPost();
-    _determinePosition().then((value) {
-      Get.find<postViewModel>().loadLocalPosts(deviceLat);
-    });
-  }
+    if (userViewModelController.user.value.location != GeoPoint(0, 0))
+      Get.find<postViewModel>()
+          .loadLocalPosts(userViewModelController.user.value.location);
 
-  Future<void> refresh() async {
-    Get.find<postViewModel>().loadLocalPosts(deviceLat);
+    // get device position
+    _determinePosition().then((value) {
+      deviceLat = GeoPoint(value.latitude, value.longitude);
+    });
   }
 
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
@@ -79,15 +81,17 @@ class _TradePageState extends State<TradePage> {
   Widget build(BuildContext context) {
     // if (postViewModelController.localPost.length == 0) initState();
     // Get.find<postViewModel>().loadLocalPosts(deviceLat);
+    // Get.find<postViewModel>()
+    //     .loadLocalPosts(userViewModelController.user.value.location);
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.person),
-          onPressed: () {
-            Get.to(FriendListPage());
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.person),
+        //   onPressed: () {
+        //     Get.to(FriendListPage());
+        //   },
+        // ),
         title: Text(widget.title),
         centerTitle: true,
         actions: [
@@ -96,13 +100,15 @@ class _TradePageState extends State<TradePage> {
                 Get.to(ChatList());
               },
               icon: Icon(Icons.chat_bubble_outline_outlined)),
-          IconButton(
-              onPressed: () {
-                // Get.to(Location());
-                Get.to(addLocationPage());
-                // Get.to(googleMap());
-              },
-              icon: Icon(Icons.notifications_none))
+          // IconButton(
+          //     onPressed: () {
+          //       // Get.to(Location());
+          //       Get.to(addLocationPage(
+          //         deviceLat: deviceLat,
+          //       ));
+          //       // Get.to(googleMap());
+          //     },
+          //     icon: Icon(Icons.notifications_none))
         ],
       ),
       // ignore: unrelated_type_equality_checks
@@ -125,7 +131,9 @@ class _TradePageState extends State<TradePage> {
                     ),
                     InkWell(
                       onTap: () {
-                        Get.to(addLocationPage());
+                        Get.to(addLocationPage(
+                          deviceLat: deviceLat,
+                        ));
                       },
                       child: Text(
                         '장소정보를 등록하고 \n거래를 시작해보세요',
@@ -156,7 +164,8 @@ class _TradePageState extends State<TradePage> {
                         Flexible(
                           child: RefreshIndicator(
                             onRefresh: () => Get.find<postViewModel>()
-                                .loadLocalPosts(deviceLat),
+                                .loadLocalPosts(userViewModelController
+                                    .user.value.location),
                             child: ListView.separated(
                                 itemBuilder: (context, index) {
                                   // print('length:' + _.localPost.length.toString());

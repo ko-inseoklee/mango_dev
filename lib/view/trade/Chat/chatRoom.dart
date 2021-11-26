@@ -23,9 +23,9 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   var _stream;
   late int state = 0;
-  late String foodName = '-';
+  late String foodName = '';
   late int foodNum = 0;
-  late String subtitle = '-';
+  late String subtitle = '';
 
   String friend = '';
 
@@ -45,18 +45,38 @@ class _ChatRoomState extends State<ChatRoom> {
       });
     });
 
+    // check if the post exit
     mango_dev
         .collection('post')
         .where('chatList', arrayContains: widget.chatID)
         .get()
         .then((value) {
-      value.docs.forEach((element) {
-        foodName = element.get('foodName');
-        foodNum = element.get('foodNum');
-        subtitle = element.get('subtitle');
-        state = element.get('state');
-      });
+      // value.docs.length == 0
+      if (value.docs.length == 0) {
+        state = 3;
+      } else {
+        print('length = ${value.docs.length}');
+        value.docs.forEach((element) {
+          foodName = element.get('foodName');
+          foodNum = element.get('foodNum');
+          subtitle = element.get('subtitle');
+          state = element.get('state');
+        });
+      }
     });
+
+    // mango_dev
+    //     .collection('post')
+    //     .where('chatList', arrayContains: widget.chatID)
+    //     .get()
+    //     .then((value) {
+    //   value.docs.forEach((element) {
+    //     foodName = element.get('foodName');
+    //     foodNum = element.get('foodNum');
+    //     subtitle = element.get('subtitle');
+    //     state = element.get('state');
+    //   });
+    // });
 
     ChatRoomViewModel().AccessChatRoom(
         widget.chatID,
@@ -206,12 +226,14 @@ class _ChatRoomState extends State<ChatRoom> {
                                 //   icon: Icon(Icons.camera),
                                 //   onPressed: () => print('gg'),
                                 // ),
-                                title: Text(_state +
-                                    ' ' +
-                                    foodName +
-                                    ' ' +
-                                    foodNum.toString() +
-                                    '개'),
+                                title: state == 3
+                                    ? Text('삭제된 게시글')
+                                    : Text(_state +
+                                        ' ' +
+                                        foodName +
+                                        ' ' +
+                                        foodNum.toString() +
+                                        '개'),
                                 subtitle: Text(subtitle),
                               ),
                             ),
@@ -264,13 +286,16 @@ class _ChatRoomState extends State<ChatRoom> {
                               //   icon: Icon(Icons.camera),
                               //   onPressed: () => print('gg'),
                               // ),
-                              title: Text(_state +
-                                  ' ' +
-                                  foodName +
-                                  ' ' +
-                                  foodNum.toString() +
-                                  '개'),
-                              subtitle: Text(subtitle),
+                              title: state == 3
+                                  ? Text('삭제된 게시글')
+                                  : Text(_state +
+                                      ' ' +
+                                      foodName +
+                                      ' ' +
+                                      foodNum.toString() +
+                                      '개'),
+                              subtitle:
+                                  state == 3 ? Text('(정보 없음)') : Text(subtitle),
                             ),
                           ),
                           decoration: BoxDecoration(
@@ -309,7 +334,8 @@ class _ChatRoomState extends State<ChatRoom> {
                           decoration: InputDecoration(
                             hintText: 'Enter a Message...',
                             border: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                             ),
                           ),
                           controller: messageController,
