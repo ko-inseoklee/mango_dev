@@ -86,12 +86,12 @@ class _TradePageState extends State<TradePage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.person),
-          onPressed: () {
-            Get.to(FriendListPage());
-          },
-        ),
+        // leading: IconButton(
+        //   icon: Icon(Icons.person),
+        //   onPressed: () {
+        //     Get.to(FriendListPage());
+        //   },
+        // ),
         title: Text(widget.title),
         centerTitle: true,
         actions: [
@@ -100,15 +100,15 @@ class _TradePageState extends State<TradePage> {
                 Get.to(ChatList());
               },
               icon: Icon(Icons.chat_bubble_outline_outlined)),
-          IconButton(
-              onPressed: () {
-                // Get.to(Location());
-                Get.to(addLocationPage(
-                  deviceLat: deviceLat,
-                ));
-                // Get.to(googleMap());
-              },
-              icon: Icon(Icons.notifications_none))
+          // IconButton(
+          //     onPressed: () {
+          //       // Get.to(Location());
+          //       Get.to(addLocationPage(
+          //         deviceLat: deviceLat,
+          //       ));
+          //       // Get.to(googleMap());
+          //     },
+          //     icon: Icon(Icons.notifications_none))
         ],
       ),
       // ignore: unrelated_type_equality_checks
