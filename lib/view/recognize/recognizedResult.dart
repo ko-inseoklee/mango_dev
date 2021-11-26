@@ -29,7 +29,7 @@ class _RecognizedResultState extends State<RecognizedResult> {
   @override
   void initState() {
     super.initState();
-    result = new Food(fId: Uuid().v4(), rId: refrigerator.ref.value.rID, index: 0, status: true, name: widget.result['row'][0]['PRDLST_NM'].toString(), num: 1, category: "베이커리/과자", method: 0, displayType: true, shelfLife: DateTime.now(), registrationDay: DateTime.now(), alarmDate: DateTime.now(), cardStatus: -1);
+    result = new Food(fId: Uuid().v4(), rId: refrigerator.ref.value.rID, index: 0, status: true, name: widget.result['row'][0]['PRDLST_NM'].toString(), num: 1, category: "즉석식품", method: 0, displayType: true, shelfLife: DateTime.now().add(Duration(days: 180)), registrationDay: DateTime.now(), alarmDate: DateTime.now().add(Duration(days: 180)), cardStatus: -1);
 
   }
 
@@ -87,9 +87,9 @@ class _RecognizedResultState extends State<RecognizedResult> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('${result.name}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(14))),
-                            Text('${result.category}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(12))),
-                            Text('${result.alarmDay.day}일 후',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(14))),
+                            Text('${result.name}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
+                            Text('${result.category}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
+                            Text('${result.alarmDay.difference(DateTime.now()).inDays}일 후',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
                           ],
                         ),
                       ],
