@@ -81,7 +81,8 @@ class HomePageState extends State<HomePage> {
                       if (_controller.tabIndex.value == 1) {
                         Get.bottomSheet(AddPostDialog());
                       } else {
-                        Get.dialog(AddFoodSheet());
+                        // Get.dialog(AddFoodSheet());
+                        Get.bottomSheet(AddFoodSheet());
                       }
                     },
                     currentPage: _controller.tabIndex.value,
@@ -98,7 +99,7 @@ class HomePageState extends State<HomePage> {
 
   void _showAction(BuildContext context, int index) {
     if (index == 0)
-      Get.dialog(AddFoodSheet());
+      Get.bottomSheet(AddFoodSheet());
     else
       Get.to(MakePostInfo(), arguments: Food.init());
     // Get.to(MakePostPage(title: '거래 품목 등록'));

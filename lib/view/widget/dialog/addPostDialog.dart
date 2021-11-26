@@ -20,7 +20,12 @@ class _AddPostDialogState extends State<AddPostDialog> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: MangoWhite, borderRadius: BorderRadius.circular(20)),
+          color: MangoWhite,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0)
+          )
+      ),
       height: ScreenUtil().setHeight(400),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -40,7 +45,7 @@ class _AddPostDialogState extends State<AddPostDialog> {
               children: [
                 Container(
                   child: Text(
-                    '거래 품목 등록하기',
+                    '거래 품목 등록',
                     style: Theme.of(context)
                         .textTheme
                         .subtitle1!
