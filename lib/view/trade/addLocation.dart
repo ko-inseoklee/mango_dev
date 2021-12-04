@@ -5,6 +5,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/trade/saveLocation.dart';
+import 'package:mangodevelopment/view/trade/test.dart';
+import 'package:mangodevelopment/view/trade/trade.dart';
 import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -159,6 +161,7 @@ class _addLocationPageState extends State<addLocationPage> {
                                   Get.dialog(ConfirmDialog(
                                       contentText: "동네 설정이 완료되었습니다.",
                                       onTapOK: () {
+                                        // Get.to(Test());
                                         Get.back();
                                       }));
                                 });

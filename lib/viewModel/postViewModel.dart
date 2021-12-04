@@ -11,29 +11,51 @@ class postViewModel extends GetxController {
   UserViewModel userViewModelController = Get.find<UserViewModel>();
 
   var localPost = [].obs;
+  var myPost = [].obs;
   var count = 0.obs;
 
-  // loadMyPosts() async {
-  //   var snap = await FirebaseFirestore.instance
-  //       .collection('user')
-  //       .doc(userViewModelController.userID)
-  //       .get();
-  //   this.myPosts = [];
-  //   await mango_dev
-  //       .collection('post')
-  //       .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
-  //       .get()
-  //       .then((value) {
-  //     value.docs.forEach((element) async {
-  //       // myPosts.add(Post.fromSnapshot(element.data(), snap));
-  //     });
-  //   });
-  //   return myPosts;
-  // }
+  loadMyPosts() async {
+    // count = 0 as RxInt;
+    clearMyPost();
+    mango_dev
+        .collection('post')
+        .where('ownerID', isEqualTo: userViewModelController.user.value.userID)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) async {
+        var snap = await FirebaseFirestore.instance
+            .collection('user')
+            .doc(element.get('ownerID'))
+            .get();
+
+        Post _post = Post.fromSnapshot(element.data(), snap);
+        var _snap = await FirebaseFirestore.instance
+            .collection('myFood')
+            .doc(_post.foods.fId)
+            .get()
+            .then((value) => value.data());
+        _post.foods = Food.fromSnapshot(_snap!);
+
+        myPost.add(_post);
+        mango_dev.collection('post').doc(element.id).update({
+          'ownerName': _post.owner.userName,
+          'ownerID': _post.owner.userID,
+          'profileImageReference': _post.owner.profileImageReference,
+        });
+      });
+    });
+    // localPost.value = localPost;
+    update();
+    refresh();
+  }
 
   Future clearPost() async {
     return localPost.clear();
   }
+
+  Future clearMyPost() async{
+    return myPost.clear();
+}
 
   Future<void> loadLocalPosts(GeoPoint userLocation) async {
     // count = 0 as RxInt;
@@ -66,7 +88,7 @@ class postViewModel extends GetxController {
           _post.foods = Food.fromSnapshot(_snap!);
 
           localPost.add(_post);
-          count ++;
+          count++;
           mango_dev.collection('post').doc(element.id).update({
             'ownerName': _post.owner.userName,
             'ownerID': _post.owner.userID,

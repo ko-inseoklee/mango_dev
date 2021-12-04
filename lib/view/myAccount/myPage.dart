@@ -147,7 +147,8 @@ class _MyPageState extends State<MyPage> {
                         comingSoon(context);
                       },
                       trailingWidth: 10,
-                      trailing: SizedBox(), isActive: true,
+                      trailing: SizedBox(),
+                      isActive: true,
                     ),
                     settingMenu(
                       menuName: "공지사항",
@@ -155,7 +156,8 @@ class _MyPageState extends State<MyPage> {
                         comingSoon(context);
                       },
                       trailingWidth: 10,
-                      trailing: SizedBox(), isActive: true,
+                      trailing: SizedBox(),
+                      isActive: true,
                     ),
                   ],
                 ),
@@ -178,8 +180,8 @@ class _MyPageState extends State<MyPage> {
           iconData: Icons.account_box_outlined,
           navRef: ''),
       myAccountMenu(
-          menuName: 'MY MARKET',
-          iconData: Icons.shopping_cart_outlined,
+          menuName: '위치정보 관리',
+          iconData: Icons.location_pin,
           navRef: ''),
       myAccountMenu(
           menuName: '냉장고 관리', iconData: Icons.kitchen_outlined, navRef: ''),
