@@ -27,19 +27,18 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
           height: ScreenUtil().setHeight(150),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Spacer(flex: 1,),
             Text(
               widget.contentText,
               style: Theme.of(context).textTheme.subtitle2,
               textAlign: TextAlign.center,
             ),
-            SizedBox(
-              height: ScreenUtil().setHeight(30),
-            ),
+            Spacer(flex: 1,),
             ConstrainedBox(
                 constraints: BoxConstraints.tightFor(
-                  width: double.infinity,
+                  width: ScreenUtil().setWidth(238),
                   height: ScreenUtil().setHeight(46),
                 ),
                 child: ElevatedButton(
@@ -47,7 +46,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
                     child: Text(
                       '확인',
                       style: Theme.of(context).textTheme.button,
-                    )))
+                    ))),
           ],
         ),
       ),

@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mangodevelopment/model/post.dart';
 import '../model/user.dart';
 
@@ -12,8 +9,7 @@ class UserViewModel extends GetxController {
   var imageURL = '';
 
   //isRefSelf == true => 유통기한기준, == false => 구매일 기준.
-  var user = User
-      .init(
+  var user = User.init(
     userID: '',
     creationTime: Timestamp.now(),
     refrigeratorID: '1',
@@ -31,8 +27,7 @@ class UserViewModel extends GetxController {
     phoneNumber: '',
     chatList: [],
     location: GeoPoint(0, 0),
-  )
-      .obs;
+  ).obs;
 
   String get userID => this.user.value.userID;
 
@@ -96,10 +91,7 @@ class UserViewModel extends GetxController {
         .collection('user')
         .doc(uid)
         .get()
-        .then((value) =>
-    this.user = User
-        .fromSnapshot(value)
-        .obs);
+        .then((value) => this.user = User.fromSnapshot(value).obs);
     update();
   }
 
@@ -109,6 +101,22 @@ class UserViewModel extends GetxController {
         .doc(uid)
         .delete()
         .then((value) => print("delete success"));
+  }
+
+  Future<bool> checNickNameDuplicate(String nickName) async {
+    bool result = false;
+
+    await FirebaseFirestore.instance
+        .collection('user')
+        .where('userName', isEqualTo: nickName)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        result = true;
+      });
+    });
+
+    return result;
   }
 
   //update Firebase User info from 'User' class (local) Data
@@ -184,22 +192,24 @@ class UserViewModel extends GetxController {
         .collection('FriendList');
   }
 
-  Future<void> makeUserInformation(String userID,
-      DateTime creationTime,
-      String refrigeratorID,
-      bool isAlarmOn,
-      int refrigerationAlarm,
-      bool isRefShelf,
-      int frozenAlarm,
-      bool isFroShelf,
-      int roomTempAlarm,
-      bool isRTShelf,
-      DateTime lastSignIn,
-      String profileImageReference,
-      String userName,
-      String tokens,
-      List<String> chatList,
-      String phoneNumber,) async {
+  Future<void> makeUserInformation(
+    String userID,
+    DateTime creationTime,
+    String refrigeratorID,
+    bool isAlarmOn,
+    int refrigerationAlarm,
+    bool isRefShelf,
+    int frozenAlarm,
+    bool isFroShelf,
+    int roomTempAlarm,
+    bool isRTShelf,
+    DateTime lastSignIn,
+    String profileImageReference,
+    String userName,
+    String tokens,
+    List<String> chatList,
+    String phoneNumber,
+  ) async {
     await FirebaseFirestore.instance.collection('user').doc(userID).set({
       'userID': userID,
       'creationTime': creationTime,

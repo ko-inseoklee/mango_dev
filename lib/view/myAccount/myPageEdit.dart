@@ -1,13 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/login/login.dart';
-import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
-import 'package:mangodevelopment/view/widget/dialog/editProfileImageDialog.dart' as edit;
+import 'package:mangodevelopment/view/login/findPassword.dart';
+import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
+import 'package:mangodevelopment/view/widget/dialog/editProfileImageDialog.dart'
+    as edit;
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
-import 'package:mangodevelopment/view/widget/setting/settingMenu.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/fileStorage.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
@@ -31,14 +29,17 @@ class _MyPageEditState extends State<MyPageEdit> {
   FileStorage _fileStoarge = Get.put(FileStorage());
 
   final _nameController = TextEditingController();
-  final _numberController = TextEditingController();
   bool isChangeImage = false;
+
+  late String _userName;
+  bool _isNicknameUnique = true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _refrigerator = Get.find<RefrigeratorViewModel>();
+    _userName = userViewModelController.user.value.userName;
   }
 
   @override
@@ -73,12 +74,10 @@ class _MyPageEditState extends State<MyPageEdit> {
                       _auth.user!.uid, value);
                 });
               }
-              if (_nameController.text != '') {
-                print('_nameController.text != null');
-                userViewModelController.user.value.userName =
-                    _nameController.text;
+              if (_userName != userViewModelController.user.value.userName) {
+                userViewModelController.user.value.userName = _userName;
                 await userViewModelController.updateUserName(
-                    _auth.user!.uid, _nameController.text);
+                    _auth.user!.uid, _userName);
               }
 
               Get.back(
@@ -93,8 +92,8 @@ class _MyPageEditState extends State<MyPageEdit> {
         child: Column(
           children: [
             Container(
-              height: ScreenUtil().setHeight(350),
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.all(20),
+              height: ScreenUtil().setHeight(300),
               child: Column(
                 children: [
                   //TODO: should change the case of false condition with get image from firebase storage. Should change Using Stack for modify image button.
@@ -152,19 +151,19 @@ class _MyPageEditState extends State<MyPageEdit> {
                               content: Container(
                                 height: 150 * (deviceWidth / prototypeWidth),
                                 child: edit.editProfileImageDialog(
-                                    onTapCamera: () {},
-                                    onTapGallery: () async {
-                                      await getGalleryImage().then((value) {
-                                        print("async value == $value");
-                                        userViewModelController.user.value
-                                            .profileImageReference = value;
-                                        setState(() {
-                                          _fileStoarge.isNetworkImage = false.obs;
-                                        });
-                                        Get.back(result: value);
+                                  onTapCamera: () {},
+                                  onTapGallery: () async {
+                                    await getGalleryImage().then((value) {
+                                      print("async value == $value");
+                                      userViewModelController.user.value
+                                          .profileImageReference = value;
+                                      setState(() {
+                                        _fileStoarge.isNetworkImage = false.obs;
                                       });
-                                    },
-                                    ),
+                                      Get.back(result: value);
+                                    });
+                                  },
+                                ),
                               ),
                             ));
                             setState(() {
@@ -187,117 +186,107 @@ class _MyPageEditState extends State<MyPageEdit> {
                   ),
                   Row(
                     children: [
-                      Text('이메일    '),
-                      Text('${_auth.user!.email}'),
+                      SizedBox(
+                          width: ScreenUtil().setWidth(102),
+                          child: Text('이메일')),
+                      Text(
+                        '${_auth.user!.email}',
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
                     ],
                   ),
                   Spacer(
                     flex: 1,
                   ),
-                  TextField(
-                    //maxLength: 12,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp('[A-z]'))
-                    ],
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            10 * deviceWidth / prototypeWidth,
-                            0,
-                            40 * deviceWidth / prototypeWidth,
-                            0),
-                        child: Text('이름'),
+                  Row(
+                    children: [
+                      SizedBox(
+                          width: ScreenUtil().setWidth(102),
+                          child: Text('전화번호')),
+                      Text(
+                        userViewModelController.user.value.phoneNumber,
+                        style: Theme.of(context).textTheme.bodyText2,
                       ),
-                      prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
-                      hintText: userViewModelController.user.value.userName,
-                      errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
-                    ),
+                    ],
                   ),
                   Spacer(
                     flex: 1,
                   ),
-                  TextFormField(
-                    //maxLength: 12,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(RegExp('[0-9]'))
-                    ],
-                    controller: _numberController,
-                    decoration: InputDecoration(
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                            10 * deviceWidth / prototypeWidth,
-                            0,
-                            20 * deviceWidth / prototypeWidth,
-                            0),
-                        child: Text('전화번호'),
+                  Row(
+                    children: [
+                      SizedBox(
+                          width: ScreenUtil().setWidth(102), child: Text('이름')),
+                      Expanded(
+                        child: TextFormField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            border: OutlineInputBorder(),
+                            hintText: _userName,
+                          ),
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "닉네임을 입력해주세요";
+                            }
+                          },
+                        ),
                       ),
-                      prefixIconConstraints:
-                          BoxConstraints(minWidth: 0, minHeight: 0),
-                      hintText: userViewModelController.user.value.phoneNumber,
-                      //TODO. after adding the function of phone number
-                      errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1.0)),
-                    ),
+                      SizedBox(
+                        width: ScreenUtil().setWidth(10),
+                      ),
+                      ConstrainedBox(
+                          constraints: BoxConstraints.tightFor(
+                              width: 90, height: ScreenUtil().setHeight(50)),
+                          child: ElevatedButton(
+                              child: Text('중복체크'),
+                              onPressed: () async {
+                                if (_nameController.text != "") {
+                                  UserViewModel()
+                                      .checNickNameDuplicate(
+                                          _nameController.text)
+                                      .then((value) {
+                                    if (value == true) {
+                                      //중복값이 있는 경우
+                                      Get.dialog(ConfirmDialog(
+                                          contentText: "이미 사용되고 있는 닉네임입니다",
+                                          onTapOK: () {
+                                            Get.back();
+                                            _nameController.text = "";
+                                          }));
+                                    } else {
+                                      // 중복값이 없는 경우
+                                      Get.dialog(ConfirmDialog(
+                                          contentText: "사용 가능한 닉네임입니다",
+                                          onTapOK: () {
+                                            Get.back();
+                                            setState(() {
+                                              _userName = _nameController.text;
+                                            });
+                                          }));
+                                    }
+                                  });
+                                }
+                              }))
+                    ],
                   ),
                 ],
               ),
             ),
             Container(
-              height: 7 * deviceHeight / prototypeHeight,
+              height: ScreenUtil().setHeight(7),
               color: MangoBehindColor,
             ),
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.fromLTRB(7 * deviceWidth / prototypeWidth,
-                    0, 7 * deviceWidth / prototypeWidth, 0),
-                children: [
-                  settingMenu(
-                    menuName: "로그아웃",
-                    onTap: () async {
-                      Get.dialog(mangoDialog(
-                        hasOK: true,
-                        dialogTitle: '로그아웃',
-                        onTapOK: () async {
-                          await _auth.logOut();
-                          await Get.offAll(LogInPage(title: ''));
-                        },
-                        contentText: '정말로 로그아웃 하시겠습니까?',
-                      ));
-                    },
-                    trailingWidth: 10,
-                    trailing: SizedBox(),
-                    isActive: true,
-                  ),
-                  settingMenu(
-                    menuName: "회원탈퇴",
-                    onTap: () async {
-                      Get.dialog(mangoDialog(
-                          dialogTitle: '회원탈퇴',
-                          contentText: '정말로 회원탈퇴 하시겠습니까?',
-                          onTapOK: () async {
-                            await _auth.signOut(
-                                uid: userViewModelController.userID,
-                                rID: _refrigerator.ref.value.rID);
-                            await Get.offAll(LogInPage(title: ''));
-                          },
-                          hasOK: true));
-                    },
-                    trailingWidth: 10,
-                    trailing: SizedBox(),
-                    isActive: true,
-                  ),
-                ],
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.all(20),
+              child: InkWell(
+                child: Text("비밀번호 변경"),
+                onTap: () {
+                  Get.to(FindPasswordPage());
+                },
               ),
-            ),
+            )
           ],
         ),
       ),

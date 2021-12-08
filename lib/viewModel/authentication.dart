@@ -6,11 +6,11 @@ import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class Authentication extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;
   int authWay = 0;
+  var isEmailValidated = false.obs;
 
   Future<SharedPreferences> prefs = SharedPreferences.getInstance();
   late Future<String> id;
@@ -40,10 +40,17 @@ class Authentication extends GetxController {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      user = userCredential.user!;
-      authWay = 1;
-      update();
-      return "success";
+      await user!.reload();
+      user = _auth.currentUser;
+
+      if (user!.emailVerified == true) {
+        user = userCredential.user!;
+        authWay = 1;
+        update();
+        return "success";
+      } else {
+        return "emailFail";
+      }
     } on FirebaseAuthException catch (e) {
       return "fail";
     }
@@ -56,18 +63,45 @@ class Authentication extends GetxController {
           .createUserWithEmailAndPassword(email: email, password: password);
 
       user = userCredential.user!;
+
+      if (user != null && !user!.emailVerified) {
+        await user!.sendEmailVerification();
+      }
+
       authWay = 1;
       update();
-
+      print("success");
       return "success";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
         print("The account already exists for that email.");
         return "already";
       } else {
+        print("fail");
         return "fail";
       }
     }
+  }
+
+  Future<String> emailValidationCheck() async {
+    try {
+      await user!.reload();
+      user = _auth.currentUser;
+
+      if (user!.emailVerified == true) {
+        return "success";
+      } else {
+        return "emailFail";
+      }
+    } on FirebaseAuthException catch (e) {
+      return "fail";
+    }
+  }
+
+  // 사용자에게 비밀번호 재설정 메일을 한글로 전송 시도
+  sendPasswordResetEmailByKorean(String userEmail) async {
+    await _auth.setLanguageCode("ko");
+    _auth.sendPasswordResetEmail(email: userEmail);
   }
 
   Future<void> logOut() async {
@@ -113,10 +147,7 @@ class Authentication extends GetxController {
         .collection('user')
         .doc(uid)
         .get()
-    .then((value){
-      // print(value);
-      // print(value.data());
-      // print(value.data()!.containsKey("isAlarmOn"));
+        .then((value) {
       result = value.data()!.containsKey("isAlarmOn");
     });
 
