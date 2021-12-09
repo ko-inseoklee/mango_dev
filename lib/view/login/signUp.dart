@@ -42,13 +42,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool authOk = false; // 가입완료 변수
   bool requestedAuth = false; //폰인증 요청을 보냈는지 여부
-  bool phoneReadOnly = false; //전화번호 수정 가능 변수
   bool _isEmailValidated = false; //이메일 유효 check 변수
   bool _isNicknameUnique = false; //닉네임 중복 check 변수
+  bool _isHidePassword = true;
   late String verificationId;
 
   //For Upload data on Firebase
-  String _userName = 'testName';
+  String _userName = '';
   String uuid = '';
   String _tokens = '';
   String _phoenNumber = '';
@@ -144,11 +144,19 @@ class _SignUpPageState extends State<SignUpPage> {
               TextFormField(
                 controller: _passwordController,
                 keyboardType: TextInputType.text,
-                obscureText: true,
+                obscureText: _isHidePassword,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  border: OutlineInputBorder(),
-                ),
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isHidePassword = !_isHidePassword;
+                          });
+                        },
+                        icon: _isHidePassword
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility))),
                 validator: (val) {
                   if (val!.isEmpty) {
                     return "비밀번호를 입력해주세요";
@@ -177,12 +185,12 @@ class _SignUpPageState extends State<SignUpPage> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      readOnly: _isNicknameUnique,
                       controller: _nameController,
                       decoration: InputDecoration(
                         contentPadding:
                             EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                         border: OutlineInputBorder(),
+                        hintText: _userName,
                       ),
                       validator: (val) {
                         if (val!.isEmpty) {
@@ -194,43 +202,41 @@ class _SignUpPageState extends State<SignUpPage> {
                   SizedBox(
                     width: ScreenUtil().setWidth(10),
                   ),
-                  ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(
-                          width: 100, height: ScreenUtil().setHeight(50)),
-                      child: ElevatedButton(
-                          child: _isNicknameUnique == false
-                              ? Text('중복체크')
-                              : Text('수정'),
-                          onPressed: () async {
-                            if (_isNicknameUnique == false) {
-                              UserViewModel()
-                                  .checNickNameDuplicate(_nameController.text)
-                                  .then((value) {
-                                if (value == true) {
-                                  //중복값이 있는 경우
-                                  Get.dialog(ConfirmDialog(
-                                      contentText: "이미 사용되고 있는 닉네임입니다",
-                                      onTapOK: () {
-                                        Get.back();
-                                      }));
-                                } else {
-                                  // 중복값이 없는 경우
-                                  Get.dialog(ConfirmDialog(
-                                      contentText: "사용 가능한 닉네임입니다",
-                                      onTapOK: () {
-                                        Get.back();
-                                        setState(() {
-                                          _isNicknameUnique = true;
-                                        });
-                                      }));
-                                }
-                              });
-                            } else {
-                              setState(() {
+                  TextButton(
+                    child: Text(
+                      "확인",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    style: TextButton.styleFrom(
+                        backgroundColor: MangoDisabledColorLight),
+                    onPressed: () {
+                      UserViewModel()
+                          .checNickNameDuplicate(_nameController.text)
+                          .then((value) {
+                        if (value == true) {
+                          //중복값이 있는 경우
+                          Get.dialog(ConfirmDialog(
+                              contentText: "이미 사용되고 있는 닉네임입니다",
+                              onTapOK: () {
+                                Get.back();
+                                _nameController.text = "";
                                 _isNicknameUnique = false;
-                              });
-                            }
-                          }))
+                              }));
+                        } else {
+                          // 중복값이 없는 경우
+                          Get.dialog(ConfirmDialog(
+                              contentText: "사용 가능한 닉네임입니다",
+                              onTapOK: () {
+                                Get.back();
+                                setState(() {
+                                  _userName = _nameController.text;
+                                  _isNicknameUnique = true;
+                                });
+                              }));
+                        }
+                      });
+                    },
+                  ),
                 ],
               ),
               SizedBox(
@@ -251,7 +257,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        readOnly: phoneReadOnly,
                         controller: _telController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -269,20 +274,23 @@ class _SignUpPageState extends State<SignUpPage> {
                     SizedBox(
                       width: ScreenUtil().setWidth(10),
                     ),
-                    ConstrainedBox(
-                        constraints: BoxConstraints.tightFor(
-                            width: 100, height: ScreenUtil().setHeight(50)),
-                        child: ElevatedButton(
-                            child: Text('인증요청'),
-                            onPressed: () async {
-                              if (_formPhoneKey.currentState!.validate()) {
-                                //all validation pass
-                                checkPhoneValidation();
-                                setState(() {
-                                  requestedAuth = true;
-                                });
-                              }
-                            }))
+                    TextButton(
+                      child: Text(
+                        "인증",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      style: TextButton.styleFrom(
+                          backgroundColor: MangoDisabledColorLight),
+                      onPressed: () {
+                        if (_formPhoneKey.currentState!.validate()) {
+                          //all validation pass
+                          checkPhoneValidation();
+                          setState(() {
+                            requestedAuth = true;
+                          });
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -423,8 +431,7 @@ class _SignUpPageState extends State<SignUpPage> {
             contentText: "인증이 성공적으로 완료되었습니다",
             onTapOK: () {
               setState(() {
-                // print('인증완료 및 로그인 성공');
-                phoneReadOnly = true;
+                _phoenNumber = _telController.text;
                 authOk = true;
               });
               Get.back();
@@ -435,7 +442,7 @@ class _SignUpPageState extends State<SignUpPage> {
           contentText: "인증에 실패하셨습니다\n인증번호 전송은 총 4회까지 무료입니다",
           onTapOK: () {
             setState(() {
-              phoneReadOnly = false;
+              _telController.text = "";
             });
             Get.back();
           })).then((value) {

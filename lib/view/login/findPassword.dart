@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 
@@ -16,9 +17,6 @@ class _FindPasswordPageState extends State<FindPasswordPage> {
 
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-
-  String _email = "";
-  bool _isEmailValidated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -87,50 +85,25 @@ class _FindPasswordPageState extends State<FindPasswordPage> {
                           backgroundColor: MangoDisabledColorLight),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          //all validation pass
-                          if (_auth.user!.email == _emailController.text) {
-                            Get.dialog(ConfirmDialog(
-                                contentText: "인증이 완료되었습니다",
-                                onTapOK: () => Get.back())).then((value) {
-                              setState(() {
-                                _email = _emailController.text;
-                                _isEmailValidated = true;
-                              });
-                            });
-                          } else {
-                            Get.dialog(ConfirmDialog(
-                                contentText: "가입된 이메일과 일치하지 않습니다",
-                                onTapOK: () => Get.back()));
-                          }
+                          _auth
+                              .sendPasswordResetEmailByKorean(userEmail: _emailController.text)
+                              .then((value) {
+                            if (value == true) {
+                              Get.dialog(ConfirmDialog(
+                                  contentText: "해당 이메일로 비밀번호 재설정\n링크가 전송되었습니다",
+                                  onTapOK: () => Get.off(LogInPage(title: ""))));
+                            } else {
+                              Get.dialog(ConfirmDialog(
+                                  contentText: "가입된 이메일이 없습니다",
+                                  onTapOK: () => Get.back()));
+                            }
+                          });
                         }
                       },
                     ),
                   ],
                 ),
               ),
-              SizedBox(
-                height: ScreenUtil().setHeight(20),
-              ),
-              Visibility(
-                  visible: _isEmailValidated,
-                  child: TextButton(
-                    onPressed: () {
-                      print(_email);
-                      _auth.sendPasswordResetEmailByKorean(_email);
-
-                      Get.dialog(ConfirmDialog(
-                          contentText: "해당 이메일로 비밀번호 재설정\n링크가 보내졌습니다",
-                          onTapOK: () => Get.back())).then((value) {
-                        setState(() {
-                          _isEmailValidated = false;
-                        });
-                      });
-                    },
-                    child: Text(
-                      "비밀번호 재설정",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ))
             ],
           ),
         ),

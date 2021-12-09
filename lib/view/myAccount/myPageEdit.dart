@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/login/findPassword.dart';
 import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/dialog/editProfileImageDialog.dart'
     as edit;
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
@@ -21,7 +22,6 @@ class MyPageEdit extends StatefulWidget {
 }
 
 class _MyPageEditState extends State<MyPageEdit> {
-  final _formKey = GlobalKey<FormState>();
 
   Authentication _auth = Get.find<Authentication>();
   var userViewModelController = Get.find<UserViewModel>();
@@ -283,7 +283,26 @@ class _MyPageEditState extends State<MyPageEdit> {
               child: InkWell(
                 child: Text("비밀번호 변경"),
                 onTap: () {
-                  Get.to(FindPasswordPage());
+                  Get.dialog(mangoDialog(
+                      dialogTitle: "비밀번호 변경",
+                      contentText: "정말로 비밀번호 변경을 하시겠습니까?",
+                      onTapOK: () {
+                        Get.back();
+                        _auth
+                            .sendPasswordResetEmailByKorean(userEmail: _auth.user!.email.toString())
+                            .then((value) {
+                          if (value == true) {
+                            Get.dialog(ConfirmDialog(
+                                contentText: "해당 이메일로 비밀번호 재설정\n링크가 전송되었습니다",
+                                onTapOK: () => Get.back()));
+                          } else {
+                            Get.dialog(ConfirmDialog(
+                                contentText: "가입된 이메일이 없습니다",
+                                onTapOK: () => Get.back()));
+                          }
+                        });
+                      },
+                      hasOK: true));
                 },
               ),
             )

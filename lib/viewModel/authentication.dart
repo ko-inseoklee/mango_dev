@@ -83,25 +83,31 @@ class Authentication extends GetxController {
     }
   }
 
-  Future<String> emailValidationCheck() async {
+  Future<bool> emailValidationCheck({required String email}) async {
     try {
       await user!.reload();
       user = _auth.currentUser;
 
       if (user!.emailVerified == true) {
-        return "success";
+        return true;
       } else {
-        return "emailFail";
+        return false;
       }
     } on FirebaseAuthException catch (e) {
-      return "fail";
+      return false;
     }
   }
 
   // 사용자에게 비밀번호 재설정 메일을 한글로 전송 시도
-  sendPasswordResetEmailByKorean(String userEmail) async {
-    await _auth.setLanguageCode("ko");
-    _auth.sendPasswordResetEmail(email: userEmail);
+  Future<bool> sendPasswordResetEmailByKorean({required String userEmail}) async {
+    try {
+      await _auth.setLanguageCode("ko");
+      await _auth.sendPasswordResetEmail(email: userEmail);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
   Future<void> logOut() async {

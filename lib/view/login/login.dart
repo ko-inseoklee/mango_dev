@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/view/login/findPassword.dart';
 import 'package:mangodevelopment/view/login/signUp.dart';
 import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -215,8 +216,7 @@ class _LogInPageState extends State<LogInPage> {
                     ),
                   ),
                   onTap: () {
-                    //TODO.
-                    authController.sendPasswordResetEmailByKorean(_emailController.text);
+                    Get.to(FindPasswordPage());
                   },
                 )
               ],
