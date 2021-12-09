@@ -27,7 +27,7 @@ class _addLocationPageState extends State<addLocationPage> {
 
   // late GeoPoint deviceLat;
   late LatLng _lastMapPosition =
-  LatLng(widget.deviceLat.latitude, widget.deviceLat.longitude);
+      LatLng(widget.deviceLat.latitude, widget.deviceLat.longitude);
 
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _addLocationPageState extends State<addLocationPage> {
     // _lastMapPosition = position.target;
 
     LatLng newMarkerPosition =
-    LatLng(_position.target.latitude, _position.target.longitude);
+        LatLng(_position.target.latitude, _position.target.longitude);
     //   Marker marker = markers["marker"];
     //
     // setState(() {
@@ -83,98 +83,88 @@ class _addLocationPageState extends State<addLocationPage> {
       ),
       body: Center(
           child: Stack(
+        children: [
+          GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: LatLng(location.latitude, location.longitude),
+              zoom: 16.0,
+            ),
+            mapType: MapType.normal,
+            // markers: _marker,
+            markers: Set<Marker>.of(<Marker>[
+              Marker(
+                  onTap: () {
+                    print('Tap');
+                  },
+                  draggable: true,
+                  markerId: MarkerId("marker"),
+                  position: LatLng(location.latitude, location.longitude),
+                  onDragEnd: ((newPosition) async {
+                    placemarks = await placemarkFromCoordinates(
+                        newPosition.latitude, newPosition.longitude);
+                    setState(() {
+                      location =
+                          GeoPoint(newPosition.latitude, newPosition.longitude);
+                      placemarks = placemarks;
+                    });
+                    // print(newPosition.latitude);
+                    // print(newPosition.longitude);
+                  }))
+            ]),
+            onCameraMove: ((_position) => _updatePosition(_position)),
+          ),
+          Column(
             children: [
-              GoogleMap(
-                onMapCreated: _onMapCreated,
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(
-                      location.latitude, location.longitude),
-                  zoom: 16.0,
+              Expanded(
+                flex: 1,
+                child: Container(
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  // height: 50,
+                  //TODO: accent color
+                  color: Theme.of(context).accentColor.withOpacity(0.3),
+                  child: Text('${placemarks.first.street.toString()}'),
                 ),
-                mapType: MapType.normal,
-                // markers: _marker,
-                markers: Set<Marker>.of(<Marker>[
-                  Marker(
-                      onTap: () {
-                        print('Tap');
-                      },
-                      draggable: true,
-                      markerId: MarkerId("marker"),
-                      position: LatLng(location.latitude,
-                          location.longitude),
-                      onDragEnd: ((newPosition) async {
-                        placemarks = await placemarkFromCoordinates(
-                            newPosition.latitude, newPosition.longitude);
-                        setState(() {
-                          location =
-                              GeoPoint(newPosition.latitude,
-                                  newPosition.longitude);
-                          placemarks = placemarks;
-                        });
-                        // print(newPosition.latitude);
-                        // print(newPosition.longitude);
-                      }))
-                ]),
-                onCameraMove: ((_position) => _updatePosition(_position)),
               ),
-              Column(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      alignment: Alignment.center,
-                      width: double.infinity,
-                      // height: 50,
-                      //TODO: accent color
-                      color: Theme
-                          .of(context)
-                          .accentColor
-                          .withOpacity(0.3),
-                      child: Text(
-                          '${placemarks.first.street.toString()} ( ${location
-                              .longitude.toString().substring(0, 5)}, ${location
-                              .latitude.toString().substring(0, 4)} )'),
-                    ),
-                  ),
-                  Expanded(flex: 12, child: SizedBox()),
-                  Expanded(
-                    flex: 2,
+              Expanded(flex: 12, child: SizedBox()),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  color: Colors.white,
+                  width: double.infinity,
+                  // margin: EdgeInsets.all(25),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
                     child: Container(
                       color: Colors.white,
-                      width: double.infinity,
-                      // margin: EdgeInsets.all(25),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Container(
-                          color: Colors.white,
-                          child: ElevatedButton(
-                              onPressed: () async {
-                                userViewModelController.user.value.location =
-                                    GeoPoint(
-                                        location.latitude, location.longitude);
-                                await userViewModelController
-                                    .updateUserLocation(
+                      child: ElevatedButton(
+                          onPressed: () async {
+                            userViewModelController.user.value.location =
+                                GeoPoint(location.latitude, location.longitude);
+                            await userViewModelController
+                                .updateUserLocation(
                                     userViewModelController.userID,
                                     userViewModelController.user.value.location)
-                                    .then((value) {
-                                  Get.back();
-                                  Get.dialog(ConfirmDialog(
-                                      contentText: "동네 설정이 완료되었습니다.",
-                                      onTapOK: () {
-                                        // Get.to(Test());
-                                        Get.back();
-                                      }));
-                                });
-                              },
-                              child: Text('동네 설정하기')),
-                        ),
-                      ),
+                                .then((value) {
+                              Get.back();
+                              Get.dialog(ConfirmDialog(
+                                  contentText: "동네 설정이 완료되었습니다.",
+                                  onTapOK: () {
+                                    // Get.to(Test());
+                                    Get.back();
+                                  }));
+                            });
+                          },
+                          child: Text('동네 설정하기')),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                ),
+              )
             ],
-          )),
+          ),
+        ],
+      )),
     );
   }
 

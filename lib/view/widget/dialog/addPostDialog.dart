@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/view/market/post/selectPost.dart';
+import 'package:mangodevelopment/view/trade/addPostDirect.dart';
 import 'package:mangodevelopment/view/widget/comingSoon.dart';
 
 import '../../../color.dart';
@@ -95,7 +96,7 @@ class _AddPostDialogState extends State<AddPostDialog> {
               ),
               TextButton(
                 onPressed: () {
-                  Get.dialog(ComingSoonDialog());
+                  Get.dialog(AddPostDirectPage(title: '게시글 직접 등록'));
                 },
                 child: Container(
                   alignment: Alignment.center,

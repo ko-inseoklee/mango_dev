@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
-// import 'package:location/location.dart';
 
 //Field name for User document.
 final isFrozenAlarm = 'frozen_is_shelf';

@@ -7,7 +7,6 @@ import 'package:mangodevelopment/model/post.dart';
 import 'package:mangodevelopment/view/trade/addLocation.dart';
 import 'package:mangodevelopment/view/trade/friend/friendList.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/trade/location.dart';
 import 'package:mangodevelopment/view/trade/myPost.dart';
 import 'package:mangodevelopment/view/tutorial/Home/tutorial.dart';
 import 'package:mangodevelopment/view/widget/postCardWidget.dart';
@@ -100,15 +99,6 @@ class _TradePageState extends State<TradePage> {
                 Get.to(ChatList());
               },
               icon: Icon(Icons.chat_bubble_outline_outlined)),
-          // IconButton(
-          //     onPressed: () {
-          //       // Get.to(Location());
-          //       Get.to(addLocationPage(
-          //         deviceLat: deviceLat,
-          //       ));
-          //       // Get.to(googleMap());
-          //     },
-          //     icon: Icon(Icons.notifications_none))
         ],
       ),
       // ignore: unrelated_type_equality_checks
@@ -147,146 +137,42 @@ class _TradePageState extends State<TradePage> {
                   ? Center(
                       child: Text('주변에 등록된 게시글이 없습니다.'),
                     )
-                  : RefreshIndicator(
-                      onRefresh: () => Get.find<postViewModel>().loadLocalPosts(
-                          userViewModelController.user.value.location),
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CupertinoSearchTextField(
-                              controller: _textController,
-                              onSubmitted: (String value) {
-                                setState(() {
-                                  _search = value;
-                                });
-                              },
-                              placeholder: '게시글  검색',
-                            ),
-                          ),
-                          Flexible(
-                            child: ListView.separated(
-                                itemBuilder: (context, index) {
-                                  // print('length:' + _.localPost.length.toString());
-                                  return MangoPostCard(
-                                      post: postViewModelController
-                                          .localPost[index]);
-                                },
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return Divider();
-                                },
-                                itemCount:
-                                    postViewModelController.localPost.length),
-                          ),
-                          // Flexible(
-                          //   child: StreamBuilder<QuerySnapshot>(
-                          //     stream:
-                          //         // _search == ''?
-                          //         mango_dev
-                          //             .collection('post')
-                          //             .orderBy('registTime', descending: true)
-                          //             .snapshots(),
-                          //     // : mango_dev
-                          //     //     .collection('post')
-                          //     //     .where('ownerID',
-                          //     //         isEqualTo: userViewModelController
-                          //     //             .user.value.userID)
-                          //     //     .where('foodName', isEqualTo: _search)
-                          //     //     .snapshots(),
-                          //     builder:
-                          //         (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                          //       // _search == '' ?
-                          //       // loadPost(); //
-                          //       // : loadSearchPost(_search);
-                          //
-                          //       if (!snapshot.hasData) {
-                          //         return Center(
-                          //           child: CircularProgressIndicator(),
-                          //         );
-                          //       }
-                          //
-                          //       return ListView.separated(
-                          //           itemBuilder: (context, index) {
-                          //             return GetBuilder<postViewModel>(
-                          //               init: postViewModel(),
-                          //               builder: (_) {
-                          //                 return MangoPostCard(
-                          //                     post: _.localPost[index]);
-                          //               },
-                          //             );
-                          //           },
-                          //           separatorBuilder:
-                          //               (BuildContext context, int index) {
-                          //             return Divider();
-                          //           },
-                          //           itemCount:
-                          //               postViewModelController.localPost.length);
-                          //     },
-                          //   ),
-                          // ),
-                        ],
+                  : Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CupertinoSearchTextField(
+                          controller: _textController,
+                          onSubmitted: (String value) {
+                            setState(() {
+                              _search = value;
+                            });
+                          },
+                          placeholder: '게시글  검색',
+                        ),
                       ),
-                    );
+                      RefreshIndicator(
+                        onRefresh: () => Get.find<postViewModel>().loadLocalPosts(
+                            userViewModelController.user.value.location),
+                        child: Flexible(
+                          child: ListView.separated(
+                              itemBuilder: (context, index) {
+                                // print('length:' + _.localPost.length.toString());
+                                return MangoPostCard(
+                                    post: postViewModelController
+                                        .localPost[index]);
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return Divider();
+                              },
+                              itemCount:
+                                  postViewModelController.localPost.length),
+                        ),
+                      ),
+                    ],
+                  );
             }),
-      // Column(
-      //   children: <Widget>[
-      //     Padding(
-      //       padding: const EdgeInsets.all(8.0),
-      //       child: CupertinoSearchTextField(
-      //         controller: _textController,
-      //         onSubmitted: (String value) {
-      //           setState(() {
-      //             _search = value;
-      //           });
-      //         },
-      //         placeholder: '게시글  검색',
-      //       ),
-      //     ),
-      //     Flexible(
-      //       child: StreamBuilder<QuerySnapshot>(
-      //         stream:
-      //         // _search == ''?
-      //         mango_dev
-      //             .collection('post')
-      //             .orderBy('registTime', descending: true)
-      //             .snapshots(),
-      //         // : mango_dev
-      //         //     .collection('post')
-      //         //     .where('ownerID',
-      //         //         isEqualTo: userViewModelController
-      //         //             .user.value.userID)
-      //         //     .where('foodName', isEqualTo: _search)
-      //         //     .snapshots(),
-      //         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-      //           // _search == '' ?
-      //           // loadPost(); //
-      //           // : loadSearchPost(_search);
-      //
-      //           if (!snapshot.hasData) {
-      //             return Center(
-      //               child: CircularProgressIndicator(),
-      //             );
-      //           }
-      //
-      //           return ListView.separated(
-      //               itemBuilder: (context, index) {
-      //                 return GetBuilder<postViewModel>(
-      //                   init: postViewModel(),
-      //                   builder: (_) {
-      //                     return MangoPostCard(post: _.localPost[index]);
-      //                   },
-      //                 );
-      //               },
-      //               separatorBuilder: (BuildContext context, int index) {
-      //                 return Divider();
-      //               },
-      //               itemCount: postViewModelController.localPost.length);
-      //         },
-      //       ),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
@@ -299,7 +185,6 @@ class _TradePageState extends State<TradePage> {
         .get();
 
     List<DocumentSnapshot> _myDocCount = _myDoc.docs;
-    // print('count = ' + _myDocCount.length.toString());
     return _myDocCount.length; // Count of Documents in Collection
   }
 }
