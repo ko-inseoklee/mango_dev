@@ -31,12 +31,12 @@ class _settingMenuState extends State<settingMenu> {
     return Padding(
         padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
         child: Container(
-            // decoration: BoxDecoration(
-            //   border: Border(
-            //     bottom: BorderSide(width: 1.0, color: MangoDisabledColor),
-            //   ),
-            //   color: Colors.white,
-            // ),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: 1.0, color: MangoDisabledColor),
+              ),
+              color: Colors.white,
+            ),
             child: Column(
           children: [
             ListTile(
@@ -57,12 +57,6 @@ class _settingMenuState extends State<settingMenu> {
                       child: widget.trailing,
                     ),
             ),
-            Divider(
-              height: 0.0,
-              thickness: 2.0,
-              indent: 10.0 * deviceWidth / prototypeWidth,
-              endIndent: 20.0 * deviceWidth / prototypeWidth,
-            )
           ],
         )));
   }

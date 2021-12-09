@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:mangodevelopment/app.dart';
 import 'package:mangodevelopment/color.dart';
+import 'package:mangodevelopment/view/login/findPassword.dart';
 import 'package:mangodevelopment/view/login/signUp.dart';
 import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
@@ -169,16 +170,23 @@ class _LogInPageState extends State<LogInPage> {
                             password: _passwordController.text)
                         .then((value) async {
                       if (value == "success") {
+                        print("success");
                         await authController.loadId();
                         Get.off(Landing());
-                      } else {
+                      }
+                      else if(value == "fail"){
                         print("이메일 주소 또는 비밀번호가 틀렸습니다.");
                         Get.dialog(ConfirmDialog(
-                            contentText: "이메일 주소 또는 비밀번호가 틀렸습니다.",
+                            contentText: "이메일 주소 또는 비밀번호가 틀렸습니다",
                             onTapOK: () {
                               Get.back();
-                              _emailController.text = "";
-                              _passwordController.text = "";
+                            }));
+                      }
+                      else if(value == "emailFail"){
+                        Get.dialog(ConfirmDialog(
+                            contentText: "유효하지 않은 이메일입니다\n이메일을 확인하여 인증을 완료해주세요",
+                            onTapOK: () {
+                              Get.back();
                             }));
                       }
                     });
@@ -187,7 +195,34 @@ class _LogInPageState extends State<LogInPage> {
               ),
             ),
             SizedBox(
-              height: ScreenUtil().setHeight(35),
+              height: ScreenUtil().setHeight(30),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "비밀번호를 잊으셨나요? ",
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle2!
+                      .copyWith(color: MangoWhite),
+                ),
+                InkWell(
+                  child: Text(
+                    "비밀번호 찾기",
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      color: MangoWhite,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  onTap: () {
+                    Get.to(FindPasswordPage());
+                  },
+                )
+              ],
+            ),
+            SizedBox(
+              height: ScreenUtil().setHeight(5),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -203,9 +238,9 @@ class _LogInPageState extends State<LogInPage> {
                   child: Text(
                     "회원가입",
                     style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                          color: MangoWhite,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      color: MangoWhite,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   onTap: () {
                     Get.to(SignUpPage());
