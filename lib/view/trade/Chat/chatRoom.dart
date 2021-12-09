@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/chatRoomViewModel.dart';
 import 'package:mangodevelopment/viewModel/sendFCM.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
@@ -26,6 +27,7 @@ class _ChatRoomState extends State<ChatRoom> {
   late String foodName = '';
   late int foodNum = 0;
   late String subtitle = '';
+  late String _state = '';
 
   String friend = '';
 
@@ -51,32 +53,20 @@ class _ChatRoomState extends State<ChatRoom> {
         .where('chatList', arrayContains: widget.chatID)
         .get()
         .then((value) {
-      // value.docs.length == 0
       if (value.docs.length == 0) {
         state = 3;
       } else {
-        print('length = ${value.docs.length}');
+        // print('length = ${value.docs.length}');
         value.docs.forEach((element) {
-          foodName = element.get('foodName');
-          foodNum = element.get('foodNum');
-          subtitle = element.get('subtitle');
-          state = element.get('state');
+          setState(() {
+            foodName = element.get('foodName');
+            foodNum = element.get('foodNum');
+            subtitle = element.get('subtitle');
+            state = element.get('state');
+          });
         });
       }
     });
-
-    // mango_dev
-    //     .collection('post')
-    //     .where('chatList', arrayContains: widget.chatID)
-    //     .get()
-    //     .then((value) {
-    //   value.docs.forEach((element) {
-    //     foodName = element.get('foodName');
-    //     foodNum = element.get('foodNum');
-    //     subtitle = element.get('subtitle');
-    //     state = element.get('state');
-    //   });
-    // });
 
     ChatRoomViewModel().AccessChatRoom(
         widget.chatID,
@@ -149,10 +139,8 @@ class _ChatRoomState extends State<ChatRoom> {
   @override
   Widget build(BuildContext context) {
     UserViewModel userViewModelController = Get.find<UserViewModel>();
-    // var chatList = mango_dev.collection('chatRooms').doc(postID);
 
     // 0: 나눔중, 1: 거래중, 2: 거래완료
-    String _state = '';
     if (state == 0) {
       setState(() {
         _state = '나눔중';
@@ -211,50 +199,6 @@ class _ChatRoomState extends State<ChatRoom> {
 
                     // TODO: check if chat page is null
                     var empty = true;
-                    if (messages.toList().length == 0)
-                      return Stack(
-                        children: <Widget>[
-                          Center(
-                            child: Text('채팅을 시작해 보세요'),
-                          ),
-                          Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: ListTile(
-                                //TODO: change to post foodIMG
-                                // leading: IconButton(
-                                //   icon: Icon(Icons.camera),
-                                //   onPressed: () => print('gg'),
-                                // ),
-                                title: state == 3
-                                    ? Text('삭제된 게시글')
-                                    : Text(_state +
-                                        ' ' +
-                                        foodName +
-                                        ' ' +
-                                        foodNum.toString() +
-                                        '개'),
-                                subtitle: Text(subtitle),
-                              ),
-                            ),
-                            decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 0.5,
-                                    blurRadius: 5,
-                                    offset: Offset(
-                                        0, 1), // changes position of shadow
-                                  ),
-                                ],
-                                // border: Border.all(
-                                //   color: Colors.grey, // red as border color
-                                // ),
-                                color: Colors.white),
-                          ),
-                        ],
-                      );
-
                     if (docs.length != 0) empty = false;
 
                     return Stack(
@@ -282,20 +226,72 @@ class _ChatRoomState extends State<ChatRoom> {
                             padding: const EdgeInsets.all(10.0),
                             child: ListTile(
                               //TODO: change to post foodIMG
-                              // leading: IconButton(
-                              //   icon: Icon(Icons.camera),
-                              //   onPressed: () => print('gg'),
-                              // ),
+                              // leading:
                               title: state == 3
                                   ? Text('삭제된 게시글')
-                                  : Text(_state +
-                                      ' ' +
-                                      foodName +
-                                      ' ' +
-                                      foodNum.toString() +
-                                      '개'),
+                                  : Row(
+                                      children: [
+                                        Text(
+                                          _state + ' ',
+                                          style: TextStyle(color: Colors.amber),
+                                        ),
+                                        Text(foodName +
+                                            ' ' +
+                                            foodNum.toString() +
+                                            '개')
+                                      ],
+                                    ),
                               subtitle:
                                   state == 3 ? Text('(정보 없음)') : Text(subtitle),
+                              trailing: state == 2
+                                  ? OutlinedButton(
+                                      style: OutlinedButton.styleFrom(
+                                          backgroundColor: Colors.grey[200]),
+                                      onPressed: () => null,
+                                      child: Text(
+                                        '거래 완료',
+                                        style: TextStyle(color: Colors.grey),
+                                      ))
+                                  : OutlinedButton(
+                                      onPressed: () {
+                                        Get.dialog(mangoDialog(
+                                          hasOK: true,
+                                          dialogTitle: '거래완료',
+                                          onTapOK: () {
+                                            mango_dev
+                                                .collection('post')
+                                                .where('chatList',
+                                                    arrayContains:
+                                                        widget.chatID)
+                                                .get()
+                                                .then((value) {
+                                              if (value.docs.length == 0) {
+                                                // state = 3;
+                                              } else {
+                                                value.docs.forEach((element) {
+                                                  mango_dev
+                                                      .collection('post')
+                                                      .doc(element.id)
+                                                      .update({
+                                                    'state': 2
+                                                  }).then((value) {
+                                                    setState(() {
+                                                      state = 2;
+                                                    });
+                                                  });
+                                                });
+                                              }
+                                            });
+
+                                            Get.back();
+                                          },
+                                          contentText: '거래 끝?',
+                                        ));
+
+                                        //
+                                      },
+                                      child: Text('거래완료'),
+                                    ),
                             ),
                           ),
                           decoration: BoxDecoration(

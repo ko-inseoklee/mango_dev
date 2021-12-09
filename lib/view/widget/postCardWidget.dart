@@ -105,7 +105,9 @@ class _MangoPostCardState extends State<MangoPostCard> {
                               ),
                             )
                                 : Image.network(
-                              widget.post.owner.profileImageReference,
+                              widget.post.owner.profileImageReference.isEmpty
+                                  ? '-1'
+                                  : widget.post.owner.profileImageReference,
                               fit: BoxFit.fitHeight,
                               width: 30,
                               height: 30,
