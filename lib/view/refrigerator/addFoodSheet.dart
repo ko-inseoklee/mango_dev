@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/view/recognize/barcodeFromGallery.dart';
 import 'package:mangodevelopment/view/widget/dialog/imageSelectCard.dart';
 
-import '../../app.dart';
 import '../../color.dart';
 import 'addFoodDirect.dart';
 import 'addFoodQuick.dart';

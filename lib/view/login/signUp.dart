@@ -6,17 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:mangodevelopment/view/login/addUserInfo.dart';
+import 'package:mangodevelopment/view/login/login.dart';
 import 'package:mangodevelopment/view/widget/dialog/confrirmDialog.dart';
-import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/viewModel/authentication.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
+import 'package:mangodevelopment/viewModel/userViewModel.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../app.dart';
 import '../../color.dart';
 import '../../landing.dart';
-import 'guide.dart';
 
 enum refrigerationAlarmType { shelfLife, registerDate }
 enum frozenAlarmType { shelfLife, registerDate }
@@ -44,16 +42,18 @@ class _SignUpPageState extends State<SignUpPage> {
 
   bool authOk = false; // 가입완료 변수
   bool requestedAuth = false; //폰인증 요청을 보냈는지 여부
-  bool phoneReadOnly = false; //전화번호 수정 가능 변수
+  bool _isEmailValidated = false; //이메일 유효 check 변수
+  bool _isNicknameUnique = false; //닉네임 중복 check 변수
+  bool _isHidePassword = true;
   late String verificationId;
 
   //For Upload data on Firebase
-  String _userName = 'testName';
+  String _userName = '';
   String uuid = '';
   String _tokens = '';
   String _phoenNumber = '';
   List<String> chats = [];
-  GeoPoint location = GeoPoint(0,0);
+  GeoPoint location = GeoPoint(0, 0);
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget setPersonalDataPage(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(ScreenUtil().setWidth(24)),
+        padding: EdgeInsets.all(ScreenUtil().setWidth(23)),
         child: Form(
           key: _formKey,
           child: Column(
@@ -114,8 +114,23 @@ class _SignUpPageState extends State<SignUpPage> {
                   }
                 },
               ),
-              SizedBox(
-                height: ScreenUtil().setHeight(_sizeOfBox),
+              Row(
+                children: [
+                  SizedBox(
+                    height: ScreenUtil().setHeight(35),
+                    width: ScreenUtil().setWidth(30),
+                    child: Checkbox(
+                      value: _isEmailValidated,
+                      activeColor: Orange500,
+                      onChanged: (value) {
+                        setState(() {
+                          _isEmailValidated = !_isEmailValidated;
+                        });
+                      },
+                    ),
+                  ),
+                  Text("유효한 이메일 입니다")
+                ],
               ),
               ConstrainedBox(
                 constraints: BoxConstraints(minWidth: double.infinity),
@@ -129,11 +144,19 @@ class _SignUpPageState extends State<SignUpPage> {
               TextFormField(
                 controller: _passwordController,
                 keyboardType: TextInputType.text,
-                obscureText: true,
+                obscureText: _isHidePassword,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  border: OutlineInputBorder(),
-                ),
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isHidePassword = !_isHidePassword;
+                          });
+                        },
+                        icon: _isHidePassword
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility))),
                 validator: (val) {
                   if (val!.isEmpty) {
                     return "비밀번호를 입력해주세요";
@@ -158,17 +181,63 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(
                 height: ScreenUtil().setHeight(_sizeOfText),
               ),
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                  border: OutlineInputBorder(),
-                ),
-                validator: (val) {
-                  if (val!.isEmpty) {
-                    return "닉네임을 입력해주세요";
-                  }
-                },
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                        border: OutlineInputBorder(),
+                        hintText: _userName,
+                      ),
+                      validator: (val) {
+                        if (val!.isEmpty) {
+                          return "닉네임을 입력해주세요";
+                        }
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: ScreenUtil().setWidth(10),
+                  ),
+                  TextButton(
+                    child: Text(
+                      "확인",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    style: TextButton.styleFrom(
+                        backgroundColor: MangoDisabledColorLight),
+                    onPressed: () {
+                      UserViewModel()
+                          .checNickNameDuplicate(_nameController.text)
+                          .then((value) {
+                        if (value == true) {
+                          //중복값이 있는 경우
+                          Get.dialog(ConfirmDialog(
+                              contentText: "이미 사용되고 있는 닉네임입니다",
+                              onTapOK: () {
+                                Get.back();
+                                _nameController.text = "";
+                                _isNicknameUnique = false;
+                              }));
+                        } else {
+                          // 중복값이 없는 경우
+                          Get.dialog(ConfirmDialog(
+                              contentText: "사용 가능한 닉네임입니다",
+                              onTapOK: () {
+                                Get.back();
+                                setState(() {
+                                  _userName = _nameController.text;
+                                  _isNicknameUnique = true;
+                                });
+                              }));
+                        }
+                      });
+                    },
+                  ),
+                ],
               ),
               SizedBox(
                 height: ScreenUtil().setHeight(_sizeOfBox),
@@ -188,7 +257,6 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        readOnly: phoneReadOnly,
                         controller: _telController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -206,45 +274,23 @@ class _SignUpPageState extends State<SignUpPage> {
                     SizedBox(
                       width: ScreenUtil().setWidth(10),
                     ),
-                    ConstrainedBox(
-                        constraints: BoxConstraints.tightFor(
-                            width: 100, height: ScreenUtil().setHeight(50)),
-                        child: ElevatedButton(
-                            child: Text('인증요청'),
-                            onPressed: () async {
-                              if (_formPhoneKey.currentState!.validate()) {
-                                //all validation pass
-                                await _authPhone.verifyPhoneNumber(
-                                    timeout: const Duration(seconds: 120),
-                                    phoneNumber: "+1" + _telController.text,
-                                    verificationCompleted:
-                                        (phoneAuthCredential) async {
-                                      print('otp 문자옴');
-                                    },
-                                    verificationFailed: (verificationFailed) {
-                                      print(verificationFailed.code);
-                                      print('코드 발송 실패');
-                                    },
-                                    codeSent:
-                                        (verificationId, resendingToken) async {
-                                      print('코드 보냄');
-                                      Get.snackbar("MESSAGE",
-                                          "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
-                                      setState(() {
-                                        requestedAuth = true;
-                                        // FocusScope.of(context).requestFocus(otpFocusNode);
-                                        this.verificationId = verificationId;
-                                        print(
-                                            "verification id: $verificationId");
-                                      });
-                                    },
-                                    codeAutoRetrievalTimeout:
-                                        (String verificationId) {});
-                                setState(() {
-                                  requestedAuth = true;
-                                });
-                              }
-                            }))
+                    TextButton(
+                      child: Text(
+                        "인증",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      style: TextButton.styleFrom(
+                          backgroundColor: MangoDisabledColorLight),
+                      onPressed: () {
+                        if (_formPhoneKey.currentState!.validate()) {
+                          //all validation pass
+                          checkPhoneValidation();
+                          setState(() {
+                            requestedAuth = true;
+                          });
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -307,61 +353,30 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: ElevatedButton(
                   child: const Text('다음'),
                   onPressed: () async {
-                    if (_formKey.currentState!.validate() && authOk == true) {
+                    if (_formKey.currentState!.validate() &&
+                        authOk == true &&
+                        _isEmailValidated == true &&
+                        _isNicknameUnique == true) {
                       //validation pass + 전화번호 인증 완료 되었을 때,
-                      _userName = _nameController.text;
-                      _phoenNumber = _telController.text;
-                      _tokens = (await FirebaseMessaging.instance.getToken())!;
-
-                      //email 회원가입
-                      _auth
-                          .emailSignUp(
-                          email: _emailController.text,
-                          password: _passwordController.text)
-                          .then((value) async {
-                        if (value == "success") {
-
-                          uuid = Uuid().v4().toString();
-                          String defaultImage = '-1';
-
-                          await FirebaseFirestore.instance
-                              .collection('user')
-                              .doc(_auth.user!.uid)
-                              .set({
-                            'userID': _auth.user!.uid,
-                            'creationTime': _auth.user!.metadata.creationTime!,
-                            'refrigeratorID': uuid,
-                            'lastSignIn': _auth.user!.metadata.lastSignInTime!,
-                            'profileImageReference': defaultImage,
-                            'userName': _userName,
-                            'phoneNumber': _phoenNumber,
-                            'tokens': _tokens,
-                          });
-
-                          await RefrigeratorViewModel()
-                              .createRefrigeratorID(_auth.user!.uid, uuid);
-                          //TODO. refirgeratorController()
-                          // await refrigeratorController()
-                          //     .makeRefInfoDocument(refID: uuid);
-
-                          //Get TO
-                          await _auth.loadId();
-                          Get.off(Landing());
-
-                        } else {
-                          print("이미 가입되어 있는 이메일입니다.");
-                          Get.dialog(ConfirmDialog(
-                              contentText: "이미 가입되어 있는 이메일입니다.",
-                              onTapOK: () {
-                                Get.back();
-                              }));
-                        }
-                      });
-
-                    }
-                    if (authOk == false) {
+                      signUpwithEmailandMakeUserDoc();
+                    } else if (_formKey.currentState!.validate() &&
+                        authOk == false) {
                       Get.dialog(ConfirmDialog(
                           contentText: "전화번호 인증을 완료해주세요",
+                          onTapOK: () {
+                            Get.back();
+                          }));
+                    } else if (_formKey.currentState!.validate() &&
+                        _isEmailValidated == false) {
+                      Get.dialog(ConfirmDialog(
+                          contentText: "유효한 이메일 체크가 필요합니다",
+                          onTapOK: () {
+                            Get.back();
+                          }));
+                    } else if (_formKey.currentState!.validate() &&
+                        _isNicknameUnique == false) {
+                      Get.dialog(ConfirmDialog(
+                          contentText: "닉네임 중복을 확인해주세요",
                           onTapOK: () {
                             Get.back();
                           }));
@@ -374,6 +389,31 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       ),
     );
+  }
+
+  void checkPhoneValidation() async {
+    await _authPhone.verifyPhoneNumber(
+        timeout: const Duration(seconds: 120),
+        phoneNumber: "+1" + _telController.text,
+        verificationCompleted: (phoneAuthCredential) async {
+          print('otp 문자옴');
+        },
+        verificationFailed: (verificationFailed) {
+          print(verificationFailed.code);
+          print('코드 발송 실패');
+        },
+        codeSent: (verificationId, resendingToken) async {
+          print('코드 보냄');
+          Get.snackbar("MESSAGE",
+              "${_telController.text} 로 인증코드를 발송하였습니다. 문자가 올때까지 잠시만 기다려 주세요.");
+          setState(() {
+            requestedAuth = true;
+            // FocusScope.of(context).requestFocus(otpFocusNode);
+            this.verificationId = verificationId;
+            print("verification id: $verificationId");
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {});
   }
 
   void signInWithPhoneAuthCredential(
@@ -391,8 +431,7 @@ class _SignUpPageState extends State<SignUpPage> {
             contentText: "인증이 성공적으로 완료되었습니다",
             onTapOK: () {
               setState(() {
-                // print('인증완료 및 로그인 성공');
-                phoneReadOnly = true;
+                _phoenNumber = _telController.text;
                 authOk = true;
               });
               Get.back();
@@ -403,7 +442,7 @@ class _SignUpPageState extends State<SignUpPage> {
           contentText: "인증에 실패하셨습니다\n인증번호 전송은 총 4회까지 무료입니다",
           onTapOK: () {
             setState(() {
-              phoneReadOnly = false;
+              _telController.text = "";
             });
             Get.back();
           })).then((value) {
@@ -414,386 +453,54 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
-//   Widget setAlarmPage(BuildContext context) {
-//     var _buttonWidth = 156.0;
-//     var _buttonHeight = 46.0;
+  void signUpwithEmailandMakeUserDoc() async {
+    _userName = _nameController.text;
+    _phoenNumber = _telController.text;
+    _tokens = (await FirebaseMessaging.instance.getToken())!;
 
-//     List<String> _storeType = ['냉장 제품', '냉동 제품', '실온 제품'];
+    //email 회원가입
+    _auth
+        .emailSignUp(
+            email: _emailController.text, password: _passwordController.text)
+        .then((value) async {
+      if (value == "success") {
+        //회원가입이 성공했을 경우
+        uuid = Uuid().v4().toString();
+        String defaultImage = '-1';
 
-//     var idx = 0;
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(_auth.user!.uid)
+            .set({
+          'userID': _auth.user!.uid,
+          'creationTime': _auth.user!.metadata.creationTime!,
+          'refrigeratorID': uuid,
+          'lastSignIn': _auth.user!.metadata.lastSignInTime!,
+          'profileImageReference': defaultImage,
+          'userName': _userName,
+          'phoneNumber': _phoenNumber,
+          'tokens': _tokens,
+        });
 
-//     return Container(
-//       child: Column(
-//         children: [
-//           Container(
-//             color: MangoWhite,
-//             width: deviceWidth,
-//             height: 60 * (deviceHeight / prototypeHeight),
-//             alignment: Alignment.center,
-//             child: Text(
-//               '제품 별 본인이 원하는 유통기한 알림기준과 일자를 설정해주세요. 알림 기준은 유통기한별 / 구매일자로부터 경과한 일수 두 가지가 있습니다.',
-//               style: Theme.of(context)
-//                   .textTheme
-//                   .subtitle2!
-//                   .copyWith(color: MangoDisabledColor),
-//               textAlign: TextAlign.center,
-//             ),
-//           ),
-//           SizedBox(height: 7.0 * (deviceWidth / prototypeWidth)),
-//           Expanded(
-//               child: ListView.separated(
-//                   itemBuilder: (BuildContext context, int index) {
-//                     return alarmCard(_storeType[index], index);
-//                   },
-//                   separatorBuilder: (BuildContext context, int index) =>
-//                       SizedBox(height: 7.0 * (deviceWidth / prototypeWidth)),
-//                   itemCount: _storeType.length)),
-//           ColoredBox(
-//             color: MangoBehindColor,
-//             child: Row(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               children: [
-//                 ConstrainedBox(
-//                     constraints: BoxConstraints.tightFor(
-//                         width: _buttonWidth * (deviceWidth / prototypeWidth),
-//                         height: _buttonHeight * (deviceWidth / prototypeWidth)),
-//                     child: ElevatedButton(
-//                         child: Text(
-//                           '이전',
-//                           style: Theme.of(context).textTheme.subtitle2,
-//                         ),
-//                         style: ButtonStyle(
-//                           backgroundColor: MaterialStateProperty.all(
-//                               MangoDisabledContainerColor),
-//                         ),
-//                         onPressed: () {
-//                           setState(() {
-//                             //TODO. 뭔가 이상?
-//                             alarmIdx == 0
-//                                 ? _auth
-//                                     .logOut()
-//                                     .then((value) => Get.off(Landing()))
-//                                 : alarmIdx--;
-//                           });
-//                         })),
-//                 SizedBox(
-//                   width: deviceWidth * 0.03,
-//                 ),
-//                 ConstrainedBox(
-//                   constraints: BoxConstraints.tightFor(
-//                       width: _buttonWidth * (deviceWidth / prototypeWidth),
-//                       height: _buttonHeight * (deviceWidth / prototypeWidth)),
-//                   child: ElevatedButton(
-//                     child: Text(
-//                       '다음',
-//                       style: Theme.of(context).textTheme.subtitle2,
-//                     ),
-//                     onPressed: () async {
-//                       if (alarmIdx == 2) {
+        await RefrigeratorViewModel()
+            .createRefrigeratorID(_auth.user!.uid, uuid);
+        //TODO. refirgeratorController()
 
-//                         _auth.emailSignUp(email: _emailController.text, password: _passwordController.text); //로그인
-
-//                         uuid = Uuid().v4().toString();
-//                         String defaultImage = '-1';
-
-//                         await FirebaseFirestore.instance
-//                             .collection('user')
-//                             .doc(_auth.user!.uid)
-//                             .set({
-//                           'userID': _auth.user!.uid,
-//                           'creationTime': _auth.user!.metadata.creationTime!,
-//                           'refrigeratorID': uuid,
-//                           'isAlarmOn': true,
-//                           'refrigerationAlarm': _refrigerationAlarm,
-//                           'isRefShelf': _isRefShelf,
-//                           'frozenAlarm': _frozenAlarm,
-//                           'isFroShelf': _isFroShelf,
-//                           'roomTempAlarm': _roomTempAlarm,
-//                           'isRTShelf': _isRTShelf,
-//                           'lastSignIn': _auth.user!.metadata.lastSignInTime!,
-//                           'profileImageReference': defaultImage,
-//                           'userName': _userName,
-//                           'phoneNumber': _phoenNumber,
-//                           'tokens': _tokens,
-//                           'location': location,
-//                           'chats': chats,
-//                         });
-
-//                         await RefrigeratorViewModel()
-//                             .createRefrigeratorID(_auth.user!.uid, uuid);
-//                         //TODO. refirgeratorController()
-//                         // await refrigeratorController()
-//                         //     .makeRefInfoDocument(refID: uuid);
-//                         Get.off(GuidePage());
-//                       } else {
-//                         setState(() {
-//                           alarmIdx++;
-//                         });
-//                       }
-//                     },
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           SizedBox(
-//             height: 120 * (deviceHeight / prototypeHeight),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-
-//   //parameter: Title name, type -> Refrigeration, Frozen, Room temperature.
-//   Widget alarmCard(String title, int type) {
-//     return Container(
-//       color: alarmIdx == type ? MangoWhite : MangoDisabledContainerColor,
-//       padding: EdgeInsets.fromLTRB(20.0 * (deviceWidth / prototypeWidth), 0,
-//           24.0 * (deviceWidth / prototypeWidth), 0),
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           SizedBox(
-//             height: 15.0 * (deviceWidth / prototypeWidth),
-//           ),
-//           Row(
-//             children: [
-//               Text(
-//                 title,
-//                 style: Theme.of(context).textTheme.bodyText1!.copyWith(
-//                     fontWeight: FontWeight.w700,
-//                     color: alarmIdx == type ? MangoBlack : MangoDisabledColor),
-//               ),
-//             ],
-//           ),
-//           SizedBox(
-//             height: 15.0 * (deviceWidth / prototypeWidth),
-//           ),
-//           Row(
-//             children: [
-//               Text(
-//                 '표시기준',
-//                 style: Theme.of(context).textTheme.subtitle2!.copyWith(
-//                     color: alarmIdx == type ? MangoBlack : MangoDisabledColor),
-//               ),
-//               SizedBox(
-//                 width: 150 * (deviceWidth / prototypeWidth),
-//               ),
-//               Text('알림일',
-//                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
-//                       color:
-//                           alarmIdx == type ? MangoBlack : MangoDisabledColor))
-//             ],
-//           ),
-//           SizedBox(
-//             height: 10.0 * (deviceWidth / prototypeWidth),
-//           ),
-//           Row(
-//             children: [
-//               Container(
-//                 width: 85.0 * (deviceWidth / prototypeWidth),
-//                 constraints: BoxConstraints(maxWidth: 120),
-//                 alignment: Alignment.bottomCenter,
-//                 child: ListTile(
-//                   contentPadding: EdgeInsets.all(0),
-//                   title: Row(
-//                     children: [
-//                       Radio<dynamic>(
-//                         activeColor: alarmIdx == type
-//                             ? Theme.of(context).accentColor
-//                             : MangoDisabledColor,
-//                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//                         value: type == 0
-//                             ? refrigerationAlarmType.shelfLife
-//                             : type == 1
-//                                 ? frozenAlarmType.shelfLife
-//                                 : roomTempAlarmType.shelfLife,
-//                         groupValue: type == 0
-//                             ? _refrigerationAlarmType
-//                             : type == 1
-//                                 ? _frozenAlarmType
-//                                 : _roomTempAlarmType,
-//                         onChanged: (value) {
-//                           alarmIdx == type
-//                               ? setState(() {
-//                                   if (type == 0) {
-//                                     _isRefShelf = true;
-//                                     _refrigerationAlarmType = value;
-//                                   } else if (type == 1) {
-//                                     _isFroShelf = true;
-//                                     _frozenAlarmType = value;
-//                                   } else {
-//                                     _isRTShelf = true;
-//                                     _roomTempAlarmType = value;
-//                                   }
-//                                   // ignore: unnecessary_statements
-//                                 })
-//                               : null;
-//                         },
-//                       ),
-//                       Text(
-//                         '유통기한',
-//                         style: Theme.of(context).textTheme.subtitle2!.copyWith(
-//                             color: alarmIdx == type
-//                                 ? MangoBlack
-//                                 : MangoDisabledColor),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//               Container(
-//                 width: 85.0 * (deviceWidth / prototypeWidth),
-//                 constraints: BoxConstraints(maxWidth: 100),
-//                 alignment: Alignment.bottomCenter,
-//                 child: ListTile(
-//                     contentPadding: EdgeInsets.all(0),
-//                     title: Row(
-//                       children: [
-//                         Radio<dynamic>(
-//                           activeColor: alarmIdx == type
-//                               ? Theme.of(context).accentColor
-//                               : MangoDisabledColor,
-//                           materialTapTargetSize:
-//                               MaterialTapTargetSize.shrinkWrap,
-//                           value: type == 0
-//                               ? refrigerationAlarmType.registerDate
-//                               : type == 1
-//                                   ? frozenAlarmType.registerDate
-//                                   : roomTempAlarmType.registerDate,
-//                           groupValue: type == 0
-//                               ? _refrigerationAlarmType
-//                               : type == 1
-//                                   ? _frozenAlarmType
-//                                   : _roomTempAlarmType,
-//                           onChanged: (value) {
-//                             alarmIdx == type
-//                                 ? setState(() {
-//                                     if (type == 0) {
-//                                       _isRefShelf = false;
-//                                       _refrigerationAlarmType = value;
-//                                     } else if (type == 1) {
-//                                       _isFroShelf = false;
-//                                       _frozenAlarmType = value;
-//                                     } else {
-//                                       _isRTShelf = false;
-//                                       _roomTempAlarmType = value;
-//                                     }
-//                                     // ignore: unnecessary_statements
-//                                   })
-//                                 : null;
-//                           },
-//                         ),
-//                         Text(
-//                           '구매일',
-//                           style: Theme.of(context)
-//                               .textTheme
-//                               .subtitle2!
-//                               .copyWith(
-//                                   color: alarmIdx == type
-//                                       ? MangoBlack
-//                                       : MangoDisabledColor),
-//                           textAlign: TextAlign.start,
-//                         ),
-//                       ],
-//                     )),
-//               ),
-//               SizedBox(
-//                 width: 30 * (deviceWidth / prototypeWidth),
-//               ),
-//               ConstrainedBox(
-//                 constraints: BoxConstraints.tightFor(
-//                   width: 120 * (deviceWidth / prototypeWidth),
-//                 ),
-//                 child: OutlinedButton(
-//                   onPressed: () {
-//                     // ignore: unnecessary_statements
-//                     alarmIdx == type ? showCupertinoPicker(50, type) : null;
-//                   },
-//                   style: ButtonStyle(
-//                     overlayColor: MaterialStateProperty.all(
-//                         alarmIdx != type ? MangoDisabledColorLight : null),
-//                   ),
-//                   child: Row(
-//                     children: [
-//                       Expanded(
-//                           child: type == 0
-//                               ? Text('$_refrigerationAlarm일 전')
-//                               : type == 1
-//                                   ? Text('$_frozenAlarm일 전')
-//                                   : Text('$_roomTempAlarm일 전')),
-//                       Icon(Icons.arrow_drop_down)
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Future<dynamic> showCupertinoPicker(int index, int type) {
-//     return showModalBottomSheet(
-//         shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.only(
-//           topLeft: const Radius.circular(30.0),
-//           topRight: const Radius.circular(30.0),
-//         )),
-//         context: context,
-//         builder: (BuildContext builder) {
-//           return Container(
-//             height: 284 * (deviceHeight / prototypeHeight),
-//             child: Column(
-//               children: [
-//                 dialogTopBar(),
-//                 Padding(
-//                   padding: const EdgeInsets.all(10.0),
-//                   child: Text(
-//                     '알림일 설정',
-//                     style: Theme.of(context)
-//                         .textTheme
-//                         .headline6, //TODO. CHANGE NEXT TIME
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: GestureDetector(
-//                     onTapDown: (details) {
-//                       if (alarmIdx < 2 && alarmIdx == type) {
-//                         setState(() {
-//                           alarmIdx++;
-//                         });
-//                       }
-//                       Get.back();
-//                     },
-//                     child: CupertinoPicker(
-//                       itemExtent: 32,
-//                       onSelectedItemChanged: (int newValue) {
-//                         print(newValue);
-//                         setState(() {
-//                           type == 0
-//                               ? _refrigerationAlarm = newValue + 1
-//                               : type == 1
-//                                   ? _frozenAlarm = newValue + 1
-//                                   : _roomTempAlarm = newValue + 1;
-//                         });
-//                       },
-//                       children: List<Widget>.generate(60, (int index) {
-//                         return Text(
-//                           (++index).toString(),
-//                           style: Theme.of(context).textTheme.headline5,
-//                         );
-//                       }),
-//                       scrollController: FixedExtentScrollController(
-//                           //initialItem: foods[index - 1].num - 1
-//                           initialItem: 1),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           );
-//         });
-//   }
+        //Get TO
+        await _auth.loadId();
+        Get.dialog(ConfirmDialog(
+            contentText: "로그인 전 가입하신 이메일로 가서\n이메일 인증을 완료해주세요",
+            onTapOK: () {
+              Get.off(LogInPage(title: 'hi'));
+            }));
+      } else if (value == "already") {
+        print("이미 가입되어 있는 이메일입니다.");
+        Get.dialog(ConfirmDialog(
+            contentText: "이미 가입되어 있는 이메일입니다",
+            onTapOK: () {
+              Get.back();
+            }));
+      } else {}
+    });
+  }
 }

@@ -238,7 +238,7 @@ class _MangoCardState extends State<MangoCard> {
           width: ScreenUtil().setWidth(44),
           height: ScreenUtil().setHeight(24),
           child: Text(
-            'D-${widget.food.shelfLife.difference(DateTime.now()).inDays}',
+            'D${widget.food.shelfLife.difference(DateTime.now()).inDays}',
             style: TextStyle(
                 fontWeight: FontWeight.w700, color: Red500, fontSize: ScreenUtil().setSp(18),),
           ),
