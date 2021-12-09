@@ -10,7 +10,7 @@ List<String> categories = [
   '베이커리/과자',
   '김치/반찬',
   '즉석식품',
-  '물/음료'
+  '물/음료',
 ];
 
 List<String> categoryImg = [
@@ -25,7 +25,8 @@ List<String> categoryImg = [
   'Bakery.png',
   'KimchiSideDishes.png',
   'RamenInstantFoods.png',
-  'WaterCoffeDrinks.png'
+  'WaterCoffeDrinks.png',
+
 ];
 
 int translateToKo(String category) {

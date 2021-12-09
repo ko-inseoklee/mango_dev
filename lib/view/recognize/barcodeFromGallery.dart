@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart' as g;
 import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/recognize/recognizedResult.dart';
 import 'package:mangodevelopment/view/widget/dialog/editProfileImageDialog.dart';
+import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../ignore.dart';
 
@@ -18,6 +21,7 @@ class BarcodeFromGallery extends StatelessWidget {
   late List<Barcode> barcodes;
   List<String> barcodeResults = [];
   List<String> results = [];
+  RefrigeratorViewModel refrigerator = g.Get.find<RefrigeratorViewModel>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +36,8 @@ class BarcodeFromGallery extends StatelessWidget {
         await getGalleryImage().then((value) async {
           inputImage = InputImage.fromFilePath(value);
           barcodes = await barcodeScanner.processImage(inputImage);
+
+          var is_contain = '-1';
 
           print("done");
 
@@ -49,29 +55,39 @@ class BarcodeFromGallery extends StatelessWidget {
               print("start add ");
               print(response.data);
               parsedData = response.data['C005'];
-              print(parsedData);
-              // results.add(response.data.toString());
+              is_contain = parsedData['total_count'];
+
+              print(parsedData['row'][0]);
             }
           }
 
-          g.Get.back();
-          g.Get.dialog(RecognizedResult(result: parsedData,));
+          if(is_contain == '0' || is_contain == '-1'){
+            print("해당하는 바코드가 없습니다.");
+            g.Get.back();
+          }else{
 
-          //     .then((value) {
-          // String data = value.toString();
-          // Map<String, dynamic> parsedData = jsonDecode(data);
-          // print(parsedData['C005']['row']);
-          // // print(parsedData['C005']['row'][0]['POG_DAYCNT']);
-          // results.add(value.toString());
-          // // print(value);
-          // Get.back();
-          // Get.bottomSheet(RecognizedResult(results: results,));
-          // });
+            int mulDay = 1;
+            String shelf = parsedData['row'][0]['POG_DAYCNT'];
+
+            // 공백제거
+            shelf = shelf.removeAllWhitespace;
+
+            // 기간 추출
+            if(shelf.contains('개월') || shelf.contains('달')) mulDay = 30;
+            else if(shelf.contains('년')) mulDay = 365;
+            else if(shelf.contains('주')) mulDay = 7;
+
+            // 숫자 추출
+            String iShelf = shelf.replaceAll(RegExp('[^0-9]'), '');
+
+            int shelfCount = int.parse(iShelf) * mulDay;
+
+            Food result = new Food(fId: Uuid().v4(), rId: refrigerator.ref.value.rID, index: 0, status: true, name: parsedData['row'][0]['PRDLST_NM'].toString(), num: 1, category: parsedData['row'][0]['PRDLST_DCNM'].toString(), method: 0, displayType: true, shelfLife: DateTime.now().add(Duration(days: shelfCount)), registrationDay: DateTime.now(), alarmDate: DateTime.now().add(Duration(days: shelfCount)), cardStatus: -1);
 
 
-
-          // print("barcode == $barcodes");
-
+            g.Get.back();
+            g.Get.dialog(RecognizedResult(result: result,));
+          }
 
         });
       }),
