@@ -13,8 +13,8 @@ import '../../color.dart';
 import 'barcodeFromGallery.dart';
 
 class RecognizedResult extends StatefulWidget {
-  final Map<String, dynamic> result;
-  const RecognizedResult({Key? key,required this.result}) : super(key: key);
+  Food result;
+  RecognizedResult({Key? key,required this.result}) : super(key: key);
 
   @override
   _RecognizedResultState createState() => _RecognizedResultState();
@@ -23,14 +23,11 @@ class RecognizedResult extends StatefulWidget {
 class _RecognizedResultState extends State<RecognizedResult> {
 
   List<String> barcodeResults = [];
-  late Food result;
   RefrigeratorViewModel refrigerator = Get.find<RefrigeratorViewModel>();
 
   @override
   void initState() {
     super.initState();
-    result = new Food(fId: Uuid().v4(), rId: refrigerator.ref.value.rID, index: 0, status: true, name: widget.result['row'][0]['PRDLST_NM'].toString(), num: 1, category: "즉석식품", method: 0, displayType: true, shelfLife: DateTime.now().add(Duration(days: 180)), registrationDay: DateTime.now(), alarmDate: DateTime.now().add(Duration(days: 180)), cardStatus: -1);
-
   }
 
   @override
@@ -67,7 +64,7 @@ class _RecognizedResultState extends State<RecognizedResult> {
                     width: ScreenUtil().setWidth(80),
                     margin: EdgeInsets.symmetric(horizontal: ScreenUtil().setWidth(10)),
                     child: Image.asset(
-                      'images/category/${categoryImg[translateToKo(result.category)]}',
+    categories.contains(widget.result.category) ? 'images/category/${categoryImg[translateToKo(widget.result.category)]}' : 'images/category/etc.png',
                       scale: 1.0,
                     ),
                   ),
@@ -87,9 +84,9 @@ class _RecognizedResultState extends State<RecognizedResult> {
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text('${result.name}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
-                            Text('${result.category}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
-                            Text('${result.alarmDay.difference(DateTime.now()).inDays}일 후',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
+                            Text('${widget.result.name}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
+                            Text('${widget.result.category}',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
+                            Text('${widget.result.alarmDay.difference(DateTime.now()).inDays}일 후',style: Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: ScreenUtil().setSp(15))),
                           ],
                         ),
                       ],
@@ -136,7 +133,7 @@ class _RecognizedResultState extends State<RecognizedResult> {
                 child: TextButton(
                     onPressed: () async {
                       List<Food> foods = [];
-                      foods.add(result);
+                      foods.add(widget.result);
                       await refrigerator.addFoods(foods).then((value) => Get.back());
                     },
                     child: Text(

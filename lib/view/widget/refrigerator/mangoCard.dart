@@ -74,7 +74,7 @@ class _MangoCardState extends State<MangoCard> {
                 Container(
                   // padding: const EdgeInsets.all(8.0),
                   child: Image.asset(
-                    'images/category/${categoryImg[translateToKo(widget.food.category)]}',
+                    categories.contains(widget.food.category) ? 'images/category/${categoryImg[translateToKo(widget.food.category)]}' : 'images/category/etc.png',
                     scale: 1.0,
                   ),
                 ),
@@ -139,7 +139,7 @@ class _MangoCardState extends State<MangoCard> {
               Container(
                 // padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
-                  'images/category/${categoryImg[translateToKo(widget.food.category)]}',
+                  categories.contains(widget.food.category) ? 'images/category/${categoryImg[translateToKo(widget.food.category)]}' : 'images/category/etc.png',
                   scale: 1.0,
                 ),
               ),
@@ -201,7 +201,7 @@ class _MangoCardState extends State<MangoCard> {
               Container(
                 // padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
-                  'images/category/${categoryImg[translateToKo(widget.food.category)]}',
+                  categories.contains(widget.food.category) ? 'images/category/${categoryImg[translateToKo(widget.food.category)]}' : 'images/category/etc.png',
                   scale: 1.0,
                 ),
               ),
@@ -267,7 +267,7 @@ class _MangoCardState extends State<MangoCard> {
               Container(
                 padding: const EdgeInsets.all(8.0),
                 child: Image.asset(
-                  'images/category/${categoryImg[translateToKo(widget.food.category)]}',
+                  categories.contains(widget.food.category) ? 'images/category/${categoryImg[translateToKo(widget.food.category)]}' : 'images/category/etc.png',
                   scale: 1.2,
                 ),
               ),
