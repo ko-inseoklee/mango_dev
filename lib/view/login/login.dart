@@ -99,7 +99,7 @@ class _LogInPageState extends State<LogInPage> {
     return Container(
       alignment: Alignment.center,
       width: ScreenUtil().setWidth(loginWidth),
-      height: ScreenUtil().setHeight(400),
+      height: ScreenUtil().setHeight(600),
       child: Form(
         key: _formKey,
         child: Column(
@@ -120,7 +120,7 @@ class _LogInPageState extends State<LogInPage> {
                   return "이메일을 입력해주세요";
                 }
                 if (!RegExp(
-                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                    r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
                     .hasMatch(val)) {
                   return '잘못된 이메일 형식입니다.';
                 }
@@ -166,8 +166,8 @@ class _LogInPageState extends State<LogInPage> {
                     //all validation pass
                     Get.find<Authentication>()
                         .emailLogin(
-                            email: _emailController.text,
-                            password: _passwordController.text)
+                        email: _emailController.text,
+                        password: _passwordController.text)
                         .then((value) async {
                       if (value == "success") {
                         print("success");

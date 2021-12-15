@@ -56,8 +56,8 @@ class _MyPageState extends State<MyPage> {
                                   .user.value.profileImageReference ==
                               '-1'
                           ? Container(
-                              width: 90 * deviceWidth / prototypeWidth,
-                              height: 90 * deviceWidth / prototypeWidth,
+                              width: ScreenUtil().setWidth(90),
+                              height: ScreenUtil().setWidth(90),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
@@ -73,8 +73,8 @@ class _MyPageState extends State<MyPage> {
                                   child: Image.network(
                                     userViewModelController
                                         .user.value.profileImageReference,
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
+                                    width: ScreenUtil().setWidth(90),
+                                    height: ScreenUtil().setWidth(90),
                                     fit: BoxFit.fitHeight,
                                   ))
                               : ClipRRect(
@@ -82,21 +82,18 @@ class _MyPageState extends State<MyPage> {
                                   child: Image.file(
                                     File(userViewModelController
                                         .user.value.profileImageReference),
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
+                                    width: ScreenUtil().setWidth(90),
+                                    height: ScreenUtil().setWidth(90),
                                     fit: BoxFit.fitHeight,
                                   ),
                                 ),
                     ),
+                    SizedBox(width: ScreenUtil().setWidth(16.0),),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.fromLTRB(
-                            16.0 * deviceWidth / prototypeWidth,
-                            40.0 * deviceWidth / prototypeWidth,
-                            0,
-                            0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
                               userViewModelController.user.value.userName,
@@ -105,11 +102,11 @@ class _MyPageState extends State<MyPage> {
                             Text('${_auth.user!.email}'),
                             Text(userViewModelController
                                 .user.value.phoneNumber),
+                            SizedBox(height: ScreenUtil().setHeight(20),),
                           ],
                         ),
                       ),
                     ),
-                    //TODO. 수정페이지로 이동
                     IconButton(
                         onPressed: () async {
                           Get.to(MyPageEdit());
@@ -123,13 +120,13 @@ class _MyPageState extends State<MyPage> {
                 color: MangoBehindColor,
               ),
               Container(
-                child: ListTile(
-                  leading: Icon(Icons.add_alert),
-                  title: Text("알림 관리",),//TODO. Font Change
-                  onTap: (){
-                    Get.to(SettingAlarmPage(title: "알람 관리"));
-                  },
-                )
+                  child: ListTile(
+                    leading: Icon(Icons.add_alert),
+                    title: Text("알림 관리",),//TODO. Font Change
+                    onTap: (){
+                      Get.to(SettingAlarmPage(title: "알람 관리"));
+                    },
+                  )
               ),
               Container(
                 height: ScreenUtil().setHeight(7),

@@ -141,21 +141,21 @@ TextTheme _buildMangoTextTheme(TextTheme base) {
           fontWeight: FontWeight.w300,
         ),
         headline2: base.headline2!.copyWith(
-          fontSize: 60.0,
+          fontSize: ScreenUtil().setSp(60.0),
           fontWeight: FontWeight.w300,
         ),
         headline3: base.headline3!.copyWith(
-          fontSize: 40.0,
+          fontSize: ScreenUtil().setSp(40.0),
           fontWeight: FontWeight.w400,
         ),
         /* headline4: dialog title*/
         headline4: base.headline4!.copyWith(
-          fontSize: 34.0,
+          fontSize: ScreenUtil().setSp(34.0),
           fontWeight: FontWeight.w400,
         ),
         /* headline5: hintText of ProfilePage(subtitle 2_KR)*/
         headline5: base.headline5!.copyWith(
-          fontSize: 24.0,
+          fontSize: ScreenUtil().setSp(24.0),
           fontWeight: FontWeight.w500,
         ),
         /* headline6: Text of AppBar */
@@ -164,34 +164,34 @@ TextTheme _buildMangoTextTheme(TextTheme base) {
           fontWeight: FontWeight.w700,
         ),
         subtitle1: base.subtitle1!.copyWith(
-          fontSize: 16.0,
+          fontSize: ScreenUtil().setSp(16.0),
           fontWeight: FontWeight.w500,
         ),
         /* subtitle2: substitle of ListTile*/
         subtitle2: base.subtitle2!.copyWith(
-          fontSize: 14.0,
+          fontSize: ScreenUtil().setSp(14.0),
           fontWeight: FontWeight.w500,
         ),
         bodyText1: base.bodyText1!.copyWith(
           fontWeight: FontWeight.w400,
-          fontSize: 16.0,
+          fontSize: ScreenUtil().setSp(16.0),
         ),
         /* bodyText2: dialog text */
         bodyText2: base.button!.copyWith(
-          fontSize: 14.0,
+          fontSize: ScreenUtil().setSp(14.0),
           fontWeight: FontWeight.w400,
         ),
         /* button: all of button + tabs */
         button: base.button!.copyWith(
-          fontSize: 14.0,
+          fontSize: ScreenUtil().setSp(14.0),
           fontWeight: FontWeight.w400,
         ),
         caption: base.caption!.copyWith(
-          fontSize: 12.0,
+          fontSize: ScreenUtil().setSp(12.0),
           fontWeight: FontWeight.w500,
         ),
         overline: base.caption!.copyWith(
-          fontSize: 10.0,
+          fontSize: ScreenUtil().setSp(10.0),
           fontWeight: FontWeight.w500,
         ),
       )

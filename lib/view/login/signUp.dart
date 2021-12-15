@@ -263,7 +263,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             contentPadding:
                                 EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                             border: OutlineInputBorder(),
-                            hintText: '5555215554'),
+                            hintText: '01012341234'),
                         validator: (val) {
                           if (val!.isEmpty) {
                             return "전화번호를 입력해주세요";
@@ -394,7 +394,7 @@ class _SignUpPageState extends State<SignUpPage> {
   void checkPhoneValidation() async {
     await _authPhone.verifyPhoneNumber(
         timeout: const Duration(seconds: 120),
-        phoneNumber: "+1" + _telController.text,
+        phoneNumber: "+82" + _telController.text.substring(1),
         verificationCompleted: (phoneAuthCredential) async {
           print('otp 문자옴');
         },

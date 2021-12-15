@@ -93,7 +93,7 @@ class _MyPageEditState extends State<MyPageEdit> {
           children: [
             Container(
               padding: EdgeInsets.all(20),
-              height: ScreenUtil().setHeight(300),
+              height: ScreenUtil().setHeight(370),
               child: Column(
                 children: [
                   //TODO: should change the case of false condition with get image from firebase storage. Should change Using Stack for modify image button.
@@ -103,8 +103,8 @@ class _MyPageEditState extends State<MyPageEdit> {
                                   .user.value.profileImageReference ==
                               '-1'
                           ? Container(
-                              width: 90 * deviceWidth / prototypeWidth,
-                              height: 90 * deviceWidth / prototypeWidth,
+                              width: ScreenUtil().setWidth(90),
+                              height: ScreenUtil().setWidth(90),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
@@ -120,8 +120,8 @@ class _MyPageEditState extends State<MyPageEdit> {
                                   child: Image.network(
                                     userViewModelController
                                         .user.value.profileImageReference,
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
+                                    width: ScreenUtil().setWidth(90),
+                                    height: ScreenUtil().setWidth(90),
                                     fit: BoxFit.fitHeight,
                                   ))
                               : ClipRRect(
@@ -129,14 +129,14 @@ class _MyPageEditState extends State<MyPageEdit> {
                                   child: Image.file(
                                     File(userViewModelController
                                         .user.value.profileImageReference),
-                                    width: 90 * deviceWidth / prototypeWidth,
-                                    height: 90 * deviceWidth / prototypeWidth,
+                                    width: ScreenUtil().setWidth(90),
+                                    height: ScreenUtil().setWidth(90),
                                     fit: BoxFit.fitHeight,
                                   ),
                                 ),
                       Positioned(
-                        left: 44 * deviceWidth / prototypeWidth,
-                        top: 50 * deviceWidth / prototypeWidth,
+                        left: ScreenUtil().setWidth(44),
+                        top: ScreenUtil().setWidth(50),
                         child: ElevatedButton(
                           onPressed: () async {
                             String temp = _nameController.text;
@@ -149,7 +149,7 @@ class _MyPageEditState extends State<MyPageEdit> {
                                   width: deviceWidth,
                                   child: Center(child: Text('프로필 사진 수정'))),
                               content: Container(
-                                height: 150 * (deviceWidth / prototypeWidth),
+                                height: ScreenUtil().setWidth(150),
                                 child: edit.editProfileImageDialog(
                                   onTapCamera: () {},
                                   onTapGallery: () async {

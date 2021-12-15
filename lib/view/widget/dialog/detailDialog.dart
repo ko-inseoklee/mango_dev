@@ -72,7 +72,7 @@ class _DetailDialogState extends State<DetailDialog> {
     return AlertDialog(
       insetPadding: EdgeInsets.fromLTRB(ScreenUtil().setWidth(20), ScreenUtil().setHeight(16), ScreenUtil().setWidth(20), ScreenUtil().setHeight(16)),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      title: Text('품목 상세 정보'),
+      title: Text('품목 상세 정보', style: Theme.of(context).textTheme.headline6!.copyWith(fontSize: ScreenUtil().setSp(16.5))),
       titlePadding: EdgeInsets.fromLTRB(
           ScreenUtil().setWidth(20), ScreenUtil().setHeight(18), 0, 0),
       contentPadding: EdgeInsets.zero,
@@ -84,7 +84,7 @@ class _DetailDialogState extends State<DetailDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: ScreenUtil().setHeight(185),
+                height: ScreenUtil().setHeight(190),
                 padding: EdgeInsets.fromLTRB(
                     ScreenUtil().setWidth(15), ScreenUtil().setHeight(8), ScreenUtil().setWidth(5), 0),
                 child: Column(
@@ -154,7 +154,7 @@ class _DetailDialogState extends State<DetailDialog> {
                                               .subtitle2!
                                               .copyWith(
                                                   color: MangoDisabledColor,
-                                                  fontSize: 12),
+                                                  fontSize: ScreenUtil().setSp(14)),
                                         ),
                                       ),
                                       Container(
@@ -167,7 +167,7 @@ class _DetailDialogState extends State<DetailDialog> {
                                           style: Theme.of(context)
                                               .textTheme
                                               .subtitle1!
-                                              .copyWith(fontSize: 14.0),
+                                              .copyWith(fontSize: ScreenUtil().setSp(14)),
                                           onChanged: (value) {
                                             setState(() {
                                               tempFood.name = value;
@@ -223,7 +223,7 @@ class _DetailDialogState extends State<DetailDialog> {
                                               .subtitle2!
                                               .copyWith(
                                                   color: MangoDisabledColor,
-                                                  fontSize: 12.0),
+                                                  fontSize: ScreenUtil().setSp(12)),
                                         ),
                                       ),
                                       Container(
@@ -232,7 +232,7 @@ class _DetailDialogState extends State<DetailDialog> {
                                           decoration: BoxDecoration(),
                                           child: Text(
                                             tempFood.number.toString(),
-                                            style: TextStyle(fontSize: 12.0),
+                                            style: TextStyle(fontSize: ScreenUtil().setSp(12)),
                                           )),
                                       Container(
                                         width: 25,
@@ -284,7 +284,7 @@ class _DetailDialogState extends State<DetailDialog> {
                                           decoration: BoxDecoration(),
                                           child: Text(
                                             tempFood.category,
-                                            style: TextStyle(fontSize: 10.0),
+                                            style: TextStyle(fontSize: ScreenUtil().setSp(10)),
                                           )),
                                       Container(
                                         width: ScreenUtil().setWidth(25),
@@ -316,11 +316,11 @@ class _DetailDialogState extends State<DetailDialog> {
                 height: ScreenUtil().setHeight(16),
               ),
               Container(
-                height: ScreenUtil().setHeight(390),
+                height: ScreenUtil().setHeight(410),
                 child: Column(
                   children: [
                     Container(
-                      height: ScreenUtil().setHeight(370),
+                      height: ScreenUtil().setHeight(380),
                       child: PageView(
                         onPageChanged: (value) {
                           setState(() {

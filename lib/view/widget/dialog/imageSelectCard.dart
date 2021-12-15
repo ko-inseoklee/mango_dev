@@ -27,7 +27,7 @@ class _imageSelectCardState extends State<imageSelectCard> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: ScreenUtil().setWidth(98),
-      height: ScreenUtil().setHeight(114),
+      height: ScreenUtil().setHeight(130),
       child: TextButton(
         onPressed: widget.onTapOK,
         child: Column(
@@ -41,7 +41,7 @@ class _imageSelectCardState extends State<imageSelectCard> {
             Container(
               alignment: Alignment.center,
               padding: EdgeInsets.only(
-                top: 5.0 * deviceWidth / prototypeWidth,
+                top: ScreenUtil().setWidth(5),
               ),
               child: Text(widget.title,
                   textAlign: TextAlign.center,
