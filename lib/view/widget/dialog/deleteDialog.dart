@@ -13,10 +13,10 @@ class DeleteDialog extends StatefulWidget {
   VoidCallback onPressed;
   DeleteDialog(
       {Key? key,
-      this.food,
-      this.foods,
-      required this.onPressed,
-      required this.deleteAll})
+        this.food,
+        this.foods,
+        required this.onPressed,
+        required this.deleteAll})
       : super(key: key);
 
   @override
@@ -35,45 +35,46 @@ class _DeleteDialogState extends State<DeleteDialog> {
           children: [
             widget.deleteAll
                 ? Padding(
-                    padding: EdgeInsets.fromLTRB(0, ScreenUtil().setHeight(30),
-                        0, ScreenUtil().setHeight(8)),
-                    child: Text(
-                      '모두 삭제하시겠습니까?',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 14.0),
-                    ),
-                  )
+              padding: EdgeInsets.fromLTRB(0, ScreenUtil().setHeight(30),
+                  0, ScreenUtil().setHeight(8)),
+              child: Text(
+                '모두 삭제하시겠습니까?',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600, fontSize: ScreenUtil().setSp(14)),
+              ),
+            )
                 : Padding(
-                    padding: EdgeInsets.fromLTRB(0, ScreenUtil().setHeight(30),
-                        0, ScreenUtil().setHeight(8)),
-                    child: Text(
-                      '정말 삭제하시겠습니까?',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 14.0),
-                    ),
-                  ),
+              padding: EdgeInsets.fromLTRB(0, ScreenUtil().setHeight(30),
+                  0, ScreenUtil().setHeight(8)),
+              child: Text(
+                '정말 삭제하시겠습니까?',
+                style: TextStyle(
+                    fontWeight: FontWeight.w600, fontSize: ScreenUtil().setSp(14)),
+              ),
+            ),
             widget.deleteAll
                 ? Padding(
-                    padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-                    child: Text(
-                      '${widget.foods![0].name} 등 ${widget.foods!.length} 품목',
-                      style: TextStyle(
-                          color: MangoDisabledColorDark, fontSize: 14.0),
-                    ),
-                  )
+              padding: EdgeInsets.all(ScreenUtil().setSp(16)),
+              child: Text(
+                '${widget.foods![0].name} 등 ${widget.foods!.length} 품목',
+                style: TextStyle(
+                    color: MangoDisabledColorDark, fontSize: ScreenUtil().setSp(14)),
+              ),
+            )
                 : Padding(
-                    padding: EdgeInsets.all(ScreenUtil().setSp(16)),
-                    child: Text(
-                      '${widget.food!.name} ${widget.food!.number}개, 등록일 ${DateFormat.yMd().format(widget.food!.registrationDay)}',
-                      style: TextStyle(
-                          color: MangoDisabledColorDark, fontSize: 14.0),
-                    ),
-                  ),
+              padding: EdgeInsets.all(ScreenUtil().setSp(16)),
+              child: Text(
+                '${widget.food!.name} ${widget.food!.number}개, 등록일 ${DateFormat.yMd().format(widget.food!.registrationDay)}',
+                style: TextStyle(
+                    color: MangoDisabledColorDark, fontSize: ScreenUtil().setSp(14)),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
                     width: ScreenUtil().setWidth(120),
+                    height: ScreenUtil().setHeight(50),
                     decoration: BoxDecoration(
                         color: MangoDisabledColorLight,
                         borderRadius: BorderRadius.circular(5.0)),
@@ -85,6 +86,7 @@ class _DeleteDialogState extends State<DeleteDialog> {
                         ))),
                 Container(
                     width: ScreenUtil().setWidth(120),
+                    height: ScreenUtil().setHeight(50),
                     decoration: BoxDecoration(
                         color: Orange400,
                         borderRadius: BorderRadius.circular(5.0)),

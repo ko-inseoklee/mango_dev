@@ -38,20 +38,12 @@ class _AddFoodSheetState extends State<AddFoodSheet> {
                 borderRadius: BorderRadius.all(Radius.circular(10.0))),
           ),
           Container(
-            // width: deviceWidth,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  child: Text(
-                    '냉장고 품목 등록',
-                    style: Theme.of(context)
-                        .textTheme
-                        .subtitle1!
-                        .copyWith(fontWeight: FontWeight.w700),
-                  ),
-                ),
-              ],
+            child: Text(
+              '냉장고 품목 등록',
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           Text(
