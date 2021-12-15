@@ -101,7 +101,6 @@ class _MangoAppState extends State<MangoApp> {
       builder: () => GetMaterialApp(
         home: Landing(),
         theme: _mangoTheme,
-        // getPages: [GetPage(name: 'FriendList', page: () => FriendListPage())],
       ),
       designSize: Size(375, 812),
     );

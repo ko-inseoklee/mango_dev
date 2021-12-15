@@ -4,15 +4,16 @@ import 'package:get/get.dart';
 import 'package:mangodevelopment/color.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/view/widget/appBar.dart';
+import 'package:mangodevelopment/view/widget/dialog/dialog.dart';
 import 'package:mangodevelopment/view/widget/refrigerator/foodSections.dart';
 import 'package:mangodevelopment/viewModel/refrigeratorViewModel.dart';
 import 'package:mangodevelopment/viewModel/userViewModel.dart';
-
 
 //remerge
 
 class RefrigeratorPage extends StatefulWidget {
   String title;
+
   RefrigeratorPage({Key? key, required String title}) : title = title;
 
   @override
@@ -54,7 +55,70 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              InkWell(
+                child: Container(
+                  color: Colors.grey[100],
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('알림 확인'),
+                  ),
+                ),
+                onTap: () {
+                  refrigerator.ref.value.refrigerationFoods.forEach((element) {
+                    int date =
+                        element.shelfLife.difference(DateTime.now()).inDays;
+                    if (date < user.user.value.refrigerationAlarm) {
+                      if (date < 0)
+                        Get.dialog(mangoDialog(
+                          hasOK: true,
+                          dialogTitle: element.name,
+                          onTapOK: () async {
+                            Get.back();
+                          },
+                          contentText: (element.shelfLife
+                                          .difference(DateTime.now())
+                                          .inDays *
+                                      -1)
+                                  .toString() +
+                              '일 지났습니다.',
+                        ));
+                      else
+                        Get.dialog(mangoDialog(
+                          hasOK: true,
+                          dialogTitle: element.name,
+                          onTapOK: () async {
+                            Get.back();
+                          },
+                          contentText: element.shelfLife
+                                  .difference(DateTime.now())
+                                  .inDays
+                                  .toString() +
+                              '일 남았습니다',
+                        ));
+                    }
+                  });
+                  // Get.snackbar(
+                  //     '유통기한 알림',
+                  //     '2');
+                },
+              ),
               Container(height: ScreenUtil().setHeight(43), child: tabView()),
+              // refrigerator.ref.value.frozenFoods.first.shelfLife
+              //             .difference(DateTime.now())
+              //             .inDays <
+              //         0
+              //     ? SizedBox(
+              //         height: 100,
+              //         child: Text('1'),
+              //       )
+              //     :
+              // SizedBox(
+              //   height: 100,
+              //   child: Text(refrigerator.ref.value.refrigerationFoods.first.shelfLife
+              //       .difference(DateTime.now())
+              //       .inDays
+              //       .toString()),
+              // ),
               Container(
                 height: ScreenUtil().setHeight(620),
                 child: TabBarView(children: [
@@ -85,6 +149,16 @@ class _RefrigeratorPageState extends State<RefrigeratorPage> {
   Widget viewWithOnce({required int viewType}) {
     return viewType == 1
         ? Obx(() {
+            // refrigerator.ref.value.frozenFoods.forEach((element) {
+            //   print("!!");
+            // if element -> shelflife <2
+            //   Get.snackbar(
+            //       '유통기한 알림',
+            //       element.shelfLife
+            //           .difference(DateTime.now())
+            //           .inDays
+            //           .toString());
+            // });
             return FoodsSection(
               foods: refrigerator.ref.value.frozenFoods,
               title: onceTitle[1],
