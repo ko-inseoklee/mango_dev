@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 
 class Food {
-  // 임시로 final 제거.
   String fId;
-  // 임시로 final 제거.
   String rId;
   int idx;
 
@@ -24,7 +22,7 @@ class Food {
 
   DateTime alarmDay;
 
-  // IS - for card status / 0: Normal, 1: Over, 2: D-Day, 3: Stale
+  // 0: Normal, 1: Over, 2: D-Day, 3: Stale
   int cardStatus;
 
   Food(

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mangodevelopment/model/food.dart';
 import 'package:mangodevelopment/model/post.dart';
@@ -69,6 +71,7 @@ class _TradePageState extends State<TradePage> {
     _determinePosition().then((value) {
       deviceLat = GeoPoint(value.latitude, value.longitude);
     });
+
   }
 
   FirebaseFirestore mango_dev = FirebaseFirestore.instance;
@@ -138,26 +141,31 @@ class _TradePageState extends State<TradePage> {
                       child: Text('주변에 등록된 게시글이 없습니다.'),
                     )
                   : Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CupertinoSearchTextField(
-                          controller: _textController,
-                          onSubmitted: (String value) {
-                            setState(() {
-                              _search = value;
-                            });
-                          },
-                          placeholder: '게시글  검색',
-                        ),
-                      ),
-                      RefreshIndicator(
-                        onRefresh: () => Get.find<postViewModel>().loadLocalPosts(
-                            userViewModelController.user.value.location),
-                        child: Flexible(
+                      children: <Widget>[
+                        // Container(
+                        //   width: MediaQuery.of(context).size.width,
+                        //   color: Colors.grey[100],
+                        //   child: Padding(
+                        //     padding: const EdgeInsets.all(8.0),
+                        //     child: Text(userViewModelController.user.value.),
+                        //   ),
+                        // ),
+
+                        // Padding(
+                        //   padding: const EdgeInsets.all(8.0),
+                        //   child: CupertinoSearchTextField(
+                        //     controller: _textController,
+                        // onSubmitted: (String value) {
+                        //   setState(() {
+                        //     _search = value;
+                        //   });
+                        // },
+                        // placeholder: '게시글 검색',
+                        //   ),
+                        // ),
+                        Flexible(
                           child: ListView.separated(
                               itemBuilder: (context, index) {
-                                // print('length:' + _.localPost.length.toString());
                                 return MangoPostCard(
                                     post: postViewModelController
                                         .localPost[index]);
@@ -169,9 +177,8 @@ class _TradePageState extends State<TradePage> {
                               itemCount:
                                   postViewModelController.localPost.length),
                         ),
-                      ),
-                    ],
-                  );
+                      ],
+                    );
             }),
     );
   }

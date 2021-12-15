@@ -61,6 +61,7 @@ class HomePageState extends State<HomePage> {
             return GetBuilder<MangoBNBController>(
               init: _controller,
               builder: (_) {
+
                 return Scaffold(
                   body: SafeArea(
                     child: IndexedStack(
